@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+ 
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.activitydesc.service.impl.ActivityNoteDescMapper">
+
+
+
+	<select id="listActivityDesc" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO" resultType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.listActivityDesc ====== */
+		SELECT
+			ACT.ACTIVITY_ID,
+			ACT.COMPANY_ID,
+			ACT.TRANING_PROCESS_ID,
+			A.YYYY,
+			A.MM,
+			ACT.PRINT_DATE,
+			( SELECT COUNT(*) CNT FROM LMS_ACTIVITY_DETAIL DET
+									WHERE DET.ACTIVITY_ID =ACT.ACTIVITY_ID
+									AND DET.ACTIVITY_TYPE = 'HRD'
+			) AS CCM_CNT,
+			( SELECT COUNT(*) CNT FROM LMS_ACTIVITY_DETAIL DET
+									WHERE  DET.ACTIVITY_ID =ACT.ACTIVITY_ID
+									AND DET.ACTIVITY_TYPE = 'COT'
+			) AS CCM_COT
+		from
+		(
+			SELECT #{yyyy} AS YYYY ,1 AS MM FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,2 AS MM FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,3 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,4 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,5 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,6 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,7 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,8 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,9 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,10 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,11 AS MM  FROM DUAL UNION 
+			SELECT #{yyyy} AS YYYY ,12 AS MM  FROM DUAL) A
+		LEFT OUTER JOIN LMS_ACTIVITY ACT ON ACT.MM = A.MM
+		AND ACT.DELETE_YN = 'N'
+		AND ACT.COMPANY_ID = #{companyId}
+		AND ACT.TRANING_PROCESS_ID = #{traningProcessId}
+		<if test="yyyy != null and yyyy != ''">
+			AND ACT.YYYY= #{yyyy}
+		</if>
+		<if test="mm != null and mm != ''">
+			AND ACT.MM= #{mm}
+		</if>
+		ORDER BY TO_NUMBER(A.MM) DESC
+	</select>
+	<select id="goInsertActivityDesc" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO" resultType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.activity.service.impl.ActivityMapper.getActivity ====== */
+		SELECT
+		ACTIVITY_ID
+		,ACTIVITY_DETAIL_ID
+		,ACTIVITY_TYPE 
+		,ACTIVITY_DATE
+		,MEM_NAME
+		,ACTIVITY_CONTENT
+		,LEAD_TIME
+		FORM
+		LMS_ACTIVITY_DETAIL
+		WHERE   ACTIVITY_ID = #{activityId}
+		AND ACTIVITY_DETAIL_ID = #{activityDetailId}
+		AND ACTIVITY_TYPE = #{activityType} 
+
+	</select>
+	<select id="selectActivityDescCnt" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO" resultType="java.lang.Integer" >
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.selectActivityDescCnt ====== */
+		SELECT
+			COUNT(*) AS CNT
+		from
+		LMS_ACTIVITY
+		WHERE 1=1
+		AND ACTIVITY_ID = #{activityId}
+		AND YYYY = #{yyyy}
+		AND MM = #{mm}
+	</select>
+	<select id="selectActivityDescDetailCnt" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO" resultType="java.lang.Integer" >
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.selectActivityDescDetailCnt ====== */
+		SELECT
+			COUNT(*) AS CNT
+		from
+		LMS_ACTIVITY_DETAIL
+		WHERE ACTIVITY_ID = #{activityId} 
+		AND ACTIVITY_TYPE      = #{activityType}
+	</select>
+
+	<insert id="insertActivityDesc" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.insertActivityDesc ====== */
+		INSERT INTO   LMS_ACTIVITY
+       (
+              ACTIVITY_ID,
+			  COMPANY_ID,
+			  TRANING_PROCESS_ID,
+              YYYY,
+              BIGO_COT,
+              BIGO_HRD,
+              MM,
+              DELETE_YN,
+              INSERT_DATE,
+              INSERT_USER              
+              
+       )
+       VALUES
+       (
+              #{activityId},
+              #{companyId},
+              #{traningProcessId},
+              #{yyyy},
+              #{bigoCot},
+              #{bigoHrd},
+              #{mm},
+              'N',
+              now(),
+              #{sessionMemSeq}
+       )
+
+	</insert>
+	<insert id="insertActivityDescDetail" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.insertActivityDescDetail ====== */
+
+
+		INSERT
+		INTO   LMS_ACTIVITY_DETAIL
+		       (
+		              ACTIVITY_ID,
+		              ACTIVITY_DETAIL_ID,
+		              ACTIVITY_TYPE, 
+		              ACTIVITY_DATE,
+		              MEM_NAME,
+		              ACTIVITY_CONTENT,
+		              LEAD_TIME,
+		              INSERT_USER,
+		              INSERT_DATE
+
+		       )
+		       VALUES
+		       (
+		              #{activityId},
+		              #{activityDetailId},
+		              #{activityType}, 
+		              #{activityDate},
+		              #{memName},
+		              #{activityContent},
+		              #{leadTime},
+		              #{sessionMemSeq},
+             		  now()
+		       )
+	</insert>
+
+	<update id="updateActivityDesc" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.updateActivityDesc ====== */
+
+			UPDATE LMS_ACTIVITY
+			set
+		      	   UPDATE_DATE  = now(),
+			       UPDATE_USER  =  #{sessionMemSeq}
+			       <if test="bigoCot != null and bigoCot != ''">
+			       ,BIGO_COT         = #{bigoCot}
+			       </if>
+			       <if test="bigoHrd != null and bigoHrd != ''">
+			       ,BIGO_HRD         = #{bigoHrd}
+			       </if>
+			WHERE 1=1
+				AND ACTIVITY_ID = #{activityId}
+	</update>
+	<update id="updateActivityDetailDesc" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.activitydesc.service.impl.updateActivityDetailDesc ====== */
+		UPDATE LMS_ACTIVITY_DETAIL
+		set
+
+		       ACTIVITY_DATE      = #{activityDate},
+		       MEM_NAME           = #{memName},
+		       ACTIVITY_CONTENT   = #{activityContent},
+		       LEAD_TIME          = #{leadTime},
+		       UPDATE_DATE  = now(),
+			   UPDATE_USER  = #{sessionMemSeq}
+			WHERE 1=1
+				AND ACTIVITY_ID = #{activityId}
+				AND ACTIVITY_DETAIL_ID = #{activityDetailId} 
+				AND ACTIVITY_TYPE      = #{activityType}
+	</update>
+	<select id="listActivityDescDetail" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO" resultType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.activity.service.impl.ActivityMapper.listActivityDescDetail ====== */
+		SELECT
+		DET.ACTIVITY_ID
+		,DET.ACTIVITY_DETAIL_ID
+		,DET.ACTIVITY_TYPE
+		,ACT.YYYY
+		,ACT.MM
+		,DET.ACTIVITY_DATE
+		,DET.MEM_NAME
+		,DET.ACTIVITY_CONTENT
+		,DET.LEAD_TIME
+        ,ACT.BIGO_COT
+        ,ACT.BIGO_HRD
+		FROM
+		LMS_ACTIVITY_DETAIL DET
+        JOIN LMS_ACTIVITY ACT
+        ON DET.ACTIVITY_ID  = ACT.ACTIVITY_ID 
+		WHERE DET.ACTIVITY_ID = #{activityId}
+		 <if test="activityType != null and activityType != ''">
+		AND DET.ACTIVITY_TYPE = #{activityType}
+		</if>
+	</select>
+
+	<update id="updateActivityDescPrint" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+			/* ====== kr.co.sitglobal.oklms.lu.activity.service.impl.ActivityMapper.updateActivityDescPrint ====== */
+			UPDATE LMS_ACTIVITY
+			set
+		      	   UPDATE_DATE  = now(),
+			       UPDATE_USER  =  #{sessionMemSeq},
+			       PRINT_DATE   = now()
+			WHERE 1=1
+				AND ACTIVITY_ID = #{activityId}
+	</update>
+	<update id="deleteActivityDesc" parameterType="kr.co.sitglobal.oklms.lu.activitydesc.vo.ActivityNoteVO">
+			/* ====== kr.co.sitglobal.oklms.lu.activity.service.impl.ActivityMapper.deleteActivityDesc ====== */
+			DELETE FROM LMS_ACTIVITY_DETAIL			
+			WHERE ACTIVITY_DETAIL_ID = #{activityDetailId}
+	</update>
+
+ 
+</mapper>

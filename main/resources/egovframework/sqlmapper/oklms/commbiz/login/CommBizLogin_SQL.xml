@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.commbiz.login.service.impl.CommBizLoginMapper">
+
+	<!--<resultMap id="member-result" type="egovframework.com.cmm.LoginVO">-->
+		<!--<result column="MEM_SEQ" 			property="memSeq" /> 			::: 회원 고유번호 :@:-->
+		<!--<result column="MEM_ID" 			property="memId" /> 			::: 회원아이디 :@:-->
+		<!--<result column="MEM_TYPE" 			property="memType" /> 			::: 회원유형 코드 :@:-->
+		<!--<result column="MEM_NAME" 			property="memName" /> 			::: 회원성명 :@:-->
+		<!--<result column="PWD_QUEST" 			property="pwdQuest" /> 			::: 패스워드 확인 시 선택한 질문의 번호 :@:-->
+		<!--<result column="SEX" 			property="sex" /> 			::: 공통코드 성별 :@:-->
+		<!--<result column="MEM_NAME_ENG" 			property="memNameEng" /> 			::: 영문명 :@:-->
+		<!--<result column="MEM_BIRTH" 			property="memBirth" /> 			::: 생년월일 :@:-->
+		<!--<result column="PWD_QUEST_ANS" 			property="pwdQuestAns" /> 			::: 패스워드 찾기 질문에 대한 답 :@:-->
+		<!--<result column="MEM_PASSWORD" 			property="memPassword" /> 			::: 비밀번호 :@:-->
+		<!--<result column="EMAIL" 			property="email" /> 			::: e-Mail 주소 :@:-->
+		<!--<result column="MEM_REGI_NO" 			property="memRegiNo" /> 			::: 주민번호 :@:-->
+		<!--<result column="ZIP_CODE" 			property="zipCode" /> 			::: 우편번호 :@:-->
+		<!--<result column="ADDRESS" 			property="address" /> 			::: 주소 :@:-->
+		<!--<result column="ADDRESS_DTL" 			property="addressDtl" /> 			::: 상세주소 :@:-->
+		<!--<result column="TEL_NO1" 			property="telNo1" /> 			::: 전화번호1 :@:-->
+		<!--<result column="TEL_NO2" 			property="telNo2" /> 			::: 전화번호2 :@:-->
+		<!--<result column="TEL_NO3" 			property="telNo3" /> 			::: 전화번호3 :@:-->
+		<!--<result column="HP_NO1" 			property="hpNo1" /> 			::: 핸드폰번호 :@:-->
+		<!--<result column="HP_NO2" 			property="hpNo2" /> 			::: 핸드폰번호2 :@:-->
+		<!--<result column="HP_NO3" 			property="hpNo3" /> 			::: 핸드폰번호3 :@:-->
+		<!--<result column="NEWSLETTER_YN" 			property="newsletterYn" /> 			::: 뉴스레터 수신여부 :@:-->
+		<!--<result column="PHOTO_FILE_PATH" 			property="photoFilePath" /> 			::: 사진파일 경로 :@:-->
+		<!--<result column="WORKING_PLACE" 			property="workingPlace" /> 			::: 근무지 :@:-->
+		<!--<result column="SCHOLARSHIP" 			property="scholarship" /> 			::: 최종학력 :@:-->
+		<!--<result column="SECEDE_REASON" 			property="secedeReason" /> 			::: 탈퇴사유 :@:-->
+		<!--<result column="RELATION_FIELD" 			property="relationField" /> 			::: 관련분야 :@:-->
+		<!--<result column="CAREER" 			property="career" /> 			::: 주요경력 :@:-->
+		<!--<result column="TITLE" 			property="title" /> 			::: 직위 :@:-->
+		<!--<result column="AUTH_GROUP_ID" 			property="authGroupId" /> 			::: 권한그룹아이디 :@:-->
+		<!--<result column="BNDL_REG_YN" 			property="bndlRegYn" /> 			::: 일괄등록여부 :@:-->
+		<!--<result column="LOGIN_CNT" 			property="loginCnt" /> 			::: 접속횟수 :@:-->
+		<!--<result column="SCSN_YN" 			property="scsnYn" /> 			::: 탈퇴여부 :@:-->
+		<!--<result column="MAJR" 			property="majr" /> 			::: 전공분야 :@:-->
+		<!--<result column="RECEIVE_MAIL_YN" 			property="receiveMailYn" /> 			::: 메일수신여부 :@:-->
+		<!--<result column="RECEIVE_SMS_YN" 			property="receiveSmsYn" /> 			::: SMS수신여부 :@:-->
+		<!--<result column="FOREIGN_YN" 			property="foreignYn" /> 			::: 외국인여부 :@:-->
+		<!--<result column="NAMECHECK_YN" 			property="namecheckYn" /> 			::: 실명인증여부 :@:-->
+		<!--<result column="NATION_CODE" 			property="nationCode" /> 			::: 국가코드 :@:-->
+		<!--<result column="COMPANY_ID" 			property="companyId" /> 			::: 업체코드 :@:-->
+		<!--<result column="G_PIN_YN" 			property="gPinYn" /> 			::: g-pin가입여부 :@:-->
+		<!--<result column="G_PIN_KEY1" 			property="gPinKey1" /> 			::: G-PIN개인식별번호 :@:-->
+		<!--<result column="G_PIN_KEY2" 			property="gPinKey2" /> 			::: G-PIN중복가입확인정보 :@:-->
+		<!--<result column="MEM_DIV" 			property="memDiv" /> 			::: 회원구분(G:일반,T:교원) :@:-->
+		<!--<result column="SCHOOL_SEQ" 			property="schoolSeq" /> 			::: 학교번호 :@:-->
+		<!--<result column="TUTOR_CLAUSE_AGREE_YN" 			property="tutorClauseAgreeYn" /> 			::: 튜터약관동의여부 :@:-->
+		<!--<result column="ASP_ID" 			property="aspId" /> 			::: ASP아이디 :@:-->
+		<!--<result column="AGREE_YN" 			property="agreeYn" /> 			::: 약관동의 :@:-->
+		<!--<result column="NONAGE_YN" 			property="nonageYn" /> 			::: 미성년여부 :@:-->
+		<!--<result column="DELETE_YN" 			property="deleteYn" /> 			::: 삭제여부 :@:-->
+		<!--<result column="INSERT_DATE" 			property="insertDate" /> 			::: 등록일 :@:-->
+		<!--<result column="INSERT_USER" 			property="insertUser" /> 			::: 등록자 :@:-->
+		<!--<result column="UPDATE_DATE" 			property="updateDate" /> 			::: 수정일 :@:-->
+		<!--<result column="UPDATE_USER" 			property="updateUser" /> 			::: 수정자 :@:-->
+		<!--<result column="CERTI_NO" 			property="certiNo" /> 			::: 인증순번 :@:-->
+		<!--<result column="CERTI_CHARACTER" 			property="certiCharacter" /> 			::: 인증문자 :@:-->
+		<!--<result column="CERTI_YN" 			property="certiYn" /> 			::: 인증여부 :@:-->
+		<!--<result column="CERTI_ATTEMPT_CNT" 			property="certiAttemptCnt" /> 			::: 인증시도횟수 :@:-->
+		<!--<result column="COMP_NM" 			property="compNm" /> 			::: 소속 :@:-->
+		<!--<result column="DEPT_NM" 			property="deptNm" /> 			::: 부서 :@:-->
+		<!--<result column="DUTY_NM" 			property="dutyNm" /> 			::: 직책 :@:-->
+		<!--<result column="REMK" 			property="remk" /> 			::: 내용 :@:-->
+		<!--<result column="WRONG_REGI_NO" 			property="wrongRegiNo" /> 			::: 잘못된주민번호 :@:-->
+		<!--<result column="ORG_PW_NULL" 			property="orgPwNull" /> 			::: 이관데이터비밀번호널 :@:-->
+		<!--<result column="ORG_MEM_ID" 			property="orgMemId" /> 			::: 이관회원아이디 :@:-->
+		<!--<result column="LAST_LOGIN_YMD" 			property="lastLoginYmd" /> 			::: 최종 로그인 일자 :@:-->
+		<!--<result column="LAST_PW_UPDT_YMD" 			property="lastPwUpdtYmd" /> 			::: 최종 비밀번호 변경 일자 :@:-->
+		<!--<result column="PW_ERR_NUMBER_TIMES" 			property="pwErrNumberTimes" /> 			::: 비밀번호 오류 횟수 :@:-->
+		<!--<result column="USE_EXPIRE_YMD" 			property="useExpireYmd" /> 			::: 사용 만료 일자 :@:-->
+		<!--<result column="FAX_NO1" 			property="faxNo1" /> 			::: 팩스번호1 :@:-->
+		<!--<result column="FAX_NO2" 			property="faxNo2" /> 			::: 팩스번호2 :@:-->
+		<!--<result column="FAX_NO3" 			property="faxNo3" /> 			::: 팩스번호3 :@:-->
+		<!--<result column="RECEIVE_PAPER_YN" 			property="receivePaperYn" /> 			::: 쪽지 수신 여부 :@:-->
+		<!--<result column="OLD_AUTH_GROUP_ID" 			property="oldAuthGroupId" /> 			::: 이전권한그룹아이디 :@:-->
+		<!--<result column="SESSION_ID" 			property="sessionId" /> 			::: 세션아이디(중복로그인 방지용) :@:-->
+		<!--<result column="LEC_TARGET" 			property="lecTarget" /> 			::: 교육대상 :@:-->
+		<!--<result column="LEC_TARGET_YEAR" 			property="lecTargetYear" /> 			::: 교육대상연차 :@:-->
+		<!--<result column="ORG_COMBINE_ID" 			property="orgCombineId" /> 			::: 이전통합아이디 :@:-->
+		<!--<result column="FACILITY_NO" 			property="facilityNo" /> 			::: 소속코드 :@:-->
+		<!--<result column="FACILITY_NAME" 			property="facilityName" /> 			::: 소속지 :@:-->
+		<!--<result column="EMPLOYEE_NO" 			property="employeeNo" /> 			::: 가통시스템 직원번호 :@:-->
+		<!--<result column="AUTHORITY_NO" 			property="authorityNo" /> 			::: 권한번호 :@:-->
+	<!--</resultMap>-->
+
+	<sql id="listLoginVO-where">
+		<!-- 조회 조건값 -->
+				<!-- <if test="memSeq != null and memSeq != ''">	AND CM.MEM_SEQ 	= #{memSeq}		 </if> -->
+				<if test="memId != null and memId != ''">	AND CM.MEM_ID 	= #{memId}		 </if>
+				<if test="deleteYn != null and deleteYn != ''">	AND CM.DELETE_YN 	= #{deleteYn}		 </if>
+
+	</sql>
+
+
+<!--  	비밀번호 암호화, 복호화 알고리즘은 MYSQL에서 제공하는 함수를 사용한다.
+		1.비밀번호 암호화
+		SELECT HEX(AES_ENCRYPT('1111','1111')) FROM com_member;
+
+		2.비밀번호 복호화
+		SELECT AES_DECRYPT(UNHEX(mem_password), '1111') FROM com_member;
+
+-->
+<!-- 	<select id="listLoginVO" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listLoginVO" parameterType="hashmap" resultType="egovframework.com.cmm.LoginVO"> -->
+<!-- 	<select id="listLoginVO" parameterType="hashmap" resultMap="member-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listLoginVO" parameterType="egovframework.com.cmm.LoginVO" resultType="egovframework.com.cmm.LoginVO">
+		/* ====== kr.co.sitglobal.oklms.commbiz.login.service.impl.CommBizLoginMapper.listLoginVO ====== */
+		SELECT CM.MEM_SEQ ,
+		       CM.MEM_ID ,
+		       CM.MEM_TYPE ,
+		       CM.MEM_NAME ,
+		       CM.PWD_QUEST ,
+		       CM.SEX ,
+		       CM.MEM_NAME_ENG ,
+		       CM.MEM_BIRTH ,
+		       CM.PWD_QUEST_ANS ,
+		       CM.MEM_PASSWORD ,
+		       <if test="memPasswordEncript == null and memPasswordEncript == ''">  '' AS MEM_PASSWORD_ENCRIPTED,		 </if>
+		       <if test="memPasswordEncript != null and memPasswordEncript != ''"> HEX(AES_ENCRYPT(#{memPasswordEncript},#{memPasswordEncript})) MEM_PASSWORD_ENCRIPTED, </if> /* 비밀번호( 사용자가 화면에서 입력한 암호화 된 비밀번호 ) */
+		       CM.EMAIL ,
+		       CM.MEM_REGI_NO ,
+		       CM.ZIP_CODE ,
+		       CM.ADDRESS ,
+		       CM.ADDRESS_DTL ,
+		       CM.TEL_NO1 ,
+		       CM.TEL_NO2 ,
+		       CM.TEL_NO3 ,
+		       CM.HP_NO1 ,
+		       CM.HP_NO2 ,
+		       CM.HP_NO3 ,
+		       CM.NEWSLETTER_YN ,
+		       CM.PHOTO_FILE_PATH ,
+		       CM.WORKING_PLACE ,
+		       CM.SCHOLARSHIP ,
+		       CM.SECEDE_REASON ,
+		       CM.RELATION_FIELD ,
+		       CM.CAREER ,
+		       CM.TITLE ,
+		       CM.AUTH_GROUP_ID ,
+		       'LMS' MENU_AREA,
+		       /* DECODE(CM.AUTH_GROUP_ID, '2016AUTH0000002' , 'LCMS' ,'LMS') AS MENU_AREA , */
+		       CM.MEM_TYPE AS PAGE_DIV,
+		       CM.BNDL_REG_YN ,
+		       CM.SCSN_YN ,
+		       CM.MAJR ,
+		       CM.RECEIVE_MAIL_YN ,
+		       CM.RECEIVE_SMS_YN ,
+		       CM.FOREIGN_YN ,
+		       CM.NAMECHECK_YN ,
+		       CM.NATION_CODE ,
+		       CM.COMPANY_ID ,
+		       CM.G_PIN_YN ,
+		       CM.G_PIN_KEY1 ,
+		       CM.G_PIN_KEY2 ,
+		       CM.MEM_DIV ,
+		       CM.SCHOOL_SEQ ,
+		       CM.TUTOR_CLAUSE_AGREE_YN ,
+		       CM.ASP_ID ,
+		       CM.AGREE_YN ,
+		       CM.NONAGE_YN ,
+		       CM.DELETE_YN,
+		       CM.INSERT_USER ,
+		       CM.UPDATE_DATE ,
+		       CM.UPDATE_USER ,
+		       CM.CERTI_NO ,
+		       CM.CERTI_CHARACTER ,
+		       CM.CERTI_YN ,
+		       CM.CERTI_ATTEMPT_CNT ,
+		       CM.COMP_NM ,
+		       CM.DEPT_NM ,
+		       CM.DUTY_NM ,
+		       CM.REMK ,
+		       CM.WRONG_REGI_NO ,
+		       CM.ORG_PW_NULL ,
+		       CM.ORG_MEM_ID ,
+		       CM.LAST_LOGIN_YMD ,
+		       CM.LAST_PW_UPDT_YMD ,
+		       CM.PW_ERR_NUMBER_TIMES ,
+		       CM.USE_EXPIRE_YMD,
+		       STR_TO_DATE(CM.INSERT_DATE, '%Y-%m-%d') INSERT_DATE,
+		       (SELECT COMPANY_NAME
+		         FROM lms_company
+		        WHERE COMPANY_ID = CM.COMPANY_ID
+		              AND DELETE_YN = 'N'
+		       ) COMPANY_NAME,
+		       (SELECT COUNT(1)
+		         FROM COM_LOGIN_LOG
+		        WHERE MEM_SEQ = CM.MEM_SEQ
+		       ) LOGIN_CNT,
+		       (SELECT AUTH_GROUP_NAME
+		         FROM COM_AUTH_GROUP
+		        WHERE DELETE_YN = 'N'
+		              AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID
+		       ) AUTH_GROUP_NAME,
+		       '' SCHOOL_NAME,
+		       '' INSTITUTE_NAME,
+		       '' POSITION,
+		       '' CERTIFICATION_DIV,
+		       CM.RECEIVE_PAPER_YN,
+		       CM.OLD_AUTH_GROUP_ID,
+		       CM.SESSION_ID,
+		       CM.LEC_TARGET,
+		       CM.LEC_TARGET_YEAR,
+		       CM.ORG_COMBINE_ID,
+		       CM.FACILITY_NO,
+		       CM.FACILITY_NAME,
+		       CM.EMPLOYEE_NO,
+		       CM.AUTHORITY_NO,
+		       CM.DEPT_NM,
+		       CM.DEPT_NO
+		  FROM COM_MEMBER CM
+		 WHERE 1=1
+
+		<include refid="listLoginVO-where"/>
+	</select>
+
+
+
+
+	<update id="updateLoginVO" parameterType="egovframework.com.cmm.LoginVO">
+			/* ====== kr.co.sitglobal.oklms.commbiz.login.service.impl.CommBizLoginMapper.updateLoginVO ====== */
+	        UPDATE COM_MEMBER
+	        SET UPDATE_DATE 	= NOW()
+				<if test="memId != null and memId != ''">	, MEM_ID 	= #{memId}		 </if>
+				<if test="memType != null and memType != ''">	, MEM_TYPE 	= #{memType}		 </if>
+				<if test="memName != null and memName != ''">	, MEM_NAME 	= #{memName}		 </if>
+				<if test="pwdQuest != null and pwdQuest != ''">	, PWD_QUEST 	= #{pwdQuest}		 </if>
+				<if test="sex != null and sex != ''">	, SEX 	= #{sex}		 </if>
+				<if test="memNameEng != null and memNameEng != ''">	, MEM_NAME_ENG 	= #{memNameEng}		 </if>
+				<if test="memBirth != null and memBirth != ''">	, MEM_BIRTH 	= #{memBirth}		 </if>
+				<if test="pwdQuestAns != null and pwdQuestAns != ''">	, PWD_QUEST_ANS 	= #{pwdQuestAns}		 </if>
+
+				<if test="memPasswordEncript != null and memPasswordEncript != ''">	, MEM_PASSWORD 	= rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3))		 </if>
+
+				<if test="email != null and email != ''">	, EMAIL 	= #{email}		 </if>
+				<if test="memRegiNo != null and memRegiNo != ''">	, MEM_REGI_NO 	= #{memRegiNo}		 </if>
+				<if test="zipCode != null and zipCode != ''">	, ZIP_CODE 	= #{zipCode}		 </if>
+				<if test="address != null and address != ''">	, ADDRESS 	= #{address}		 </if>
+				<if test="addressDtl != null and addressDtl != ''">	, ADDRESS_DTL 	= #{addressDtl}		 </if>
+				<if test="telNo1 != null and telNo1 != ''">	, TEL_NO1 	= #{telNo1}		 </if>
+				<if test="telNo2 != null and telNo2 != ''">	, TEL_NO2 	= #{telNo2}		 </if>
+				<if test="telNo3 != null and telNo3 != ''">	, TEL_NO3 	= #{telNo3}		 </if>
+				<if test="hpNo1 != null and hpNo1 != ''">	, HP_NO1 	= #{hpNo1}		 </if>
+				<if test="hpNo2 != null and hpNo2 != ''">	, HP_NO2 	= #{hpNo2}		 </if>
+				<if test="hpNo3 != null and hpNo3 != ''">	, HP_NO3 	= #{hpNo3}		 </if>
+				<if test="newsletterYn != null and newsletterYn != ''">	, NEWSLETTER_YN 	= #{newsletterYn}		 </if>
+				<if test="photoFilePath != null and photoFilePath != ''">	, PHOTO_FILE_PATH 	= #{photoFilePath}		 </if>
+				<if test="workingPlace != null and workingPlace != ''">	, WORKING_PLACE 	= #{workingPlace}		 </if>
+				<if test="scholarship != null and scholarship != ''">	, SCHOLARSHIP 	= #{scholarship}		 </if>
+				<if test="secedeReason != null and secedeReason != ''">	, SECEDE_REASON 	= #{secedeReason}		 </if>
+				<if test="relationField != null and relationField != ''">	, RELATION_FIELD 	= #{relationField}		 </if>
+				<if test="career != null and career != ''">	, CAREER 	= #{career}		 </if>
+				<if test="title != null and title != ''">	, TITLE 	= #{title}		 </if>
+				<if test="authGroupId != null and authGroupId != ''">	, AUTH_GROUP_ID 	= #{authGroupId}		 </if>
+				<if test="bndlRegYn != null and bndlRegYn != ''">	, BNDL_REG_YN 	= #{bndlRegYn}		 </if>
+				<if test="loginCnt != null and loginCnt != ''">	, LOGIN_CNT 	= #{loginCnt}		 </if>
+				<if test="scsnYn != null and scsnYn != ''">	, SCSN_YN 	= #{scsnYn}		 </if>
+				<if test="majr != null and majr != ''">	, MAJR 	= #{majr}		 </if>
+				<if test="receiveMailYn != null and receiveMailYn != ''">	, RECEIVE_MAIL_YN 	= #{receiveMailYn}		 </if>
+				<if test="receiveSmsYn != null and receiveSmsYn != ''">	, RECEIVE_SMS_YN 	= #{receiveSmsYn}		 </if>
+				<if test="foreignYn != null and foreignYn != ''">	, FOREIGN_YN 	= #{foreignYn}		 </if>
+				<if test="namecheckYn != null and namecheckYn != ''">	, NAMECHECK_YN 	= #{namecheckYn}		 </if>
+				<if test="nationCode != null and nationCode != ''">	, NATION_CODE 	= #{nationCode}		 </if>
+				<if test="companyId != null and companyId != ''">	, COMPANY_ID 	= #{companyId}		 </if>
+				<if test="gPinYn != null and gPinYn != ''">	, G_PIN_YN 	= #{gPinYn}		 </if>
+				<if test="gPinKey1 != null and gPinKey1 != ''">	, G_PIN_KEY1 	= #{gPinKey1}		 </if>
+				<if test="gPinKey2 != null and gPinKey2 != ''">	, G_PIN_KEY2 	= #{gPinKey2}		 </if>
+				<if test="memDiv != null and memDiv != ''">	, MEM_DIV 	= #{memDiv}		 </if>
+				<if test="schoolSeq != null and schoolSeq != ''">	, SCHOOL_SEQ 	= #{schoolSeq}		 </if>
+				<if test="tutorClauseAgreeYn != null and tutorClauseAgreeYn != ''">	, TUTOR_CLAUSE_AGREE_YN 	= #{tutorClauseAgreeYn}		 </if>
+				<if test="aspId != null and aspId != ''">	, ASP_ID 	= #{aspId}		 </if>
+				<if test="agreeYn != null and agreeYn != ''">	, AGREE_YN 	= #{agreeYn}		 </if>
+				<if test="nonageYn != null and nonageYn != ''">	, NONAGE_YN 	= #{nonageYn}		 </if>
+				<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+				<if test="updateUser != null and updateUser != ''">	, UPDATE_USER 	= #{sessionMemSeq}		 </if>
+				<if test="certiNo != null and certiNo != ''">	, CERTI_NO 	= #{certiNo}		 </if>
+				<if test="certiCharacter != null and certiCharacter != ''">	, CERTI_CHARACTER 	= #{certiCharacter}		 </if>
+				<if test="certiYn != null and certiYn != ''">	, CERTI_YN 	= #{certiYn}		 </if>
+				<if test="certiAttemptCnt != null and certiAttemptCnt != ''">	, CERTI_ATTEMPT_CNT 	= #{certiAttemptCnt}		 </if>
+				<if test="compNm != null and compNm != ''">	, COMP_NM 	= #{compNm}		 </if>
+				<if test="deptNm != null and deptNm != ''">	, DEPT_NM 	= #{deptNm}		 </if>
+				<if test="dutyNm != null and dutyNm != ''">	, DUTY_NM 	= #{dutyNm}		 </if>
+				<if test="remk != null and remk != ''">	, REMK 	= #{remk}		 </if>
+				<if test="wrongRegiNo != null and wrongRegiNo != ''">	, WRONG_REGI_NO 	= #{wrongRegiNo}		 </if>
+				<if test="orgPwNull != null and orgPwNull != ''">	, ORG_PW_NULL 	= #{orgPwNull}		 </if>
+				<if test="orgMemId != null and orgMemId != ''">	, ORG_MEM_ID 	= #{orgMemId}		 </if>
+				<if test="lastLoginYmd != null and lastLoginYmd != ''">	, LAST_LOGIN_YMD 	= #{lastLoginYmd}		 </if>
+				<if test="lastPwUpdtYmd != null and lastPwUpdtYmd != ''">	, LAST_PW_UPDT_YMD 	= #{lastPwUpdtYmd}		 </if>
+				<if test="pwErrNumberTimes != null and pwErrNumberTimes != ''">	, PW_ERR_NUMBER_TIMES 	= #{pwErrNumberTimes}		 </if>
+				<if test="useExpireYmd != null and useExpireYmd != ''">	, USE_EXPIRE_YMD 	= #{useExpireYmd}		 </if>
+
+				<if test="faxNo1 != null and faxNo1 != ''">		, FAX_NO1 	= #{faxNo1}		 </if>
+				<if test="faxNo2 != null and faxNo2 != ''">		, FAX_NO2 	= #{faxNo2}		 </if>
+				<if test="faxNo3 != null and faxNo3 != ''">		, FAX_NO3 	= #{faxNo3}		 </if>
+				<if test="receivePaperYn != null and receivePaperYn != ''">		, RECEIVE_PAPER_YN 	= #{receivePaperYn}		 </if>
+				<if test="oldAuthGroupId != null and oldAuthGroupId != ''">		, OLD_AUTH_GROUP_ID 	= #{oldAuthGroupId}		 </if>
+				<if test="sessionId != null and sessionId != ''">		, SESSION_ID 	= #{sessionId}		 </if>
+				<if test="lecTarget != null and lecTarget != ''">		, LEC_TARGET 	= #{lecTarget}		 </if>
+				<if test="lecTargetYear != null and lecTargetYear != ''">		, LEC_TARGET_YEAR 	= #{lecTargetYear}		 </if>
+				<if test="orgCombineId != null and orgCombineId != ''">		, ORG_COMBINE_ID 	= #{orgCombineId}		 </if>
+				<if test="facilityNo != null and facilityNo != ''">		, FACILITY_NO 	= #{facilityNo}		 </if>
+				<if test="facilityName != null and facilityName != ''">		, FACILITY_NAME 	= #{facilityName}		 </if>
+				<if test="employeeNo != null and employeeNo != ''">		, EMPLOYEE_NO 	= #{employeeNo}		 </if>
+				<if test="authorityNo != null and authorityNo != ''">		, AUTHORITY_NO 	= #{authorityNo}		 </if>
+		WHERE MEM_SEQ 	= #{memSeq}
+	</update>
+
+
+
+	<update id="updateLoginVOExpireYmd"  parameterType="java.util.HashMap"  >
+	/* ====== kr.co.sitglobal.oklms.commbiz.member.service.impl.UserActMapper."updateLoginVOExpireYmd" ========= */
+		UPDATE COM_MEMBER
+		SET
+			  USE_EXPIRE_YMD = ADDDATE(NOW(), INTERVAL #{loginPWMaxUsedDays} DAY)
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+
+	<update id="updateLoginVOLastLoginDt"  parameterType="egovframework.com.cmm.LoginVO"  >
+	/* ====== kr.co.sitglobal.oklms.commbiz.member.service.impl.UserActMapper.updateLoginVOLastLoginDt ========= */
+		UPDATE COM_MEMBER
+		SET
+			  LAST_LOGIN_YMD = NOW()
+			  , PW_ERR_NUMBER_TIMES = 0
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+
+	<update id="updateLoginVOPwFailCnt"  parameterType="egovframework.com.cmm.LoginVO"  >
+	/* ====== kr.co.sitglobal.oklms.commbiz.member.service.impl.UserActMapper.updateLoginVOPwFailCnt ========= */
+		UPDATE COM_MEMBER
+		SET
+			  UPDATE_DATE = NOW()
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , 'oklmsSystem')
+			  , PW_ERR_NUMBER_TIMES = PW_ERR_NUMBER_TIMES + 1
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+
+	<update id="updateLoginVOPwInit"  parameterType="egovframework.com.cmm.LoginVO"  >
+	/* ====== kr.co.sitglobal.oklms.commbiz.member.service.impl.UserActMapper.updateLoginVOPwInit ========= */
+		UPDATE COM_MEMBER
+		SET
+			  UPDATE_DATE = NOW()
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , 'oklmsSystem')
+			  , PW_ERR_NUMBER_TIMES = 0												/* ====== 비밀번호 초기화시 에러 횟수 제어 ====== */
+			  , MEM_PASSWORD 	= rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3))
+			  , LAS_PW_UPDT_YMD = NOW() - #{loginPWMaxUsedDays}							/* ====== 최종 비밀번호 변경 일자  ====== */
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+
+ 	<update id="updateLoginVOPw"  parameterType="egovframework.com.cmm.LoginVO"  >
+	/* ====== kr.co.sitglobal.oklms.commbiz.member.service.impl.UserActMapper.updateLoginVOPw ========= */
+		UPDATE COM_MEMBER
+		SET
+			  UPDATE_DATE = NOW()
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , 'oklmsSystem')
+			  , PW_ERR_NUMBER_TIMES = 0
+			  , MEM_PASSWORD 	= rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3))
+			  , LAS_PW_UPDT_YMD = NOW()						/* ====== 최종 비밀번호 변경 일자  ====== */
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+	<select id="getLoginCompanyId" parameterType="egovframework.com.cmm.LoginVO" resultType="egovframework.com.cmm.LoginVO">
+		/* ====== kr.co.sitglobal.oklms.commbiz.login.service.impl.CommBizLoginMapper.getLoginCompanyId ====== */ 
+		SELECT TPM.COMPANY_ID 
+		FROM LMS_SUBJ_INS_MAPPING SIM,LMS_TRANING_PROCESS_MAPPING TPM
+		WHERE SIM.DELETE_YN='N'
+		AND SIM.MEM_SEQ=#{sessionMemSeq}
+		AND SIM.YYYY= TPM.YYYY
+		AND SIM.TERM= TPM.TERM
+		AND SIM.SUBJECT_CODE= TPM.SUBJECT_CODE
+		AND SIM.CLASS= TPM.CLASS
+		GROUP BY TPM.COMPANY_ID
+		LIMIT 0,1
+	</select>
+
+</mapper>

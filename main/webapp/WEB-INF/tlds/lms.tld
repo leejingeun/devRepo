@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns= "http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation= "http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version= "2.0">
+	<description>lms Custom Tag</description>
+	<tlib-version>1.0</tlib-version>
+	<short-name>tb</short-name>
+	<!-- StringUtil Type(s) -->
+ 
+	<function>
+		<description>문자열치환 </description>
+		<name>replaceAll</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			java.lang.String replaceAll(java.lang.String,java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+	<function>
+		<description>문자열 null 처리/ trim 처리 (param: 문자열)</description>
+		<name>trimString</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			java.lang.String trimString(java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<description>문자열 HTML Tag 제거 (param: 문자열)</description>
+		<name>stripHTML</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			java.lang.String stripHTML(java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<description>숫자형 null처리/trim 처리 (param: 문자열)</description>
+		<name>trimNumber</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			java.lang.String trimNumber(java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<description>오브젝트 형태의 객체를 JSON string 으로 변환 (param: Object)</description>
+		<name>objectToJson</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			<![CDATA[java.lang.String objectToJson(java.lang.Object)]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>년도/학기/차수/반 정보의 화면 표시</description>
+		<name>getClassNumLabel</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			<![CDATA[java.lang.String getClassNumLabel(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)]]>
+		</function-signature>
+	</function>
+	<!-- StringUtil Type(e) -->
+
+	<!-- DateUtil Type(s) -->
+	<function>
+		<description>현재 시간 (yyyyMMddHHmmss) (param: 없음)</description>
+		<name>getCurrentDateTime</name>
+		<function-class>com.webstudio.lms.common.util.date.DateUtil</function-class>
+		<function-signature>
+			java.lang.String getCurrentDateTime()
+		</function-signature>
+	</function>
+	<function>
+		<description>현재일+요청일의 값을 반환 (yyyyMMdd)</description>
+		<name>getAddedCurrentDateTime</name>
+		<function-class>com.webstudio.lms.common.util.date.DateUtil</function-class>
+		<function-signature>
+			java.lang.String getAddedCurrentDateTime(java.lang.Integer)
+		</function-signature>
+	</function>
+	<function>
+		<description>나이계산 (yyyy 일 경우 한국식 나이, yyyymmdd일 경우 만나이</description>
+		<name>getUserAge</name>
+		<function-class>com.webstudio.lms.common.util.date.DateUtil</function-class>
+		<function-signature>
+			java.lang.String getUserAge(java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<description>yyyyMMdd 형식 날짜를 datePattern 형식으로 리턴한다.</description>
+		<name>getConvertToDateFormat</name>
+		<function-class>com.webstudio.lms.common.util.date.DateUtil</function-class>
+		<function-signature>
+			java.lang.String getConvertToDateFormat(java.lang.String, java.lang.String)
+		</function-signature>
+	</function>
+	<!-- DateUtil Type(e) -->
+
+	<!-- MessageUtil Type(s) -->
+	<function>
+		<description>다국어 메시지 (param: resource key값)</description>
+		<name>getMessage</name>
+		<function-class>com.webstudio.lms.common.util.message.MessageUtil</function-class>
+		<function-signature>
+			<![CDATA[java.lang.String getMessage(java.lang.String)]]>
+		</function-signature>
+	</function>
+	<function>
+		<description>다국어 메시지+파라미터 (param: resource key값, 문자열(, 콤마로 구분))</description>
+		<name>getMessageParam</name>
+		<function-class>com.webstudio.lms.common.util.message.MessageUtil</function-class>
+		<function-signature>
+			<![CDATA[java.lang.String getMessageParam(java.lang.String, java.lang.String)]]>
+		</function-signature>
+	</function>
+	
+<!-- 	<function> -->
+<!-- 		<description>다국어 메시지+언어코드 처리</description> -->
+<!-- 		<name>getMessage</name> -->
+<!-- 		<function-class>com.webstudio.lms.common.util.message.MessageUtil</function-class> -->
+<!-- 		<function-signature> -->
+<!-- 			<![CDATA[java.lang.String getMessage(java.lang.String, java.lang.String)]]> -->
+<!-- 		</function-signature> -->
+<!-- 	</function> -->
+
+<!-- 	<function> -->
+<!-- 		<description>다국어 메시지+파라미터</description> -->
+<!-- 		<name>getMessage</name> -->
+<!-- 		<function-class>com.webstudio.lms.common.util.message.MessageUtil</function-class> -->
+<!-- 		<function-signature> -->
+<!-- 			<![CDATA[java.lang.String getMessage(java.lang.String, java.lang.Object[])]]> -->
+<!-- 		</function-signature> -->
+<!-- 	</function> -->
+
+<!-- 	<function> -->
+<!-- 		<description>다국어 메시지+파라미터+언어코드</description> -->
+<!-- 		<name>getMessage</name> -->
+<!-- 		<function-class>com.webstudio.lms.common.util.message.MessageUtil</function-class> -->
+<!-- 		<function-signature> -->
+<!-- 			<![CDATA[java.lang.String getMessage(java.lang.String, java.lang.Object[], java.lang.String)]]> -->
+<!-- 		</function-signature> -->
+<!-- 	</function> -->
+
+	<!-- MessageUtil Type(e) -->
+
+	<!-- CodeUtil Type(s) -->
+	<function>
+		<description>코드그룹 HashMap 정보 (param: 없음)</description>
+		<name>getCodeGroupList</name>
+		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class>
+		<function-signature>
+			<![CDATA[java.util.HashMap<java.lang.String, com.webstudio.lms.domain.code.CodeGroup> getCodeGroupList()]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>코드 그룹 정보 (param: 코드그룹아이디)</description>
+		<name>getCodeGroup</name>
+		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class>
+		<function-signature>
+			<![CDATA[com.webstudio.lms.domain.code.CodeGroup getCodeGroup(java.lang.String)]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>코드 리스트 정보 (코드명은 기본 언어셋으로 설정되어 리턴) (param: 코드그룹아이디)</description>
+		<name>getCodeList</name>
+		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class>
+		<function-signature>
+			<![CDATA[java.util.List<com.webstudio.lms.domain.code.Code> getCodeList(java.lang.String)]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>코드 리스트 정보 (부모 코드 아이디를 넘겨주면 자식 코드를 리턴) (param: 코드그룹아이디, 부모코드아이디)</description>
+		<name>getChildCodeList</name>
+		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class>
+		<function-signature>
+			<![CDATA[java.util.List<com.webstudio.lms.domain.code.Code> getChildCodeList(java.lang.String, java.lang.String)]]>
+		</function-signature>
+	</function>
+	
+<!-- 	<function> -->
+<!-- 		<description>코드 리스트 정보 (코드명은 parameter 언어셋으로 설정되어 리턴/ 해당 언어값이 없으면 기본언어로 리턴)</description> -->
+<!-- 		<name>getCodeList</name> -->
+<!-- 		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class> -->
+<!-- 		<function-signature> -->
+<!-- 			<![CDATA[java.util.List<com.webstudio.lms.domain.code.Code> getCodeList(java.lang.String, java.lang.String)]]> -->
+<!-- 		</function-signature> -->
+<!-- 	</function> -->
+
+
+	<function>
+		<description>코드 정보 (코드명은 기본 언어셋으로 설정되어 리턴) (param: 코드그룹아이디, 코드아이디)</description>
+		<name>getCode</name>
+		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class>
+		<function-signature>
+			<![CDATA[com.webstudio.lms.domain.code.Code getCode(java.lang.String, java.lang.String)]]>
+		</function-signature>
+	</function>
+	
+<!-- 	<function> -->
+<!-- 		<description>코드 정보 (코드명은 parameter 언어셋으로 설정되어 리턴/ 해당 언어값이 없으면 기본언어로 리턴)</description> -->
+<!-- 		<name>getCode</name> -->
+<!-- 		<function-class>com.webstudio.lms.common.util.code.CodeUtil</function-class> -->
+<!-- 		<function-signature> -->
+<!-- 			<![CDATA[com.webstudio.lms.domain.code.Code getCode(java.lang.String, java.lang.String, java.lang.String)]]> -->
+<!-- 		</function-signature> -->
+<!-- 	</function> -->
+<!-- 	 -->
+	<!-- CodeUtil Type(e) -->
+
+	<!-- SecurityUtil Type(s) -->
+	<function>
+		<description>로그인 사용자 정보 정보 (param: 없음)</description>
+		<name>getLoginUserInfo</name>
+		<function-class>com.webstudio.lms.common.util.security.SecurityUtil</function-class>
+		<function-signature>
+			<![CDATA[com.webstudio.lms.domain.login.LoginUserDetails getLoginUserInfo()]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>운영자 정보 정보 (param: 없음)</description>
+		<name>getAdminList</name>
+		<function-class>com.webstudio.lms.common.util.security.SecurityUtil</function-class>
+		<function-signature>
+			<![CDATA[java.util.List<java.util.Map<java.lang.String,java.lang.Object>> getAdminList()]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>운영자 정보 정보 (param: isUse 없으면 all)</description>
+		<name>getAdminAllList</name>
+		<function-class>com.webstudio.lms.common.util.security.SecurityUtil</function-class>
+		<function-signature>
+			<![CDATA[java.util.List<java.util.Map<java.lang.String,java.lang.Object>> getAdminList(java.lang.String)]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>WebStudio 환경설정 정보 로딩</description>
+		<name>getWebStudioUserConfig</name>
+		<function-class>com.webstudio.lms.common.util.security.SecurityUtil</function-class>
+		<function-signature>
+			<![CDATA[com.webstudio.lms.domain.webstudio.WebStudioUserConfig getWebStudioUserConfig()]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>학기/차수 정보 로딩</description>
+		<name>getTermUnitList</name>
+		<function-class>com.webstudio.lms.common.util.security.SecurityUtil</function-class>
+		<function-signature>
+			<![CDATA[java.util.List<java.util.Map<java.lang.String,java.lang.Object>> getTermUnitList(java.lang.String)]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>startDate(yyyyMMdd) ~ endDate(yyyyMMdd) 기간 중 현재일 기준으로 진행중인 주 수를 리턴한다.)</description>
+		<name>getCurrentProgressWeekCount</name>
+		<function-class>com.webstudio.lms.common.util.date.DateUtil</function-class>
+		<function-signature>
+			<![CDATA[java.lang.String getCurrentProgressWeekCount(java.lang.String, java.lang.String)]]>
+		</function-signature>
+	</function>
+
+	<function>
+		<description>숫자를 반올림한다.</description>
+		<name>roundOff</name>
+		<function-class>kr.co.sitglobal.oklms.comm.util.StringUtil</function-class>
+		<function-signature>
+			java.lang.String roundOff(float, int)
+		</function-signature>
+	</function>
+</taglib>

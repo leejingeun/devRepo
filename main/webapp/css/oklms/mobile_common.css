@@ -1,0 +1,95 @@
+@charset "utf-8";
+
+
+
+#login-area														{ position:relative; float:left; width:100%; }
+#login-area legend												{ display:block; width:100%; font:18px nsM; color:#222; line-height:20px; text-align:center; border-bottom:1px solid #D9D9D9; padding:50px 0 20px;; margin-bottom:25px; }
+#login-area legend b											{ display:block; font:700 45px play; color:#22449C; line-height:45px; }
+
+#login-area p														{ position:relative; width:86%; margin:0 auto 5px; }
+#login-area p .iLabel											{ position:absolute; width:100%; height:17px; left:0; top:7px; font:15px play; color:#BBB; line-height:20px; text-align:center; }
+#login-area p .iText												{ width:100%; height:33px; font:15px play; color:#333; text-align:center; border:1px solid #BBB; border-radius:4px; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; background:#F7F7F7; padding:0 5%; }
+#login-area p.btn input										{ width:100%; height:60px; font:700 25px play; color:#FFF; line-height:25px; cursor:pointer; text-shadow:1px 1px 1px #940E31; border:0; border-radius:4px; background:#F76000; }
+
+#login-area span												{ position:relative; display:block; width:86%; margin:15px auto 0; }
+#login-area span input										{ width:13px; height:13px; vertical-align:middle; margin:0 4px 2px 0; }
+#login-area span label										{ font:15px nbgM; color:#444; }
+#login-area span label:first-child							{ padding-right:20px; }
+
+#login-area ul														{ position:relative; float:left; width:100%; border-top:1px solid #D9D9D9; padding-top:20px; margin:20px auto 0; }
+#login-area li														{ position:relative; width:86%; font:12px Dotum; color:#777; line-height:16px; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; box-sizing:border-box; background:url("/images/oklms/mobile/common/bullet_check.png") 0 2px no-repeat; padding-left:15px; margin:10px auto 0; }
+
+
+
+
+
+#leaning-area														{ position:relative; width:93%; margin:0 auto; }
+
+#leaning-area .movie-zone									{ float:left; width:100%; margin:25px 0 15px; }
+#leaning-area .movie-zone iframe							{ position:relative; border:none; background:#000; }
+
+#leaning-area .movie-zone .movie-control				{ position:relative; float:left; width:100%; height:40px; font:17px nsM; line-height:22px; border-top:1px solid #FFF; background:#333; }
+#leaning-area .movie-zone .movie-control a			{ position:absolute; overflow:hidden; width:110px; height:35px; color:#FFF; line-height:30px; padding-top:5px; }
+#leaning-area .movie-zone .movie-control .pre		{ left:0; top:0; text-indent:29px; background:url("/images/oklms/mobile/common/learn_btn_pre.png") no-repeat; }
+#leaning-area .movie-zone .movie-control .next		{ right:0; top:0; text-indent:49px; background:url("/images/oklms/mobile/common/learn_btn_next.png") no-repeat; }
+#leaning-area .movie-zone .movie-control span		{ display:inline-block; width:100%; font:17px play; color:#FFF; line-height:30px; text-align:center; padding-top:5px; }
+#leaning-area .movie-zone .movie-control span b	{ font-weight:normal; color:#FF7F00; }
+
+#leaning-area .index-title										{ float:left; overflow:hidden; width:100%; font:20px nsM; color:#111; line-height:26px; text-indent:23px; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; background:url("/images/oklms/mobile/common/learn_bullet_01.png") 0 4px no-repeat; padding-bottom:7px; }
+#leaning-area .index-name									{ float:left; overflow:hidden; width:100%; font:12px Dotum; color:#666; line-height:16px; text-indent:10px; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; border-top:1px solid #D9D9D9; background:url("/images/oklms/mobile/common/learn_bullet_02.png") 0 13px no-repeat; padding-top:10px; }
+#leaning-area .index-name b								{ color:#183172; }
+
+#leaning-area .index-list										{ float:left; width:100%; }
+#leaning-area .index-list dt									{ float:left; width:100%; font:12px Dotum; color:#FFF; line-height:20px; color:#FFCA29; background:#183172; margin-top:15px; }
+#leaning-area .index-list dt span							{ display:inline-block; width:63px; text-indent:12px; color:#FFF; background:#1E9CF4; padding:6px 0 3px; margin-right:5px; }
+#leaning-area .index-list dd									{ float:left; width:100%; }
+#leaning-area .index-list dd div							{ float:left; width:100%; font:12px Dotum; line-height:17px; border-bottom:1px solid #CCC; }
+#leaning-area .index-list dd div a							{ display:block; overflow:hidden; width:92%; color:#335896; text-indent:8px;  white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; background:url("/images/oklms/mobile/common/learn_btn_02.png") right 7px no-repeat; padding:6px 8% 4px 0; }
+#leaning-area .index-list dd.highlight div				{ background:#E8F3FF; }
+#leaning-area .index-list dd.highlight div a				{ background:url("/images/oklms/mobile/common/learn_btn_01.png") right 7px no-repeat; }
+
+#leaning-area .index-list dd ul								{ display:none; float:left; width:100%; }
+#leaning-area .index-list dd ul li							{ float:left; width:100%; font:12px Dotum; line-height:17px; border-bottom:1px solid #CCC; }
+#leaning-area .index-list dd ul li a						{ display:block; overflow:hidden; color:#555; }
+#leaning-area .index-list dd ul li span					{ display:inline-block; width:30px; text-align:center; border-right:1px solid #CCC; padding:6px 0 4px; margin-right:11px; }
+#leaning-area .index-list dd ul li.current				{ background:#F1F1F1; }
+#leaning-area .index-list dd ul.on							{ display:block; }
+
+
+
+
+
+#name-tab-area													{ position:relative; width:93%; border-bottom:1px solid #DDD; padding-bottom:10px; margin:20px auto 0; }
+#name-tab-area:after											{ content:""; display:block; clear:both; }
+#name-tab-area li												{ float:left; width:100%; text-align:center; }
+#name-tab-area li.left											{ width:8%; }
+#name-tab-area li.right										{ float:right; width:8%; }
+#name-tab-area li.choice										{ width:84%; }
+#name-tab-area li.left a										{ float:left; display:block; overflow:hidden; width:14px; height:21px; text-indent:-9999px; background:url("/images/oklms/mobile/common/tab_arrow_01.png") no-repeat; margin-top:1px; }
+#name-tab-area li.right a										{ float:right; display:block; overflow:hidden; width:14px; height:21px; text-indent:-9999px; background:url("/images/oklms/mobile/common/tab_arrow_02.png") no-repeat; margin-top:1px; }
+#name-tab-area li select										{ width:95%; font-size:12px; color:#666; vertical-align:middle; padding:3px 0 3px 3px; }
+
+
+
+
+
+.progress-area													{ float:left; width:92%; border-top:2px solid #555; border-bottom:1px solid #DDD; background:#F6F6F6; padding:12px 4%; }
+.progress-area p												{ width:100%; font:12px nbgM; color:#333; text-indent:9px; background:url("/images/oklms/mobile/inc/content_bullet_01.png") 0 3px no-repeat; padding-bottom:6px; }
+.progress-area progress										{ width:100%; height:20px; }
+
+
+
+
+
+.learner-training													{ float:left; width:100%; margin-top:25px; }
+.learner-training dt												{ float:left; width:100%; font:13px nsM; color:#777; text-indent:17px; background:url("/images/oklms/mobile/common/training_bullet.png") 0 1px no-repeat; padding-bottom:7px; }
+.learner-training dt span										{ color:#333; }
+.learner-training dl:first-child dt								{ border-top:none; }
+.learner-training dd												{ float:left; width:100%; margin-bottom:20px; }
+
+
+
+
+
+
+

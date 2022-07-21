@@ -1,0 +1,110 @@
+@charset "utf-8";
+
+/*
+@import url("usr_inc.css");					
+@import url("usr_board.css");
+@import url("popup.css");								
+*/
+
+@import url("layout.css");							/* 레이아웃 요소 */
+@import url("board.css");							/* 게시판 목록, 상세, 쓰기 요소 */
+@import url("common.css");						/* 일반 공통 요소 */
+@import url("popup.css");						/* 팝업 관련 요소 */
+@import url("etc.css");								/* 기타 요소 */
+
+@font-face {
+  font-family: 'NanumGothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/images/font/NanumGothic-Regular.eot);
+  src: url(/images/font/NanumGothic-Regular.eot?#iefix) format('embedded-opentype'),
+       url(/images/font/NanumGothic-Regular.woff2) format('woff2'),
+       url(/images/font/NanumGothic-Regular.woff) format('woff'),
+       url(/images/font/NanumGothic-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'NanumGothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url(/images/font/NanumGothic-Bold.eot);
+  src: url(/images/font/NanumGothic-Bold.eot?#iefix) format('embedded-opentype'),
+       url(/images/font/NanumGothic-Bold.woff2) format('woff2'),
+       url(/images/font/NanumGothic-Bold.woff) format('woff'),
+       url(/images/font/NanumGothic-Bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'NanumGothic';
+  font-style: normal;
+  font-weight: 800;
+  src: url(/images/font/NanumGothic-ExtraBold.eot);
+  src: url(/images/font/NanumGothic-ExtraBold.eot?#iefix) format('embedded-opentype'),
+       url(/images/font/NanumGothic-ExtraBold.woff2) format('woff2'),
+       url(/images/font/NanumGothic-ExtraBold.woff) format('woff'),
+       url(/images/font/NanumGothic-ExtraBold.ttf) format('truetype');
+}
+
+/* �⺻���� */
+/*
+* {margin:0; padding:0;}
+html,body												{height:100%; margin:0; padding:0; font:12px "나눔고딕",NanumGothic,Malgun Gothic, "돋움", Dotum, "굴림", Gulim, Arial, sans-serif; color:#333; }
+div, table												{margin:0; padding:0;}
+input, select											{padding:0}
+img, fieldset											{border:0;}
+img														{vertical-align:top;}
+ul, ol														{list-style:none;}
+a:link, a:visited, a:active, a:hover				{text-decoration:none;}
+hr															{display:none;}
+
+.button													{border:none;}
+.button:hover											{cursor:pointer;}
+.hidden, legend, caption							{position:absolute; overflow:hidden; visibility:hidden; width:0; height:0; left:0; top:0; font-size:0; line-height:0; padding:0; margin:0;}
+input.choice											{width:13px; height:13px; vertical-align:middle; border:none; background:none; padding:0;}
+
+
+#main-footer																						{ float:left; width:100%; height:24%; background:#353535;bottom: 0;padding-bottom: -150px;}
+#main-footer div																					{ width:800px; font:13px nbgM; color:#777; line-height:20px; background:url("/images/oklms/std/main/copy_logo.png") no-repeat; padding-left:200px; margin:25px auto 0; }
+#main-footer span																				{ color:#FFF; }
+ 
+.btn{ 
+  border-radius: 0.5em;            
+  text-decoration: none; 
+  color: white;                    
+  padding: 0.3em 0.5em;                
+  background-color: #329bd8;       
+  text-transform: uppercase;       
+  font-weight: bold;               
+}
+.btn:hover { 
+ background-color: transparent;   
+ border: 0.15em #329bd8 solid;    
+ color: #329bd8;                  
+}
+.btn:active { 
+ background-color: transparent;   
+ border: 0.15em #5e8ca5 solid;    
+ color: #5e8ca5;                  
+}
+*/  
+
+/* 기본설정 */
+* {margin:0; padding:0;}
+html,body												{ height:100%; font:12px nbgM, nsM, Dotum, play, sans-serif; color:#333; line-height:18px; padding:0; margin:0; }
+div, table												{ padding:0; margin:0; }
+table														{ border-spacing:0; border-collapse:collapse; }
+input                                                   { padding:0; vertical-align:middle;border:1px solid #cccccc;}
+select											        { padding:0; vertical-align:middle; border:1px solid #cccccc;}
+img, fieldset											{ border:0; }
+img														{ vertical-align:middle; }
+ul, ol														{ list-style:none; }
+a:link, a:visited, a:active, a:hover				{ text-decoration:none; }
+hr															{ display:none; }
+
+button													{ border:none; cursor:pointer; }
+.hidden, caption										{ position:absolute; overflow:hidden; visibility:hidden; width:0; height:0; left:0; top:0; font-size:0; line-height:0; padding:0; margin:0; }
+
+
+
+#skip li													{ float:left; position:absolute; display:block; width:100%; top:-60px; z-index:9900; }
+#skip a													{ overflow:hidden; width:1px; height:1px; font:16px nsM; color:#FFF; text-align:center; margin-bottom:-1px; white-space:nowrap; }
+#skip a:focus, #skip a:active					{ position:absolute; width:100%; height:20px; top:60px; color:#FFF; background:#183172; padding:12px 0; }
+

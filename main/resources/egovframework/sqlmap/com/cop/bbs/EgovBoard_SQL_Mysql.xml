@@ -1,0 +1,2950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!--
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.09.21    서준식              NTT_ID를 IDGENT서비스를 사용해서 생성하므로 BBSManageDAO.selectMaxNttId문은 실제 사용하지 않음
+-->
+<sqlMap namespace="Board">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Board" type="egovframework.com.cop.bbs.service.Board"/>
+	<typeAlias  alias="BoardVO" type="egovframework.com.cop.bbs.service.BoardVO"/>
+
+	<!-- Front List MainPage 용 -->
+	<resultMap id="boardMainPageList" class="egovframework.com.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="4"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="5"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" columnIndex="6"/>
+		<result property="inqireCo" column="RDCNT" columnIndex="7"/>
+		<result property="parnts" column="PARNTSCTT_NO" columnIndex="8"/>
+		<result property="replyAt" column="ANSWER_AT" columnIndex="9"/>
+		<result property="replyLc" column="ANSWER_LC" columnIndex="10"/>
+		<result property="useAt" column="USE_AT" columnIndex="11"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="12"/>
+		<result property="ntceBgnde" column="NTCE_BGNDE" columnIndex="13"/>
+		<result property="ntceEndde" column="NTCE_ENDDE" columnIndex="14"/>
+		<result property="topNoticeYn" column="TOP_NOTICE_YN" columnIndex="15"/>
+		<result property="replyPosblAt" column="REPLY_POSBL_AT" columnIndex="16"/>
+
+		<!-- 관리자외 교과별 게시판 일경우 -->
+		<result property="yyyy" column="YYYY" columnIndex="17"/>
+		<result property="term" column="TERM" columnIndex="18"/>
+		<result property="subjectCode" column="SUBJECT_CODE" columnIndex="19"/>
+		<result property="subClass" column="SUBJECT_CLASS" columnIndex="20"/>
+		<result property="isExpired" column="IS_EXPIRED" columnIndex="21"/>
+		<result property="commnetCount" column="COMMNET_COUNT" columnIndex="22"/>
+		<result property="isNowdateFlag" column="IS_NOWDATE_FLAG" columnIndex="23"/>
+		<result property="subjectName" column="SUBJECT_NAME" columnIndex="24"/>
+
+	</resultMap>
+
+	<!-- Front List SubPage 용 -->
+	<resultMap id="boardList" class="egovframework.com.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="4"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="5"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" columnIndex="6"/>
+		<result property="inqireCo" column="RDCNT" columnIndex="7"/>
+		<result property="parnts" column="PARNTSCTT_NO" columnIndex="8"/>
+		<result property="replyAt" column="ANSWER_AT" columnIndex="9"/>
+		<result property="replyLc" column="ANSWER_LC" columnIndex="10"/>
+		<result property="useAt" column="USE_AT" columnIndex="11"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="12"/>
+		<result property="ntceBgnde" column="NTCE_BGNDE" columnIndex="13"/>
+		<result property="ntceEndde" column="NTCE_ENDDE" columnIndex="14"/>
+		<result property="topNoticeYn" column="TOP_NOTICE_YN" columnIndex="15"/>
+		<result property="replyPosblAt" column="REPLY_POSBL_AT" columnIndex="16"/>
+
+		<!-- 관리자외 교과별 게시판 일경우 -->
+		<result property="yyyy" column="YYYY" columnIndex="17"/>
+		<result property="term" column="TERM" columnIndex="18"/>
+		<result property="subjectCode" column="SUBJECT_CODE" columnIndex="19"/>
+		<result property="subClass" column="SUBJECT_CLASS" columnIndex="20"/>
+		<result property="isExpired" column="IS_EXPIRED" columnIndex="21"/>
+		<result property="commnetCount" column="COMMNET_COUNT" columnIndex="22"/>
+		<result property="subjectName" column="SUBJECT_NAME" columnIndex="23"/>
+		<result property="fileCount" column="FILE_COUNT" columnIndex="24"/>
+
+	</resultMap>
+
+	<resultMap id="boardDetail" class="egovframework.com.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="ntcrId" column="NTCR_ID" columnIndex="4"/>
+		<result property="ntcrNm" column="NTCR_NM" columnIndex="5"/>
+		<result property="nttNo" column="NTT_NO" columnIndex="6"/>
+		<result property="nttCn" column="NTT_CN" columnIndex="7"/>
+		<result property="password" column="PASSWORD" columnIndex="8"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="9"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="10"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" columnIndex="11"/>
+		<result property="ntceBgnde" column="NTCE_BGNDE" columnIndex="12"/>
+		<result property="ntceEndde" column="NTCE_ENDDE" columnIndex="13"/>
+		<result property="inqireCo" column="RDCNT" columnIndex="14"/>
+		<result property="useAt" column="USE_AT" columnIndex="15"/>
+		<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="16"/>
+		<result property="parnts" column="PARNTSCTT_NO" columnIndex="17"/>
+		<result property="replyAt" column="ANSWER_AT" columnIndex="18"/>
+		<result property="replyLc" column="ANSWER_LC" columnIndex="19"/>
+		<result property="sortOrdr" column="SORT_ORDR" columnIndex="19"/>
+		<result property="bbsTyCode" column="BBS_TY_CODE" columnIndex="20"/>
+		<result property="bbsAttrbCode" column="BBS_ATTRB_CODE" columnIndex="21"/>
+		<result property="replyPosblAt" column="REPLY_POSBL_AT" columnIndex="22"/>
+		<result property="fileAtchPosblAt" column="FILE_ATCH_POSBL_AT" columnIndex="23"/>
+		<result property="posblAtchFileNumber" column="ATCH_POSBL_FILE_NUMBER" columnIndex="24"/>
+		<result property="bbsNm" column="BBS_NM" columnIndex="25"/>
+		<result property="topNoticeYn" column="TOP_NOTICE_YN" columnIndex="26"/>
+
+		<!-- 관리자외 교과별 게시판 일경우 -->
+		<result property="yyyy" column="YYYY" columnIndex="27"/>
+		<result property="term" column="TERM" columnIndex="28"/>
+		<result property="subjectCode" column="SUBJECT_CODE" columnIndex="29"/>
+		<result property="subClass" column="SUBJECT_CLASS" columnIndex="30"/>
+		<result property="subjectName" column="SUBJECT_NAME" columnIndex="31"/>
+		<result property="weekCnt" column="WEEK_CNT" columnIndex="32"/>
+		<result property="categoryCd" column="CATEGORY_CD" columnIndex="33"/>
+		<result property="topExposurePeriodCd" column="TOP_EXPOSURE_PERIOD_CD" columnIndex="34"/>
+		<result property="topExposurePeriodBgnde" column="TOP_EXPOSURE_PERIOD_BGNDE" columnIndex="35"/>
+		<result property="topExposurePeriodEndde" column="TOP_EXPOSURE_PERIOD_ENDDE" columnIndex="36"/>
+		<result property="subjectTraningType" column="SUBJECT_TRANING_TYPE" columnIndex="37"/>
+		<result property="commnetCount" column="COMMNET_COUNT" columnIndex="38"/>
+
+
+	</resultMap>
+
+	<resultMap id="sortList" class="egovframework.com.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="sortOrdr" column="SORT_ORDR" columnIndex="3"/>
+		<result property="parnts" column="PARNTSCTT_NO" columnIndex="4"/>
+		<result property="nttNo" column="NTT_NO" columnIndex="5"/>
+		<result property="replyLc" column="ANSWER_LC" columnIndex="6"/>
+	</resultMap>
+
+	<resultMap id="guestList" class="egovframework.com.cop.bbs.service.BoardVO">
+		<result property="bbsId" column="BBS_ID" columnIndex="1"/>
+		<result property="nttId" column="NTT_ID" columnIndex="2"/>
+		<result property="nttSj" column="NTT_SJ" columnIndex="3"/>
+		<result property="ntcrNm" column="NTCR_NM" columnIndex="4"/>
+		<result property="password" column="PASSWORD" columnIndex="5"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM" columnIndex="6"/>
+		<result property="nttCn" column="NTT_CN" columnIndex="7"/>
+		<result property="useAt" column="USE_AT" columnIndex="8"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="9"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="10"/>
+	</resultMap>
+
+ 	<select id="BBSManageDAO.selectMaxNttId" resultClass="java.lang.Long">
+ 		<![CDATA[
+			SELECT IFNULL(MAX(NTT_ID),0)+1 AS NTT_ID  FROM COMTNBBS WHERE 1 = 1 AND USE_AT = 'Y'
+ 		]]>
+ 	</select>
+
+	<insert id="BBSManageDAO.insertBoardArticle" parameterClass="Board" >
+		<selectKey resultClass="java.lang.Long" keyProperty="nttNo">
+			SELECT IFNULL(MAX(SORT_ORDR),0)+1 AS NTT_NO  FROM COMTNBBS
+			WHERE BBS_ID = #bbsId#
+		</selectKey>
+		<![CDATA[
+			INSERT INTO COMTNBBS
+			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR,
+			 NTCR_ID, NTCR_NM, PASSWORD, RDCNT,
+			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,
+			 PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM, USE_AT,
+			 YYYY, TERM, SUBJECT_CODE, CLASS, TOP_NOTICE_YN,TOP_EXPOSURE_PERIOD_CD,
+			 TOP_EXPOSURE_PERIOD_BGNDE,TOP_EXPOSURE_PERIOD_ENDDE,SUBJECT_TRANING_TYPE,
+			 CATEGORY_CD
+			 )
+			VALUES
+			( #nttId#, #bbsId#, #nttSj#, #nttCn#, #nttNo#,
+			  #ntcrId#, #ntcrNm#, #password#, #inqireCo#,
+			  #ntceBgnde#, #ntceEndde#, #replyAt#,
+			  #parnts#, 1, #replyLc#, #atchFileId#,
+			  #frstRegisterId#, now(), 'Y',
+			  #yyyy#, #term#, #subjectCode#, #subClass#, #topNoticeYn#,
+			  #topExposurePeriodCd#, #topExposurePeriodBgnde#, #topExposurePeriodEndde#, #subjectTraningType#,
+			  #categoryCd#
+			 )
+		]]>
+	</insert>
+
+	<insert id="BBSManageDAO.replyBoardArticle" parameterClass="Board" >
+		<selectKey resultClass="java.lang.Long" keyProperty="nttNo">
+			SELECT IFNULL(MAX(NTT_NO),0)+1 AS NTT_NO  FROM COMTNBBS
+			WHERE BBS_ID = #bbsId# AND SORT_ORDR = #sortOrdr#
+		</selectKey>
+		<![CDATA[
+			INSERT INTO COMTNBBS
+			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR,
+			 NTCR_ID, NTCR_NM, PASSWORD, RDCNT,
+			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,
+			 PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM, USE_AT,
+			 YYYY, TERM, SUBJECT_CODE, CLASS, TOP_NOTICE_YN,TOP_EXPOSURE_PERIOD_CD,
+			 TOP_EXPOSURE_PERIOD_BGNDE,TOP_EXPOSURE_PERIOD_ENDDE,SUBJECT_TRANING_TYPE,
+			 CATEGORY_CD
+			 )
+			VALUES
+			( #nttId#, #bbsId#, #nttSj#, #nttCn#, #sortOrdr#,
+			  #ntcrId#, #ntcrNm#, #password#, #inqireCo#,
+			  #ntceBgnde#, #ntceEndde#, #replyAt#,
+			  #parnts#, 1, #replyLc#, #atchFileId#,
+			  #frstRegisterId#, SYSDATE(), 'Y',
+			  #yyyy#, #term#, #subjectCode#, #subClass#, #topNoticeYn#,
+			  #topExposurePeriodCd#, #topExposurePeriodBgnde#, #topExposurePeriodEndde#, #subjectTraningType#,
+			  #categoryCd#
+			 )
+		]]>
+	</insert>
+
+	<select id="BBSManageDAO.selectNoticeListForSort" parameterClass="Board" resultMap="sortList">
+		<![CDATA[
+			SELECT
+				a.BBS_ID, a.NTT_ID, a.SORT_ORDR, a.PARNTSCTT_NO, a.NTT_NO, a.ANSWER_LC
+			FROM
+				COMTNBBS a
+			WHERE
+				a.BBS_ID = #bbsId#
+			AND USE_AT = 'Y'
+			AND
+				a.SORT_ORDR = #sortOrdr#
+		]]>
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND	a.YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	a.TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	a.SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+		ORDER BY  a.SORT_ORDR DESC, a.NTT_NO ASC
+
+	</select>
+
+	<select id="BBSManageDAO.selectBoardArticleList" parameterClass="BoardVO" resultMap="boardList" >
+		<![CDATA[
+		SELECT a.NTT_ID,
+		       a.NTT_SJ,
+		       a.NTT_CN,
+		       a.FRST_REGISTER_ID,
+		       IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		       DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		       a.RDCNT,
+		       a.PARNTSCTT_NO,
+		       a.ANSWER_AT,
+		       a.ANSWER_LC,
+		       a.USE_AT,
+		       a.ATCH_FILE_ID,
+		       a.BBS_ID,
+		       DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		       DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		       a.TOP_NOTICE_YN,
+		       c.reply_posbl_at,
+		       a.YYYY,
+		       a.TERM,
+		       a.SUBJECT_CODE,
+		       a.CLASS AS SUBJECT_CLASS,
+		       CASE WHEN 0 < TO_DAYS(DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) THEN 'T'
+		            WHEN 0 > TO_DAYS(DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) THEN 'Y'
+		            WHEN 0 < TO_DAYS(DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) THEN 'N'
+		       END IS_EXPIRED,
+		       (SELECT count(1) FROM comtncomment cmment WHERE cmment.bbs_id = a.bbs_id and cmment.ntt_id = a.NTT_ID and cmment.use_at = 'Y' ) COMMNET_COUNT,
+		       FN_GETSUBJECT_NAME(a.yyyy, a.term, a.subject_code, a.class) as SUBJECT_NAME,
+		       (select count(1) from ATCH_FILE where ATCH_FILE_ID = a.atch_file_id) FILE_COUNT
+		  FROM COMTNBBS a
+		     LEFT OUTER JOIN COMVNUSERMASTER b
+		         ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		     LEFT OUTER JOIN comtnbbsmaster c
+		         ON a.bbs_id = c.bbs_id
+		 WHERE a.BBS_ID = #bbsId# AND a.USE_AT = 'Y'
+		]]>
+
+		<isEqual property="bbsId" compareValue="BBSMSTR_000000000005">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000006">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual prepend="AND" property="memType" compareValue="STD">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			           select les.yyyy,
+			              les.term,
+			              les.subject_code,
+			              les.class
+			            from lms_lesson les
+			        where les.mem_seq = #memSeq#
+			            and les.DELETE_YN = 'N'
+			            and les.yyyy = DATE_FORMAT(NOW(),'%Y')
+			         )
+				]]>
+			</isEqual>
+
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	a.NTT_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	a.NTT_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	IFNULL(b.USER_NM, a.NTCR_NM) LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+
+			<!-- 본인이 등록한 게시물만 화면에 표시 Start -->
+<!-- 			<isNotEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+			<isNotEmpty property="frstRegisterId">
+				<isNotEqual property="memType" compareValue="STD">
+				 	<isNotEqual property="frstRegisterId" compareValue="">
+				 	 	<![CDATA[ AND	a.FRST_REGISTER_ID = #frstRegisterId# 		]]>
+				 	</isNotEqual>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 </isNotEqual> -->
+			<!-- 본인이 등록한 게시물만 화면에 표시 End -->
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND	a.YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	a.TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	a.SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	a.CLASS = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+
+
+			<isNotEmpty property="searchYyyy">
+			 	<isNotEqual property="searchYyyy" compareValue="">
+			 	 	<![CDATA[ AND	a.YYYY = #searchYyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="searchTerm">
+			 	<isNotEqual property="searchTerm" compareValue="">
+			 	 	<![CDATA[ AND	a.TERM = #searchTerm# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="searchSubjectCode">
+			 	<isNotEqual property="searchSubjectCode" compareValue="">
+			 	 	<![CDATA[ AND	a.SUBJECT_CODE = #searchSubjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+		<![CDATA[
+			ORDER BY a.SORT_ORDR DESC, NTT_NO ASC
+			LIMIT #firstIndex# , #lastIndex#
+		]]>
+	</select>
+
+	<select id="BBSManageDAO.selectMainPageBoardArticleList" parameterClass="BoardVO" resultMap="boardMainPageList" >
+		<![CDATA[
+		SELECT b.NTT_ID,
+		       b.NTT_SJ,
+		       b.FRST_REGISTER_ID,
+		       b.FRST_REGISTER_NM,
+		       b.FRST_REGIST_PNTTM,
+		       b.RDCNT,
+		       b.PARNTSCTT_NO,
+		       b.ANSWER_AT,
+		       b.ANSWER_LC,
+		       b.USE_AT,
+		       b.ATCH_FILE_ID,
+		       b.BBS_ID,
+		       b.NTCE_BGNDE,
+		       b.NTCE_ENDDE,
+		       b.TOP_NOTICE_YN,
+		       b.REPLY_POSBL_AT,
+		       b.YYYY,
+		       b.TERM,
+		       b.SUBJECT_CODE,
+		       b.CLASS AS SUBJECT_CLASS,
+		       CASE WHEN 0 < b.FIRST_ENDDE THEN 'T'
+		       		WHEN 0 > b.LAST_ENDDE THEN 'Y'
+		            WHEN 0 < b.LAST_ENDDE THEN 'N'
+		       END IS_EXPIRED,
+		       (SELECT count(1) FROM comtncomment cmment WHERE cmment.bbs_id = b.bbs_id and cmment.ntt_id = b.NTT_ID and cmment.use_at = 'Y' ) COMMNET_COUNT,
+		       CASE WHEN 0 != b.NOW_DATE THEN 'NO_NOW'
+		            WHEN 0 = b.NOW_DATE THEN 'NOW'
+		       END IS_NOWDATE_FLAG,
+		       FN_GETSUBJECT_NAME(b.yyyy, b.term, b.subject_code, b.class) as SUBJECT_NAME
+		  FROM
+		       (SELECT a.NTT_ID,
+		              a.NTT_SJ,
+		              a.FRST_REGISTER_ID,
+		              IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		              DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		              a.RDCNT,
+		              a.PARNTSCTT_NO,
+		              a.ANSWER_AT,
+		              a.ANSWER_LC,
+		              a.USE_AT,
+		              a.ATCH_FILE_ID,
+		              a.BBS_ID,
+		              DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		              DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS FIRST_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS LAST_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS NOW_DATE,
+		              a.TOP_NOTICE_YN,
+		              a.NTT_CN,
+		              c.REPLY_POSBL_AT,
+		              a.YYYY,
+				      a.TERM,
+				      a.SUBJECT_CODE,
+				      a.CLASS
+		         FROM COMTNBBS a
+		            LEFT OUTER JOIN COMVNUSERMASTER b
+		                ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		            LEFT OUTER JOIN COMTNBBSMASTER c
+		                ON a.BBS_ID = c.BBS_ID
+		        WHERE a.BBS_ID = #bbsId#
+		        	  AND a.USE_AT = 'Y'
+		              AND a.TOP_NOTICE_YN = 'Y'
+		             UNION ALL
+		       SELECT a.NTT_ID,
+		              a.NTT_SJ,
+		              a.FRST_REGISTER_ID,
+		              IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		              DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		              a.RDCNT,
+		              a.PARNTSCTT_NO,
+		              a.ANSWER_AT,
+		              a.ANSWER_LC,
+		              a.USE_AT,
+		              a.ATCH_FILE_ID,
+		              a.BBS_ID,
+		              DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		              DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS FIRST_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS LAST_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS NOW_DATE,
+		              a.TOP_NOTICE_YN,
+		              a.NTT_CN,
+		              c.REPLY_POSBL_AT,
+		              a.YYYY,
+				      a.TERM,
+				      a.SUBJECT_CODE,
+				      a.CLASS
+		         FROM COMTNBBS a
+		            LEFT OUTER JOIN COMVNUSERMASTER b
+		                ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		            LEFT OUTER JOIN COMTNBBSMASTER c
+		                ON a.BBS_ID = c.BBS_ID
+		        WHERE a.BBS_ID = #bbsId#
+		        	  AND a.USE_AT = 'Y'
+		              AND a.TOP_NOTICE_YN = 'N'
+       		)b
+       		where 1 = 1
+       		AND b.USE_AT = 'Y'
+		]]>
+
+		<!-- 본인이 등록한 게시물만 화면에 표시 Start -->
+		<isNotEmpty property="frstRegisterId">
+			<isNotEqual property="memType" compareValue="STD">
+			 	<isNotEqual property="frstRegisterId" compareValue="">
+			 	 	<![CDATA[ AND	b.FRST_REGISTER_ID = #frstRegisterId# 		]]>
+			 	</isNotEqual>
+		 	</isNotEqual>
+		 </isNotEmpty>
+		<!-- 본인이 등록한 게시물만 화면에 표시 End -->
+
+		<isEqual prepend="AND" property="memType" compareValue="STD">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			           select les.yyyy,
+			              les.term,
+			              les.subject_code,
+			              les.class
+			            from lms_lesson les
+			        where les.mem_seq = #memSeq#
+			            and les.DELETE_YN = 'N'
+			            and les.yyyy = DATE_FORMAT(NOW(),'%Y')
+			         )
+				]]>
+		</isEqual>
+
+		<![CDATA[
+			ORDER BY b.TOP_NOTICE_YN DESC,  b.NTT_ID DESC
+			LIMIT 0 , 5
+		]]>
+	</select>
+
+	<select id="BBSManageDAO.selectTopNoticeYnBoardArticleList" parameterClass="BoardVO" resultMap="boardList" >
+		<![CDATA[
+		SELECT b.NTT_ID,
+		       b.NTT_SJ,
+		       b.FRST_REGISTER_ID,
+		       b.FRST_REGISTER_NM,
+		       b.FRST_REGIST_PNTTM,
+		       b.RDCNT,
+		       b.PARNTSCTT_NO,
+		       b.ANSWER_AT,
+		       b.ANSWER_LC,
+		       b.USE_AT,
+		       b.ATCH_FILE_ID,
+		       b.BBS_ID,
+		       b.NTCE_BGNDE,
+		       b.NTCE_ENDDE,
+		       b.TOP_NOTICE_YN,
+		       b.REPLY_POSBL_AT,
+		       b.YYYY,
+		       b.TERM,
+		       b.SUBJECT_CODE,
+		       b.CLASS AS SUBJECT_CLASS,
+		       CASE WHEN 0 < b.FIRST_ENDDE THEN 'T'
+		       		WHEN 0 > b.LAST_ENDDE THEN 'Y'
+		            WHEN 0 < b.LAST_ENDDE THEN 'N'
+		       END IS_EXPIRED,
+		       (SELECT count(1) FROM comtncomment cmment WHERE cmment.bbs_id = b.bbs_id and cmment.ntt_id = b.NTT_ID and cmment.use_at = 'Y' ) COMMNET_COUNT,
+		       FN_GETSUBJECT_NAME(b.yyyy, b.term, b.subject_code, b.class) as SUBJECT_NAME,
+		       (select count(1) from ATCH_FILE where ATCH_FILE_ID = b.atch_file_id) FILE_COUNT
+		  FROM
+		       (SELECT a.NTT_ID,
+		              a.NTT_SJ,
+		              a.FRST_REGISTER_ID,
+		              IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		              DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		              a.RDCNT,
+		              a.PARNTSCTT_NO,
+		              a.ANSWER_AT,
+		              a.ANSWER_LC,
+		              a.USE_AT,
+		              a.ATCH_FILE_ID,
+		              a.BBS_ID,
+		              DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		              DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS FIRST_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS LAST_ENDDE,
+		              a.TOP_NOTICE_YN,
+		              a.NTT_CN,
+		              c.REPLY_POSBL_AT,
+		              a.YYYY,
+				      a.TERM,
+				      a.SUBJECT_CODE,
+				      a.CLASS
+		         FROM COMTNBBS a
+		            LEFT OUTER JOIN COMVNUSERMASTER b
+		                ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		            LEFT OUTER JOIN COMTNBBSMASTER c
+		                ON a.BBS_ID = c.BBS_ID
+		        WHERE a.BBS_ID = #bbsId#
+		              AND a.USE_AT = 'Y'
+		              AND a.TOP_NOTICE_YN = 'Y'
+		             UNION ALL
+		       SELECT a.NTT_ID,
+		              a.NTT_SJ,
+		              a.FRST_REGISTER_ID,
+		              IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		              DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		              a.RDCNT,
+		              a.PARNTSCTT_NO,
+		              a.ANSWER_AT,
+		              a.ANSWER_LC,
+		              a.USE_AT,
+		              a.ATCH_FILE_ID,
+		              a.BBS_ID,
+		              DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		              DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS FIRST_ENDDE,
+		              TO_DAYS(DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d')) - TO_DAYS(DATE_FORMAT(now(), '%Y-%m-%d')) AS LAST_ENDDE,
+		              a.TOP_NOTICE_YN,
+		              a.NTT_CN,
+		              c.REPLY_POSBL_AT,
+		              a.YYYY,
+				      a.TERM,
+				      a.SUBJECT_CODE,
+				      a.CLASS
+		         FROM COMTNBBS a
+		            LEFT OUTER JOIN COMVNUSERMASTER b
+		                ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		            LEFT OUTER JOIN COMTNBBSMASTER c
+		                ON a.BBS_ID = c.BBS_ID
+		        WHERE a.BBS_ID = #bbsId#
+		              AND a.USE_AT = 'Y'
+		              AND a.TOP_NOTICE_YN = 'N'
+       		)b
+       		where 1 = 1
+		]]>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000005">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000006">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual prepend="AND" property="memType" compareValue="STD">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			           select les.yyyy,
+			              les.term,
+			              les.subject_code,
+			              les.class
+			            from lms_lesson les
+			        where les.mem_seq = #memSeq#
+			            and les.DELETE_YN = 'N'
+			            and les.yyyy = DATE_FORMAT(NOW(),'%Y')
+			         )
+				]]>
+			</isEqual>
+
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	b.NTT_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	b.NTT_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	b.FRST_REGISTER_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+
+			<!-- 본인이 등록한 게시물만 화면에 표시 Start -->
+			<!-- <isNotEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+			<isNotEmpty property="frstRegisterId">
+				<isNotEqual property="memType" compareValue="STD">
+				 	<isNotEqual property="frstRegisterId" compareValue="">
+				 	 	<![CDATA[ AND	b.FRST_REGISTER_ID = #frstRegisterId# 		]]>
+				 	</isNotEqual>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 </isNotEqual> -->
+			<!-- 본인이 등록한 게시물만 화면에 표시 End -->
+
+			<!-- 개설교과 and 조건 추가 항목 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND	b.YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	b.TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	b.SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	b.class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+
+			<!-- 개설교과 검색용도-->
+			<isNotEmpty property="searchYyyy">
+			 	<isNotEqual property="searchYyyy" compareValue="">
+			 	 	<![CDATA[ AND	b.YYYY = #searchYyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="searchTerm">
+			 	<isNotEqual property="searchTerm" compareValue="">
+			 	 	<![CDATA[ AND	b.TERM = #searchTerm# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="searchSubjectCode">
+			 	<isNotEqual property="searchSubjectCode" compareValue="">
+			 	 	<![CDATA[ AND	b.SUBJECT_CODE = #searchSubjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="searchSubClass">
+			 	<isNotEqual property="searchSubClass" compareValue="">
+			 	 	<![CDATA[ AND	b.class = #searchSubClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+
+		<![CDATA[
+			ORDER BY b.top_notice_yn DESC,  b.NTT_ID DESC
+			LIMIT #firstIndex# , #lastIndex#
+		]]>
+	</select>
+
+	<select id="BBSManageDAO.selectBoardArticleListCnt" parameterClass="BoardVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(a.NTT_ID)
+			FROM
+				COMTNBBS a
+			LEFT OUTER JOIN
+				COMVNUSERMASTER b
+			ON a.FRST_REGISTER_ID = b.ESNTL_ID
+			LEFT OUTER JOIN comtnbbsmaster c
+		         ON a.bbs_id = c.bbs_id
+			WHERE
+				a.BBS_ID = #bbsId#
+				AND a.USE_AT = 'Y'
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	a.NTT_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	a.NTT_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	b.USER_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000005">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000006">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	a.yyyy,
+			            a.term,
+			            a.subject_code,
+			            a.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<!-- 본인이 등록한 게시물만 화면에 표시 Start -->
+			<!-- <isNotEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+			<isNotEmpty property="frstRegisterId">
+				<isNotEqual property="memType" compareValue="STD">
+				 	<isNotEqual property="frstRegisterId" compareValue="">
+				 	 	<![CDATA[ AND	a.FRST_REGISTER_ID = #frstRegisterId# 		]]>
+				 	</isNotEqual>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 </isNotEqual> -->
+			<!-- 본인이 등록한 게시물만 화면에 표시 End -->
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="searchYyyy">
+			 	<isNotEqual property="searchYyyy" compareValue="">
+			 	 	<![CDATA[ AND	a.YYYY = #searchYyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="searchTerm">
+			 	<isNotEqual property="searchTerm" compareValue="">
+			 	 	<![CDATA[ AND	a.TERM = #searchTerm# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="searchSubjectCode">
+			 	<isNotEqual property="searchSubjectCode" compareValue="">
+			 	 	<![CDATA[ AND	a.SUBJECT_CODE = #searchSubjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="searchSubClass">
+			 	<isNotEqual property="searchSubClass" compareValue="">
+			 	 	<![CDATA[ AND	a.class = #searchSubClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</select>
+
+	<select id="BBSManageDAO.selectTopNoticeYnBoardArticleListCnt" parameterClass="BoardVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT COUNT(b.NTT_ID)
+		from(
+			SELECT a.NTT_ID,
+		       a.NTT_SJ,
+		       a.FRST_REGISTER_ID,
+		       IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		       DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		       a.RDCNT,
+		       a.PARNTSCTT_NO,
+		       a.ANSWER_AT,
+		       a.ANSWER_LC,
+		       a.USE_AT,
+		       a.ATCH_FILE_ID,
+		       a.BBS_ID,
+		       DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		       DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		       a.TOP_NOTICE_YN,
+		       a.NTT_CN,
+               a.YYYY,
+		       a.TERM,
+		       a.SUBJECT_CODE,
+		       a.CLASS
+		  FROM COMTNBBS a
+		     LEFT OUTER JOIN COMVNUSERMASTER b
+		         ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		 WHERE a.BBS_ID = #bbsId#
+		 AND a.USE_AT = 'Y'
+		 and a.TOP_NOTICE_YN = 'Y'
+		 union all
+		 SELECT a.NTT_ID,
+		       a.NTT_SJ,
+		       a.FRST_REGISTER_ID,
+		       IFNULL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
+		       DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+		       a.RDCNT,
+		       a.PARNTSCTT_NO,
+		       a.ANSWER_AT,
+		       a.ANSWER_LC,
+		       a.USE_AT,
+		       a.ATCH_FILE_ID,
+		       a.BBS_ID,
+		       DATE_FORMAT(a.NTCE_BGNDE, '%Y-%m-%d') as NTCE_BGNDE,
+		       DATE_FORMAT(a.NTCE_ENDDE, '%Y-%m-%d') as NTCE_ENDDE,
+		       a.TOP_NOTICE_YN,
+		       a.NTT_CN,
+               a.YYYY,
+		       a.TERM,
+		       a.SUBJECT_CODE,
+		       a.CLASS
+		  FROM COMTNBBS a
+		     LEFT OUTER JOIN COMVNUSERMASTER b
+		         ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		 WHERE a.BBS_ID = #bbsId#
+		 AND a.USE_AT = 'Y'
+		 and a.TOP_NOTICE_YN = 'N'
+		 )b
+		 where 1 = 1
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	b.NTT_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	b.NTT_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	b.FRST_REGISTER_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000005">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000006">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+				<isEqual prepend="AND" property="memType" compareValue="CDP">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			      SELECT sub.YYYY,
+		               sub.TERM,
+		               sub.SUBJECT_CODE,
+		               sub.CLASS
+		          FROM lms_subject sub,
+		               lms_subj_cdp_mapping cdp
+		         WHERE 1 = 1
+		               AND sub.YYYY = cdp.YYYY
+		               AND sub.TERM = cdp.TERM
+		               AND sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		               AND sub.CLASS = cdp.CLASS
+		               AND sub.SUBJECT_TRANING_TYPE = 'OFF'
+		               AND sub.DELETE_YN = 'N'
+		               AND cdp.DELETE_YN = 'N'
+		               AND cdp.MEM_SEQ = #memSeq#
+		               AND
+		               (
+		                 SUB.YYYY,
+		                 SUB.TERM
+		               )
+		               IN
+		               (SELECT HAK.YYYY,
+		                      HAK.TERM
+		                 FROM HAK_SCHEDULE HAK
+		                WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                      AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		               )
+			         )
+				]]>
+
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="COT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+				       SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_tut_mapping tut
+						  where 1 = 1
+						  and sub.YYYY = tut.YYYY
+						  and sub.TERM = tut.TERM
+						  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+						  and sub.CLASS = tut.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and tut.DELETE_YN = 'N'
+						  and tut.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+
+				<isEqual prepend="AND" property="memType" compareValue="PRT">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+						SELECT sub.YYYY,
+				               sub.TERM,
+				               sub.SUBJECT_CODE,
+				               sub.CLASS
+						  from lms_subject sub,
+						  lms_subj_ins_mapping ins
+						  where 1 = 1
+						  and sub.YYYY = ins.YYYY
+						  and sub.TERM = ins.TERM
+						  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+						  and sub.CLASS = ins.CLASS
+						  and sub.DELETE_YN = 'N'
+						  and ins.DELETE_YN = 'N'
+						  and ins.MEM_SEQ = #memSeq#
+
+						   AND
+					       (
+					         SUB.YYYY,
+					         SUB.TERM
+					       )
+					       IN
+					       (SELECT HAK.YYYY,
+					              HAK.TERM
+					         FROM HAK_SCHEDULE HAK
+					        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+					              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+					       )
+			         )
+				]]>
+				</isEqual>
+			</isEqual>
+
+			<isEqual prepend="AND" property="memType" compareValue="STD">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			           select les.yyyy,
+			              les.term,
+			              les.subject_code,
+			              les.class
+			            from lms_lesson les
+			        where les.mem_seq = #memSeq#
+			            and les.DELETE_YN = 'N'
+			            and les.yyyy = DATE_FORMAT(NOW(),'%Y')
+			         )
+				]]>
+			</isEqual>
+
+			<!-- 본인이 등록한 게시물만 화면에 표시 Start -->
+			<!-- <isNotEqual property="bbsId" compareValue="BBSMSTR_000000000007">
+			<isNotEmpty property="frstRegisterId">
+				<isNotEqual property="memType" compareValue="STD">
+				 	<isNotEqual property="frstRegisterId" compareValue="">
+				 	 	<![CDATA[ AND	b.FRST_REGISTER_ID = #frstRegisterId# 		]]>
+				 	</isNotEqual>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 </isNotEqual> -->
+			<!-- 본인이 등록한 게시물만 화면에 표시 End -->
+
+			<isEqual prepend="AND" property="memType" compareValue="STD">
+				<![CDATA[
+					 (
+			         	b.yyyy,
+			            b.term,
+			            b.subject_code,
+			            b.class
+			         )
+			         in
+			         (
+			           select les.yyyy,
+			              les.term,
+			              les.subject_code,
+			              les.class
+			            from lms_lesson les
+			        where les.mem_seq = #memSeq#
+			            and les.DELETE_YN = 'N'
+			            and les.yyyy = DATE_FORMAT(NOW(),'%Y')
+			         )
+				]]>
+			</isEqual>
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="searchYyyy">
+			 	<isNotEqual property="searchYyyy" compareValue="">
+			 	 	<![CDATA[ AND	b.YYYY = #searchYyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="searchTerm">
+			 	<isNotEqual property="searchTerm" compareValue="">
+			 	 	<![CDATA[ AND	b.TERM = #searchTerm# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="searchSubjectCode">
+			 	<isNotEqual property="searchSubjectCode" compareValue="">
+			 	 	<![CDATA[ AND	b.SUBJECT_CODE = #searchSubjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="searchSubClass">
+			 	<isNotEqual property="searchSubClass" compareValue="">
+			 	 	<![CDATA[ AND	b.class = #searchSubClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</select>
+
+	<select id="BBSManageDAO.selectBoardArticle" parameterClass="BoardVO" resultMap="boardDetail" >
+		<![CDATA[
+			SELECT
+				a.NTT_SJ, a.NTCR_ID, a.NTCR_NM, a.NTT_NO, a.NTT_CN,
+				a.PASSWORD, a.FRST_REGISTER_ID, b.USER_NM as FRST_REGISTER_NM,
+				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
+				a.NTCE_BGNDE, a.NTCE_ENDDE, a.RDCNT,
+				a.USE_AT, a.ATCH_FILE_ID, a.BBS_ID, a.NTT_ID,
+				a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.SORT_ORDR,
+				c.BBS_TY_CODE, c.BBS_ATTRB_CODE, c.REPLY_POSBL_AT,
+				c.FILE_ATCH_POSBL_AT, c.ATCH_POSBL_FILE_NUMBER, c.BBS_NM,
+				a.TOP_NOTICE_YN,
+				a.YYYY,
+		        a.TERM,
+		        a.SUBJECT_CODE,
+		        a.CLASS AS SUBJECT_CLASS,
+		        FN_GETSUBJECT_NAME(a.yyyy, a.term, a.subject_code, a.class) as SUBJECT_NAME,
+		        a.WEEK_CNT,
+		        a.CATEGORY_CD,
+				a.TOP_EXPOSURE_PERIOD_CD,
+				a.TOP_EXPOSURE_PERIOD_BGNDE,
+				a.TOP_EXPOSURE_PERIOD_ENDDE,
+				a.SUBJECT_TRANING_TYPE,
+				(SELECT count(1) FROM comtncomment cmment WHERE cmment.bbs_id = a.bbs_id and cmment.ntt_id = a.NTT_ID and cmment.use_at = 'Y' ) COMMNET_COUNT
+			FROM
+				COMTNBBS a
+			LEFT OUTER JOIN
+				COMVNUSERMASTER b
+			ON a.FRST_REGISTER_ID = b.ESNTL_ID
+			LEFT OUTER JOIN
+				COMTNBBSMASTER c
+			ON a.BBS_ID = c.BBS_ID
+			WHERE
+				a.BBS_ID = #bbsId#
+			AND a.USE_AT = 'Y'
+			AND
+				a.NTT_ID = #nttId#
+		]]>
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="searchYyyy">
+			 	<isNotEqual property="searchYyyy" compareValue="">
+			 	 	<![CDATA[ AND	a.YYYY = #searchYyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="searchTerm">
+			 	<isNotEqual property="searchTerm" compareValue="">
+			 	 	<![CDATA[ AND	a.TERM = #searchTerm# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="searchSubjectCode">
+			 	<isNotEqual property="searchSubjectCode" compareValue="">
+			 	 	<![CDATA[ AND	a.SUBJECT_CODE = #searchSubjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="searchSubClass">
+			 	<isNotEqual property="searchSubClass" compareValue="">
+			 	 	<![CDATA[ AND	a.class = #searchSubClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</select>
+
+ 	<update id="BBSManageDAO.updateBoardArticle" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE COMTNBBS SET
+				NTT_SJ = #nttSj#,
+				NTT_CN = #nttCn#,
+				NTCR_ID = #ntcrId#,
+				NTCR_NM = #ntcrNm#,
+				PASSWORD = #password#,
+				NTCE_BGNDE = #ntceBgnde#,
+				NTCE_ENDDE = #ntceEndde#,
+				LAST_UPDUSR_ID = #lastUpdusrId#,
+				ATCH_FILE_ID = #atchFileId#,
+				LAST_UPDT_PNTTM = SYSDATE(),
+				TOP_NOTICE_YN = #topNoticeYn#
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+
+ 			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+ 	</update>
+
+ 	<update id="BBSManageDAO.deleteBoardArticle" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE COMTNBBS SET
+				NTT_SJ = #nttSj#,
+				USE_AT = 'N',
+				LAST_UPDUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_PNTTM = SYSDATE()
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+
+ 			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+ 	</update>
+
+ 	<select id="BBSManageDAO.selectMaxInqireCo" resultClass="java.lang.Integer" parameterClass="BoardVO">
+ 		<![CDATA[
+			SELECT IFNULL(MAX(RDCNT),0)+1 AS RDCNT FROM COMTNBBS
+			WHERE BBS_ID = #bbsId#
+			AND USE_AT = 'Y'
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</select>
+
+ 	<select id="BBSManageDAO.selectNoticeItemForSort" resultClass="java.lang.Long" parameterClass="Board">
+ 		<![CDATA[
+			SELECT
+				IFNULL(MAX(NTT_NO),0)+1 AS NTT_NO
+			FROM
+				COMTNBBS
+			WHERE
+				BBS_ID = #bbsId#
+			AND USE_AT = 'Y'
+			AND
+				SORT_ORDR = #sortOrdr#
+			AND
+				NTT_ID = #nttId#
+ 		]]>
+
+ 			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+ 	</select>
+
+ 	<update id="BBSManageDAO.updateInqireCo" parameterClass="BoardVO">
+ 		<![CDATA[
+			UPDATE COMTNBBS SET
+				RDCNT = #inqireCo#,
+				LAST_UPDUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_PNTTM = SYSDATE()
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+ 	</update>
+
+	<update id="BBSManageDAO.updateSortOrder" parameterClass="BoardVO">
+ 		<![CDATA[
+			UPDATE COMTNBBS SET
+				NTT_NO = #nttNo#
+			WHERE NTT_ID = #nttId#
+ 		]]>
+
+ 			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</update>
+
+	<select id="BBSManageDAO.selectGuestList" parameterClass="BoardVO" resultMap="guestList" >
+		<![CDATA[
+			SELECT
+				a.NTT_ID, a.NTT_SJ, a.NTCR_NM, a.PASSWORD,
+				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S')
+				as FRST_REGIST_PNTTM,
+				a.NTT_CN, a.USE_AT, a.BBS_ID, b.USER_NM as FRST_REGISTER_NM, a.FRST_REGISTER_ID
+			FROM
+				COMTNBBS a, COMVNUSERMASTER b
+			WHERE
+				a.BBS_ID = #bbsId#
+
+			AND
+				a.FRST_REGISTER_ID = b.ESNTL_ID
+			AND
+				a.USE_AT = 'Y'
+		]]>
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND	a.YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	a.TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND a.SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			  <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+
+		<![CDATA[
+			ORDER BY a.SORT_ORDR DESC, a.NTT_NO ASC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+
+	<select id="BBSManageDAO.selectGuestListCnt" parameterClass="BoardVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(NTT_ID)
+			FROM
+				COMTNBBS
+			WHERE
+				BBS_ID = #bbsId#
+			AND
+				USE_AT = 'Y'
+		]]>
+
+			<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			  <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</select>
+
+	<update id="BBSManageDAO.deleteGuestList" parameterClass="BoardVO">
+		<![CDATA[
+			UPDATE COMTNBBS
+			SET USE_AT = 'N'
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+		]]>
+
+		<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			  <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</update>
+
+	<select id="BBSManageDAO.getPasswordInf" parameterClass="Board" resultClass="java.lang.String">
+		<![CDATA[
+			SELECT
+				PASSWORD
+			FROM
+				COMTNBBS
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+			AND USE_AT = 'Y'
+		]]>
+
+		<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			  <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</select>
+
+	<select id="BBSManageDAO.getParentNttNo" parameterClass="Board" resultClass="java.lang.Long">
+		<![CDATA[
+			SELECT NTT_NO FROM COMTNBBS
+			WHERE BBS_ID = #bbsId# AND NTT_ID = #parnts# AND USE_AT = 'Y'
+		]]>
+
+		<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</select>
+
+ 	<update id="BBSManageDAO.updateOtherNttNo" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE COMTNBBS SET
+				NTT_NO = NTT_NO + 1
+			WHERE BBS_ID = #bbsId# AND SORT_ORDR = #sortOrdr#
+			AND NTT_NO > #nttNo#
+ 		]]>
+
+ 		<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+ 	</update>
+
+ 	 	<update id="BBSManageDAO.updateNttNo" parameterClass="Board">
+ 		<![CDATA[
+			UPDATE COMTNBBS SET
+				NTT_NO = #nttNo#
+			WHERE BBS_ID = #bbsId#
+			AND NTT_ID = #nttId#
+ 		]]>
+
+ 		<!-- 관리자외 교과별 게시판 일경우 -->
+			<!-- 학년도 -->
+			<isNotEmpty property="yyyy">
+			 	<isNotEqual property="yyyy" compareValue="">
+			 	 	<![CDATA[ AND YYYY = #yyyy# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 학기 -->
+			<isNotEmpty property="term">
+			 	<isNotEqual property="term" compareValue="">
+			 	 	<![CDATA[ AND	TERM = #term# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			<!-- 교과목코드 -->
+			<isNotEmpty property="subjectCode">
+			 	<isNotEqual property="subjectCode" compareValue="">
+			 	 	<![CDATA[ AND	SUBJECT_CODE = #subjectCode# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+			 <!-- 분반코드 -->
+			<isNotEmpty property="subClass">
+			 	<isNotEqual property="subClass" compareValue="">
+			 	 	<![CDATA[ AND	class = #subClass# 		]]>
+			 	</isNotEqual>
+			 </isNotEmpty>
+	</update>
+</sqlMap>

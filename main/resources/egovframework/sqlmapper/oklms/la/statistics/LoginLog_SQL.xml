@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.statistics.service.impl.LoginLogMapper">
+ <select id="listLoginLog" parameterType="kr.co.sitglobal.oklms.la.statistics.vo.LoginLogVO" resultType="kr.co.sitglobal.oklms.la.statistics.vo.LoginLogVO">
+ 	<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+		 SELECT A.MEM_SEQ as memSeq,
+		       A.LOGIN_DATE as loginDate,
+		       A.CLIENT_IP as clientIp,
+		       A.MEM_ID as logMemId,
+		       A.MEM_TYPE as logMemType
+		 FROM COM_LOGIN_LOG A
+		]]>
+		WHERE 1=1
+		<if test="searchClientIp != null  and searchClientIp != ''">
+		AND A.CLIENT_IP = #{searchClientIp}
+		</if>
+		<if test="searchLogMemId != null  and searchLogMemId != ''">
+		AND A.MEM_ID = #{searchLogMemId}
+		</if>
+		<if test="startDate != null  and startDate != '' and finishDate != null  and finishDate != ''">
+		AND ( DATE_FORMAT( A.LOGIN_DATE ,'%Y%m%d%H%i%s') <![CDATA[>=]]> #{startDate} AND DATE_FORMAT( A.LOGIN_DATE ,'%Y%m%d%H%i%s') <![CDATA[<=]]> #{finishDate}  )
+		</if>
+		ORDER BY A.LOGIN_DATE DESC
+		
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+</mapper>

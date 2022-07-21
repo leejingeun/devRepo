@@ -1,0 +1,204 @@
+@charset "utf-8";
+
+
+
+#skip li																												{float:left; position:absolute; display:block; width:100%; top:-60px; z-index:9900; }
+#skip a																												{overflow:hidden; width:1px; height:1px; font:16px nsM; color:#FFF; text-align:center; margin-bottom:-1px; white-space:nowrap;}
+#skip a:focus, #skip a:active																				{position:absolute; width:100%; height:20px; top:60px; color:#FFF; background:#0658A9; padding:12px 0;}
+
+#wrapper																											{position:relative; width:100%; height:100%;}
+#wrapper:after																									{content:""; display:block; clear:both;}
+.main-bg																											{background:url("/images/oklms/std/inc/line_top_03.png") 0 138px repeat-x;}
+.sub-bg																												{background:url("/images/oklms/std/inc/line_top_02.png") 0 140px repeat-x;}
+
+#header	 	 																										{position:absolute; width:1040px; height:105px; left:50%; top:5px; margin-left:-520px; z-index:100;}
+#header h1	 																										{float:left; width:235px; height:67px; padding-top:38px;}
+#header h1 a 																										{display:block; overflow:hidden; width:235px; height:67px; text-indent:-9999px; background:url("/images/oklms/std/inc/logo_01.png") no-repeat;}
+
+
+
+
+
+/* GNB 영역 */
+#gnb-pc li li a																										{font:12px Dotum; color:#777; line-height:16px;}
+#gnb-pc li li a:hover, #gnb-pc li li a:focus																{font-weight:bold; color:#FFF; background:url("/images/oklms/std/inc/gnb_bullet_02.png") no-repeat #0658A9;}
+#gnb-pc li div.list01 li a:hover, #gnb-pc li div.list01 li a:focus									{background-position:30px 10px;}
+#gnb-pc li div.list02 li a:hover, #gnb-pc li div.list02 li a:focus									{background-position:14px 10px;}
+#gnb-pc li div.list03 li a:hover, #gnb-pc li div.list03 li a:focus									{background-position:25px 10px;}
+#gnb-pc li div.list04 li a:hover, #gnb-pc li div.list04 li a:focus									{background-position:25px 10px;}
+
+.newgnb-menu-area																							{width:100%; z-index:999;}
+.newgnb-menu-area .newgnb-menu																		{position:relative; width:1040px; margin:0 auto;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth												{position:absolute; height:105px; right:0; top:5px; overflow:hidden; z-index:999;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li											{float:left; width:160px;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li.on										{float:left; background:url("/images/oklms/std/inc/bg_header_line_01.png") 0 95px repeat-x #E6F6F9;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li.on a									{color:#333;}
+
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li a											{display:block; width:160px; font:23px nsM; color:#333; line-height:30px; text-align:center; padding:43px 0 31px;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div										{display:none; float:left; overflow:hidden; width:160px; height:285px; padding-top:9px; z-index:99;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div ul li								{margin:0;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div ul li a								{text-align:left; background:url("/images/oklms/std/inc/gnb_bullet_01.png") no-repeat; padding:6px 0 3px 0;}
+
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div.list01 ul li a						{width:119px; background-position:30px 10px; padding-left:41px;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div.list02 ul li a						{width:125px; background-position:14px 10px; padding-left:25px; padding-right:10px;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div.list03 ul li a						{width:124px; background-position:25px 10px; padding-left:36px;}
+.newgnb-menu-area .newgnb-menu .gnb-one-depth li div.list04 ul li a						{width:124px; background-position:25px 10px; padding-left:36px;}
+
+.newgnb-two-depth-area																						{position:absolute; left:0; height:0; background:url("/images/oklms/std/inc/bg_headerOv.png") 0 100% repeat-x;}
+.newgnb-two-depth-area .newgnb-menu .gnb-one-depth li div								{display:block;}
+
+#gnb-mobile																										{display:none;}
+
+
+
+
+
+#container 	 																										{position:relative; display:block; width:1040px; padding-top:110px; margin:0 auto;}
+#container:after																									{content:""; display:block; clear:both;}
+#container li																										{float:left;}
+#search-log-wrap																								{width:1040px; height:65px;}
+#body-wrap																										{width:1040px; border-bottom:1px solid #CCC; background:url("/images/oklms/std/inc/line_lnb_01.png") 0 bottom no-repeat;}
+#body-wrap:after																								{content:""; display:block; clear:both;}
+
+
+
+
+
+#search-log-wrap .search-area																			{float:left; width:320px; height:50px; background:url("/images/oklms/std/inc/search_bg.png") repeat; padding-top:15px;}
+#search-log-wrap .search-area label																	{display:inline-block; font:18px nsM; color:#FFF; line-height:26px; text-shadow:1px 1px 1px #111; vertical-align:top; padding:5px 13px 0 27px;}
+#search-log-wrap .search-area fieldset																{display:inline-block; width:180px; height:35px; background:#FFF;}
+#search-log-wrap .search-area input																	{float:left; width:136px; height:35px; font:15px nsM; color:#333; line-height:20px; border:none; padding-left:5px;}
+#search-log-wrap .search-area a																		{display:block; overflow:hidden; width:35px; height:35px; line-height:100px; text-indent:-9999px; background:url("/images/oklms/std/inc/search_btn.png") no-repeat;}
+#search-log-wrap .search-area a:hover																{background:url("/images/oklms/std/inc/search_btn.png") 0 bottom no-repeat;}
+
+
+
+
+
+#search-log-wrap .login-area																				{float:right; width:720px; height:50px; background:url("/images/oklms/std/inc/login_bg.png") repeat; padding-top:15px;}
+#login h3																											{display:block; float:left; font:18px nsM; color:#FFF; line-height:26px; text-shadow:1px 1px 1px #111; vertical-align:top; padding:5px 13px 0 27px;}
+#login ul													 														{float:left; width:260px;}
+#login ul li.item																									{float:left; position:relative; display:inline-block; width:130px; height:35px;}
+#login ul li .iLabel																								{position:absolute; width:75px; height:17px; left:6px; top:8px; font:15px nsM; color:#999; line-height:20px;}
+#login ul li .iText																									{width:115px; height:35px; font:15px nsM; color:#333; border:0; background:#FFF; padding:0 5px;}
+
+#login span																										{display:inline-block; font:15px nsM; color:#FFF; line-height:20px; vertical-align:top; padding-right:10px;}
+#login span input																								{width:80px; height:35px; font:700 20px play; color:#FFF; line-height:25px; cursor:pointer; text-shadow:1px 1px 1px #940E31; border:0; background:#ED174F; margin:0;}
+#login a																												{display:inline-block; overflow:hidden; font:15px nsM; color:#BBB; line-height:36px; text-shadow:1px 1px 1px #333; vertical-align:top; padding-right:10px;}
+#login a:last-child																								{background:url("/images/oklms/std/inc/line_login_01.png") 0 10px no-repeat; padding:0 0 0 11px;}
+#login a:hover																									{color:#FFF; text-shadow:1px 1px 1px #111;}
+#login a.btn-login																								{display:none;}
+
+
+
+
+
+#search-log-wrap .info-area																				{float:right; width:720px; height:65px; background:url("/images/oklms/std/inc/login_bg.png") repeat;}
+#search-log-wrap .info-area p																				{float:left; display:inline-block; height:65px;}
+#search-log-wrap .info-area .info-text																	{max-width:200px; height:45px; font:14px nsM; color:#FFF; line-height:25px; text-shadow:1px 1px 1px #222; background:url("/images/oklms/std/inc/info_img_01.png") 26px 13px no-repeat; padding:20px 0 0 65px;}
+#search-log-wrap .info-area .info-text span															{display:inline-block; overflow:hidden; max-width:110px; font-size:18px; vertical-align:middle; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined;}
+#search-log-wrap .info-area .info-btn-1																{width:200px; height:48px; padding:17px 0 0 20px;}
+#search-log-wrap .info-area .info-btn-1 a																{display:inline-block; width:65px; height:25px; font:14px nsM; color:#FFF; line-height:20px; border-radius:16px; box-shadow:0 0 5px #333; padding:6px 0 0 30px; margin-right:5px;}
+#search-log-wrap .info-area .info-btn-1 a.btn-logout												{background:url("/images/oklms/std/inc/info_bullet_01.png") 9px 6px no-repeat #ED174F;}
+#search-log-wrap .info-area .info-btn-1 a.btn-modify												{background:url("/images/oklms/std/inc/info_bullet_02.png") 9px 6px no-repeat #ED174F;}
+
+#search-log-wrap .info-area .info-btn-2																{float:right; height:44px; padding:21px 15px 0 0;}
+#search-log-wrap .info-area .info-btn-2 a																{display:inline-block; font:15px nsM; color:#FFF; line-height:20px; text-shadow:1px 1px 1px #222; padding:2px 5px 0 22px; margin-right:9px;}
+#search-log-wrap .info-area .info-btn-2 a.btn-mail													{padding-right:12px; border-right:1px solid #888; background:url("/images/oklms/std/inc/info_bullet_03.png") 0 4px no-repeat;}
+#search-log-wrap .info-area .info-btn-2 a.btn-memo												{background:url("/images/oklms/std/inc/info_bullet_04.png") 2px 4px no-repeat;}
+#search-log-wrap .info-area .info-btn-2 a.btn-memo span										{color:#FFAE00;}
+
+
+
+
+
+#lnb-wrap																											{float:left; width:160px; min-height:850px;}
+#lnb-wrap dt																										{float:left; width:160px; height:66px; font:23px nsM; color:#FFF; line-height:30px; text-align:center; text-shadow:1px 1px 1px #154779; background:url("/images/oklms/std/inc/lnb_bg_01.png") no-repeat #0658A9; padding-top:45px; margin-bottom:35px;}
+#lnb-wrap dd																										{float:left; width:160px;}
+
+#lnb-wrap ul.on li.depth-1 a																					{background:url("/images/oklms/std/inc/lnb_bullet_02.png") right 10px no-repeat #1C9BD9;}
+#lnb-wrap ul.on li.depth-2																					{display:block;}
+
+#lnb-wrap li.depth-1																							{float:left; width:160px; border-bottom:1px solid #65C9F0;}
+#lnb-wrap li.depth-1 a																							{display:block; width:120px; font:13px nsM; color:#FFF; line-height:19px; background:url("/images/oklms/std/inc/lnb_bullet_01.png") 14px 16px no-repeat; padding:10px 14px 8px 26px;}
+#lnb-wrap li.depth-1 a:hover																				{background:url("/images/oklms/std/inc/lnb_bullet_05.png") 14px 16px no-repeat #1C9BD9;}
+#lnb-wrap li.depth-1.on a																					{background:url("/images/oklms/std/inc/lnb_bullet_05.png") 14px 16px no-repeat #1C9BD9;}
+#lnb-wrap li.depth-2																							{float:left; display:none; width:120px; border-bottom:1px solid #65C9F0; background:#127CC3; padding:12px 14px 12px 26px;}
+#lnb-wrap li.depth-2 a																							{display:block; overflow:hidden; width:110px; font:12px nsM; color:#ACD1EA; line-height:19px; background:url("/images/oklms/std/inc/lnb_bullet_03.png") 0 9px no-repeat; padding-left:10px;}
+#lnb-wrap li.depth-2 a:hover																				{color:#FFF; background:url("/images/oklms/std/inc/lnb_bullet_04.png") 0 9px no-repeat;}
+
+#lnb-wrap dd.ban-1 a																							{display:block; width:120px; font:14px nsM; color:#FFF; line-height:19px; background:url("/images/oklms/std/inc/lnb_bullet_01.png") 14px 18px no-repeat; padding:8px 14px 10px 26px; margin-top:30px;}
+#lnb-wrap dd.ban-1 p																							{display:block; font:16px nsM; color:#FFF; line-height:23px; text-shadow:1px 1px 1px #1F9CCC;}
+#lnb-wrap dd.ban-1 span																					{display:block; font:11px Dotum; color:#B2E4F7; line-height:19px;}
+
+#lnb-wrap dd.ban-2																							{width:134px; border-top:1px solid #65C9F0; background:url("/images/oklms/std/inc/lnb_bullet_01.png") 14px 38px no-repeat; padding:16px 0 10px 26px;}
+#lnb-wrap dd.ban-2 p																							{display:block; font:11px Dotum; color:#B2E4F7; line-height:13px;}
+#lnb-wrap dd.ban-2 span																					{display:block; font:17px play; color:#FFF; line-height:23px; letter-spacing:-0.04em; text-shadow:1px 1px 1px #1F9CCC;}
+
+
+
+
+
+#quick-wrap																										{position:fixed; width:80px; height:390px; left:50%; top:316px; background:#D5E6F1; margin-left:440px; z-index:10;}
+#quick-wrap dt																									{float:left; width:80px; height:38px; font:15px nsM; color:#FFF; line-height:20px; text-align:center; background:url("/images/oklms/std/inc/quick_text.png") center 30px no-repeat #0658A9; padding-top:9px;}
+#quick-wrap dd																									{float:left; width:80px; height:85px; border-bottom:1px solid #FFF;}
+#quick-wrap dd a																								{display:block; overflow:hidden; width:80px; height:85px; text-indent:-9999px;}
+#quick-wrap dd.btn-type-1 a																				{background:url("/images/oklms/std/inc/quick_btn_01.png") no-repeat;}
+#quick-wrap dd.btn-type-2 a																				{background:url("/images/oklms/std/inc/quick_btn_02.png") no-repeat;}
+#quick-wrap dd.btn-type-3 a																				{background:url("/images/oklms/std/inc/quick_btn_03.png") no-repeat;}
+#quick-wrap dd.btn-type-4 a																				{background:url("/images/oklms/std/inc/quick_btn_04.png") no-repeat;}
+#quick-wrap dd a:hover																						{background-position:0 bottom; background-color:#23B2E9;}
+
+
+
+
+
+#content-wrap																									{position:relative; float:right; width:850px;}
+#content-wrap:after																								{content:""; display:block; clear:both;}
+
+#title-area																											{position:relative; float:left; width:850px; height:110px; background:url("/images/oklms/std/inc/sub_img.png") right no-repeat;}
+#title-area p																										{float:left; display:inline-block;}
+#title-area .page-title																							{font:35px nsM; color:#002A54; line-height:40px; padding-top:40px;}
+#title-area .page-title span																					{color:#B3BFCB;}
+#title-area .location																								{font:13px nsM; color:#575A5D; line-height:22px; background:url("/images/oklms/std/inc/location_bullet.png") 20px 58px no-repeat; padding:55px 0 0 40px;}
+
+#content-area																										{position:relative; float:left; width:745px; padding:10px 0 100px;}
+#content-area:after																								{content:""; display:block; clear:both;}
+
+
+
+
+
+.footer-line	 																										{border-top:1px solid #CCC;}
+#footer	 	 																										{float:left; width:100%; height:130px;}
+#footer ul	 																										{display:block; width:1040px; height:102px; padding-top:28px; margin:0 auto;}
+#footer li	 																										{float:left;}
+#footer li.logo-area																								{width:265px;}
+#footer li.logo-area .logo-01																					{display:inline-block; width:157px; height:70px; text-indent:-9999px; background:url("/images/oklms/std/inc/logo_02.png") no-repeat;}
+#footer li.logo-area .logo-02																					{display:inline-block; width:89px; height:70px; text-indent:-9999px; background:url("/images/oklms/std/inc/logo_03.png") no-repeat;}
+
+#footer li.address-area																						{width:560px;}
+#footer li.address-area div																					{float:left; width:560px;}
+#footer li.address-area .bnb																					{font:15px nbgM; line-height:23px; padding-top:3px;}
+#footer li.address-area .bnb a																				{display:inline-block; overflow:hidden; color:#555; background:url("/images/oklms/std/inc/line_bnb_01.png") left no-repeat; padding-left:12px; margin-left:12px;}
+#footer li.address-area .bnb a:first-child																{background:none; padding-left:0; margin-left:0;}
+#footer li.address-area .bnb a:hover																		{color:#0A4681;}
+#footer li.address-area .address																			{font:12px Dotum; color:#999; line-height:17px;}
+#footer li.address-area .address br																		{display:none;}
+#footer li.address-area .copyright																			{font:12px play; color:#666; line-height:16px;}
+
+#footer li.family-area																							{position:relative; float:right; width:205px;}
+#footer li.family-area .dropdown																			{position:relative; float:left; width:205px; margin:5px 0 1px;}
+
+#footer li.family-area .dropdown-toggle																	{display:block; overflow:hidden; width:193px; height:20px; font:12px Dotum; color:#777; line-height:18px; border:1px solid #B3B3B3; background:url("/images/oklms/std/inc/family_bullet_01.png") 186px 8px no-repeat #FFF; padding:5px 0 0 10px;}
+#footer li.family-area .dropdown-menu																	{position:absolute; display:none; width:168px; left:0; top:auto; bottom:100%; border:1px solid #B3B3B3; background:#FFF; padding:15px 25px 12px 10px; margin-bottom:2px; z-index:1000;}
+#footer li.family-area .dropdown-menu a																{display:block; overflow:hidden; width:156px; font:12px Dotum; color:#777; line-height:18px; background:url("/images/oklms/std/inc/family_bullet_02.png") 2px 8px  no-repeat; padding-left:12px;}
+#footer li.family-area .dropdown-menu a:hover														{color:#0A4681;}
+
+#footer li.family-area .open .dropdown-menu															{position:absolute; display:block;}
+
+
+
+
+
+

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 02. 20          First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper">
+
+	<sql id="listSubject-where">
+		<if test="searchDepartmentName != null and searchDepartmentName != ''">
+			AND sub.DEPARTMENT_NAME LIKE CONCAT ('%', #{searchDepartmentName},'%')
+	    </if>
+	    <if test="searchYyyyCd != null and searchYyyyCd != ''">
+			AND sub.YYYY = #{searchYyyyCd}
+	    </if>
+	    <if test="searchTermCd != null and searchTermCd != ''">
+			AND sub.TERM = #{searchTermCd}
+	    </if>
+	    <if test="searchSubjectName != null and searchSubjectName != ''">
+			AND sub.SUBJECT_NAME LIKE CONCAT ('%', #{searchSubjectName},'%')
+	    </if>
+	    <if test="searchSubClassCd != null and searchSubClassCd != ''">
+			AND sub.CLASS = #{searchSubClassCd}
+	    </if>
+	</sql>
+
+	<sql id="listTrainSubject-where">
+		<if test="searchDepartmentName != null and searchDepartmentName != ''">
+			AND su.DEPARTMENT_NAME LIKE CONCAT ('%', #{searchDepartmentName},'%')
+	    </if>
+	    <if test="searchYyyyCd != null and searchYyyyCd != ''">
+			AND tpm.YYYY = #{searchYyyyCd}
+	    </if>
+	    <if test="searchTermCd != null and searchTermCd != ''">
+			AND tpm.TERM = #{searchTermCd}
+	    </if>
+	    <if test="searchSubjectName != null and searchSubjectName != ''">
+			AND su.SUBJECT_NAME LIKE CONCAT ('%', #{searchSubjectName},'%')
+	    </if>
+	    <if test="searchSubClassCd != null and searchSubClassCd != ''">
+			AND tpm.CLASS = #{searchSubClassCd}
+	    </if>
+	</sql>
+
+	<select id="listSubjectSeach" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+		/* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.listsubjectSeach ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			select sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+			      sub.YYYY AS yyyy,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.CLASS AS subClass,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.DEPARTMENT_NAME AS departmentName,
+			      sub.ONLINE_TYPE AS onlineType
+			  from lms_subject sub
+			where 1 = 1
+			and sub.SUBJECT_TRANING_TYPE = #{subjectTraningType}
+			and sub.DELETE_YN = 'N'
+			<include refid="listSubject-where"/>
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+	<select id="listTrainSubjectSeach" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+		/* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.listTrainSubjectSeach ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			SELECT DISTINCT tpm.TRANING_PROCESS_MAPPING_ID,
+			       tpm.COMPANY_ID,
+			       tpm.TRANING_PROCESS_ID,
+			       tp.HRD_TRANING_NAME,
+			       tpm.YYYY,
+			       tpm.TERM,
+			       tpm.SUBJECT_CODE,
+			       tpm.CLASS as subClass,
+			       tpm.DELETE_YN,
+			       su.DEPARTMENT_NAME,
+			       su.SUBJECT_NAME,
+			       DATE_FORMAT (now(), '%Y') NOW_DATE,
+			       su.SUBJECT_TRANING_TYPE
+			  FROM lms_traning_process_mapping tpm
+			     inner JOIN lms_traning_process tp
+			         ON tpm.COMPANY_ID = tp.COMPANY_ID
+			       AND tpm.TRANING_PROCESS_ID = tp.TRANING_PROCESS_ID
+			       AND tp.DELETE_YN = 'N'
+			     inner JOIN lms_subject su
+			         ON su.YYYY = tpm.YYYY
+			       AND su.TERM = tpm.TERM
+			       AND su.SUBJECT_CODE = tpm.SUBJECT_CODE
+			       AND su.CLASS = tpm.CLASS
+			       AND su.SUBJECT_TRANING_TYPE = 'OJT'
+			       and su.DELETE_YN = 'N'
+			where 1 = 1
+			and tpm.COMPANY_ID = #{companyId}
+			<if test="traningProcessId != null and traningProcessId != ''">
+				and tpm.TRANING_PROCESS_ID = #{traningProcessId}
+	    	</if>
+			and tpm.DELETE_YN = 'N'
+			<include refid="listTrainSubject-where"/>
+			ORDER BY tpm.TRANING_PROCESS_MAPPING_ID ASC
+			<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+	<select id="listCotMappingTrainSubjectDetail" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+		/* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.listCotMappingTrainSubjectDetail ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			select a.SUBJ_TUT_MAPPING_ID,
+			       a.YYYY,
+			       a.TERM,
+			       a.SUBJECT_CODE,
+			       a.CLASS as subClass,
+			       a.MEM_SEQ,
+			       a.DELETE_YN,
+			       FN_GETUSERNAME(a.MEM_SEQ) MEM_NAME,
+			       FN_GETSUBJECT_NAME(a.YYYY,a.TERM,a.SUBJECT_CODE,a.CLASS) SUBJECT_NAME,
+			       FN_GETTRANING_PROCESS_NAME(b.TRANING_PROCESS_ID) HRD_TRANING_NAME,
+			       FN_GETDEPARTMENT_NAME(a.YYYY,a.TERM,a.SUBJECT_CODE,a.CLASS) AS DEPARTMENT_NAME
+			  from lms_subj_tut_mapping a
+			  inner join lms_traning_process_mapping b
+			  on b.YYYY = a.YYYY
+			  and b.TERM = a.TERM
+			  and b.SUBJECT_CODE = a.SUBJECT_CODE
+			  and b.CLASS = a.CLASS
+			  and b.DELETE_YN = 'N'
+			  and b.COMPANY_ID = #{companyId}
+			where 1 = 1
+			and a.MEM_SEQ = #{memSeq}
+			and a.DELETE_YN = 'N'
+			<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="listSubjectClassInfo" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+	    /* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.listSubjectClassInfo ====== */
+	        select
+			    sub.YYYY AS yyyy,
+			    sub.TERM AS term,
+			    sub.SUBJECT_CODE AS subjectCode,
+			    sub.CLASS AS subClass
+			  from lms_subject sub
+			  where 1 = 1
+			  and sub.YYYY = #{yyyy}
+			  and sub.TERM = #{term}
+			  and sub.SUBJECT_CODE = #{subjectCode}
+			  <if test="searchSubClass != null and searchSubClass != ''">
+				and sub.CLASS = #{searchSubClass}
+	    	  </if>
+			  and sub.DELETE_YN = 'N'
+
+	</select>
+
+	<select id="getSubjectCnt" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.getSubjectCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM lms_subject
+	          WHERE 1=1
+	          and YYYY = #{yyyy}
+			  and TERM = #{term}
+			  and SUBJECT_CODE = #{subjectCode}
+			  and CLASS = #{subClass}
+	          and SUBJECT_TRANING_TYPE = 'OJT'
+			  and DELETE_YN = 'N'
+
+	</select>
+
+	<select id="getMySubjectInfo" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+	    /* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.getMySubjectInfo ====== */
+	        select
+			    sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+			     CASE 
+			           WHEN sub.SUBJECT_TRANING_TYPE = 'OJT' 
+			           THEN 'OJT' 
+			           ELSE 'Off-JT' 
+			       END SUBJECT_TRANING_TYPE_NAME, 
+			    sub.YYYY AS yyyy,
+			    sub.TERM AS term,
+			    sub.SUBJECT_CODE AS subjectCode,
+			    sub.CLASS AS subClass,
+			    sub.DEPARTMENT_NAME AS departmentName,
+			    sub.SUBJECT_NAME AS subjectName,
+			    sub.GRADE AS grade,
+			    sub.POINT_USE_YN AS pointUseYn,
+			    CASE WHEN sub.POINT_USE_YN = 'Y' THEN '학점'
+			         WHEN sub.POINT_USE_YN = 'N' THEN '비학점'
+			    END pointUseYnName,
+			    sub.POINT AS point,
+			    sub.SUBJECT_TYPE AS subjectType,
+			    sub.ONLINE_TYPE AS onlineType,
+			    
+			    CASE 
+			           WHEN sub.SUBJECT_TYPE = 'NORMAL' 
+			           THEN '학부' 
+			           ELSE '고숙련' 
+			       END SUBJECT_TYPE_NAME, 
+			       
+			    
+			     sub.FIRST_STUDY_YN, 
+			     sub.GRADE_RATIO, 
+			     
+			     (SELECT GROUP_CONCAT(FN_GETUSERNAME(INS.MEM_SEQ)) 
+			          FROM LMS_SUBJ_INS_MAPPING INS
+			         WHERE INS.YYYY = sub.YYYY 
+			               AND INS.TERM = sub.TERM 
+			               AND INS.SUBJECT_CODE = sub.SUBJECT_CODE
+			               AND INS.CLASS = sub.CLASS    
+			       ) AS INS_NAMES, 
+			    
+			    <!-- CASE WHEN sub.ONLINE_TYPE = 'ONLINE' THEN '온라인'
+			         WHEN sub.ONLINE_TYPE = 'FLIPPED' THEN '플립러닝'
+			         WHEN sub.ONLINE_TYPE = 'BLENDED' THEN '블렌디드'
+			         WHEN sub.ONLINE_TYPE = 'NONE' THEN '없음' 
+			    CASE WHEN sub.ONLINE_TYPE = '101' THEN '온라인'
+			         WHEN sub.ONLINE_TYPE = '102' THEN '블렌디드'
+			         WHEN sub.ONLINE_TYPE = '103 ' THEN '보조활용'
+			         WHEN sub.ONLINE_TYPE = '104' THEN '플립러닝4주'
+			         WHEN sub.ONLINE_TYPE = '105' THEN '플립러닝10주'
+			      ELSE  '없음'    
+			     --> 
+			         CASE 
+			       		WHEN sub.ONLINE_TYPE IN ('104','105') THEN '플립러닝'
+			       		WHEN sub.ONLINE_TYPE = '101' THEN '순수온라인'
+			            WHEN sub.ONLINE_TYPE = '102' THEN '브렌디드'
+			            WHEN sub.ONLINE_TYPE = '103' THEN '보조활용'
+			         ELSE  '없음' 
+			         
+			        
+			    END onlineTypeName,
+			    CASE WHEN sub.ONLINE_TYPE = 'FLIPPED' THEN '필수'
+			         ELSE '미필수'
+			    END firstLecLessionAt,
+			    (select b.mem_name
+			      from lms_subj_ins_mapping a, com_member b
+			      where YYYY = #{yyyy}
+			        and TERM = #{term}
+			        and SUBJECT_CODE = #{subjectCode}
+			        and CLASS = #{subClass}
+			        and a.MEM_SEQ = b.mem_seq
+			        LIMIT 1
+			      ) memName
+			  from lms_subject sub
+			  where 1 = 1
+			  and sub.YYYY = #{yyyy}
+			  and sub.TERM = #{term}
+			  and sub.SUBJECT_CODE = #{subjectCode}
+			  and sub.CLASS = #{subClass}
+	          <!-- and sub.SUBJECT_TRANING_TYPE = 'OFF' -->
+			  and sub.DELETE_YN = 'N'
+
+	</select>
+
+	<select id="getMyTrainSubjectInfo" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+	    /* ====== kr.co.sitglobal.oklms.lu.currproc.service.impl.CurrProcMapper.getMyTrainSubjectInfo ====== */
+	        select
+			    sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+			    sub.YYYY AS yyyy,
+			    sub.TERM AS term,
+			    sub.SUBJECT_CODE AS subjectCode,
+			    sub.CLASS AS subClass,
+			    sub.DEPARTMENT_NAME AS departmentName,
+			    sub.SUBJECT_NAME AS subjectName,
+			    sub.GRADE AS grade,
+			    sub.POINT_USE_YN AS pointUseYn,
+			    CASE WHEN sub.POINT_USE_YN = 'Y' THEN '학점'
+			         WHEN sub.POINT_USE_YN = 'N' THEN '비학점'
+			    END pointUseYnName,
+			    sub.POINT AS point,
+			    sub.SUBJECT_TYPE AS subjectType,
+			    sub.ONLINE_TYPE AS onlineType,
+			    <!-- CASE WHEN sub.ONLINE_TYPE = 'ONLINE' THEN '온라인'
+			         WHEN sub.ONLINE_TYPE = 'FLIPPED' THEN '플립러닝'
+			         WHEN sub.ONLINE_TYPE = 'BLENDED' THEN '블렌디드'
+			         WHEN sub.ONLINE_TYPE = 'NONE' THEN '없음'
+			    END onlineTypeName, -->
+
+			    CASE 
+			       		WHEN sub.ONLINE_TYPE IN ('104','105') THEN '플립러닝'
+			       		WHEN sub.ONLINE_TYPE = '101' THEN '순수온라인'
+			            WHEN sub.ONLINE_TYPE = '102' THEN '브렌디드'
+			            WHEN sub.ONLINE_TYPE = '103' THEN '보조활용'
+			         ELSE  '없음' 
+			    END onlineTypeName,
+
+			    CASE WHEN sub.ONLINE_TYPE = 'FLIPPED' THEN '필수'
+			         ELSE '미필수'
+			    END firstLecLessionAt,
+			    (select b.mem_name
+			      from lms_subj_ins_mapping a, com_member b
+			      where YYYY = #{yyyy}
+			        and TERM = #{term}
+			        and SUBJECT_CODE = #{subjectCode}
+			        and CLASS = #{subClass}
+			        and a.MEM_SEQ = b.mem_seq
+			        LIMIT 1
+			      ) memName
+			  from lms_subject sub
+			  where 1 = 1
+			  and sub.YYYY = #{yyyy}
+			  and sub.TERM = #{term}
+			  and sub.SUBJECT_CODE = #{subjectCode}
+			  and sub.CLASS = #{subClass}
+			  and sub.DELETE_YN = 'N'
+
+	</select>
+	
+	
+
+
+
+</mapper>

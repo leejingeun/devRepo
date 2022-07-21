@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper">
+
+	<resultMap id="authMap-result" type="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		<result column="MENU_ID" 			property="menuId" /> <!-- 메뉴ID -->
+		<result column="AUTH_GROUP_ID" 			property="authGroupId" /> <!-- 권한그룹아이디 -->
+		<result column="MENU_TITLE" 			property="menuTitle" /> <!-- 메뉴명 -->
+		<result column="AUTH_GROUP_NAME" 			property="authGroupName" /> <!-- 권한그룹아이디 -->
+		<result column="DELETE_YN" 			property="deleteYn" /> <!-- 삭제여부 -->
+		<result column="INSERT_USER" 			property="sessionMemSeq" /> <!-- 등록자 -->
+		<result column="INSERT_DATE" 			property="insertDate" /> <!-- 등록일 -->
+		<result column="UPDATE_USER" 			property="sessionMemSeq" /> <!-- 수정자 -->
+		<result column="UPDATE_DATE" 			property="updateDate" /> <!-- 수정일 -->
+		<result column="CREATE_AUTH_YN" 			property="createAuthYn" /> <!-- 생성 권한 여부 -->
+		<result column="READ_AUTH_YN" 			property="readAuthYn" /> <!-- 상세 조회 권한 여부 -->
+		<result column="UPDATE_AUTH_YN" 			property="updateAuthYn" /> <!-- 수정 권한 여부 -->
+		<result column="DELETE_AUTH_YN" 			property="deleteAuthYn" /> <!-- 삭제 권한 여부 -->
+		<result column="PRINT_AUTH_YN" 			property="printAuthYn" /> <!-- 출력 권한 여부 -->
+		<result column="DOWNLOAD_AUTH_YN" 			property="downloadAuthYn" /> <!-- 다운로드 권한 여부 -->
+		<result column="OTHER_AUTH_YN" 			property="otherAuthYn" /> <!-- 기타 권한 여부 -->
+		<result column="LIST_AUTH_YN" 			property="listAuthYn" /> <!-- 목록 조회 권한 여부 -->
+		</resultMap>
+	
+	<sql id="listAuthMap-where">
+	
+		<!-- 조회 조건값 ( CAM.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<if test="menuId != null and menuId != ''">	AND CAM.MENU_ID 	= #{menuId}		 </if>
+				<if test="authGroupId != null and authGroupId != ''">	AND CAM.AUTH_GROUP_ID 	= #{authGroupId}		 </if>
+				<!-- <if test="deleteYn != null and deleteYn != ''">	AND CAM.DELETE_YN 	= #{deleteYn}		 </if> -->
+				<!-- <if test="sessionMemSeq != null and sessionMemSeq != ''">	AND CAM.INSERT_USER 	= #{sessionMemSeq}		 </if> -->
+				<!-- <if test="insertDate != null and insertDate != ''">	AND CAM.INSERT_DATE 	= #{insertDate}		 </if> -->
+				<!-- <if test="sessionMemSeq != null and sessionMemSeq != ''">	AND CAM.UPDATE_USER 	= #{sessionMemSeq}		 </if> -->
+				<!-- <if test="updateDate != null and updateDate != ''">	AND CAM.UPDATE_DATE 	= #{updateDate}		 </if> -->
+				<!-- <if test="createAuthYn != null and createAuthYn != ''">	AND CAM.CREATE_AUTH_YN 	= #{createAuthYn}		 </if> -->
+				<!-- <if test="readAuthYn != null and readAuthYn != ''">	AND CAM.READ_AUTH_YN 	= #{readAuthYn}		 </if> -->
+				<!-- <if test="updateAuthYn != null and updateAuthYn != ''">	AND CAM.UPDATE_AUTH_YN 	= #{updateAuthYn}		 </if> -->
+				<!-- <if test="deleteAuthYn != null and deleteAuthYn != ''">	AND CAM.DELETE_AUTH_YN 	= #{deleteAuthYn}		 </if> -->
+				<!-- <if test="printAuthYn != null and printAuthYn != ''">	AND CAM.PRINT_AUTH_YN 	= #{printAuthYn}		 </if> -->
+				<!-- <if test="downloadAuthYn != null and downloadAuthYn != ''">	AND CAM.DOWNLOAD_AUTH_YN 	= #{downloadAuthYn}		 </if> -->
+				<!-- <if test="otherAuthYn != null and otherAuthYn != ''">	AND CAM.OTHER_AUTH_YN 	= #{otherAuthYn}		 </if> -->
+				<!-- <if test="listAuthYn != null and listAuthYn != ''">	AND CAM.LIST_AUTH_YN 	= #{listAuthYn}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CAM.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<if test="searchMenuId != null and searchMenuId != ''">	AND CAM.MENU_ID 	= #{searchMenuId}		 </if>
+				<if test="searchAuthGroupId != null and searchAuthGroupId != ''">	AND CAM.AUTH_GROUP_ID 	= #{searchAuthGroupId}		 </if>
+				
+				<if test="searchMenuTitle != null and searchMenuTitle != ''">	AND CM.MENU_TITLE 	LIKE '%' ||   #{searchMenuTitle} || '%' 		 </if>
+				<if test="searchAuthGroupName != null and searchAuthGroupName != ''">	AND CAG.AUTH_GROUP_NAME 	LIKE '%' ||   #{searchAuthGroupName} || '%' 		 </if>
+				
+				<!-- <if test="searchDeleteYn != null and searchDeleteYn != ''">	AND CAM.DELETE_YN 	= #{searchDeleteYn}		 </if> -->
+				<!-- <if test="searchInsertUser != null and searchInsertUser != ''">	AND CAM.INSERT_USER 	= #{searchInsertUser}		 </if> -->
+				<!-- <if test="searchInsertDate != null and searchInsertDate != ''">	AND CAM.INSERT_DATE 	= #{searchInsertDate}		 </if> -->
+				<!-- <if test="searchUpdateUser != null and searchUpdateUser != ''">	AND CAM.UPDATE_USER 	= #{searchUpdateUser}		 </if> -->
+				<!-- <if test="searchUpdateDate != null and searchUpdateDate != ''">	AND CAM.UPDATE_DATE 	= #{searchUpdateDate}		 </if> -->
+				<!-- <if test="searchCreateAuthYn != null and searchCreateAuthYn != ''">	AND CAM.CREATE_AUTH_YN 	= #{searchCreateAuthYn}		 </if> -->
+				<!-- <if test="searchReadAuthYn != null and searchReadAuthYn != ''">	AND CAM.READ_AUTH_YN 	= #{searchReadAuthYn}		 </if> -->
+				<!-- <if test="searchUpdateAuthYn != null and searchUpdateAuthYn != ''">	AND CAM.UPDATE_AUTH_YN 	= #{searchUpdateAuthYn}		 </if> -->
+				<!-- <if test="searchDeleteAuthYn != null and searchDeleteAuthYn != ''">	AND CAM.DELETE_AUTH_YN 	= #{searchDeleteAuthYn}		 </if> -->
+				<!-- <if test="searchPrintAuthYn != null and searchPrintAuthYn != ''">	AND CAM.PRINT_AUTH_YN 	= #{searchPrintAuthYn}		 </if> -->
+				<!-- <if test="searchDownloadAuthYn != null and searchDownloadAuthYn != ''">	AND CAM.DOWNLOAD_AUTH_YN 	= #{searchDownloadAuthYn}		 </if> -->
+				<!-- <if test="searchOtherAuthYn != null and searchOtherAuthYn != ''">	AND CAM.OTHER_AUTH_YN 	= #{searchOtherAuthYn}		 </if> -->
+				<!-- <if test="searchListAuthYn != null and searchListAuthYn != ''">	AND CAM.LIST_AUTH_YN 	= #{searchListAuthYn}		 </if> -->
+			</sql>
+	
+	<select id="getAuthMap" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.getAuthMap ====== */
+			SELECT 
+							CAM.MENU_ID  /* 메뉴ID */
+				    		 ,  CAM.AUTH_GROUP_ID  /* 권한그룹아이디 */
+                             ,  CM.MENU_TITLE /* 메뉴 명*/
+                             ,  CAG.AUTH_GROUP_NAME /* 권한 그룹 명 */
+							 ,  CAM.DELETE_YN  /* 삭제여부 */
+							 ,  CAM.INSERT_USER  /* 등록자 */
+							 ,  DATE_FORMAT( CAM.INSERT_DATE ,'%Y-%m-%d %H:%i:%s') AS INSERT_DATE  /* 등록일 */
+							 ,  CAM.UPDATE_USER  /* 수정자 */
+							 ,  DATE_FORMAT( CAM.UPDATE_DATE ,'%Y-%m-%d %H:%i:%s') AS UPDATE_DATE  /* 수정일 */
+							 ,  CAM.CREATE_AUTH_YN  /* 생성 권한 여부 */
+							 ,  CAM.READ_AUTH_YN  /* 상세 조회 권한 여부 */
+							 ,  CAM.UPDATE_AUTH_YN  /* 수정 권한 여부 */
+							 ,  CAM.DELETE_AUTH_YN  /* 삭제 권한 여부 */
+							 ,  CAM.PRINT_AUTH_YN  /* 출력 권한 여부 */
+							 ,  CAM.DOWNLOAD_AUTH_YN  /* 다운로드 권한 여부 */
+							 ,  CAM.OTHER_AUTH_YN  /* 기타 권한 여부 */
+							 ,  CAM.LIST_AUTH_YN  /* 목록 조회 권한 여부 */
+						  FROM COM_AUTH_MAP CAM
+		                      , COM_MENU CM
+		                      , COM_AUTH_GROUP CAG
+                   WHERE CAM.MENU_ID = CM.MENU_ID
+                     AND CAM.AUTH_GROUP_ID = CAG.AUTH_GROUP_ID
+				     AND CAM.MENU_ID 	= #{menuId}
+				     AND CAM.AUTH_GROUP_ID 	= #{authGroupId}
+	</select>
+	
+<!-- 	<select id="listAuthMap" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listAuthMap" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO"> -->
+<!-- 	<select id="listAuthMap" parameterType="hashmap" resultMap="authMap-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listAuthMapTree" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.listAuthMapTree ====== */
+	    <![CDATA[
+
+			SELECT @RNUM := @RNUM + 1 AS NUM
+				   , A.LEVEL AS MENU_LEVEL
+			       , (SELECT MENU_ID 
+			            FROM com_menu 
+			           WHERE MENU_ORDER =(SELECT MAX(MENU_ORDER)
+										from com_menu
+										 where  MENU_AREA = #{searchMenuArea}
+										   AND DELETE_YN = 'N'  
+										   AND SHOW_YN   = 'Y'  
+										   AND UP_MENU_ID = 'TOP'
+										   AND MENU_ORDER <= A.MENU_ORDER
+					  )
+			       ) AS ROOT_MENU_ID
+			       , (CASE WHEN (SELECT  COUNT(*)	FROM  com_menu WHERE UP_MENU_ID = A.MENU_ID) > 0 THEN 0 ELSE 1 END) AS IS_LEAF_MENU	
+			       , A.MENU_ID
+			       , A.MENU_TYPE
+			       , A.UP_MENU_ID	
+			       , A.MENU_DEPTH
+			       , A.MENU_ORDER
+			       , A.MENU_VIEW_TYPE_CODE
+			       , A.MENU_TITLE
+				   , CONCAT( LPAD(' ', (A.LEVEL-1),'_'), A.MENU_TITLE ) AS LPAD_MENU_TITLE
+			       , CONCAT( LPAD(' ', 4*(A.LEVEL-1),'_'), A.MENU_TITLE ) AS LPAD_MENU_TITLE2
+			       , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN CONCAT('@',A.MENU_TITLE) 
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT('@',(SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT('@',(SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = (SELECT IN_MU2.UP_MENU_ID FROM com_menu IN_MU2 WHERE IN_MU2.MENU_ID =A.UP_MENU_ID LIMIT 1) LIMIT 1),'@',(SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE) 
+			        WHEN A.MENU_DEPTH = 4 THEN CONCAT('@',(SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = (SELECT IN_MU2.UP_MENU_ID FROM com_menu IN_MU2 WHERE IN_MU2.MENU_ID =A.UP_MENU_ID LIMIT 1) LIMIT 1),'@',(SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE) 
+			        ELSE ''
+			        END ) AS MENU_PATH
+			       , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN CONCAT('@',A.MENU_ID) 
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT('@',A.UP_MENU_ID,'@',A.MENU_ID)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT('@',(SELECT IN_MU.MENU_ID FROM com_menu IN_MU WHERE IN_MU.UP_MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.UP_MENU_ID,'@',A.MENU_ID) 
+			        ELSE ''
+			        END ) AS MENU_ID_PATH
+			        , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN A.MENU_TITLE
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT((SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT((SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = (SELECT IN_MU2.UP_MENU_ID FROM com_menu IN_MU2 WHERE IN_MU2.MENU_ID =A.UP_MENU_ID LIMIT 1) LIMIT 1),'@',(SELECT IN_MU.MENU_TITLE FROM com_menu IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE) 
+			        ELSE ''
+			        END ) AS MENU_PATH_LEAF_NODE
+			       , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN A.MENU_ID
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT(A.UP_MENU_ID,'@',A.MENU_ID)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT((SELECT IN_MU.MENU_ID FROM com_menu IN_MU WHERE IN_MU.UP_MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.UP_MENU_ID,'@',A.MENU_ID) 
+			        ELSE ''
+			        END ) AS MENU_ID_PATH_LEAF_NODE
+				   , A.MENU_URL
+			       , A.CREATE_AUTH_URL_PATTERN  /* 생성 권한 URL 패턴 */			
+			       , A.READ_AUTH_URL_PATTERN    /* 상세 조회 권한 URL 패턴 */			
+			       , A.UPDATE_AUTH_URL_PATTERN  /* 수정 권한 URL 패턴 */			
+			       , A.DELETE_AUTH_URL_PATTERN  /* 삭제 권한 URL 패턴 */			
+			       , A.PRINT_AUTH_URL_PATTERN   /* 출력 권한 URL 패턴 */			
+			       , A.DOWNLOAD_AUTH_URL_PATTERN  /* 다운로드 권한 URL 패턴 */			
+			       , A.OTHER_AUTH_URL_PATTERN  /* 기타 권한 URL 패턴 */			
+			       , A.LIST_AUTH_URL_PATTERN  /* 목록 조회 권한 URL 패턴 */			
+                   , (CASE WHEN (SELECT  COUNT(*)	FROM  com_menu WHERE UP_MENU_ID = A.MENU_ID) > 0 THEN 'false' ELSE 'true' END) AS IS_LEAF  
+                   , CASE 
+                            WHEN A.MENU_DEPTH < 6 
+                            THEN 'true' 
+                            ELSE 'false' 
+                   END AS EXPANDED 
+                   , 'true' AS LOADED
+			       , CAM.MENU_ID   
+				   , CAM.AUTH_GROUP_ID   
+				   , CAM.DELETE_YN   
+				   , CAM.CREATE_AUTH_YN   
+				   , CAM.READ_AUTH_YN   
+				   , CAM.UPDATE_AUTH_YN   
+				   , CAM.DELETE_AUTH_YN   
+				   , CAM.PRINT_AUTH_YN   
+				   , CAM.DOWNLOAD_AUTH_YN   
+				   , CAM.OTHER_AUTH_YN   
+				   , CAM.LIST_AUTH_YN  
+			  FROM 			
+			       ( SELECT 			
+			              LEVEL,			
+			              COM.MENU_ID, 			
+			              COM.MENU_TYPE,			
+			              COM.UP_MENU_ID, 			
+			              COM.MENU_DEPTH,			
+			              COM.MENU_ORDER,			
+			              COM.MENU_VIEW_TYPE_CODE,  			
+				          COM.MENU_TITLE,   		
+						  COM.MENU_URL,
+			              CREATE_AUTH_URL_PATTERN,  /* 생성 권한 URL 패턴 */			
+				          READ_AUTH_URL_PATTERN,  /* 상세 조회 권한 URL 패턴 */		
+				          UPDATE_AUTH_URL_PATTERN,  /* 수정 권한 URL 패턴 */		
+						  DELETE_AUTH_URL_PATTERN,  /* 삭제 권한 URL 패턴 */
+						  PRINT_AUTH_URL_PATTERN,  /* 출력 권한 URL 패턴 */
+						  DOWNLOAD_AUTH_URL_PATTERN,  /* 다운로드 권한 URL 패턴 */
+						  OTHER_AUTH_URL_PATTERN,  /* 기타 권한 URL 패턴 */
+						  LIST_AUTH_URL_PATTERN  /* 목록 조회 권한 URL 패턴 */
+			         FROM 			
+			              (SELECT MENU_CONNECT_BY_PARENT(#{searchMenuType},#{searchMenuArea}) AS MENU_ID, 		
+			                     @level as LEVEL 			
+			                FROM ( SELECT @start_with := 0, @id := 'TOP', @level := 0 ) vars, 			
+			                     COM_MENU 			
+			               WHERE @ID IS NOT NULL 			
+			                 AND DELETE_YN = 'N' 
+						     AND SHOW_YN   = 'Y'
+			            ORDER BY MENU_DEPTH, 			
+			                     UP_MENU_ID, 			
+			                     MENU_ORDER 			
+			              ) FUNC 			
+			            INNER JOIN COM_MENU COM 			
+			        WHERE FUNC.MENU_ID = COM.MENU_ID 			
+			       ) A,(SELECT *  
+						  FROM COM_AUTH_MAP  
+						 WHERE DELETE_YN = 'N'  
+					       AND AUTH_GROUP_ID = IFNULL( #{searchAuthGroupId} , '2016AUTH0000001')  
+				   ) CAM,
+			       ( SELECT @RNUM := 0 ) R
+			       WHERE A.MENU_ID = CAM.MENU_ID
+				]]>							
+				<if test="searchMenuTitle != null and searchMenuTitle != ''">	AND A.MENU_TITLE 	LIKE '%' ||   #{searchMenuTitle} || '%' 		 </if>
+	</select>
+	<select id="listAuthMap" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.listAuthMap ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+			SELECT 
+							CAM.MENU_ID  /* 메뉴ID */
+				    		 ,  CAM.AUTH_GROUP_ID  /* 권한그룹아이디 */
+                             ,  CM.MENU_TITLE /* 메뉴 명*/
+                             ,  CAG.AUTH_GROUP_NAME /* 권한 그룹 명 */
+							 ,  CAM.DELETE_YN  /* 삭제여부 */
+							 ,  CAM.INSERT_USER  /* 등록자 */
+							 ,  DATE_FORMAT( CAM.INSERT_DATE ,'%Y-%m-%d %H:%i:%s') AS INSERT_DATE  /* 등록일 */
+							 ,  CAM.UPDATE_USER  /* 수정자 */
+							 ,  DATE_FORMAT( CAM.UPDATE_DATE ,'%Y-%m-%d %H:%i:%s') AS UPDATE_DATE  /* 수정일 */
+							 ,  CAM.CREATE_AUTH_YN  /* 생성 권한 여부 */
+							 ,  CAM.READ_AUTH_YN  /* 상세 조회 권한 여부 */
+							 ,  CAM.UPDATE_AUTH_YN  /* 수정 권한 여부 */
+							 ,  CAM.DELETE_AUTH_YN  /* 삭제 권한 여부 */
+							 ,  CAM.PRINT_AUTH_YN  /* 출력 권한 여부 */
+							 ,  CAM.DOWNLOAD_AUTH_YN  /* 다운로드 권한 여부 */
+							 ,  CAM.OTHER_AUTH_YN  /* 기타 권한 여부 */
+							 ,  CAM.LIST_AUTH_YN  /* 목록 조회 권한 여부 */
+						  FROM COM_AUTH_MAP CAM
+		                      , COM_MENU CM
+		                      , COM_AUTH_GROUP CAG
+                   WHERE CAM.MENU_ID = CM.MENU_ID
+                     AND CAM.AUTH_GROUP_ID = CAG.AUTH_GROUP_ID
+	    ]]>
+
+		<include refid="listAuthMap-where"/>
+			ORDER BY CAM.UPDATE_DATE DESC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getAuthMapCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.getAuthMapCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_AUTH_MAP CAM
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listAuthMap-where"/>
+	</select>
+
+	
+	<sql id="saveAuthMapSQL">
+	INSERT INTO COM_AUTH_MAP
+		 (
+		 MENU_ID
+		 , AUTH_GROUP_ID
+		 , DELETE_YN
+		 , INSERT_USER
+		 , INSERT_DATE
+		 , UPDATE_USER
+		 , UPDATE_DATE
+		 , CREATE_AUTH_YN
+		 , READ_AUTH_YN
+		 , UPDATE_AUTH_YN
+		 , DELETE_AUTH_YN
+		 , PRINT_AUTH_YN
+		 , DOWNLOAD_AUTH_YN
+		 , OTHER_AUTH_YN
+		 , LIST_AUTH_YN
+		) 
+		VALUES 
+	    ( 
+		 #{menuId}
+		 , #{authGroupId}
+		 , #{deleteYn}
+		 , #{sessionMemSeq}
+		 , NOW()
+		 , #{sessionMemSeq}
+		 , NOW()
+		 , #{createAuthYn}
+		 , #{readAuthYn}
+		 , #{updateAuthYn}
+		 , #{deleteAuthYn}
+		 , #{printAuthYn}
+		 , #{downloadAuthYn}
+		 , #{otherAuthYn}
+		 , #{listAuthYn}
+	)  
+ 	ON DUPLICATE KEY
+		UPDATE 
+		MENU_ID	= #{menuId}
+		,AUTH_GROUP_ID = #{authGroupId}
+		,UPDATE_DATE = NOW()
+        ,UPDATE_USER 	= #{sessionMemSeq}
+		<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+		<if test="createAuthYn != null and createAuthYn != ''">	, CREATE_AUTH_YN 	= #{createAuthYn}		 </if>
+		<if test="readAuthYn != null and readAuthYn != ''">	, READ_AUTH_YN 	= #{readAuthYn}		 </if>
+		<if test="updateAuthYn != null and updateAuthYn != ''">	, UPDATE_AUTH_YN 	= #{updateAuthYn}		 </if>
+		<if test="deleteAuthYn != null and deleteAuthYn != ''">	, DELETE_AUTH_YN 	= #{deleteAuthYn}		 </if>
+		<if test="printAuthYn != null and printAuthYn != ''">	, PRINT_AUTH_YN 	= #{printAuthYn}		 </if>
+		<if test="downloadAuthYn != null and downloadAuthYn != ''">	, DOWNLOAD_AUTH_YN 	= #{downloadAuthYn}		 </if>
+		<if test="otherAuthYn != null and otherAuthYn != ''">	, OTHER_AUTH_YN 	= #{otherAuthYn}		 </if>
+		<if test="listAuthYn != null and listAuthYn != ''">	, LIST_AUTH_YN 	= #{listAuthYn}		 </if>
+	</sql>	
+	<insert id="saveAuthMapMap" parameterType="java.util.HashMap">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.saveAuthMapMap ====== */
+		<include refid="saveAuthMapSQL"/>
+	</insert>
+	<insert id="saveAuthMap" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.saveAuthMap ====== */
+		<include refid="saveAuthMapSQL"/>
+	</insert>
+	
+
+	<insert id="insertAuthMap" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.insertAuthMap ====== */
+			INSERT INTO COM_AUTH_MAP ( 
+									 MENU_ID
+									 , AUTH_GROUP_ID
+									 , DELETE_YN
+									 , INSERT_USER
+									 , INSERT_DATE
+									 , UPDATE_USER
+									 , UPDATE_DATE
+									 , CREATE_AUTH_YN
+									 , READ_AUTH_YN
+									 , UPDATE_AUTH_YN
+									 , DELETE_AUTH_YN
+									 , PRINT_AUTH_YN
+									 , DOWNLOAD_AUTH_YN
+									 , OTHER_AUTH_YN
+									 , LIST_AUTH_YN
+									) 
+					VALUES 
+					( 
+								  #{menuId}
+ 								 ,  #{authGroupId}
+ 								 ,  #{deleteYn}
+ 								 ,  #{sessionMemSeq}
+ 								 ,  NOW()
+ 								 ,  #{sessionMemSeq}
+ 								 ,  NOW()
+ 								 ,  #{createAuthYn}
+ 								 ,  #{readAuthYn}
+ 								 ,  #{updateAuthYn}
+ 								 ,  #{deleteAuthYn}
+ 								 ,  #{printAuthYn}
+ 								 ,  #{downloadAuthYn}
+ 								 ,  #{otherAuthYn}
+ 								 ,  #{listAuthYn}
+				    )
+		]]>
+	</insert>
+
+
+	<update id="updateAuthMap" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.updateAuthMap ====== */
+	        UPDATE COM_AUTH_MAP 
+	        SET UPDATE_DATE 	= NOW()
+	        	, UPDATE_USER 	= #{sessionMemSeq}
+				    									 <if test="deleteYn != null and deleteYn != ''">		, DELETE_YN 	= #{deleteYn}		 </if>
+				    									 <if test="createAuthYn != null and createAuthYn != ''">		, CREATE_AUTH_YN 	= #{createAuthYn}		 </if>
+				    									 <if test="listAuthYn != null and listAuthYn != ''">		, LIST_AUTH_YN 	= #{listAuthYn}		 </if>
+				    									 <if test="readAuthYn != null and readAuthYn != ''">		, READ_AUTH_YN 	= #{readAuthYn}		 </if>
+				    									 <if test="updateAuthYn != null and updateAuthYn != ''">		, UPDATE_AUTH_YN 	= #{updateAuthYn}		 </if>
+				    									 <if test="deleteAuthYn != null and deleteAuthYn != ''">		, DELETE_AUTH_YN 	= #{deleteAuthYn}		 </if>
+				    									 <if test="printAuthYn != null and printAuthYn != ''">		, PRINT_AUTH_YN 	= #{printAuthYn}		 </if>
+				    									 <if test="downloadAuthYn != null and downloadAuthYn != ''">		, DOWNLOAD_AUTH_YN 	= #{downloadAuthYn}		 </if>
+				    									 <if test="otherAuthYn != null and otherAuthYn != ''">		, OTHER_AUTH_YN 	= #{otherAuthYn}		 </if>
+				    						     WHERE MENU_ID 	= #{menuId}
+				    						       AND AUTH_GROUP_ID 	= #{authGroupId}
+	</update>
+
+
+	<delete id="deleteAuthMap" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthMapVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthMapMapper.deleteAuthMap ====== */
+	        UPDATE COM_AUTH_MAP 
+	        SET UPDATE_DATE 	= NOW(),
+	        	UPDATE_USER 	= #{sessionMemSeq},
+				DELETE_YN 	= 'Y'			    									 
+			WHERE MENU_ID 	= #{menuId}
+              AND AUTH_GROUP_ID 	= #{authGroupId}
+	</delete>
+
+</mapper>

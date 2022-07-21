@@ -1,0 +1,340 @@
+@charset "utf-8";
+
+
+
+.main-content																		{position:relative; float:left; width:100%; margin-top:15px;}
+.main-content:after																{content:""; display:block; clear:both;}
+.main-content li:after															{content:""; display:block; clear:both;}
+.main-content li.type-1															{position:relative; float:left; width:48%; margin-bottom:50px;}
+.main-content li.type-2															{position:relative; float:right; width:48%; margin-bottom:50px;}
+.main-content li.type-3															{position:relative; float:left; width:100%;}
+
+.main-content li .board-title													{float:left; font:16px nbgM; line-height:20px; color:#333; background:url("/images/oklms/adm/inc/bullet_name.png") 0 14px no-repeat; padding:10px 0 2px 15px;}
+.main-content li .board-title span											{display:inline-block; font:12px nbgM; color:#999; line-height:20px; background:url("/images/oklms/adm/inc/bullet_03_01.png") 13px 7px no-repeat; padding-left:20px;}
+
+.main-content li .more															{position:absolute; width:65px; height:24px; right:0; top:8px;}
+.main-content li .more a														{display:block; overflow:hidden; width:65px; height:24px; text-indent:-9999px; background:url("/images/oklms/adm/inc/btn_more.png") no-repeat;}
+.main-content li .more a:hover												{background:url("/images/oklms/adm/inc/btn_more_over.png") no-repeat;}
+
+
+
+#main-tab-1																		{float:left; width:100%;}
+#main-tab-1 dt																	{position:absolute; width:100px; font:15px nbgM; color:#333; line-height:20px; text-align:center; border:1px solid #DDD; background:#FFF; z-index:10;}
+#main-tab-1 dt a																	{display:block; color:#333; padding:6px 0 5px;}
+#main-tab-1 dt.on																{border:1px solid #2A91D4; border-bottom:1px solid #FFF;}
+#main-tab-1 dt.on a																{color:#2A91D4;}
+#main-tab-1 dt.tab-name-11													{left:0;}
+#main-tab-1 dt.tab-name-12													{left:102px;}
+#main-tab-1 dd																	{position:relative; display:none; float:left; width:100%; border-top:1px solid #DDD; padding-top:0px; margin-top:32px;}
+#main-tab-1 dd .more															{position:absolute; width:65px; height:24px; right:0; top:-28px;}
+#main-tab-1 dd .more a														{display:block; overflow:hidden; width:65px; height:24px; text-indent:-9999px; background:url("/images/oklms/adm/inc/btn_more.png") no-repeat;}
+#main-tab-1 dd .more a:hover												{background:url("/images/oklms/adm/inc/btn_more_over.png") no-repeat;}
+
+
+
+#main-tab-2																		{float:left; width:100%;}
+#main-tab-2 dt																	{position:absolute; width:100px; font:15px nbgM; color:#333; line-height:20px; text-align:center; border:1px solid #DDD; background:#FFF; z-index:10;}
+#main-tab-2 dt a																	{display:block; color:#333; padding:6px 0 5px;}
+#main-tab-2 dt.on																{border:1px solid #2A91D4; border-bottom:1px solid #FFF;}
+#main-tab-2 dt.on a																{color:#2A91D4;}
+#main-tab-2 dt.tab-name-21													{left:0;}
+#main-tab-2 dt.tab-name-22													{left:102px;}
+#main-tab-2 dd																	{position:relative; display:none; float:left; width:100%; border-top:1px solid #DDD; padding-top:0px; margin-top:32px;}
+#main-tab-2 dd .date															{position:absolute; width:133px; right:0; top:-28px; font:12px nbgM; color:#999; line-height:20px; text-align:right; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 9px no-repeat; padding:3px 2px 0 0;}
+#main-tab-2 dd .graph-area													{float:left; width:50%; padding-top:7px;}
+#main-tab-2 dd .table-area													{float:right; width:46%;}
+
+
+
+#main-tab-3																		{float:left; width:100%;}
+#main-tab-3 dt																	{position:absolute; width:110px; font:15px nbgM; color:#333; line-height:20px; text-align:center; border:1px solid #DDD; background:#FFF; z-index:10;}
+#main-tab-3 dt a																	{display:block; color:#333; padding:6px 0 5px;}
+#main-tab-3 dt.on																{border:1px solid #2A91D4; border-bottom:1px solid #FFF;}
+#main-tab-3 dt.on a																{color:#2A91D4;}
+#main-tab-3 dt.tab-name-31													{left:0;}
+#main-tab-3 dt.tab-name-32													{left:112px;}
+#main-tab-3 dt.tab-name-33													{left:224px;}
+#main-tab-3 dt.tab-name-34													{left:336px;}
+#main-tab-3 dt.tab-name-35													{left:448px;}
+#main-tab-3 dt.tab-name-36													{left:560px;}
+#main-tab-3 dd																	{position:relative; display:none; float:left; width:100%; border-top:1px solid #DDD; margin-top:32px;}
+#main-tab-3 dd .more															{position:absolute; width:65px; height:24px; right:0; top:-28px;}
+#main-tab-3 dd .more a														{display:block; overflow:hidden; width:65px; height:24px; text-indent:-9999px; background:url("/images/oklms/adm/inc/btn_more.png") no-repeat;}
+#main-tab-3 dd .more a:hover												{background:url("/images/oklms/adm/inc/btn_more_over.png") no-repeat;}
+
+#main-tab-3 dd .stats															{float:left; width:100%; font:12px nbgM; color:#999; line-height:18px; margin-top:15px;}
+#main-tab-3 dd .stats span													{display:inline-block; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 8px no-repeat; padding-left:8px}
+
+
+
+#view-tab-1																		{position:relative; float:left; width:100%; height:32px; border-bottom:1px solid #DDD; margin-bottom:30px;}
+#view-tab-1 li																		{position:absolute; width:130px; font:15px nbgM; color:#333; line-height:20px; text-align:center; border:1px solid #DDD; background:#FFF; z-index:10;}
+#view-tab-1 li a																	{display:block; color:#333; padding:6px 0 5px;}
+#view-tab-1 li.on																{border:1px solid #2A91D4; border-bottom:1px solid #FFF;}
+#view-tab-1 li.on a																{color:#2A91D4;}
+#view-tab-1 li.tab-name-11													{left:0;}
+#view-tab-1 li.tab-name-12													{left:132px;}
+#view-tab-1 li.tab-name-13													{left:264px;}
+#view-tab-1 li.tab-name-14													{left:396px;}
+#view-tab-1 li.tab-name-15													{left:528px;}
+#view-tab-1 li.tab-name-16													{left:660px;}
+#view-tab-1 li.btn																{position:absolute; display:block; text-align:right; right:0; top:-37px; border:none; padding:0; margin:0;}
+#view-tab-1 li.btn a																{display:inline-block; font-size:16px; color:#FFF; border-radius:40px; text-align:center; background:#D7D8DB; padding:21px 15px 19px;}
+#view-tab-1 li.btn a:hover													{background:#525F78;}
+
+
+
+
+
+
+
+
+
+
+.search-list-1																		{position:relative; float:left; width:100%; border:1px solid #DADDDF; background:#EDEFF2; padding:7px 0;}
+.search-list-1:after																{content:""; display:block; clear:both;}
+.search-list-1 li																	{position:relative; float:left; width:95%; font:12px nbgM; color:#777; line-height:20px; border-top:1px solid #DADDDF; padding:6px 2.5%;}
+.search-list-1 li:first-child													{border-top:none}
+.search-list-1 li input.choice												{width:13px; height:13px; vertical-align:middle; border:none; background:none; padding:0;}
+.search-list-1 li label															{line-height:13px; padding:0 20px 0 4px;}
+.search-list-1 li input															{height:21px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; background:#FFF; padding:0 5px;}
+.search-list-1 li select															{height:23px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; background:#FFF; padding:0 0 0 5px;}
+.search-list-1 li span															{display:inline-block; width:10%; color:#444; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 8px no-repeat; padding:1px 0 0 8px;}
+
+.search-list-1 li dl																{display:inline-block; height:21px; vertical-align:middle; border:1px solid #DADDDF; background:#FFF; margin-left:30px;}
+.search-list-1 li dt																{float:left; height:21px;}
+.search-list-1 li dt a															{display:inline-block; overflow:hidden; height:20px; color:#8A8A8A; padding:1px 15px 0;}
+.search-list-1 li dt a:hover													{color:#FFF; background:#A6ADBA;}
+.search-list-1 li dd																{float:left; height:21px;}
+.search-list-1 li dd a															{display:inline-block; overflow:hidden; height:20px; color:#8A8A8A; border-left:1px solid #DADDDF; padding:1px 15px 0;}
+.search-list-1 li dd a:hover													{color:#FFF; border-left:1px solid #A6ADBA; background:#A6ADBA;}
+
+.search-list-1 #hidden-line													{display:none; float:left; width:85%; font:12px nbgM; color:#777; line-height:20px; border-top:1px solid #DADDDF; padding:6px 2.5% 6px 12.5%;}
+.search-list-1 #hidden-line:after											{content:""; display:block; clear:both;}
+.search-list-1 #hidden-line div												{width:90%; padding-left:6px;}
+.search-list-1 #hidden-line div:after										{content:""; display:block; clear:both;}
+.search-list-1 #hidden-line div span										{display:inline-block; width:180px; color:#777; background:none; padding:0;}
+
+.search-list-1 li .search-btn-1												{position:absolute; display:block; overflow:hidden; height:21px; right:2.5%; top:6px; color:#FFF; background:url("/images/oklms/adm/inc/bullet_03_02.png") 10px 8px #A6ADBA no-repeat; padding:2px 15px 0 25px;}
+.search-list-1 li .search-btn-2												{position:absolute; display:block; overflow:hidden; height:21px; right:2.5%; bottom:6px; color:#FFF; background:url("/images/oklms/adm/inc/bullet_03_03.png") 10px 8px #A6ADBA no-repeat; padding:2px 15px 0 25px;}
+
+
+
+.search-btn-area																{float:left; width:100%; text-align:right;}
+.search-btn-area a																{display:inline-block; font:15px nbgM; color:#FFF; line-height:20px; background:url("/images/oklms/adm/inc/bullet_03_04.png") 14px 13px #525F78 no-repeat; padding:10px 15px 9px 31px; margin-top:10px;}
+
+
+
+.board-info																			{float:left; width:100%; margin-top:40px;}
+.board-info li.info-area															{float:left; font:13px nbgM; color:#2A91D4; line-height:20px; padding-top:2px;}
+.board-info li.info-area span													{display:inline-block; color:#555; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 7px no-repeat; padding-left:8px; margin-left:15px;}
+.board-info li.info-area span:first-child									{margin-left:0;}
+
+.board-info li.btn-area															{float:right; text-align:right;}
+.board-info li.btn-area a														{display:inline-block; height:16px; font:12px nbgM; color:#666; line-height:16px; vertical-align:middle; border:1px solid #D5D8DC; padding:4px 10px 3px;}
+.board-info li.btn-area a:hover												{color:#FFF; border-left:1px solid #A6ADBA; background:#A6ADBA;}
+.board-info li.btn-area span													{display:inline-block; font:13px nbgM; color:#555; line-height:20px; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 9px no-repeat; padding:1px 10px 0 8px;}
+.board-info li.btn-area select												{height:25px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; padding:0 0 0 5px;}
+
+
+
+.title-name-1																		{float:left; width:90%; font:16px nbgM; line-height:18px; color:#333; background:url("/images/oklms/adm/inc/bullet_name.png") 0 3px no-repeat; padding-left:17px;}
+.title-name-1 span																{border-right:1px dotted #333; padding-right:11px; margin-right:10px;}
+.title-name-1 input																{width:13px; height:13px; vertical-align:middle;}
+.title-name-1 label																{font:13px nbgM; color:#666; line-height:20px; padding:0 20px 0 3px;}
+.title-name-1 b																	{font-weight:normal; color:#2A91D4;}
+
+.title-name-2																		{float:left; width:90%; font:16px nbgM; line-height:18px; color:#333; background:url("/images/oklms/adm/inc/bullet_name.png") 0 7px no-repeat; padding-left:17px;}
+.title-name-2 a																	{display:inline-block; height:16px; font:12px nbgM; color:#666; line-height:16px; vertical-align:middle; border:1px solid #D5D8DC; padding:4px 10px 3px;}
+.title-name-2 a:hover															{color:#FFF; border-left:1px solid #A6ADBA; background:#A6ADBA;}
+.title-name-2 select																{float:right; height:25px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; padding:0 0 0 5px;}
+
+.title-name-3																		{float:left; width:100%; background:url("/images/oklms/adm/inc/bullet_name.png") 0 7px no-repeat;}
+.title-name-3 li																	{float:left;}
+.title-name-3 li a																	{display:inline-block; height:16px; font:12px nbgM; color:#666; line-height:16px; vertical-align:middle; border:1px solid #D5D8DC; padding:4px 10px 3px;}
+.title-name-3 li a:hover															{color:#FFF; border-left:1px solid #A6ADBA; background:#A6ADBA;}
+.title-name-3 li select															{width:80px; height:25px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; padding:0 0 0 5px;}
+.title-name-3 li.name															{font:16px nbgM; line-height:18px; color:#333; padding:4px 0 0 17px;}
+.title-name-3 li.view-choice													{float:right; padding-left:20px;}
+.title-name-3 li.btn																{float:right;}
+
+
+
+table.list-1																			{float:left; width:100%; border-top:2px solid #DADCE5; margin-top:7px;}
+table.list-1 input																	{width:13px; height:13px; vertical-align:middle; border:none; background:none; padding:0;}
+
+table.list-1 th																		{font:13px nbgM; line-height:16px; color:#222; text-align:center; border-right:1px solid #DADCE5; border-bottom:1px solid #DADCE5; background:#F7F8FA; padding:15px 7px;}
+table.list-1 th:first-child														{border-left:1px solid #DADCE5;}
+table.list-1 td																		{font:12px nbgM; line-height:16px; color:#666; text-align:center; border-right:1px solid #DADCE5; border-bottom:1px solid #DADCE5; padding:8px 5px 7px;}
+table.list-1 td a																	{color:#666;}
+table.list-1 td span																{color:#2A91D4;}
+table.list-1 td input																{height:21px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; background:#FFF; padding:0 0;}
+table.list-1 td input.choice													{width:13px; height:13px; vertical-align:middle; border:none; background:none; padding:0;}
+table.list-1 td:first-child														{border-left:1px solid #D5D8DC;}
+table.list-1 td a.btn-1															{display:inline-block; color:#FFF; background:#3A84D8; padding:3px 10px 2px;}
+table.list-1 td a.btn-1:hover													{background:#333;}
+table.list-1 td a.btn-2															{display:inline-block; color:#FFF; background:#54C0BF; padding:3px 10px 2px;}
+table.list-1 td a.btn-2:hover													{background:#333;}
+table.list-1 td.subject															{text-align:left; padding:8px 15px 7px;}
+table.list-1 td.re-subject														{text-align:right; padding:8px 10px 7px;}
+
+
+
+table.view-1																		{float:left; width:100%; border-top:2px solid #DADCE5; margin-top:7px;}
+table.view-1 th																	{font:12px nbgM; line-height:16px; color:#444; text-align:center; border-right:1px solid #DADCE5; border-bottom:1px solid #DADCE5; background:#F7F8FA; padding:7px 7px;}
+table.view-1 th:last-child														{border-right:none;}
+table.view-1 td																	{font:12px nbgM; line-height:16px; color:#777; border-right:1px solid #DADCE5; border-bottom:1px solid #DADCE5; padding:7px 15px;}
+table.view-1 td:last-child														{border-right:none;}
+table.view-1 td a.btn															{display:inline-block; color:#FFF; vertical-align:middle; background:#A6ADBA; padding:4px 7px 3px;}
+table.view-1 td a.btn:hover													{color:#FFF; background:#3A84D8;}
+table.view-1 td a.checkfile													{display:inline-block; font-size:12px; color:#666; line-height:21px; border:1px solid #D9D9D9; vertical-align:top; background:url("/images/oklms/adm/inc/icon_check.png") 10px 50% #FFF no-repeat; padding:0 10px 0 30px;}
+
+
+table.view-1 td textarea														{width:98.5%; height:100px; font:12px nbgM; line-height:17px; color:#666; border:5px solid #DADCE5; padding:5px;}
+table.view-1 td input.choice													{width:13px; height:13px; vertical-align:middle; border:none; background:none; padding:0;}
+table.view-1 td label															{line-height:13px; padding:0 20px 0 4px;}
+table.view-1 td input															{height:21px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; background:#FFF; padding:0 5px;}
+table.view-1 td select															{height:23px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:1px solid #D5D8DC; background:#FFF; padding-left:5px;}
+table.view-1 td span															{display:inline-block; position:relative; width:92px; height:23px; padding:0;}
+table.view-1 td span .file_input_hidden									{position:absolute; width:90px; height:21px; left:0; top:0; opacity:0; cursor:pointer;}
+table.view-1 td b																	{font-weight:normal; color:#2A91D4;}
+
+
+
+
+.write-1																				{float:left; width:100%; margin-top:7px;}
+.write-1 textarea																	{width:98.5%; height:100px; font:12px nbgM; line-height:17px; color:#666; border:5px solid #DADCE5; padding:5px;}
+
+
+
+.page-num																			{float:left; width:100%; height:38px; font:12px Dotum; line-height:18px; text-align:center; margin:15px auto 0;}
+
+.page-num a																		{display:inline-block; overflow:hidden; color:#777; vertical-align:top; background:#FFF;}
+.page-num a.num																{width:21px; height:17px; text-align:center; padding-top:2px; border:1px solid #BBB;}
+.page-num a.num:hover, .page-num a.num:focus					{width:23px; height:18px; color:#FFF; background:#BBB; border:none; padding-top:3px;}
+.page-num a.ing																	{width:23px; height:18px; font-weight:bold; color:#FFF; background:#4084F6; border:none; padding-top:3px;}
+.page-num a.ing:hover, .page-num a.ing:focus						{color:#FFF; background:#4084F6;}
+
+.page-num a.page-btn1														{width:22px; height:21px; text-indent:-9999px; background:url("/images/oklms/adm/inc/page_btn.gif") 0 0 no-repeat;}
+.page-num a.page-btn1:hover, 
+.page-num a.page-btn1:focus												{background-position:0 bottom;}
+.page-num a.page-btn2														{width:22px; height:21px; text-indent:-9999px; background:url("/images/oklms/adm/inc/page_btn.gif") -22px 0 no-repeat; margin:0 17px 0 0;}
+.page-num a.page-btn2:hover,
+.page-num a.page-btn2:focus												{background-position:-22px bottom;}
+.page-num a.page-btn3														{width:22px; height:21px; text-indent:-9999px; background:url("/images/oklms/adm/inc/page_btn.gif") -44px 0 no-repeat; margin:0 0 0 16px;}
+.page-num a.page-btn3:hover,
+.page-num a.page-btn3:focus												{background-position:-44px bottom;}
+.page-num a.page-btn4														{width:22px; height:21px; text-indent:-9999px; background:url("/images/oklms/adm/inc/page_btn.gif") -66px 0 no-repeat;}
+.page-num a.page-btn4:hover,
+.page-num a.page-btn4:focus												{background-position:-66px bottom;}
+
+
+
+.page-btn																			{float:left; width:100%; text-align:right;} 
+.page-btn a																		{display:inline-block; font-size:16px; color:#FFF; border-radius:5px; text-align:center; background:#333; padding:11px 15px 9px; margin:15px 0 0 5px;}
+
+.page-btn-1																		{float:left; width:100%; text-align:right;}
+.page-btn-1 a																		{display:inline-block; font-size:13px; color:#FFF; border-radius:5px; text-align:center; background:#A6ADBA; padding:6px 12px 4px; margin:10px 0 0 3px;}
+
+.page-btn-2																			{float:left; width:200%;}
+.page-btn-2 a																		{display:inline-block; font-size:16px; color:#FFF; border-radius:5px; text-align:center; background:#333; padding:11px 15px 9px; margin:15px 0 0 5px;}
+
+
+
+
+
+.reply-area																		{float:left; width:100%; margin-top:15px;}
+.reply-area:after																{content:""; display:block; clear:both;}
+
+.reply-area .write															{position:relative; width:100%;}
+.reply-area .write:after														{content:""; display:block; clear:both;}
+.reply-area .write li															{position:relative; float:left;}
+.reply-area .write li.title													{font:16px nbgM; color:#111; line-height:18px; background:url("/images/oklms/adm/inc/bullet_name.png") 0 3px no-repeat; padding-left:17px; margin-bottom:5px;}
+.reply-area .write li.body													{width:100%; border:1px solid #A4BABE; border-bottom:none;}
+.reply-area .write li.body label											{position:absolute; left:10px; top:7px; font:14px nbgM; color:#BBB; line-height:22px;}
+.reply-area .write li.body textarea										{width:96%; height:50px; font:14px nbgM; color:#555; line-height:20px; border:none; padding:2%;}
+.reply-area .write li.btn													{width:98%; border:1px solid #A4BABE; border-top:1px solid #CDDCDF; background:#EDF3F4; padding:10px 1%;}
+.reply-area .write li.btn a													{float:right; width:100px; height:22px; font-size:15px; color:#FFF; line-height:18px; text-align:center; text-indent:0; background:#009EC0; border-radius:14px; padding-top:5px;}
+
+
+
+.reply-area .list																{position:relative; width:100%; border-bottom:1px dotted #888; padding-bottom:15px; margin-top:30px;}
+.reply-area .list:after														{content:""; display:block; clear:both;}
+.reply-area .list:last-child													{border-bottom:none; padding-bottom:10px;}
+.reply-area .list dt															{position:relative; float:left; width:100%; font:16px nbgM; color:#222; line-height:20px; padding-bottom:5px;}
+.reply-area .list dt p															{display:inline-block; font-size:13px;}
+.reply-area .list dt span													{display:inline-block; color:#999; padding-left:15px;}
+.reply-area .list dt a															{position:absolute; display:block; overflow:hidden; width:15px; height:15px; text-indent:-9999px;}
+.reply-area .list dt a.modify												{right:25px; top:3px; background:url("/images/oklms/adm/inc/icon_modify.png") no-repeat;}
+.reply-area .list dt a.del													{right:5px; top:3px; background:url("/images/oklms/adm/inc/icon_del.png") no-repeat;}
+.reply-area .list dd															{float:left; width:100%; font:13px nbgM; color:#777; line-height:18px;}
+.reply-area .list dd a														{float:right; overflow:hidden; width:109px; height:19px; font:12px Dotum; color:#009EC0; line-height:18px; text-align:center; border:1px solid #90BEC6; border-radius:14px; padding-top:4px; margin-top:10px;}
+.reply-area .list dd a:hover												{color:#FFF; border:1px solid #009EC0; background:#009EC0;}
+.reply-area .list dd a.on													{color:#FFF; border:1px solid #009EC0; background:#009EC0;}
+
+
+
+.reply-area .list-reply														{position:relative; width:100%; border-bottom:1px dotted #888; background:#F6F6F6; padding:25px 0 20px;}
+.reply-area .list-reply:after												{content:""; display:block; clear:both;}
+.reply-area .list-reply dl													{float:left; width:91%; border-bottom:1px dotted #888; background:url("/images/oklms/adm/inc/reply_line.png") 40px 1px no-repeat; padding:0 3% 20px 6%; margin-bottom:20px;}
+
+.reply-area .list-reply dt													{position:relative; float:left; width:100%; font:16px nbgM; color:#222; line-height:20px; padding-bottom:5px;}
+.reply-area .list-reply dt p												{display:inline-block; font-size:13px;}
+.reply-area .list-reply dt span											{display:inline-block; color:#999; padding-left:15px;}
+.reply-area .list-reply dt a												{position:absolute; display:block; overflow:hidden; width:15px; height:15px; text-indent:-9999px;}
+.reply-area .list-reply dt a.modify										{right:25px; top:3px; background:url("/images/oklms/adm/inc/icon_modify.png") no-repeat;}
+.reply-area .list-reply dt a.del											{right:5px; top:3px; background:url("/images/oklms/adm/inc/icon_del.png") no-repeat;}
+.reply-area .list-reply dd													{float:left; width:100%; font:13px nbgM; color:#777; line-height:18px;}
+
+.reply-area .list-reply ul													{float:left; width:91%; background:url("/images/oklms/adm/inc/reply_line.png") 40px 1px no-repeat; padding:0 3% 0 6%;}
+.reply-area .list-reply li													{position:relative; float:left;}
+.reply-area .list-reply li.body											{width:100%; border:1px solid #A4BABE; border-bottom:none;}
+.reply-area .list-reply li.body label										{position:absolute; left:10px; top:7px; font:14px nbgM; color:#BBB; line-height:22px;}
+.reply-area .list-reply li.body textarea								{width:96%; height:50px; font:14px nbgM; color:#555; line-height:20px; border:none; padding:2%;}
+.reply-area .list-reply li.btn												{width:98%; border:1px solid #A4BABE; border-top:1px solid #CDDCDF; background:#EDF3F4; padding:10px 1%;}
+.reply-area .list-reply li.btn a											{float:right; width:100px; height:22px; font-size:15px; color:#FFF; line-height:18px; text-align:center; text-indent:0; background:#009EC0; border-radius:14px; padding-top:5px; margin-right:0;}
+
+
+
+
+
+.without-box																	{position:relative; float:left; width:100%; text-align:center; border:1px solid #DADDDF; background:#EDEFF2; padding:20px 0;}
+.without-box input															{width:400px; height:32px; color:#777; line-height:15px; vertical-align:middle; border:4px solid #B1C2CE; padding:0 5px; margin-right:5px;}
+.without-box span															{display:inline-block; position:relative; width:160px; height:40px; vertical-align:middle; padding:0;}
+.without-box a																{display:inline-block; width:118px; height:31px; font-size:16px; color:#666; line-height:25px; border:1px solid #B1C2CE; vertical-align:top; background:url("/images/oklms/adm/inc/icon_check.png") 15px 50% #FFF no-repeat; padding:7px 10px 0 30px;}
+.without-box span .file_input_hidden									{position:absolute; width:160px; height:40px; left:0; top:0; opacity:0; cursor:pointer;}
+
+
+
+
+.point-textarea-1																{float:left; width:100%; font-size:14px; color:#D46E2A; border-bottom:1px solid #DADCE5; padding:13px 0 10px;}
+
+.point-textarea-2																{float:left; width:100%; font-size:13px; color:#555; border-bottom:1px solid #DADCE5; padding:13px 0;}
+.point-textarea-2 li															{float:left; width:98%; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 7px no-repeat; padding-left:10px; margin-bottom:3px;}
+
+
+
+.class-box																		{position:relative; float:left; width:94%; border:1px solid #DADDDF; background:#EDEFF2; padding:20px 3% 20px; margin-top:7px;}
+.class-box li																	{float:left;}
+.class-box li.side															{width:43%;}
+.class-box li.side span													{display:inline-block; font:13px nbgM; color:#555; line-height:20px; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 10px no-repeat; padding:2px 5px 0 8px;}
+.class-box li.side select													{height:23px; font:12px nbgM; color:#888; line-height:20px; vertical-align:top; border:1px solid #D5D8DC; padding:0 0 0 5px;}
+.class-box li.side textarea												{width:97%; height:150px; font:12px nbgM; color:#888; line-height:20px; vertical-align:middle; border:5px solid #CFD8E0; margin-top:10px;}
+
+.class-box li.line-vertical													{width:10%; height:108px; text-align:center; background:url("/images/oklms/adm/inc/line_class_box.png") center repeat-y; padding:87px 2% 0;}
+.class-box li.line-vertical span											{display:inline-block; width:97%; font:13px nbgM; color:#555; line-height:20px; text-align:center; border-radius:7px 7px 0 0; border:1px solid #B1C2CE; background:#FFF; padding:3px 0 2px;}
+.class-box li.line-vertical a												{display:inline-block; overflow:hidden; width:50%; text-indent:-9999px; padding:3px 0 6px;}
+.class-box li.line-vertical a.pre											{border-radius:0 0 0 7px; background:url("/images/oklms/adm/inc/btn_pre_01.png") center no-repeat #B1C2CE;}
+.class-box li.line-vertical a.next										{border-radius:0 0 7px 0; background:url("/images/oklms/adm/inc/btn_next_01.png") center no-repeat #B1C2CE;}
+
+
+
+
+.code-box																		{position:relative; float:left; width:100%;}
+.code-box li																	{float:left;}
+.code-box li.code-area													{width:28%; padding-right:3%;}
+.code-box li.list-area														{float: left;width:100%;}
+
+
+
+

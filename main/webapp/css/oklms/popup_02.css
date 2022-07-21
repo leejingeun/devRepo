@@ -1,0 +1,259 @@
+@charset "utf-8";
+
+
+
+@media all and (max-width:770px) {
+
+#popup-wrarp-1 .popup-join-box									{width:92%; left:50%; top:-560px; border:1% solid #4084F6; margin-left:-47%;}
+#popup-wrarp-1 .popup-join-direct								{width:92%; left:50%; top:-560px; border:1% solid #4084F6; margin-left:-47%;}
+
+#popup-wrarp-1 .text-area											{width:84%; margin:40px 8% 20px;}
+#popup-wrarp-1 .search-area										{width:84%; margin:10px 8% 20px;}
+
+#popup-wrarp-1 table .col-1										{width:8%;}
+#popup-wrarp-1 table .col-2										{width:20%;}
+#popup-wrarp-1 table .col-3										{width:30%;}
+#popup-wrarp-1 table .col-4										{width:22%;}
+#popup-wrarp-1 table .col-5										{width:20%;}
+#popup-wrarp-1 table .col-6										{display:none;}
+
+}
+
+
+
+
+
+
+
+
+
+@media all and (max-width:635px) {
+
+#popup-wrarp-1 .popup-pass-box								{width:260px; height:200px; left:50%; top:-230px; border:1% solid #4084F6; margin-left:-130px;}
+#popup-wrarp-1 .popup-pass-box.open						{top:100px;}
+#popup-wrarp-1 .popup-progress-box.open					{top:100px;}
+#popup-wrarp-1 .popup-exam-box.open						{top:100px;}
+
+
+
+#popup-wrarp-1 .search input										{width:120px;}
+
+#popup-wrarp-1 .text-area											{width:84%; margin:35px 8% 20px;}
+#popup-wrarp-1 .text-area p										{font-size:22px; line-height:40px;}
+#popup-wrarp-1 .text-area span									{font-size:15px; line-height:20px;}
+
+#popup-wrarp-1 .search-area										{width:84%; margin:10px 8% 20px;}
+#popup-wrarp-1 .search-area input								{width:250px;}
+
+
+
+#popup-wrarp-1 .pass-group										{width:100%; height:125px; text-align:center; background:none; padding:0; margin-top:20px;}
+#popup-wrarp-1 .pass-group label								{font-size:13px; line-height:18px; text-align:center;}
+#popup-wrarp-1 .pass-group input								{width:170px; height:26px; font:14px; line-height:20px; margin:5px auto;}
+#popup-wrarp-1 .pass-group a									{width:60px; height:24px; font:14px nbgM; line-height:24px; text-align:center; border-radius:3px; padding-top:2px; margin:5px auto;}
+
+
+
+.poll-box ul li.poll-bar													{width:77%;}
+.poll-box ul li.poll-txt													{width:23%;}
+.poll-box ul li.choice													{width:5%; padding-left:1%;}
+.poll-box ul li.text														{width:94%;}
+
+
+
+.pop-exam-info dd.title-1												{width:13%; padding:15px 0 0 3.5%;}
+.pop-exam-info dd.text-1												{width:83.5%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:560px) {
+
+#popup-wrarp-1 .popup-join-box.open							{top:30px;}
+#popup-wrarp-1 .popup-join-direct.open						{top:30px;}
+#popup-wrarp-1 .popup-exam-box								{width:290px; height:190px; margin-left:-150px;}
+
+
+
+#popup-wrarp-1 .text-area											{width:84%; margin:30px 8% 15px;}
+#popup-wrarp-1 .text-area p										{font-size:20px; line-height:32px;}
+#popup-wrarp-1 .text-area span									{font-size:14px; line-height:18px;}
+#popup-wrarp-1 .text-area br										{display:none;}
+
+
+
+#popup-wrarp-1 .search-area										{width:84%; padding-bottom:20px; margin:5px 8% 15px;}
+#popup-wrarp-1 .search-area input								{width:180px;}
+
+
+
+#popup-wrarp-1 .search												{margin:15px 2.5% 10px;}
+#popup-wrarp-1 .search select									{height:25px; font-size:12px; line-height:16px; margin-right:2px;}
+#popup-wrarp-1 .search input										{width:100px; height:23px; font-size:12px; line-height:16px; padding:0 5px; margin-top:4px;}
+#popup-wrarp-1 .search br											{display:block;}
+#popup-wrarp-1 .search a.btn-search							{width:25px; height:25px; background-position:2px 3px; margin-top:4px; margin-left:1px;}
+#popup-wrarp-1 .search a.btn-input								{float:right; width:60px; height:20px; font-size:12px; line-height:18px; padding-top:5px; margin-top:4px;}
+
+
+
+#popup-wrarp-1 table tr th											{font-size:13px; line-height:18px; padding:7px 0;}
+#popup-wrarp-1 table tr td											{font-size:12px; line-height:16px; padding:6px 0 5px;}
+#popup-wrarp-1 table .col-1										{display:none;}
+#popup-wrarp-1 table .col-2										{width:20%;}
+#popup-wrarp-1 table .col-3										{width:30%;}
+#popup-wrarp-1 table .col-4										{width:26%;}
+#popup-wrarp-1 table .col-5										{width:24%;}
+
+
+
+#popup-wrarp-1 .exam-group										{width:90%; height:120px; background:none; padding-left:0; margin:15px 5% 0;}
+#popup-wrarp-1 .exam-group li									{font-size:12px; text-align:center;}
+#popup-wrarp-1 .exam-group li.name							{font-size:17px; text-align:center; padding:3px 0 8px;}
+#popup-wrarp-1 .exam-group li.btn								{padding-top:8px;}
+
+
+
+#popup-header h1														{font-size:15px;}
+
+
+
+.poll-text																	{width:95%; font-size:14px; line-height:18px; background-position:0 2px; padding:0 0 7px 5%;}
+.poll-box-area															{width:90%; border:4px solid #E9E9E9; padding:15px 3.5% 15px 4.5%;}
+.poll-box																	{width:96%; height:400px; padding-right:4%;}
+
+.poll-box ul li.title														{font-size:13px; line-height:18px;}
+.poll-box ul li.choice													{width:7%; padding-left:1%;}
+.poll-box ul li.text														{width:92%; line-height:16px; padding-bottom:4px;}
+.poll-box ul li.text1 input												{width:94%; height:18px; border:2px solid #D9D9D9;}
+.poll-box ul li.text1 textarea											{width:94%; height:50px; border:4px solid #D9D9D9;}
+
+.poll-box ul li.poll-ex													{font-size:12px; padding-bottom:3px;}
+.poll-box ul li.poll-bar													{width:67%;}
+.poll-box ul li.poll-txt													{width:33%; font-size:11px; line-height:15px;}
+.poll-box ul li.line1														{padding-bottom:10px; margin-bottom:18px;}
+.poll-box ul li.line2														{padding-bottom:15px; margin-bottom:20px;}
+
+
+
+.pop-exam-info dt														{font-size:16px; line-height:22px; padding-bottom:5px;}
+.pop-exam-info dd.title-1												{width:17%; font-size:12px; line-height:18px; background-position:0 14px; padding:12px 0 0 5%;}
+.pop-exam-info dd.text-1												{width:78%; font-size:12px; line-height:18px; padding-top:12px;}
+.pop-exam-info dd.text-2												{font-size:12px; line-height:20px; padding-bottom:15px;}
+.pop-exam-info dd.text-2 span										{font-size:12px; line-height:20px; background-position:0 0; padding-left:16px;}
+
+.pop-exam-info dd.time												{width:95%; font-size:12px; line-height:18px; background-position:0 3px; padding-left:5%;}
+.pop-exam-info dd.time span										{font-size:14px;}
+
+.pop-exam-info dd.btn													{width:100%; border-top:1px dotted #555; padding:10px 0 10px; margin-top:8px;}
+.pop-exam-info dd.btn input											{font-size:12px; padding:3px 8px 2px; margin-left:2px;}
+.pop-exam-info dd.btn	a												{font-size:12px; padding:3px 8px 2px; margin-left:2px;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:400px) {
+
+#popup-wrarp-1 .popup-join-box									{height:650px; top:-660px;}
+#popup-wrarp-1 .popup-join-direct								{height:650px; top:-660px;}
+#popup-wrarp-1 .popup-pass-box								{width:200px; margin-left:-100px;}
+
+
+
+#popup-wrarp-1 .text-area											{width:84%; margin:30px 8% 15px;}
+#popup-wrarp-1 .text-area p										{font-size:18px; line-height:32px;}
+#popup-wrarp-1 .text-area span									{font-size:13px; line-height:18px;}
+#popup-wrarp-1 .text-area br										{display:none;}
+
+
+
+#popup-wrarp-1 .search-area										{width:84%; padding-bottom:20px; margin:5px 8% 15px;}
+#popup-wrarp-1 .search-area input								{width:150px; height:25px;}
+#popup-wrarp-1 .search-area a									{width:50px; height:27px; font-size:14px; line-height:27px;}
+
+#popup-wrarp-1 .search												{margin:15px 2.5% 10px;}
+#popup-wrarp-1 .search select									{height:25px; font-size:11px; line-height:16px; margin-right:2px;}
+#popup-wrarp-1 .search input										{width:80px; height:23px; font-size:11px; line-height:16px; padding:0 5px; margin-top:4px;}
+#popup-wrarp-1 .search br											{display:block;}
+
+#popup-wrarp-1 .search a.btn-search							{width:25px; height:25px; background-position:2px 3px; margin-top:4px; margin-left:1px;}
+#popup-wrarp-1 .search a.btn-input								{float:right; width:60px; height:20px; font-size:12px; line-height:18px; padding-top:5px; margin-top:4px;}
+
+
+
+#popup-wrarp-1 table tr th											{font-size:12px; line-height:16px; padding:6px 0;}
+#popup-wrarp-1 table tr td											{font-size:11px; line-height:15px; padding:6px 0 5px;}
+#popup-wrarp-1 table .col-2										{width:20%;}
+#popup-wrarp-1 table .col-3										{width:30%;}
+#popup-wrarp-1 table .col-4										{width:26%;}
+#popup-wrarp-1 table .col-5										{width:24%;}
+
+
+
+#popup-wrarp-1 .btn-area a											{width:110px; font-size:15px; border-radius:5px; padding:10px 0;}
+
+
+
+#popup-wrarp-1 .pass-group label								{font-size:12px;}
+#popup-wrarp-1 .pass-group span								{font-size:18px}
+#popup-wrarp-1 .pass-group input								{width:120px;}
+#popup-wrarp-1 .pass-group a									{margin:10px auto;}
+
+
+
+#popup-header h1														{font-size:14px;}
+#popup-container														{padding:80px 30px 30px; }
+#popup-container1														{padding:0 30px 30px; }
+
+.poll-text																	{width:94%; font-size:13px; line-height:17px; padding:0 0 7px 6%;}
+.poll-box-area															{width:100%; border:none; border-top:3px solid #E9E9E9; border-bottom:3px solid #E9E9E9; padding:15px 0 20px;}
+.poll-box																	{width:95%; height:325px; padding-right:5%;}
+
+
+
+.poll-box ul li.title														{font-size:12px; line-height:16px;}
+
+.poll-box ul li.choice													{width:8%; padding-left:1%;}
+.poll-box ul li.text														{width:91%; font-size:11px; padding-bottom:3px;}
+.poll-box ul li.text1 input												{width:94%; height:16px; font-size:11px; line-height:15px;}
+.poll-box ul li.text1 textarea											{width:93%; font-size:11px; line-height:15px;}
+
+.poll-box ul li.poll-ex													{font-size:11px; padding-bottom:1px;}
+.poll-box ul li.poll-bar													{width:100%; margin-bottom:7px;}
+.poll-box ul li.poll-txt													{width:100%; font-size:11px; line-height:15px; text-align:left; margin-bottom:10px;}
+.poll-box ul li.line1														{padding-bottom:7px; margin-bottom:14px;}
+.poll-box ul li.line2														{padding-bottom:7px; margin-bottom:15px;}
+
+
+
+.pop-exam-info dt														{font-size:15px; line-height:20px;}
+.pop-exam-info dd.title-1												{display:none;}
+.pop-exam-info dd.text-1												{width:100%; font-size:11px; line-height:17px; padding-top:10px;}
+
+.pop-exam-info dd.text-2												{font-size:11px; line-height:17px; padding-bottom:15px;}
+.pop-exam-info dd.text-2 span										{font-size:11px; line-height:17px; background:url("/images/oklms/std/inc/lnb_bullet_01.png") 0 4px no-repeat; padding-left:8px;}
+
+.pop-exam-info dd.time												{width:97%; font-size:11px; line-height:18px; background:url("/images/oklms/std/inc/lnb_bullet_01.png") 0 7px no-repeat; padding-left:3%;}
+.pop-exam-info dd.time span										{font-size:13px;}
+.pop-exam-info dd.btn													{padding:8px 0 10px; margin-top:7px;}
+
+}
+
+
+
+

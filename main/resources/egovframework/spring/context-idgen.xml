@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean name="protoBoardIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="strategy"   ref="protoBoardStrategy" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="TABLE_ID_IDNF_MNGM" />
+		<property name="nextIdFieldName"      value="NEXT_ID" />
+		<property name="tableName"  value="PROTOTYPE" />
+	</bean>
+	<!-- 테이블 TEST ID Generation Strategy Config -->
+	<bean name="protoBoardStrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix"   value="" />
+		<property name="cipers"   value="12" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+    <!-- COM_MENU 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('COM_MENU', 1 , 'COM_MENU 테이블 ID Generation');  -->
+	<bean name="menuIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="strategy"   ref="menuIdGnrStrategy" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="COM_SEQUENCE_GEN" />
+		<property name="nextIdFieldName"      value="CURRENT_SEQ" />
+		<property name="tableName"  value="COM_MENU" />
+	</bean>
+	<bean name="menuIdGnrStrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+		<property name="prefix"   value="YEAR#MENU" />
+		<property name="cipers"   value="7" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- COM_COMCODE 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('COM_COMCODE', 1 , 'COM_COMCODE 테이블 ID Generation');  -->
+	<bean name="comcodeIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="strategy"   ref="comcodeIdGnrStrategy" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="COM_SEQUENCE_GEN" />
+		<property name="nextIdFieldName"      value="CURRENT_SEQ" />
+		<property name="tableName"  value="COM_COMCODE" />
+	</bean>
+	<bean name="comcodeIdGnrStrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+		<property name="prefix"   value="YEAR#CCOD" />
+		<property name="cipers"   value="7" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- COM_AUTH_GROUP 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('COM_AUTH_GROUP', 1 , 'COM_AUTH_GROUP 테이블 ID Generation');  -->
+	<bean name="authGroupIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="strategy"   ref="authGroupIdGnrStrategy" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="COM_SEQUENCE_GEN" />
+		<property name="nextIdFieldName"      value="CURRENT_SEQ" />
+		<property name="tableName"  value="COM_AUTH_GROUP" />
+	</bean>
+	<bean name="authGroupIdGnrStrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+		<property name="prefix"   value="YEAR#AUTH" />
+		<property name="cipers"   value="7" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- 회원(COM_MEMBER) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('COM_MEMBER', 1 , '회원(COM_MEMBER) 테이블 ID Generation');   -->
+	<bean name="memberIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="strategy"   ref="memberIdGnrStrategy" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="COM_SEQUENCE_GEN" />
+		<property name="nextIdFieldName"      value="CURRENT_SEQ" />
+		<property name="tableName"  value="COM_MEMBER" />
+	</bean>
+	<bean name="memberIdGnrStrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+		<property name="prefix"   value="YEAR#USER" />
+		<property name="cipers"   value="7" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- 첨부파일(ATCH_FILE) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('ATCH_FILE', 1 , '첨부파일(ATCH_FILE) 테이블 ID Generation');  -->
+	<bean name="atchFileIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="strategy"   ref="atchFileIdGnrStrategy" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="COM_SEQUENCE_GEN" />
+		<property name="nextIdFieldName"      value="CURRENT_SEQ" />
+		<property name="tableName"  value="ATCH_FILE" />
+	</bean>
+	<bean name="atchFileIdGnrStrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+		<property name="prefix"   value="YEAR#FILE" />
+		<property name="cipers"   value="12" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- 팝업창관리(LMS_POPUP) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_POPUP', 1 , '팝업(LMS_POPUP) 테이블 ID Generation');   -->
+    <bean name="popupManageIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="popupManageIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_POPUP"/>
+    </bean>
+    <bean name="popupManageIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="POPUP_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+	<!-- SMS(SC_TRAN) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('SC_TRAN', 1 , 'SMS(SC_TRAN) 테이블 ID Generation');   -->
+	<bean name="mailIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+		<property name="dataSource" ref="globals.dataSource" />
+		<property name="blockSize"  value="10" />
+		<property name="table"      value="COM_SEQUENCE_GEN" />
+		<property name="nextIdFieldName"      value="CURRENT_SEQ" />
+		<property name="tableName"  value="SC_TRAN" />
+	</bean>
+
+	   <!--  배너 ID -->
+    <bean name="egovBannerIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="egov.dataSource" />
+        <property name="strategy"   ref="bannerIdStrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COMTECOPSEQ"/>
+        <property name="tableName"  value="BANNER_ID"/>
+    </bean>
+    <bean name="bannerIdStrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="BANNER_" />
+        <property name="cipers"   value="13" />
+        <property name="fillChar" value="0" />
+    </bean>
+    <!-- 배너 ID -->
+
+    <!-- 팝업창관리(LMS_COMPANY) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_COMPANY', 1 , '팝업(LMS_COMPANY) 테이블 ID Generation');   -->
+    <bean name="companyIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="companyIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_COMPANY"/>
+    </bean>
+    <bean name="companyIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="COM_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 과제관리(LMS_REPORT) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_REPORT', 1 , '과제(LMS_REPORT) 테이블 ID Generation');   -->
+    <bean name="reportIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="reportIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_REPORT"/>
+    </bean>
+    <bean name="reportIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="REP_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 과제제출관리(LMS_REPORT_SUBMIT) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_REPORT_SUBMIT', 1 , '과제제출(LMS_SUBJECT_SUBMIT) 테이블 ID Generation');   -->
+    <bean name="reportSubmitIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="reportSubmitIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_REPORT_SUBMIT"/>
+    </bean>
+    <bean name="reportSubmitIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="RES_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 교수매핑 정보 등록(LMS_SUBJ_INS_MAPPING) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJ_INS_MAPPING', 266 , '교수매핑 아이디(SUBJ_INS_MAPPING_ID) 테이블 ID Generation');   -->
+    <bean name="insMappingIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="insMappingIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_INS_MAPPING"/>
+    </bean>
+    <bean name="insMappingIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#INSM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+     <!-- 학과전담자 매핑 정보 등록(LMS_SUBJ_CDP_MAPPING) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJ_CDP_MAPPING', 266 , '학과전담자 매핑 아이디(SUBJ_CDP_MAPPING_ID) 테이블 ID Generation');   -->
+    <bean name="cdpMappingIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="cdpMappingIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_CDP_MAPPING"/>
+    </bean>
+    <bean name="cdpMappingIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#CDPM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 수강 정보 등록(LMS_LESSON) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_LESSON', 266 , '수강 아이디(LESSON_ID) 테이블 ID Generation');   -->
+    <bean name="lessonIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="lessonIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_LESSON"/>
+    </bean>
+    <bean name="lessonIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#LESS" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 주차별 정보 등록(LMS_SUBJ_WEEK) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJ_WEEK', 266 , '주차별 아이디(WEEK_ID) 테이블 ID Generation');   -->
+    <bean name="subjWeekIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjWeekIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_WEEK"/>
+    </bean>
+    <bean name="subjWeekIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#WEEK" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 주차별시간 등록(LMS_SUBJ_WEEK_TIME) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJ_WEEK_TIME', 1900 , '시간 아이디(TIME_ID) 테이블 ID Generation');   -->
+    <bean name="subjWeekTimeIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjWeekTimeIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_WEEK_TIME"/>
+    </bean>
+    <bean name="subjWeekTimeIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TIME" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+     <!-- 주차별 NCS단위 (LMS_SUBJ_NCS_UNIT) 테이블 ID Generation -->
+    <bean name="subjNcsUnitIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjNcsUnitIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_NCS_UNIT"/>
+    </bean>
+    <bean name="subjNcsUnitIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#UNIT" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 주차별 NCS요소 (LMS_SUBJ_NCS_ELEM) 테이블 ID Generation -->
+    <bean name="subjNcsElemIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjNcsElemIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_NCS_ELEM"/>
+    </bean>
+    <bean name="subjNcsElemIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#ELEM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 주차별 차시정보 등록(LMS_SUBJ_WEEK_SCH) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJ_WEEK_SCH', 1 , '주차별 차시 아이디(SUBJ_SCH_ID) 테이블 ID Generation');   -->
+    <bean name="subjWeekSchIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjWeekSchIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_WEEK_SCH"/>
+    </bean>
+    <bean name="subjWeekSchIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#WSCH" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 주차별 차시에 속한 요소 등록(LMS_SUBJ_WEEK_SCH_ELEM) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJ_WEEK_SCH_ELEM', 1 , '주차별 차시 요소 아이디(ELEM_ID) 테이블 ID Generation');   -->
+    <bean name="subjWeekSchElemIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjWeekSchElemIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_WEEK_SCH_ELEM"/>
+    </bean>
+    <bean name="subjWeekSchElemIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#WSEL" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 담당교수, 학과전담자, 학습근로자 화면용 Start - jglee -->
+
+    <!-- 토론(LMS_DISCUSS) 테이블 ID Generation  -->
+    <bean name="discussIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="discussIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_DISCUSS"/>
+    </bean>
+    <bean name="discussIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#DISC" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 토론 의견(LMS_DISCUSS_OPINION) 테이블 ID Generation  -->
+    <bean name="discussOpinionIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="discussOpinionIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_DISCUSS_OPINION"/>
+    </bean>
+    <bean name="discussOpinionIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#DISO" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 토론 의견코멘트(LMS_DISCUSS_COMMENT) 테이블 ID Generation  -->
+    <bean name="discussCommentIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="discussCommentIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_DISCUSS_COMMENT"/>
+    </bean>
+    <bean name="discussCommentIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#DICO" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 의견 추천 히스토리(LMS_DISCUSS_GOOD_HIST) 테이블 ID Generation  -->
+    <bean name="discussGoodHistIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="discussGoodHistIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_DISCUSS_GOOD_HIST"/>
+    </bean>
+    <bean name="discussGoodHistIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#HIST" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 담당교수, 학과전담자, 학습근로자 화면용 End -->
+
+    <!-- 센터담당자 화면용 Start - jglee -->
+
+    <!-- 훈련과정검색(LMS_TRANING_PROCESS_SEARCH) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_TRANING_PROCESS_SEARCH', 1 , '훈련과정검색(LMS_TRANING_PROCESS_SEARCH) 테이블 ID Generation');   -->
+    <bean name="traningProcessSearchIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningProcessSearchIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_PROCESS_SEARCH"/>
+    </bean>
+    <bean name="traningProcessSearchIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PROC" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련과정검색(LMS_TRANING_PROCESS) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_TRANING_PROCESS', 1 , '훈련과정(LMS_TRANING_PROCESS) 테이블 ID Generation');   -->
+    <bean name="traningProcessIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningProcessIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_PROCESS"/>
+    </bean>
+    <bean name="traningProcessIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PROM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련과정(LMS_TRANING_PROCESS_MAPPING) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_TRANING_PROCESS_MAPPING', 1 , '훈련과정메핑(LMS_TRANING_PROCESS_MAPPING) 테이블 ID Generation');   -->
+    <bean name="traningProcessMappingIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningProcessMappingIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_PROCESS_MAPPING"/>
+    </bean>
+    <bean name="traningProcessMappingIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TRPM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 교사별 교과매핑 임시(LMS_SUBJ_TUT_MAPPING_TEMP) 테이블 ID Generation -->
+    <bean name="subjTutMappingIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjTutMappingIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_TUT_MAPPING_TEMP"/>
+    </bean>
+    <bean name="subjTutMappingIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TUTM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- HRD담당자 훈련과정매핑 임시(LMS_SUBJ_CCM_MAPPING) 테이블 ID Generation -->
+    <bean name="subjCcmMappingIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjCcmMappingIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_CCM_MAPPING"/>
+    </bean>
+    <bean name="subjCcmMappingIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#CCMM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련시간표-주차정보 (LMS_TRANING_SUBJ_WEEK_SCH) 테이블 ID Generation -->
+    <bean name="traningSubjWeekSchIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningSubjWeekSchIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_SUBJ_WEEK_SCH"/>
+    </bean>
+    <bean name="traningSubjWeekSchIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#WEEK" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련시간표-주차별시간 (LMS_TRANING_SUBJ_WEEK_TIME_SCH) 테이블 ID Generation -->
+    <bean name="traningSubjWeekTimeSchIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningSubjWeekTimeSchIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_SUBJ_WEEK_SCH"/>
+    </bean>
+    <bean name="traningSubjWeekTimeSchIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TIME" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련시간표-주차별 NCS단위 (LMS_TRANING_SUBJ_NCS_UNIT_SCH) 테이블 ID Generation -->
+    <bean name="traningSubNcsUnitSchIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningSubNcsUnitSchIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_SUBJ_NCS_UNIT_SCH"/>
+    </bean>
+    <bean name="traningSubNcsUnitSchIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#UNIT" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련시간표-주차별 NCS요소 (LMS_TRANING_SUBJ_NCS_ELEM_SCH) 테이블 ID Generation -->
+    <bean name="traningSubNcsElemSchIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningSubNcsElemSchIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_SUBJ_NCS_ELEM_SCH"/>
+    </bean>
+    <bean name="traningSubNcsElemSchIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#ELEM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+
+
+    <!-- 센터담당자 화면용 End -->
+
+    <!-- 출석정보(LMS_PROGRESS_ATTEND) 테이블 ID Generation -->
+    <bean name="progressAttendIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="progressAttendIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_PROGRESS_ATTEND"/>
+    </bean>
+    <bean name="progressAttendIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PROG" />
+        <property name="cipers"   value="17" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+     <!-- 출석정보 시간정보(LMS_LESSON_TIME) 테이블 ID Generation -->
+    <bean name="lessonTimeIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="lessonTimeIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_LESSON_TIME"/>
+    </bean>
+    <bean name="lessonTimeIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PROT" />
+        <property name="cipers"   value="17" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 출석정보 페이지정보(LMS_NON_PROGRESS_ATTEND) 테이블 ID Generation -->
+    <bean name="lessonPageIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="lessonPageIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_NON_PROGRESS_ATTEND"/>
+    </bean>
+    <bean name="lessonPageIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PRON" />
+        <property name="cipers"   value="17" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 면담관리(LMS_INTERVIEW_NOTE) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_INTERVIEW_NOTE', 1 , '면담관리(LMS_INTERVIEW_NOTE) 테이블 ID Generation');   -->
+    <bean name="interviewNoteIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="interviewNoteIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_INTERVIEW_NOTE"/>
+    </bean>
+    <bean name="interviewNoteIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="LIN_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+    <!-- 면담근로자(LMS_INTERVIEW_MEMBER) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_INTERVIEW_MEMBER', 1 , '면담근로자(LMS_INTERVIEW_MEMBER) 테이블 ID Generation');   -->
+    <bean name="interviewMemberIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="interviewMemberIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_INTERVIEW_MEMBER"/>
+    </bean>
+    <bean name="interviewMemberIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="LIM_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 학습활동서(LMS_ACTIVITY_NOTE_ID) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_ACTIVITY_NOTE_ID', 1 , '학습활동서(LMS_ACTIVITY_NOTE_ID) 테이블 ID Generation');   -->
+    <bean name="activityNoteIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="activityNoteIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_ACTIVITY_NOTE_ID"/>
+    </bean>
+    <bean name="activityNoteIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="ANI_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련일지 마스터 정보(lms_traning_note_master) 테이블 ID Generation -->
+    <bean name="traningMasterIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningMasterIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_NOTE_MASTER"/>
+    </bean>
+    <bean name="traningMasterIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TNMI" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+     <!-- 훈련일지 마스터 정보(lms_traning_note_master) 테이블 ID Generation -->
+    <bean name="traningDetailIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningDetailIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TRANING_NOTE_DETAIL"/>
+    </bean>
+    <bean name="traningDetailIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TNDI" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 훈련일지 보강주차별 시간 등록 (LMS_SUBJ_WEEK_TIME_ENRICHMENT) 테이블 ID Generation -->
+    <bean name="traningWeekTimeEnrichmentWeekIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningWeekTimeEnrichmentWeekIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_WEEK_TIME_ENRICHMENT"/>
+    </bean>
+    <bean name="traningWeekTimeEnrichmentWeekIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#WEEK" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+       <!-- 훈련일지 보강주차별 시간 등록 (LMS_SUBJ_WEEK_TIME_ENRICHMENT) 테이블 ID Generation -->
+    <bean name="traningWeekTimeEnrichmentTimeIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="traningWeekTimeEnrichmentTimeIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJ_WEEK_TIME_ENRICHMENT"/>
+    </bean>
+    <bean name="traningWeekTimeEnrichmentTimeIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#TIME" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+     <!--제직증빙서류 제출정보  (LMS_WORK_PROOF_PERIOD) 테이블 ID Generation -->
+    <bean name="workCertPeriodIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="workCertPeriodIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_WORK_PROOF_PERIOD"/>
+    </bean>
+    <bean name="workCertPeriodIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PERI" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 제직증빙서류(LMS_WORK_PROOF) 테이블 ID Generation -->
+    <bean name="workCertIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="workCertIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_WORK_PROOF"/>
+    </bean>
+    <bean name="workCertIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#WORK" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+     <!--활동내역 제출정보  (lms_activity) 테이블 ID Generation -->
+    <bean name="activityNoteDescIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="activityNoteDescIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_ACTIVITY"/>
+    </bean>
+    <bean name="activityNoteDescIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#ACTI" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+     <!--활동내역 제출정보  (lms_activity) 테이블 ID Generation -->
+    <bean name="activityNoteDescDetailIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="activityNoteDescDetailIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_ACTIVITY"/>
+    </bean>
+    <bean name="activityNoteDescDetailIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#DEAT" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+     <!--NCS강의계획서학습내용(직무수행능력평가)  (LMS_TH_NCS_PLAN_LRN) 테이블 ID Generation -->
+    <bean name="planEvIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="planEvIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TH_NCS_PLAN_LRN"/>
+    </bean>
+    <bean name="planEvIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#PLAN" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!--개설과목관리항목설정(직무수행능력평가)  (LMS_TH_LCTRE_CTRL_SET) 테이블 ID Generation -->
+    <bean name="manageItemSetIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="manageItemSetIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TH_LCTRE_CTRL_SET"/>
+    </bean>
+    <bean name="manageItemSetIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#MAGE" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- NCS개설과목능력요소(직무수행능력평가)  (LMS_TH_NCS_LCTRE_ELEM) 테이블 ID Generation -->
+    <bean name="lectureNcsElemIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="lectureNcsElemIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TH_NCS_LCTRE_ELEM"/>
+    </bean>
+    <bean name="lectureNcsElemIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#MAGE" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 1차평가학습자별점수(직무수행능력평가) (LMS_TH_FIRST_EV_STD_SCORE) 테이블 ID Generation -->
+    <bean name="stdScoreIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="stdScoreIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TH_FIRST_EV_STD_SCORE"/>
+    </bean>
+    <bean name="stdScoreIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#STSC" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 설문지정보 (LMS_QESTNR_INFO) 테이블 ID Generation -->
+    <bean name="qestnrIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="qestnrIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_QESTNR_INFO"/>
+    </bean>
+    <bean name="qestnrIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#QEST" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+    <!-- 설문문항 (LMS_QESTNR_ITEM) 테이블 ID Generation -->
+    <bean name="qustnrQesitmIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="qustnrQesitmIdGMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName" value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_QESTNR_ITEM"/>
+    </bean>
+    <bean name="qustnrQesitmIdGMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#ITEM" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+	<!-- 팀프로젝트(LMS_TEAM_PROJECT) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_TEAM_PROJECT', 1 , '팀프로젝트(LMS_TEAM_PROJECT) 테이블 ID Generation');   -->
+    <bean name="teamprojectIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="teamprojectIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TEAM_PROJECT"/>
+    </bean>
+    <bean name="teamprojectIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="TPJ_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+	<!-- 팀프로젝트제출(LMS_TEAM_PROJECT_SUBMIT) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_TEAM_PROJECT_SUBMIT', 1 , '팀프로젝트제출(LMS_TEAM_PROJECT_SUBMIT) 테이블 ID Generation');   -->
+    <bean name="teamprojectSubmitIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="teamprojectSubmitIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_TEAM_PROJECT_SUBMIT"/>
+    </bean>
+    <bean name="teamprojectSubmitIdMsgtrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix"   value="TPS_" />
+        <property name="cipers"   value="10" />
+        <property name="fillChar" value="0" />
+    </bean>
+    
+    <!-- 성적전송(LMS_GRADE_SUBMIT) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_GRADE_SUBMIT', 1 , '성적전송(LMS_GRADE_SUBMIT) 테이블 ID Generation');   -->
+    <bean name="gradeSubmitIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="gradeSubmitIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_GRADE_SUBMIT"/>
+    </bean>
+     <bean name="gradeSubmitIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#GRSB" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+    
+    <!-- 개설교과(LMS_SUBJECT) 테이블 ID Generation : INSERT INTO COM_SEQUENCE_GEN (TABLE_NAME, CURRENT_SEQ , SEQ_DESC) VALUES ('LMS_SUBJECT', 1 , '개설교과(LMS_SUBJECT) 테이블 ID Generation');   -->
+    <bean name="subjectHistoryIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="globals.dataSource" />
+        <property name="strategy"   ref="subjectHistoryIdMsgtrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="COM_SEQUENCE_GEN"/>
+        <property name="nextIdFieldName"      value="CURRENT_SEQ" />
+        <property name="tableName"  value="LMS_SUBJECT"/>
+    </bean>
+     <bean name="subjectHistoryIdMsgtrategy" class="kr.co.sitglobal.oklms.comm.idgnr.SitGlobalIdGnrStrategyImpl">
+        <property name="prefix"   value="YEAR#HIST" />
+        <property name="cipers"   value="7" />
+        <property name="fillChar" value="0" />
+    </bean>
+
+</beans>

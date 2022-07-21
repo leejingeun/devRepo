@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 김현민    2017. 03. 02          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper">
+
+	<select id="listLmsSubjWeek" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO"  resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.listLmsSubjWeek ====== */
+		SELECT WEK.WEEK_ID, 
+			       WEK.WEEK_CNT, 
+			       WEK.YYYY, 
+			       WEK.TERM, 
+			       WEK.SUBJECT_CODE, 
+			       WEK.CLASS 
+			  FROM LMS_SUBJ_WEEK WEK  
+			 WHERE WEK.YYYY =  #{yyyy}
+			       AND WEK.TERM = #{term}
+			       AND WEK.SUBJECT_CODE = #{subjectCode}
+			       <if test="subClass != null and subClass != ''">
+			       AND WEK.CLASS =#{subClass}
+			       </if>
+			       AND WEK.DELETE_YN = 'N' 
+			ORDER BY TO_NUMBER(WEK.WEEK_CNT) 
+	</select>
+	<select id="getCurrproc" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.getCurrproc ====== */
+		SELECT  LS.YYYY,
+				LS.TERM,
+				LS.SUBJECT_CODE,
+				LS.CLASS SUB_CLASS,
+				LS.CLASS AS SUBJECT_CLASS, 
+				LS.SUBJECT_TRANING_TYPE,
+				CASE 
+		           WHEN LS.SUBJECT_TRANING_TYPE = 'OJT' 
+		           THEN 'OJT' 
+		           ELSE 'Off-JT' 
+		        END SUBJECT_TRANING_TYPE_NAME, 
+				LS.SUBJECT_NAME,
+				LS.DEPARTMENT_NAME,
+				LS.GRADE,
+				LS.POINT_USE_YN,
+				LS.POINT,
+				LS.SUBJECT_TYPE,
+				 CASE 
+		           WHEN LS.SUBJECT_TYPE = 'NORMAL' 
+		           THEN '학부' 
+		           ELSE '고숙련' 
+		        END SUBJECT_TYPE_NAME, 
+				LS.ONLINE_TYPE,
+				
+				CASE 
+			       		WHEN LS.ONLINE_TYPE IN ('104','105') THEN '플립러닝'
+			       		WHEN LS.ONLINE_TYPE = '101' THEN '순수온라인'
+			            WHEN LS.ONLINE_TYPE = '102' THEN '브렌디드'
+			            WHEN LS.ONLINE_TYPE = '103' THEN '보조활용'
+			         ELSE  '없음'     
+			    END ONLINE_TYPE_NAME,
+			    
+			    (SELECT SUM(MOD(TIME.TRANING_ED_HOUR,TIME.TRANING_ST_HOUR)) 
+				  FROM LMS_SUBJ_WEEK_TIME TIME 
+				 WHERE TIME.YYYY = LS.YYYY 
+				       AND TIME.TERM = LS.TERM 
+				       AND TIME.SUBJECT_CODE = LS.SUBJECT_CODE 
+				       AND TIME.CLASS = LS.CLASS 
+				       AND TIME.DELETE_YN = 'N'
+		       ) AS TRANING_HOUR,
+		       
+		       (SELECT GROUP_CONCAT(FN_GETUSERNAME(INS.MEM_SEQ)) 
+		          FROM LMS_SUBJ_INS_MAPPING INS
+		         WHERE INS.YYYY = LS.YYYY 
+		               AND INS.TERM = LS.TERM 
+		               AND INS.SUBJECT_CODE = LS.SUBJECT_CODE
+		               AND INS.CLASS = LS.CLASS    
+		       ) AS INS_NAMES, 
+		       
+		       (SELECT GROUP_CONCAT(FN_GETUSERNAME(CDP.MEM_SEQ)) 
+		          FROM LMS_SUBJ_CDP_MAPPING CDP
+		         WHERE CDP.YYYY = LS.YYYY 
+		               AND CDP.TERM = LS.TERM 
+		               AND CDP.SUBJECT_CODE = LS.SUBJECT_CODE
+		               AND CDP.CLASS = LS.CLASS 
+		       ) AS CDP_NAME,
+		       
+		       (SELECT MIN(LSWT.TRANING_DATE) 
+		         FROM LMS_SUBJ_WEEK_TIME LSWT 
+		        WHERE LSWT.DELETE_YN = 'N' 
+		              AND LS.YYYY = LSWT.YYYY 
+		              AND LS.TERM = LSWT.TERM 
+		              AND LS.SUBJECT_CODE = LSWT.SUBJECT_CODE 
+		              AND LS.CLASS = LSWT.CLASS 
+		       ) AS TRANING_ST_DATE,
+		       LS.YYYY AS ESTBL_YY, 
+		       CASE 
+		       		WHEN LS.TERM = '1'
+		       		THEN '101'
+		      		WHEN LS.TERM = '2'
+		       		THEN '102'
+		       		WHEN LS.TERM = '3'
+		       		THEN '103'
+		      	 	ELSE '104'
+		       END ESTBL_SEMSTR_CD,
+		       LS.SUBJECT_CODE AS COURSE_NO,
+				
+				LS.INSERT_DATE,
+				LS.INSERT_USER,
+				LS.UPDATE_DATE,
+				LS.UPDATE_USER,
+				LS.TRANING_HOUR,
+				LS.FIRST_STUDY_YN,				
+				LSIMCM.MEM_NAME INS_NAME,
+				LSIMCM.MEM_SEQ INS_SEQ
+		   FROM LMS_SUBJECT LS 
+		   LEFT OUTER JOIN (SELECT CM.MEM_SEQ,CM.MEM_NAME,LSIM.YYYY,LSIM.TERM,LSIM.CLASS,LSIM.SUBJECT_CODE
+		   					FROM LMS_SUBJ_INS_MAPPING LSIM,COM_MEMBER CM
+							WHERE  LSIM.MEM_SEQ=CM.MEM_SEQ
+							AND LSIM.DELETE_YN='N'
+							AND CM.DELETE_YN='N'  					
+		   					) LSIMCM ON LS.SUBJECT_CODE=LSIMCM.SUBJECT_CODE
+										AND LS.YYYY = LSIMCM.YYYY
+										AND LS.TERM = LSIMCM.TERM
+										AND LS.CLASS = LSIMCM.CLASS
+		  WHERE LS.SUBJECT_CODE = #{subjectCode}
+			AND LS.YYYY = #{yyyy}
+			AND LS.TERM = #{term}
+			<if test="subClass != null and subClass != ''">
+			AND LS.CLASS = #{subClass}
+			</if>
+			AND LS.DELETE_YN='N' 
+			LIMIT 0,1
+			
+     
+	</select>
+	
+	<select id="listReport" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" resultType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO">
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.reportList ====== */
+		SELECT LS.REPORT_ID,
+				LS.YYYY,
+				LS.TERM,
+				LS.SUBJECT_CODE,
+				LS.CLASS AS SUB_CLASS,
+				LS.WEEK_CNT,
+				LS.REPORT_NAME,
+				LS.REPORT_DESC,
+				LS.EVAL_YN,
+				LS.SCORE,
+				LS.SUBMIT_START_DATE,
+				LS.SUBMIT_END_DATE,
+				LS.ATCH_FILE_ID,
+				LS.DELETE_YN,
+				(SELECT COUNT(1) FROM LMS_LESSON LL WHERE LL.SUBJECT_CODE=LS.SUBJECT_CODE AND LL.DELETE_YN='N' AND LL.YYYY=LS.YYYY AND LL.TERM=LS.TERM AND LL.CLASS=LS.CLASS ) TOT_CNT,
+				(SELECT COUNT(1) FROM LMS_REPORT_SUBMIT LRS WHERE LRS.REPORT_ID=LS.REPORT_ID AND LRS.DELETE_YN='N' ) SCORE_CNT,
+				(SELECT COUNT(1) FROM LMS_REPORT_SUBMIT LRS WHERE LRS.REPORT_ID=LS.REPORT_ID AND LRS.DELETE_YN='N' AND LRS.EVAL_SCORE > 0 ) SCORE_ON
+		FROM LMS_REPORT LS
+		WHERE LS.SUBJECT_CODE = #{subjectCode}
+		  AND LS.DELETE_YN='N'
+	</select>
+	<select id="listReportStd" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" resultType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO">
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.reportListStd ====== */
+		SELECT LS.REPORT_ID,
+				LS.YYYY,
+				LS.TERM,
+				LS.SUBJECT_CODE,
+				LS.CLASS AS SUB_CLASS,
+				LS.WEEK_CNT,
+				LS.REPORT_NAME,
+				LS.REPORT_DESC,
+				LS.EVAL_YN,
+				LS.SCORE,
+				LS.SUBMIT_START_DATE,
+				LS.SUBMIT_END_DATE,
+				LS.ATCH_FILE_ID,
+				LS.DELETE_YN,
+				CASE
+					WHEN LRS.ATCH_FILE_ID is null THEN 'N' 
+					ELSE 'Y' 
+				END	as CHECK_YN,
+				LRS.ATCH_FILE_ID AS LRS_ATCH_FILE_ID,
+<![CDATA[
+				CASE 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) BETWEEN LS.SUBMIT_START_DATE AND LS.SUBMIT_END_DATE    THEN '진행' 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) > LS.SUBMIT_END_DATE    THEN '완료' 				
+					WHEN date_format(NOW(),'%Y.%m.%d' ) < LS.SUBMIT_START_DATE    THEN '예정' 
+					ELSE '' 
+				END AS SUBMIT_STATUS				
+]]>
+		FROM LMS_REPORT LS
+		LEFT OUTER JOIN LMS_REPORT_SUBMIT LRS ON LS.REPORT_ID=LRS.REPORT_ID AND LRS.DELETE_YN='N' AND LRS.INSERT_USER=#{sessionMemSeq}
+		WHERE LS.SUBJECT_CODE = #{subjectCode}
+		  AND LS.DELETE_YN='N'
+		  
+	</select>	
+	<select id="getReport" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" resultType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO">
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.getReport ====== */
+		SELECT LS.REPORT_ID,
+				LS.YYYY,
+				LS.TERM,
+				LS.SUBJECT_CODE,
+				LS.CLASS AS SUB_CLASS,
+				LS.WEEK_CNT,
+				LS.REPORT_NAME,
+				LS.REPORT_DESC,
+				LS.EVAL_YN,
+				LS.SCORE,
+				LS.SUBMIT_START_DATE,
+				LS.SUBMIT_END_DATE,
+				LS.ATCH_FILE_ID,
+				LS.DELETE_YN,
+<![CDATA[
+				CASE 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) BETWEEN LS.SUBMIT_START_DATE AND LS.SUBMIT_END_DATE    THEN '진행' 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) > LS.SUBMIT_END_DATE    THEN '완료' 				
+					WHEN date_format(NOW(),'%Y.%m.%d' ) < LS.SUBMIT_START_DATE    THEN '예정' 
+					ELSE '' 
+				END AS SUBMIT_STATUS				
+]]>				
+		FROM LMS_REPORT LS
+		WHERE LS.REPORT_ID = #{reportId}
+		  AND LS.DELETE_YN='N'
+	</select>
+	<insert id="insertReport" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.insertReport ====== */
+		INSERT INTO LMS_REPORT(REPORT_ID,
+								YYYY,
+								TERM,
+								SUBJECT_CODE,
+								CLASS,
+								WEEK_CNT,
+								REPORT_NAME,
+								REPORT_DESC,
+								EVAL_YN,
+								SCORE,
+								SUBMIT_START_DATE,
+								SUBMIT_END_DATE,
+								ATCH_FILE_ID,
+								DELETE_YN,
+								INSERT_DATE,
+								INSERT_USER)
+					VALUES( #{reportId},
+							#{yyyy},
+							#{term},
+							#{subjectCode},
+							#{classId},
+							#{weekCnt},
+							#{reportName},
+							#{reportDesc},
+							#{evalYn},
+							#{score},
+							#{submitStartDate},
+							#{submitEndDate},
+							#{atchFileId},
+							'N',
+							 now(),
+							#{sessionMemSeq}
+							)
+	</insert>
+	<update id="updateReport" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.updateReport ====== */
+		UPDATE LMS_REPORT 
+		SET
+			REPORT_NAME=#{reportName},
+			<if test="reportDesc != null and reportDesc != ''">
+			REPORT_DESC=#{reportDesc},
+			</if>
+			<if test="evalYn != null and evalYn != ''">
+			EVAL_YN=#{evalYn},
+			</if>
+			<if test="score != null and score != ''">
+			SCORE=#{score},
+			</if>
+			<if test="submitStartDate != null and submitStartDate != ''">
+			SUBMIT_START_DATE=#{submitStartDate},
+			</if>
+			<if test="submitEndDate != null and submitEndDate != ''">
+			SUBMIT_END_DATE=#{submitEndDate},
+			</if>
+			<if test="atchFileId != null and atchFileId != ''">
+			ATCH_FILE_ID=#{atchFileId},
+			</if>
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE REPORT_ID = #{reportId}
+	</update>
+	<update id="deleteReport" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.deleteReport ====== */
+		UPDATE LMS_REPORT 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE REPORT_ID = #{reportId}
+	</update>
+
+	<select id="reportSubmitList" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" resultType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO">
+	/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.reportSubmitList ====== */
+	<include refid="kr.co.sitglobal.include.paging-start"/>
+		SELECT  
+				LRS.REPORT_ID,
+				LRS.REPORT_SUBMIT_ID,
+				LRS.TITLE,
+				LRS.CONTENT,
+				LRS.EVAL_SCORE,
+				LRS.ATCH_FILE_ID,
+				CM.MEM_NAME,
+				CM.MEM_ID,
+				CM.MEM_SEQ,
+				date_format(LRS.INSERT_DATE,'%Y.%m.%d' ) INSERT_DATE
+		FROM LMS_LESSON LL
+		INNER JOIN LMS_REPORT LR ON LR.SUBJECT_CODE = LL.SUBJECT_CODE	AND LR.YYYY = LL.YYYY	AND LR.TERM = LL.TERM	AND LR.CLASS = LL.CLASS AND LR.DELETE_YN='N'
+		 LEFT OUTER JOIN LMS_REPORT_SUBMIT LRS ON   LRS.REPORT_ID=LR.REPORT_ID 	AND LRS.INSERT_USER=LL.MEM_SEQ AND LRS.DELETE_YN='N'
+		 LEFT OUTER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ
+		WHERE LL.DELETE_YN='N' AND LR.REPORT_ID =	#{reportId}
+	<include refid="kr.co.sitglobal.include.paging-end"/>
+		
+	</select>
+	
+	<select id="getReportSubmit" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" resultType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO">
+	/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.getReportSubmit ====== */
+		SELECT  LRS.REPORT_ID,
+				LRS.REPORT_SUBMIT_ID,
+				LRS.TITLE,
+				LRS.CONTENT,
+				LRS.EVAL_SCORE,
+				LRS.ATCH_FILE_ID,
+				LRS.DELETE_YN,
+				CM.MEM_NAME,
+				CM.MEM_ID,
+				CM.MEM_SEQ,
+				date_format(LRS.INSERT_DATE,'%Y.%m.%d' ) INSERT_DATE
+		FROM LMS_REPORT_SUBMIT LRS
+		LEFT OUTER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LRS.INSERT_USER AND CM.DELETE_YN='N'
+		WHERE LRS.REPORT_ID = #{reportId}
+		  AND LRS.INSERT_USER=  #{sessionMemSeq}
+		  AND LRS.DELETE_YN='N'
+	</select>
+		
+	<insert id="insertReportSubmit" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.insertReportSubmit ====== */
+		INSERT INTO LMS_REPORT_SUBMIT(REPORT_ID,
+								REPORT_SUBMIT_ID,
+								TITLE,
+								CONTENT,
+								EVAL_SCORE,
+								ATCH_FILE_ID,
+								DELETE_YN,
+								INSERT_DATE,
+								INSERT_USER)
+					VALUES( #{reportId},
+							#{reportSubmitId},
+							#{title},
+							#{content},
+							#{evalScore},
+							#{atchFileId},
+							'N',
+							now(),
+							#{sessionMemSeq}
+							)
+	</insert>
+	<update id="updateReportSubmit" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.updateReportSubmit ====== */
+		UPDATE LMS_REPORT_SUBMIT 
+		SET
+			UPDATE_USER = #{sessionMemSeq},
+			<if test="title != null and title != ''">
+			TITLE=#{title},
+			</if>
+			<if test="content != null and content != ''">
+			CONTENT=#{content},
+			</if>
+			<if test="evalScore != null and evalScore != ''">
+			EVAL_SCORE=#{evalScore}, 
+			</if>
+			<if test="atchFileId != null and atchFileId != ''">
+			ATCH_FILE_ID=#{atchFileId},
+			</if>
+			UPDATE_DATE = now()
+		WHERE REPORT_SUBMIT_ID = #{reportSubmitId}
+	</update>
+	<update id="deleteReportSubmit" parameterType="kr.co.sitglobal.oklms.lu.report.vo.ReportVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.report.service.impl.ReportMapper.deleteReportSubmit ====== */
+		UPDATE LMS_REPORT_SUBMIT 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE REPORT_SUBMIT_ID = #{reportSubmitId}
+	</update>	
+</mapper>

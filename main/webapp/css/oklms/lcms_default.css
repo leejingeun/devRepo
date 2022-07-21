@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+@import url("lcms_inc.css");						/* 레이아웃 및 학습영역 요소 */
+@import url("lcms_board.css");					/* 콘텐츠 관련 요소 */
+@import url("lcms_popup.css");				/* 팝업 관련 요소 */
+
+
+
+
+
+/* 기본설정 */
+* {margin:0; padding:0;}
+html,body												{height:100%; margin:0; padding:0; font:12px nbgM, Dotum, play, sans-serif; color:#333; line-height:18px;}
+div, table												{margin:0; padding:0;}
+input, select											{padding:0}
+img, fieldset											{border:0;}
+img														{vertical-align:top;}
+ul, ol														{list-style:none;}
+a:link, a:visited, a:active, a:hover				{text-decoration:none;}
+hr															{display:none;}
+
+.button													{border:none;}
+.button:hover											{cursor:pointer;}
+.hidden, legend, caption							{position:absolute; overflow:hidden; visibility:hidden; width:0; height:0; left:0; top:0; font-size:0; line-height:0; padding:0; margin:0;}
+input.choice											{width:13px; height:13px; vertical-align:middle; border:none; background:none; padding:0;}
+
+
+
+

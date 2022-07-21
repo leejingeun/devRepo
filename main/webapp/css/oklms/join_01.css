@@ -1,0 +1,164 @@
+@charset "utf-8";
+
+
+
+/* 로그인 속성 */
+
+.body-login																			{display:block; width:455px; height:185px; background:url("/images/oklms/std/img/joinImg_01.gif") 0 5px no-repeat; padding:25px 0 0 290px; margin-top:20px;}
+.body-login dt																			{float:left; width:455px; font:700 35px play; color:#009EC0; padding-bottom:5px;}
+.body-login dt span																	{color:#FF9000;}
+.body-login dd																		{float:left; width:455px; font:13px nbgM; color:#777; line-height:18px;}
+.body-login dd a																		{float:left; display:block; overflow:hidden; color:#777; background:url("/images/oklms/std/img/point_12.gif") 0 8px no-repeat; padding:2px 0 0 10px;}
+.body-login dd a:hover, .body-login dd a:focus							{color:#0062A4;}
+.body-login dd.text																	{width:440px; font:16px nsM; color:#333; line-height:20px; border-bottom:1px solid #E5E5E5; padding-bottom:12px; margin-bottom:15px;}
+.body-login dd.text b																{font-weight:normal;}
+.body-login dd.text span															{color:#0062A4;}
+.body-login dd.text p																{font:13px nsM; color:#888; padding-top:2px;}
+.body-login dd.info																	{width:150px; height:70px;}
+.body-login dd.info input															{width:133px; height:20px; font:12px nbgM; line-height:16px; color:#777; border:1px solid #CCC; background:#F2F2F2; padding:1px 5px 0 5px; margin-bottom:3px;}
+.body-login dd.btn-1																{width:90px; height:54px;}
+.body-login dd.btn-1 a																{width:70px; height:37px; font:15px nbgM; color:#FFF; line-height:25px; text-align:center; background:url("/images/oklms/std/btn/btn_bg_03.png") repeat; padding:12px 0 0; }
+.body-login dd.btn-2																{width:150px; height:23px; padding-top:2px;}
+.body-login dd.btn-3																{width:150px; height:23px; padding-top:2px;}
+
+
+
+
+
+/* 회원가입 단계 속성 */
+
+.member-step																			{position:relative; width:100%; border-bottom:1px dotted #888; padding-bottom:20px; margin:20px auto 0;}
+.member-step:after																	{display:block; visibility:hidden; clear:both; content:""}
+.member-step li																		{float:left; width:100%;}
+.member-step .text																	{font:15px nsM; color:#666; line-height:22px; padding-bottom:20px;}
+.member-step .text span															{display:inline-block; font:20px nbgM; color:#333; line-height:25px;}
+.member-step .text b																{font-weight:normal; color:#ED174F;}
+.member-step .step p																{float:left; width:28.5%; font-size:19px; color:#C6C6C6; line-height:45px; text-align:center; border:4px solid #E1E1E1; border-radius:30px; background:#FFF;}
+.member-step .step p.on															{color:#FFF; border:4px solid #4084F6; background:#4084F6;}
+.member-step .step p img															{vertical-align:middle; margin-right:3px;}
+.member-step .step span															{float:left; display:block; width:4%; line-height:45px; text-indent:-9999px; background:url("/images/oklms/std/img/join_arrow.png") 50% 10px no-repeat; margin:0 5px 0 7px;}
+
+
+
+
+
+.member-wrap																		{clear:both; width:100%;}
+.member-wrap h4																	{display:block; width:97.5%; font:20px nsM; color:#333; line-height:25px; background:url("/images/oklms/std/img/point_01.png") 0 6px no-repeat; padding-left:2.5%; margin:20px 0 10px;}
+.member-wrap h4 span															{font-size:18px; color:#777;}
+.member-wrap h4 span b															{font-weight:normal; color:#ED174F;}
+.member-wrap input																{width:13px; height:13px; vertical-align:middle; border:none; margin:0 4px 3px 0;}
+
+.member-wrap .textarea-1														{width:95%; height:210px; border:1px solid #CCC; border-radius:10px; background:#FFF; padding:30px 2% 30px 3%; margin-bottom:15px;}
+.member-wrap .textarea-1 div													{overflow-y:scroll; height:210px; padding-right:30px;}
+.member-wrap .textarea-1 h5													{display:block; font:normal 20px nbgM; color:#333; margin-top:30px; margin-bottom:15px;}
+.member-wrap .textarea-1 h5:first-child										{margin-top:0;}
+.member-wrap .textarea-1 h6													{display:block; font:normal 16px nsM; color:#2A91D4; margin-bottom:8px;}
+.member-wrap .textarea-1 p														{font:normal 14px nbgM; color:#666; line-height:20px; padding-bottom:7px;}
+.member-wrap .textarea-1 span												{display:block; font-size:13px; color:#888; line-height:18px; padding-bottom:20px;}
+
+.member-wrap .textarea-2														{width:95%; height:210px; border:1px solid #CCC; border-radius:10px; background:#FFF; padding:30px 2% 30px 3%; margin-bottom:15px;}
+.member-wrap .textarea-2 div													{overflow-y:scroll; height:210px; padding-right:30px;}
+.member-wrap .textarea-2 h5													{display:block; font:normal 20px nbgM; color:#333; margin-top:30px; margin-bottom:15px;}
+.member-wrap .textarea-2 h5 span											{display:inline-block; font-size:16px; color:#333;}
+.member-wrap .textarea-2 h5:first-child										{margin-top:0;}
+.member-wrap .textarea-2 h6													{display:block; font:normal 16px nsM; color:#2A91D4; margin-bottom:8px;}
+.member-wrap .textarea-2 p														{font:normal 14px nbgM; color:#666; line-height:20px; padding-bottom:7px;}
+.member-wrap .textarea-2 p.title												{font:normal 15px nbgM; color:#333; line-height:20px; padding-bottom:3px;}
+.member-wrap .textarea-2 span												{display:block; font-size:13px; color:#888; line-height:18px; padding-bottom:20px;}
+
+.member-wrap .agree-check													{width:97%; border-bottom:1px dotted #888; padding:0 0 30px 3%;}
+.member-wrap .agree-check label											{font:15px nbgM; color:#444;}
+.member-wrap .total-check														{text-align:center; border:3px solid #A0B4C0; border-radius:10px; background:#DAE4E9; padding:20px 0; margin:20px 0 30px;}
+.member-wrap .total-check label												{font:16px nbgM; color:#34586D;}
+
+.member-wrap .btn-wrap															{text-align:center;}
+.member-wrap .btn-wrap a														{display:inline-block; width:132px; font-size:18px; color:#FFF; text-align:center; padding:13px 0; margin:0 3px; border-radius:5px;}
+.member-wrap .btn-wrap a.blue												{background:#4084F6;}
+.member-wrap .btn-wrap a.cancel											{background:#666;}
+
+.member-wrap table																{position:relative; float:left; width:100%; border-collapse:collapse; border-top:2px solid #CCC; margin-bottom:30px;}
+.member-wrap table th																{width:20%; font:14px nbgM; line-height:11px; color:#555; text-align:left; border-bottom:1px solid #CCC; background:#EEE; padding-left:3%;}
+.member-wrap table th span														{color:#ED174F;}
+.member-wrap table td																{display:block; width:97%; font:13px nbgM; color:#777; line-height:20px; vertical-align:top; border-bottom:1px solid #D9D9D9; background:#FFF; padding:4px 0 4px 3%;}
+.member-wrap table td br															{display:none;}
+.member-wrap table td input														{width:70px; height:26px; font-size:13px; color:#555; vertical-align:middle; border:1px solid #C6C6C6; margin:2px 0;}
+.member-wrap table td input.choice											{width:13px; height:13px; vertical-align:middle; border:none; margin-right:4px;}
+.member-wrap table td input.type-1											{width:200px;}
+.member-wrap table td input.type-2											{width:120px;}
+.member-wrap table td input.type-3											{width:95%;}
+.member-wrap table td select													{width:72px; height:28px; vertical-align:middle; border:1px solid #C6C6C6; margin:2px 0;}
+.member-wrap table td select.type-1											{width:202px;}
+.member-wrap table td select.type-2											{width:122px;}
+.member-wrap table td a.checkid												{display:inline-block; line-height:26px; font-size:14px; color:#666; border:1px solid #D9D9D9; vertical-align:middle; background:url("/images/oklms/std/btn/icon_check.png") 10px 50% #FFF no-repeat; padding:0 10px 0 30px; margin:0;}
+.member-wrap table td a.checkid:hover										{color:#4084F6; border:1px solid #4084F6; background:url("/images/oklms/std/btn/icon_checkon.png") 10px 50% no-repeat;}
+
+.member-wrap .text-area															{display:block; width:85%; text-align:center; border-bottom:1px solid #CCC; background:url("/images/oklms/std/img/join_complete.png") center 50px no-repeat; padding:250px 0 30px; margin:0 auto 30px;}
+.member-wrap .text-area .type-1												{font:20px nbgM; color:#256FBF; line-height:40px;}
+.member-wrap .text-area .type-1 span										{color:#ED174F;}
+.member-wrap .text-area .type-2												{font:32px nsM; color:#222; line-height:40px;}
+
+
+
+
+
+.find-id																					{float:left; width:41%; text-align:center; background:url("/images/oklms/std/img/find_id.png") center 0 no-repeat; padding:100px  4% 0; margin-top:30px;}
+.find-id h4																				{font:20px nbgM; color:#333; line-height:30px; text-align:center; margin-bottom:10px;}
+.find-id .enter																			{width:100%; text-align:center;}
+.find-id label																			{display:inline-block; width:40px; font:14px nsM; color:#555; text-align:left; padding-right:10px;}
+.find-id input																			{width:170px; height:26px; font-size:14px; color:#666; border:1px solid #C6C6C6; padding:0 5px; margin:2px 0;}
+.find-id .enter-txt																		{width:90%; font:13px nbgM; color:#555; line-height:20px; text-align:center; border-radius:8px; background:#EEE; padding:15px 5% 14px; margin-top:42px;}
+.find-id .find-txt																		{width:85%; height:176px; font:14px nbgM; color:#666; line-height:20px; text-align:center; border-radius:8px; border:5px solid #0092BC; padding:15px 5% 14px; margin-top:10px;}
+.find-id .find-txt span																{display:block; width:90%; border-bottom:1px dotted #666; padding-bottom:15px; margin:30px auto 20px;}
+.find-id .find-txt span b															{display:block; font-weight:normal; font-size:20px; color:#444; padding-top:5px;}
+.find-id .find-txt p																	{width:90%; font:700 30px play; color:#ED174F; line-height:30px; margin:0 auto;}
+.find-id a																				{display:inline-block; width:132px; font-size:18px; color:#FFF; text-align:center; padding:13px 0; border-radius:5px; background:#4084F6; margin-top:15px;}
+
+.find-pass																				{float:left; width:41%; text-align:center; border-left:1px solid #E0E0E0; background:url("/images/oklms/std/img/find_pass.png") center 0 no-repeat; padding:100px 4% 0; margin-top:30px;}
+.find-pass h4																			{font:20px nbgM; color:#333; line-height:30px; text-align:center; margin-bottom:10px;}
+.find-pass .enter																		{width:100%; text-align:center;}
+.find-pass label																		{display:inline-block; width:40px; font:14px nsM; color:#555; text-align:left; padding-right:10px;}
+.find-pass input																		{width:170px; height:26px; font-size:14px; color:#666; border:1px solid #C6C6C6; padding:0 5px; margin:2px 0;}
+.find-pass .enter-txt																{width:90%; font:13px nbgM; color:#555; line-height:20px; text-align:center; border-radius:8px; background:#EEE; padding:15px 5% 14px; margin-top:10px;}
+
+.find-pass .pass-txt																{width:85%; height:176px; font:20px nbgM; color:#333; line-height:20px; text-align:center; border-radius:8px; border:5px solid #4084F6; padding:15px 5% 14px; margin-top:10px;}
+.find-pass .pass-txt p																{display:block; width:90%; border-bottom:1px dotted #666; padding-bottom:15px; margin:20px auto 20px;}
+.find-pass .pass-txt span														{width:90%; font:14px nbgM; color:#666; line-height:20px; margin:0 auto;}
+.find-pass .pass-txt span b														{display:block; font:22px play; color:#ED174F; line-height:25px; letter-spacing:-0.02em; padding-bottom:5px;}
+
+.find-pass a																			{display:inline-block; width:132px; font-size:18px; color:#FFF; text-align:center; padding:13px 0; border-radius:5px; background:#0092BC; margin-top:15px;}
+
+
+
+
+
+/* 약관 및 텍스트 그룹 속성 */
+
+.join-text-area																		{width:100%; margin-top:15px;}
+.join-text-area h5																	{display:block; width:97.5%; font:20px nsM; color:#222; line-height:25px; letter-spacing:-0.04em; background:url("/images/oklms/std/img/point_01.png") 0 5px no-repeat; padding-left:2.5%; margin:30px 0 10px;}
+.join-text-area h5:first-child														{margin-top:0;}
+.join-text-area h6																	{display:block; width:97.5%; font:normal 16px nsM; color:#2A91D4; line-height:20px; letter-spacing:-0.03em; padding-left:2.5%; margin-bottom:5px;}
+.join-text-area p																		{width:97.5%; font:normal 14px nbgM; color:#555; line-height:19px; padding-bottom:5px; padding-left:2.5%;}
+.join-text-area p.copy-type														{color:#777;}
+.join-text-area span																{display:block; width:97.5%; font-size:13px; color:#888; line-height:17px; letter-spacing:-0.01em; padding-bottom:15px; padding-left:2.5%;}
+
+.join-text-area table																	{float:left; width:97.5%; border-spacing:1px; border-collapse:1px; background:#D9D9D9; margin-bottom:30px; margin-left:2.5%;}
+.join-text-area table tr th															{height:35px; font:14px nsM; line-height:16px; color:#333; text-align:center; background:#F6F6F6; }
+.join-text-area table tr td															{font:13px nbgM; line-height:16px; color:#666; text-align:center; background:#FFF; padding:9px 10px 7px;}
+
+
+
+
+
+/* 이메일무단수집거부 속성 */
+
+.mail-wrap																				{width:85%; margin:15px auto 0;}
+.mail-wrap .title																		{width:100%; font:26px nbgM; color:#333; line-height:30px; text-align:center; border-bottom:1px solid #CCC; background:url("/images/oklms/std/img/join_mail.png") center 30px no-repeat; padding:250px 0 20px;}
+.mail-wrap .title span																{display:inline-block;}
+.mail-wrap .title b																	{font-weight:normal; color:#ED174F;}
+.mail-wrap .inner																	{width:100%; font:16px nbgM; color:#555; line-height:25px; text-align:center; padding:25px 0 0;}
+.mail-wrap .inner span															{color:#256FBF;}
+
+
+
+
+

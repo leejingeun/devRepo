@@ -1,0 +1,160 @@
+@charset "utf-8";
+
+
+
+#main-wrapper																					{ position:relative; width:100%; height:100%; }
+#main-wrapper:after																			{ content:""; display:block; clear:both; }
+
+
+
+
+
+#main-header																						{ float:left; width:100%; height:150px; }
+#main-header li																					{ position:relative; width:100%; }
+#main-header h1																					{ position:absolute; width:180px; height:60px; left:50%; background:url("/images/oklms/std/main/main_logo.png") no-repeat; margin:20px 0 0 -90px; }
+#main-header h1 a																				{ display:block; overflow:hidden; width:180px; height:60px; text-indent:-9999px; }
+#main-header p																					{ float:left; display:inline-block; padding-top:40px; }
+#main-header p a																				{ display:inline-block; overflow:hidden; font:13px nbgM; color:#333; background: url("/images/oklms/std/main/line_01.png") 0 1px no-repeat; padding-left:10px; margin-right:9px; }
+#main-header p a:first-child																	{ background: url("/images/oklms/std/main/main_hart.png") 0 2px no-repeat; padding-left:18px; }
+#main-header div																				{ float:right; width:170px; height:100px; text-indent:-9999px; background:url("/images/oklms/std/main/main_student.png") no-repeat; }
+
+#main-header .top-area																		{ width:1000px; height:100px; background:#FFF; margin:0 auto; }
+#main-header .top-title																		{ height:34px; font:15px nbgM; color:#FFF; text-align:center; background:#183172; padding-top:16px; }
+#main-header .top-title b																		{ color:#FF9900; }
+
+
+
+
+
+#main-visual																						{ position:relative; float:left; width:100%; height:450px; }
+#main-visual ul																					{ position:absolute; width:1000px; height:165px; left:50%; bottom:20px; margin-left:-500px; z-index:1001; }
+#main-visual li																					{ float:left; height:165px; }
+
+#main-visual .member-area																	{ width:290px; background: url("/images/oklms/std/main/mem_bg_01.png") repeat; padding:0 17px; margin-right:15px; }
+#main-visual .member-area legend														{ display:block; float:left; font:700 20px play; color:#FFF; padding:13px 0 6px; }
+#main-visual .member-area .log-type													{ position:relative; float:left; width:290px; }
+#main-visual .member-area .log-type dt													{ float:left; font:12px nbgM; color:#999; padding-bottom:6px; }
+#main-visual .member-area .log-type dt b												{ font-weight:normal; color:#EEE; }
+#main-visual .member-area .log-type dd.item											{ float:left; position:relative; display:inline-block; width:175px; margin-bottom:5px; }
+#main-visual .member-area .log-type dd.btn											{ position:absolute; width:100px; height:61px; right:0; top:20px; }
+#main-visual .member-area .log-type dd.btn input									{ width:100px; height:61px; font:bold 17px nbgM; color:#FFF; line-height:25px; cursor:pointer; text-shadow:1px 1px 1px #940E31; border:0; border-radius:4px; background:#F76000; margin:0; }
+
+#main-visual .member-area .log-type dd .iLabel										{ display:none; position:absolute; width:75px; height:17px; left:6px; top:5px; font:14px nsM; color:#999; line-height:20px; }
+#main-visual .member-area .log-type dd .iText										{ width:175px; height:28px; font:15px nsM; color:#333; border:0; border-radius:4px; background:#FFF; padding:0 5px; }
+#main-visual .member-area .log-type dd .ipass										{ width:175px; height:28px; font-size:15px; color:#333; border:0; border-radius:4px; background:#FFF; padding:0 5px; }
+#main-visual .member-area span															{ float:left; margin-top:5px; }
+#main-visual .member-area span input													{ float:left; width:13px; height:13px; vertical-align:middle; margin-right:4px; }
+#main-visual .member-area span label													{ float:left; font:12px nbgM; color:#FFF; border-right:1px solid #777; padding-right:10px; margin-right:10px; }
+#main-visual .member-area span a														{ display:inline-block; overflow:hidden; font:12px nbgM; color:#999; }
+
+#main-visual .member-area .info-area													{ position:relative; float:left; width:290px; }
+#main-visual .member-area .info-area dt												{ float:left; width:100%; font:17px nbgM; color:#FFF; border-bottom:1px solid #777; padding:17px 0 10px; margin-bottom:10px; }
+#main-visual .member-area .info-area dd.info-photo								{ float:left; width:75px; height:55px; }
+#main-visual .member-area .info-area dd.info-photo img							{ border-radius:4px; }
+#main-visual .member-area .info-area dd.info-text									{ float:left; width:215px; height:49px; font:14px nbgM; color:#FFF; line-height:22px; padding-top:6px; }
+#main-visual .member-area .info-area dd.info-text b								{ display:block; overflow:hidden; width:90%; font-weight:normal; color:#FF9900; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined;}
+#main-visual .member-area .info-area dd.info-btn									{ float:left; width:96%; height:49px; font:14px nbgM; color:#FFF; line-height:22px; padding-top:10px; }
+#main-visual .member-area .info-area dd.info-btn a								{ display:block; overflow:hidden; width:48.5%; height:24px; color:#FFF; text-align:center; border-radius:4px; padding-top:3px; }
+#main-visual .member-area .info-area dd.info-btn a.btn-mypage				{ float:left; background:#A7A7A7; }
+#main-visual .member-area .info-area dd.info-btn a.btn-logout					{ float:right; background:#F76000; }
+
+
+
+#main-visual .popup-area																	{ position:relative; width:300px; height:141px; background:#F3F3F3; padding:12px; margin-right:15px; }
+#main-visual .popup-area h2																{ float:left; width:300px; font:700 20px play; color:#333; padding:1px 0 7px; }
+#main-visual .popup-area .pop-img														{ float:left; width:300px; height:110px; }
+#main-visual .popup-area .pop-img p													{ display:none; }
+#main-visual .popup-area .pop-img img													{ width:300px; height:110px; }
+
+#main-visual .popup-area .pop-btn														{ position:absolute; width:75px; height:24px; right:12px; top:12px; border:1px solid #E9E9E9; border-right:none; }
+#main-visual .popup-area .pop-btn span												{ float:left; width:24px; height:24px; border-right:1px solid #E9E9E9; }
+#main-visual .popup-area .pop-btn span.prev										{ background:url("/images/oklms/std/main/main_popup_pre.png") no-repeat; }
+#main-visual .popup-area .pop-btn span.stop										{ background:url("/images/oklms/std/main/main_popup_stop.png") no-repeat; }
+#main-visual .popup-area .pop-btn span.play										{ background:url("/images/oklms/std/main/main_popup_play.png") no-repeat; }
+#main-visual .popup-area .pop-btn span.next										{ background:url("/images/oklms/std/main/main_popup_next.png") no-repeat; }
+#main-visual .popup-area .pop-btn span a											{ display:block; overflow:hidden; width:24px; height:24px; text-indent:-9999px; }
+
+
+
+#main-visual .banner-area-1																{ width:158px; margin-right:6px; }
+#main-visual .banner-area-1 a																{ display:block; overflow:hidden; width:158px; height:40px; font:16px nbgM; color:#FFF; text-align:center; background:url("/images/oklms/std/main/banner_01.png") no-repeat; padding-top:125px; }
+#main-visual .banner-area-1 a:hover													{ width:158px; height:165px; webkit-box-sizing: border-box;box-sizing:border-box;-moz-box-sizing: border-box;-o-box-sizing: border-box; border:3px solid #DB5A08; background-position:-3px -3px; padding-top:122px; }
+#main-visual .banner-area-2																{ width:158px; }
+#main-visual .banner-area-2 a																{ display:block; overflow:hidden; width:158px; height:40px; font:16px nbgM; color:#FFF; text-align:center; background:url("/images/oklms/std/main/banner_02.png") no-repeat; padding-top:125px; }
+#main-visual .banner-area-2 a:hover													{ width:158px; height:165px; webkit-box-sizing:border-box; box-sizing:border-box; -moz-box-sizing:border-box; -o-box-sizing:border-box; border:3px solid #DB5A08; background-position:-3px -3px; padding-top:122px; }
+
+
+
+#mvisual-wrap																					{ position:relative; overflow:hidden; width:100%; height:450px; text-align:left; margin:0 auto; }
+#mvisual-wrap .ctrl-btns																		{ position:absolute; width:1000px; height:450px; left:50%; top:0; margin-left:-500px; z-index:1000; }
+#mvisual-wrap .ctrl-btns a																	{ text-indent:-9999px; }
+#mvisual-wrap .ctrl-btns span																{ display:none; }
+#mvisual-wrap .btn-prev																		{ position:absolute; width:40px; height:61px; left:0; top:170px; background:url("/images/oklms/std/main/visbtn_prv.png") no-repeat;}
+#mvisual-wrap .btn-next																		{ position:absolute; width:40px; height:61px; right:0; top:170px; background:url("/images/oklms/std/main/visbtn_nxt.png") no-repeat;}
+
+#mvisual-wrap .cnums-wrap																{ position:relative; width:1000px; height:19px; text-align:right; padding:0; margin:20px auto 0;}
+#mvisual-wrap .cnums-wrap a																{ display:inline-block; width:19px; height:19px; vertical-align:middle; background:url("/images/oklms/std/main/mvis_cont.png") -38px 0 no-repeat;}
+#mvisual-wrap .cnums-wrap .btn-play													{ background-position: 0 0; }
+#mvisual-wrap .cnums-wrap .btn-stop													{ background-position: -19px 0; }
+#mvisual-wrap .ctrl-nums																	{ display:inline-block; }
+#mvisual-wrap .ctrl-nums a.over															{ background-position: -57px 0; }
+
+#mvisual																							{ position:relative; width:1000px; height:450px; margin:0 auto; }
+#mvisual .visImgEffect																			{ position:absolute; left:0; top:0; margin-left:-550px; }
+
+
+
+
+
+#main-container																					{ float:left; width:100%; height:195px; border-top:1px solid #E8E8E8; background:#F6F6F6; padding-top:15px; }
+
+#main-content																					{ width:1000px; margin:0 auto; }
+#main-content:after																				{content:""; display:block; clear:both;}
+#main-content dl																					{ position:relative; float:left; height:175px; border:1px solid #E8E8E8; background:#FFF; }
+#main-content dt																					{ float:left; width:94%; font:bold 16px nbgM; line-height:35px; border-bottom:1px solid #E8E8E8; padding:5px 0 0 6%; margin-bottom:12px; }
+#main-content dd																				{ float:left; width:92%; font:13px nbgM; color:#777; line-height:21px; background:url("/images/oklms/std/main/bullet.png") 6% 9px no-repeat; padding-left:8%; }
+#main-content dd a																				{ display:inline-block; overflow:hidden; width:93%; color:#777; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; }
+#main-content dd a:hover																	{ color:#F76000; }
+#main-content dd a img																		{ vertical-align:middle; margin-left:2px; }
+#main-content dd a span																		{ color:#F76000; }
+
+#main-content dd.more																		{ position:absolute; width:15px; height:15px; right:18px; top:13px; background:none; padding:0; }
+#main-content dd.more a																		{ display:block; overflow:hidden; width:15px; height:15px; text-indent:-9999px; background:url("/images/oklms/std/main/more_plus_off.png") no-repeat; }
+#main-content dd.more a:hover																{ background:url("/images/oklms/std/main/more_plus_on.png") no-repeat; }
+#main-content dd.number																		{ width:78%; font:700 36px play; color:#F76000; line-height:40px; letter-spacing:-0.025em; background:url("/images/oklms/std/main/main_tel.png") 6% 3px no-repeat; padding:9px 0 12px 22%; }
+#main-content dd.mail span																	{ display:inline-block; letter-spacing:0.45em; }
+#main-content dd.mail a																		{ display:inline-block; width:70%; vertical-align:middle; }
+
+#main-content .notice																			{ width:322px; }
+#main-content .notice dd a																	{ float:left; }
+#main-content .schedule																		{ width:322px; margin:0 15px; }
+#main-content .schedule dd a																{ float:left; }
+#main-content .customer																		{ width:320px; }
+
+
+
+
+
+#main-link																							{ float:left; width:100%; height:55px; border-top:1px solid #E8E8E8; }
+#main-link ul																						{ width:1000px; margin:12px auto 0; }
+#main-link li																						{ float:left; }
+#main-link li a																						{ display:inline-block; overflow:hidden; border-right:1px solid #E8E8E8; padding:3px 14px; }
+
+#main-link .main_site																			{ float:right; }
+#main-link .main_site a																		{ border-right:0; padding:0; margin-right:22px; }
+#main-link .main_site a:last-child															{ margin-right:10px; }
+
+
+
+
+
+#main-footer																						{ float:left; width:100%; height:115px; background:#353535; }
+#main-footer div																					{ width:800px; font:13px nbgM; color:#777; line-height:20px; background:url("/images/oklms/std/main/copy_logo.png") no-repeat; padding-left:200px; margin:25px auto 0; }
+#main-footer span																				{ color:#FFF; }
+
+
+
+
+
+
+

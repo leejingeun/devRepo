@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper">
+
+	<resultMap id="menu-result" type="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<result column="MENU_ID" 			property="menuId" /> <!-- 메뉴ID -->
+		<result column="MENU_TYPE" 			property="menuType" /> <!-- 메뉴분류 -->
+		<result column="MENU_VIEW_TYPE_CODE" 			property="menuViewTypeCode" /> <!-- 메뉴 노출 타입 -->
+		<result column="MENU_AREA" 			property="menuArea" /> <!-- 메뉴영역 -->
+		<result column="UP_MENU_ID" 			property="upMenuId" /> <!-- 대메뉴ID -->
+		<result column="MENU_DEPTH" 			property="menuDepth" /> <!-- 깊이 -->
+		<result column="MENU_ORDER" 			property="menuOrder" /> <!-- 메뉴순서 -->
+		<result column="MENU_STATUS" 			property="menuStatus" /> <!-- 상태 -->
+		<result column="MENU_URL" 			property="menuUrl" /> <!-- 경로 -->
+		<result column="MENU_TITLE" 			property="menuTitle" /> <!-- 화면 타이틀 제목 -->
+		<result column="MENU_IMAGE" 			property="menuImage" /> <!-- 메뉴이미지 -->
+		<result column="DELETE_YN" 			property="deleteYn" /> <!-- 삭제여부 -->
+		<result column="SHOW_YN" 			property="showYn" /> <!-- 활성여부 -->
+		<result column="INSERT_USER" 			property="insertUser" /> <!-- 등록자 -->
+		<result column="INSERT_DATE" 			property="insertDate" /> <!-- 등록일 -->
+		<result column="UPDATE_USER" 			property="updateUser" /> <!-- 수정자 -->
+		<result column="UPDATE_DATE" 			property="updateDate" /> <!-- 수정일 -->
+		<result column="ETC1" 			property="etc1" /> <!-- 기타1 -->
+		<result column="ETC2" 			property="etc2" /> <!-- 기타2 -->
+		<result column="CREATE_AUTH_URL_PATTERN" 			property="createAuthUrlPattern" /> <!-- 생성 권한 URL 패턴 -->
+		<result column="READ_AUTH_URL_PATTERN" 			property="readAuthUrlPattern" /> <!-- 상세 조회 권한 URL 패턴 -->
+		<result column="UPDATE_AUTH_URL_PATTERN" 			property="updateAuthUrlPattern" /> <!-- 수정 권한 URL 패턴 -->
+		<result column="DELETE_AUTH_URL_PATTERN" 			property="deleteAuthUrlPattern" /> <!-- 삭제 권한 URL 패턴 -->
+		<result column="PRINT_AUTH_URL_PATTERN" 			property="printAuthUrlPattern" /> <!-- 출력 권한 URL 패턴 -->
+		<result column="DOWNLOAD_AUTH_URL_PATTERN" 			property="downloadAuthUrlPattern" /> <!-- 다운로드 권한 URL 패턴 -->
+		<result column="OTHER_AUTH_URL_PATTERN" 			property="otherAuthUrlPattern" /> <!-- 기타 권한 URL 패턴 -->
+		<result column="LIST_AUTH_URL_PATTERN" 			property="listAuthUrlPattern" /> <!-- 목록 조회 권한 URL 패턴 -->
+		</resultMap>
+	
+	<sql id="listMenu-where">
+	
+		<!-- 조회 조건값 ( CM.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="menuId != null and menuId != ''">	AND CM.MENU_ID 	= #{menuId}		 </if> -->
+				<!-- <if test="menuType != null and menuType != ''">	AND CM.MENU_TYPE 	= #{menuType}		 </if> -->
+				<!-- <if test="menuViewTypeCode != null and menuViewTypeCode != ''">	AND CM.MENU_VIEW_TYPE_CODE 	= #{menuViewTypeCode}		 </if> -->
+				<!-- <if test="menuArea != null and menuArea != ''">	AND CM.MENU_AREA 	= #{menuArea}		 </if> -->
+				<!-- <if test="upMenuId != null and upMenuId != ''">	AND CM.UP_MENU_ID 	= #{upMenuId}		 </if> -->
+				<!-- <if test="menuDepth != null and menuDepth != ''">	AND CM.MENU_DEPTH 	= #{menuDepth}		 </if> -->
+				<!-- <if test="menuOrder != null and menuOrder != ''">	AND CM.MENU_ORDER 	= #{menuOrder}		 </if> -->
+				<!-- <if test="menuStatus != null and menuStatus != ''">	AND CM.MENU_STATUS 	= #{menuStatus}		 </if> -->
+				<!-- <if test="menuUrl != null and menuUrl != ''">	AND CM.MENU_URL 	= #{menuUrl}		 </if> -->
+				<!-- <if test="menuTitle != null and menuTitle != ''">	AND CM.MENU_TITLE 	= #{menuTitle}		 </if> -->
+				<!-- <if test="menuImage != null and menuImage != ''">	AND CM.MENU_IMAGE 	= #{menuImage}		 </if> -->
+				<!-- <if test="deleteYn != null and deleteYn != ''">	AND CM.DELETE_YN 	= #{deleteYn}		 </if> -->
+				<!-- <if test="showYn != null and showYn != ''">	AND CM.SHOW_YN 	= #{showYn}		 </if> -->
+				<!-- <if test="insertUser != null and insertUser != ''">	AND CM.INSERT_USER 	= #{insertUser}		 </if> -->
+				<!-- <if test="insertDate != null and insertDate != ''">	AND CM.INSERT_DATE 	= #{insertDate}		 </if> -->
+				<!-- <if test="updateUser != null and updateUser != ''">	AND CM.UPDATE_USER 	= #{updateUser}		 </if> -->
+				<!-- <if test="updateDate != null and updateDate != ''">	AND CM.UPDATE_DATE 	= #{updateDate}		 </if> -->
+				<!-- <if test="etc1 != null and etc1 != ''">	AND CM.ETC1 	= #{etc1}		 </if> -->
+				<!-- <if test="etc2 != null and etc2 != ''">	AND CM.ETC2 	= #{etc2}		 </if> -->
+				<!-- <if test="createAuthUrlPattern != null and createAuthUrlPattern != ''">	AND CM.CREATE_AUTH_URL_PATTERN 	= #{createAuthUrlPattern}		 </if> -->
+				<!-- <if test="readAuthUrlPattern != null and readAuthUrlPattern != ''">	AND CM.READ_AUTH_URL_PATTERN 	= #{readAuthUrlPattern}		 </if> -->
+				<!-- <if test="updateAuthUrlPattern != null and updateAuthUrlPattern != ''">	AND CM.UPDATE_AUTH_URL_PATTERN 	= #{updateAuthUrlPattern}		 </if> -->
+				<!-- <if test="deleteAuthUrlPattern != null and deleteAuthUrlPattern != ''">	AND CM.DELETE_AUTH_URL_PATTERN 	= #{deleteAuthUrlPattern}		 </if> -->
+				<!-- <if test="printAuthUrlPattern != null and printAuthUrlPattern != ''">	AND CM.PRINT_AUTH_URL_PATTERN 	= #{printAuthUrlPattern}		 </if> -->
+				<!-- <if test="downloadAuthUrlPattern != null and downloadAuthUrlPattern != ''">	AND CM.DOWNLOAD_AUTH_URL_PATTERN 	= #{downloadAuthUrlPattern}		 </if> -->
+				<!-- <if test="otherAuthUrlPattern != null and otherAuthUrlPattern != ''">	AND CM.OTHER_AUTH_URL_PATTERN 	= #{otherAuthUrlPattern}		 </if> -->
+				<!-- <if test="listAuthUrlPattern != null and listAuthUrlPattern != ''">	AND CM.LIST_AUTH_URL_PATTERN 	= #{listAuthUrlPattern}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CM.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<!-- <if test="searchMenuId != null and searchMenuId != ''">	AND CM.MENU_ID 	= #{searchMenuId}		 </if> -->
+				<!-- <if test="searchMenuType != null and searchMenuType != ''">	AND CM.MENU_TYPE 	= #{searchMenuType}		 </if> -->
+				<!-- <if test="searchMenuViewTypeCode != null and searchMenuViewTypeCode != ''">	AND CM.MENU_VIEW_TYPE_CODE 	= #{searchMenuViewTypeCode}		 </if> -->
+				<!-- <if test="searchMenuArea != null and searchMenuArea != ''">	AND CM.MENU_AREA 	= #{searchMenuArea}		 </if> -->
+				<!-- <if test="searchUpMenuId != null and searchUpMenuId != ''">	AND CM.UP_MENU_ID 	= #{searchUpMenuId}		 </if> -->
+				<!-- <if test="searchMenuDepth != null and searchMenuDepth != ''">	AND CM.MENU_DEPTH 	= #{searchMenuDepth}		 </if> -->
+				<!-- <if test="searchMenuOrder != null and searchMenuOrder != ''">	AND CM.MENU_ORDER 	= #{searchMenuOrder}		 </if> -->
+				<!-- <if test="searchMenuStatus != null and searchMenuStatus != ''">	AND CM.MENU_STATUS 	= #{searchMenuStatus}		 </if> -->
+				<!-- <if test="searchMenuUrl != null and searchMenuUrl != ''">	AND CM.MENU_URL 	= #{searchMenuUrl}		 </if> -->
+				<!-- <if test="searchMenuTitle != null and searchMenuTitle != ''">	AND CM.MENU_TITLE 	= #{searchMenuTitle}		 </if> -->
+				<!-- <if test="searchMenuImage != null and searchMenuImage != ''">	AND CM.MENU_IMAGE 	= #{searchMenuImage}		 </if> -->
+				<!-- <if test="searchDeleteYn != null and searchDeleteYn != ''">	AND CM.DELETE_YN 	= #{searchDeleteYn}		 </if> -->
+				<!-- <if test="searchShowYn != null and searchShowYn != ''">	AND CM.SHOW_YN 	= #{searchShowYn}		 </if> -->
+				<!-- <if test="searchInsertUser != null and searchInsertUser != ''">	AND CM.INSERT_USER 	= #{searchInsertUser}		 </if> -->
+				<!-- <if test="searchInsertDate != null and searchInsertDate != ''">	AND CM.INSERT_DATE 	= #{searchInsertDate}		 </if> -->
+				<!-- <if test="searchUpdateUser != null and searchUpdateUser != ''">	AND CM.UPDATE_USER 	= #{searchUpdateUser}		 </if> -->
+				<!-- <if test="searchUpdateDate != null and searchUpdateDate != ''">	AND CM.UPDATE_DATE 	= #{searchUpdateDate}		 </if> -->
+				<!-- <if test="searchEtc1 != null and searchEtc1 != ''">	AND CM.ETC1 	= #{searchEtc1}		 </if> -->
+				<!-- <if test="searchEtc2 != null and searchEtc2 != ''">	AND CM.ETC2 	= #{searchEtc2}		 </if> -->
+				<!-- <if test="searchCreateAuthUrlPattern != null and searchCreateAuthUrlPattern != ''">	AND CM.CREATE_AUTH_URL_PATTERN 	= #{searchCreateAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchReadAuthUrlPattern != null and searchReadAuthUrlPattern != ''">	AND CM.READ_AUTH_URL_PATTERN 	= #{searchReadAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchUpdateAuthUrlPattern != null and searchUpdateAuthUrlPattern != ''">	AND CM.UPDATE_AUTH_URL_PATTERN 	= #{searchUpdateAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchDeleteAuthUrlPattern != null and searchDeleteAuthUrlPattern != ''">	AND CM.DELETE_AUTH_URL_PATTERN 	= #{searchDeleteAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchPrintAuthUrlPattern != null and searchPrintAuthUrlPattern != ''">	AND CM.PRINT_AUTH_URL_PATTERN 	= #{searchPrintAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchDownloadAuthUrlPattern != null and searchDownloadAuthUrlPattern != ''">	AND CM.DOWNLOAD_AUTH_URL_PATTERN 	= #{searchDownloadAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchOtherAuthUrlPattern != null and searchOtherAuthUrlPattern != ''">	AND CM.OTHER_AUTH_URL_PATTERN 	= #{searchOtherAuthUrlPattern}		 </if> -->
+				<!-- <if test="searchListAuthUrlPattern != null and searchListAuthUrlPattern != ''">	AND CM.LIST_AUTH_URL_PATTERN 	= #{searchListAuthUrlPattern}		 </if> -->
+			</sql>
+	
+	<select id="getMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.getMenu ====== */
+		SELECT 			 CM.MENU_ID /* 메뉴ID */
+						 ,  CM.MENU_TYPE /* 메뉴분류 */
+						 ,  CM.MENU_VIEW_TYPE_CODE /* 메뉴 노출 타입 */
+						 ,  CM.MENU_AREA /* 메뉴영역 */
+						 ,  CM.UP_MENU_ID /* 대메뉴ID */
+						 ,  CM.MENU_DEPTH /* 깊이 */
+						 ,  CM.MENU_ORDER /* 메뉴순서 */
+						 ,  CM.MENU_STATUS /* 상태 */
+						 ,  CM.MENU_URL /* 경로 */
+						 ,  CM.MENU_TITLE /* 화면 타이틀 제목 */
+						 ,  CM.MENU_IMAGE /* 메뉴이미지 */
+						 ,  CM.DELETE_YN /* 삭제여부 */
+						 ,  CM.SHOW_YN /* 활성여부 */
+						 ,  CM.INSERT_USER /* 등록자 */
+						 ,  DATE_FORMAT (CM.INSERT_DATE, '%Y-%m-%d %H:%i:%s') AS INSERT_DATE /* 등록일 */
+						 ,  CM.UPDATE_USER /* 수정자 */
+						 ,  DATE_FORMAT (CM.INSERT_DATE, '%Y-%m-%d %H:%i:%s') AS UPDATE_DATE /* 수정일 */
+						 ,  CM.ETC1 /* 기타1 */
+						 ,  CM.ETC2 /* 기타2 */
+						 ,  CM.CREATE_AUTH_URL_PATTERN /* 생성 권한 URL 패턴 */
+						 ,  CM.READ_AUTH_URL_PATTERN /* 상세 조회 권한 URL 패턴 */
+						 ,  CM.UPDATE_AUTH_URL_PATTERN /* 수정 권한 URL 패턴 */
+						 ,  CM.DELETE_AUTH_URL_PATTERN /* 삭제 권한 URL 패턴 */
+						 ,  CM.PRINT_AUTH_URL_PATTERN /* 출력 권한 URL 패턴 */
+						 ,  CM.DOWNLOAD_AUTH_URL_PATTERN /* 다운로드 권한 URL 패턴 */
+						 ,  CM.OTHER_AUTH_URL_PATTERN /* 기타 권한 URL 패턴 */
+						 ,  CM.LIST_AUTH_URL_PATTERN /* 목록 조회 권한 URL 패턴 */
+					FROM COM_MENU CM 
+				WHERE CM.MENU_ID = #{menuId}
+	</select>
+	
+	<select id="getUpMenuId" parameterType="java.lang.String" resultType="java.lang.String">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.getUpMenuId ====== */
+		SELECT up_menu_id
+		  FROM COM_MENU
+		 where menu_id = #{menuIdTemp}  
+	</select>
+	
+	<select id="getMaxManuOrder" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="java.lang.Integer">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.getMaxManuOrder ====== */
+		select count(1) cnt
+		from com_menu
+		where 1 = 1
+		and menu_order > (
+		  select max(menu_order) menu_order
+		  from com_menu
+		  where up_menu_id = #{upMenuId}
+		)
+	</select>
+	
+	<select id="getManuOrderMax" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="java.lang.Integer">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.getManuOrderMax ====== */
+		select max(menu_order) menu_order
+		from com_menu
+		where 1 = 1
+        and menu_type = #{menuType}
+	</select>
+	
+	<select id="getManuOrderTopMax" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="java.lang.Integer">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.getManuOrderTopMax ====== */
+		select menu_order from COM_MENU
+ 		WHERE MENU_ORDER =
+       (SELECT A.MENU_ORDER 
+         FROM 
+              (SELECT max(MENU_ORDER) MENU_ORDER 
+                FROM COM_MENU 
+               WHERE UP_MENU_ID = #{upMenuId}
+              )A 
+       ) 
+	</select>
+	
+	<select id="listManuTempMenuOrderBefore" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.listManuTempMenuOrderBefore ====== */
+		SELECT *
+		  FROM COM_MENU_TEMP
+		 WHERE MENU_TYPE = #{menuType}
+		   AND menu_order BETWEEN 1 AND (select A.menu_order from com_menu_temp A WHERE A.menu_id = #{menuIdTemp})
+		   ORDER BY MENU_ORDER ASC
+	</select>
+	
+	<select id="listManuTempMenuOrderAfter" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.listManuTempMenuOrderAfter ====== */
+		SELECT *
+		  FROM COM_MENU_TEMP
+		 WHERE MENU_TYPE = #{menuType}
+		 AND menu_order BETWEEN (select A.menu_order+1 from com_menu_temp A WHERE A.menu_id = #{menuIdTemp}) AND (select max(B.menu_order) from com_menu_temp B)
+		 ORDER BY MENU_ORDER ASC
+	</select>
+	
+<!-- 	<select id="listMenu" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listMenu" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO"> -->
+<!-- 	<select id="listMenu" parameterType="hashmap" resultMap="menu-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.listMenu ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+			SELECT 
+					CM.MENU_ID  /* 메뉴ID */
+					 ,  CM.MENU_TYPE  /* 메뉴분류 */
+					 ,  CM.MENU_VIEW_TYPE_CODE  /* 메뉴 노출 타입 */
+					 ,  CM.MENU_AREA  /* 메뉴영역 */
+					 ,  CM.UP_MENU_ID  /* 대메뉴ID */
+					 ,  CM.MENU_DEPTH  /* 깊이 */
+					 ,  CM.MENU_ORDER  /* 메뉴순서 */
+					 ,  CM.MENU_STATUS  /* 상태 */
+					 ,  CM.MENU_URL  /* 경로 */
+					 ,  CM.MENU_TITLE  /* 화면 타이틀 제목 */
+					 ,  CM.MENU_IMAGE  /* 메뉴이미지 */
+					 ,  CM.DELETE_YN  /* 삭제여부 */
+					 ,  CM.SHOW_YN  /* 활성여부 */
+					 ,  CM.INSERT_USER  /* 등록자 */
+					 ,  DATE_FORMAT (CM.INSERT_DATE, '%Y-%m-%d %H:%i:%s') AS INSERT_DATE  /* 등록일 */
+					 ,  CM.UPDATE_USER  /* 수정자 */
+					 ,  DATE_FORMAT (CM.INSERT_DATE, '%Y-%m-%d %H:%i:%s') AS UPDATE_DATE  /* 수정일 */
+					 ,  CM.ETC1  /* 기타1 */
+					 ,  CM.ETC2  /* 기타2 */
+					 ,  CM.CREATE_AUTH_URL_PATTERN  /* 생성 권한 URL 패턴 */
+					 ,  CM.READ_AUTH_URL_PATTERN  /* 상세 조회 권한 URL 패턴 */
+					 ,  CM.UPDATE_AUTH_URL_PATTERN  /* 수정 권한 URL 패턴 */
+					 ,  CM.DELETE_AUTH_URL_PATTERN  /* 삭제 권한 URL 패턴 */
+					 ,  CM.PRINT_AUTH_URL_PATTERN  /* 출력 권한 URL 패턴 */
+					 ,  CM.DOWNLOAD_AUTH_URL_PATTERN  /* 다운로드 권한 URL 패턴 */
+					 ,  CM.OTHER_AUTH_URL_PATTERN  /* 기타 권한 URL 패턴 */
+					 ,  CM.LIST_AUTH_URL_PATTERN  /* 목록 조회 권한 URL 패턴 */
+				  FROM COM_MENU CM
+				WHERE 1 = 1 
+	    ]]>
+
+		<include refid="listMenu-where"/>
+			ORDER BY CM.UPDT_YMDTM DESC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getMenuCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.getMenuCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_MENU CM
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listMenu-where"/>
+	</select>
+
+<!-- 	<select id="listMenuTree" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+	<select id="listMenuTree" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO" resultType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.listMenuTree ====== */
+	    <![CDATA[
+			SELECT @RNUM := @RNUM + 1 AS NUM
+			       , A.MENU_AREA
+				   , A.LEVEL AS MENU_LEVEL
+			       , (SELECT MENU_ID FROM com_menu 
+			     	  WHERE MENU_ORDER =(SELECT MAX(MENU_ORDER)
+															from com_menu
+															 where  MENU_AREA = #{searchMenuArea}
+															   AND DELETE_YN = 'N'  
+															   AND SHOW_YN   = 'Y'  
+															   AND UP_MENU_ID = 'TOP'
+															   and MENU_TYPE = #{sessionMemType}
+																and MENU_ORDER <= A.MENU_ORDER
+										  )
+					   AND  MENU_AREA = #{searchMenuArea}
+					   AND DELETE_YN = 'N'  
+					   AND SHOW_YN   = 'Y'  
+					   AND UP_MENU_ID = 'TOP'
+					   AND MENU_TYPE = #{sessionMemType})
+			        AS ROOT_MENU_ID
+			       , (CASE WHEN (SELECT  COUNT(*)	FROM  COM_MENU WHERE UP_MENU_ID = A.MENU_ID) > 0 THEN 0 ELSE 1 END) AS IS_LEAF_MENU	
+			       , A.MENU_ID
+			       , A.MENU_TYPE
+			       , A.UP_MENU_ID	
+			       , A.MENU_DEPTH
+			       , A.MENU_ORDER
+			       , A.MENU_VIEW_TYPE_CODE
+			       , A.MENU_TITLE
+				   , CONCAT( LPAD(' ', (A.LEVEL-1),'_'), A.MENU_TITLE ) AS LPAD_MENU_TITLE
+			       , CONCAT( LPAD(' ', 4*(A.LEVEL-1),'_'), A.MENU_TITLE ) AS LPAD_MENU_TITLE2
+			       , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN CONCAT('@',A.MENU_TITLE) 
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT('@',(SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT('@',(SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = (SELECT IN_MU2.UP_MENU_ID FROM COM_MENU IN_MU2 WHERE IN_MU2.MENU_ID =A.UP_MENU_ID LIMIT 1) LIMIT 1),'@',(SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE) 
+			        WHEN A.MENU_DEPTH = 4 THEN CONCAT('@',(SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = (SELECT IN_MU2.UP_MENU_ID FROM COM_MENU IN_MU2 WHERE IN_MU2.MENU_ID =A.UP_MENU_ID LIMIT 1) LIMIT 1),'@',(SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE) 
+			        ELSE ''
+			        END ) AS MENU_PATH
+			       , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN CONCAT('@',A.MENU_ID) 
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT('@',A.UP_MENU_ID,'@',A.MENU_ID)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT('@',(SELECT IN_MU.MENU_ID FROM COM_MENU IN_MU WHERE IN_MU.UP_MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.UP_MENU_ID,'@',A.MENU_ID) 
+			        ELSE ''
+			        END ) AS MENU_ID_PATH
+			        , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN A.MENU_TITLE
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT((SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT((SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = (SELECT IN_MU2.UP_MENU_ID FROM COM_MENU IN_MU2 WHERE IN_MU2.MENU_ID =A.UP_MENU_ID LIMIT 1) LIMIT 1),'@',(SELECT IN_MU.MENU_TITLE FROM COM_MENU IN_MU WHERE IN_MU.MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.MENU_TITLE) 
+			        ELSE ''
+			        END ) AS MENU_PATH_LEAF_NODE
+			       , (SELECT CASE WHEN A.MENU_DEPTH = 1 THEN A.MENU_ID
+					WHEN A.MENU_DEPTH = 2 THEN CONCAT(A.UP_MENU_ID,'@',A.MENU_ID)
+					WHEN A.MENU_DEPTH = 3 THEN CONCAT((SELECT IN_MU.MENU_ID FROM COM_MENU IN_MU WHERE IN_MU.UP_MENU_ID = A.UP_MENU_ID LIMIT 1),'@',A.UP_MENU_ID,'@',A.MENU_ID) 
+			        ELSE ''
+			        END ) AS MENU_ID_PATH_LEAF_NODE
+				   , A.MENU_URL
+			       , A.CREATE_AUTH_URL_PATTERN  /* 생성 권한 URL 패턴 */			
+			       , A.READ_AUTH_URL_PATTERN    /* 상세 조회 권한 URL 패턴 */			
+			       , A.UPDATE_AUTH_URL_PATTERN  /* 수정 권한 URL 패턴 */			
+			       , A.DELETE_AUTH_URL_PATTERN  /* 삭제 권한 URL 패턴 */			
+			       , A.PRINT_AUTH_URL_PATTERN   /* 출력 권한 URL 패턴 */			
+			       , A.DOWNLOAD_AUTH_URL_PATTERN  /* 다운로드 권한 URL 패턴 */			
+			       , A.OTHER_AUTH_URL_PATTERN  /* 기타 권한 URL 패턴 */			
+			       , A.LIST_AUTH_URL_PATTERN  /* 목록 조회 권한 URL 패턴 */			
+                   , (CASE WHEN (SELECT  COUNT(*)	FROM  COM_MENU WHERE UP_MENU_ID = A.MENU_ID) > 0 THEN 'false' ELSE 'true' END) AS IS_LEAF  
+                   , CASE 
+                            WHEN A.MENU_DEPTH < 6 
+                            THEN 'true' 
+                            ELSE 'false' 
+                   END AS EXPANDED 
+                   , 'true' AS LOADED
+			  FROM 			
+			       ( SELECT 			
+			              LEVEL,			
+			              COM.MENU_ID,
+			              COM.MENU_AREA, 			
+			              COM.MENU_TYPE,			
+			              COM.UP_MENU_ID, 			
+			              COM.MENU_DEPTH,			
+			              COM.MENU_ORDER,			
+			              COM.MENU_VIEW_TYPE_CODE,  			
+				          COM.MENU_TITLE,   		
+						  COM.MENU_URL,
+			              CREATE_AUTH_URL_PATTERN,  /* 생성 권한 URL 패턴 */			
+				          READ_AUTH_URL_PATTERN,  /* 상세 조회 권한 URL 패턴 */		
+				          UPDATE_AUTH_URL_PATTERN,  /* 수정 권한 URL 패턴 */		
+						  DELETE_AUTH_URL_PATTERN,  /* 삭제 권한 URL 패턴 */
+						  PRINT_AUTH_URL_PATTERN,  /* 출력 권한 URL 패턴 */
+						  DOWNLOAD_AUTH_URL_PATTERN,  /* 다운로드 권한 URL 패턴 */
+						  OTHER_AUTH_URL_PATTERN,  /* 기타 권한 URL 패턴 */
+						  LIST_AUTH_URL_PATTERN  /* 목록 조회 권한 URL 패턴 */
+			         FROM 			
+			              (SELECT MENU_CONNECT_BY_PARENT(#{sessionMemType},#{searchMenuArea}) AS MENU_ID, 			
+			                     @level as LEVEL 			
+			                FROM ( SELECT @start_with := 0, @id := 'TOP', @level := 0 ) vars, 			
+			                     COM_MENU 			
+			               WHERE @ID IS NOT NULL 			
+			            ORDER BY MENU_DEPTH, 			
+			                     UP_MENU_ID, 			
+			                     MENU_ORDER 			
+			              ) FUNC 			
+			            INNER JOIN COM_MENU COM 			
+			        WHERE FUNC.MENU_ID = COM.MENU_ID 			
+			       ) A,
+			       ( SELECT @RNUM := 0 ) R
+			       WHERE 1 = 1
+                   order by A.MENU_ORDER asc
+		]]>                   
+	</select>
+	
+	<sql id="saveMenuSQL">
+    	MERGE INTO COM_MENU 
+    	USING DUAL
+    		ON (
+    			MENU_ID 	= #{menuId}
+    		)
+		WHEN MATCHED THEN
+			UPDATE SET UPDATE_DATE 	= NOW()
+					   , UPDATE_USER 	= #{sessionMemSeq}
+								<if test="menuType != null and menuType != ''">	, MENU_TYPE 	= #{menuType}		 </if>
+								<if test="menuViewTypeCode != null and menuViewTypeCode != ''">	, MENU_VIEW_TYPE_CODE 	= #{menuViewTypeCode}		 </if>
+								<if test="menuArea != null and menuArea != ''">	, MENU_AREA 	= #{menuArea}		 </if>
+								<if test="upMenuId != null and upMenuId != ''">	, UP_MENU_ID 	= #{upMenuId}		 </if>
+								<if test="menuDepth != null and menuDepth != ''">	, MENU_DEPTH 	= #{menuDepth}		 </if>
+								<if test="menuOrder != null and menuOrder != ''">	, MENU_ORDER 	= #{menuOrder}		 </if>
+								<if test="menuStatus != null and menuStatus != ''">	, MENU_STATUS 	= #{menuStatus}		 </if>
+								<if test="menuUrl != null and menuUrl != ''">	, MENU_URL 	= #{menuUrl}		 </if>
+								<if test="menuTitle != null and menuTitle != ''">	, MENU_TITLE 	= #{menuTitle}		 </if>
+								<if test="menuImage != null and menuImage != ''">	, MENU_IMAGE 	= #{menuImage}		 </if>
+								<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+								<if test="showYn != null and showYn != ''">	, SHOW_YN 	= #{showYn}		 </if>
+								<if test="etc1 != null and etc1 != ''">	, ETC1 	= #{etc1}		 </if>
+								<if test="etc2 != null and etc2 != ''">	, ETC2 	= #{etc2}		 </if>
+								<if test="createAuthUrlPattern != null and createAuthUrlPattern != ''">	, CREATE_AUTH_URL_PATTERN 	= #{createAuthUrlPattern}		 </if>
+								<if test="readAuthUrlPattern != null and readAuthUrlPattern != ''">	, READ_AUTH_URL_PATTERN 	= #{readAuthUrlPattern}		 </if>
+								<if test="updateAuthUrlPattern != null and updateAuthUrlPattern != ''">	, UPDATE_AUTH_URL_PATTERN 	= #{updateAuthUrlPattern}		 </if>
+								<if test="deleteAuthUrlPattern != null and deleteAuthUrlPattern != ''">	, DELETE_AUTH_URL_PATTERN 	= #{deleteAuthUrlPattern}		 </if>
+								<if test="printAuthUrlPattern != null and printAuthUrlPattern != ''">	, PRINT_AUTH_URL_PATTERN 	= #{printAuthUrlPattern}		 </if>
+								<if test="downloadAuthUrlPattern != null and downloadAuthUrlPattern != ''">	, DOWNLOAD_AUTH_URL_PATTERN 	= #{downloadAuthUrlPattern}		 </if>
+								<if test="otherAuthUrlPattern != null and otherAuthUrlPattern != ''">	, OTHER_AUTH_URL_PATTERN 	= #{otherAuthUrlPattern}		 </if>
+								<if test="listAuthUrlPattern != null and listAuthUrlPattern != ''">	, LIST_AUTH_URL_PATTERN 	= #{listAuthUrlPattern}		 </if>
+						WHEN NOT MATCHED THEN
+			INSERT (
+								 MENU_ID
+								 , MENU_TYPE
+								 , MENU_VIEW_TYPE_CODE
+								 , MENU_AREA
+								 , UP_MENU_ID
+								 , MENU_DEPTH
+								 , MENU_ORDER
+								 , MENU_STATUS
+								 , MENU_URL
+								 , MENU_TITLE
+								 , MENU_IMAGE
+								 , DELETE_YN
+								 , SHOW_YN
+								 , INSERT_USER
+								 , INSERT_DATE
+								 , UPDATE_USER
+								 , UPDATE_DATE
+								 , ETC1
+								 , ETC2
+								 , CREATE_AUTH_URL_PATTERN
+								 , READ_AUTH_URL_PATTERN
+								 , UPDATE_AUTH_URL_PATTERN
+								 , DELETE_AUTH_URL_PATTERN
+								 , PRINT_AUTH_URL_PATTERN
+								 , DOWNLOAD_AUTH_URL_PATTERN
+								 , OTHER_AUTH_URL_PATTERN
+								 , LIST_AUTH_URL_PATTERN
+									) 
+					VALUES 
+					( 
+								 #{menuId}
+								 , #{menuType}
+								 , #{menuViewTypeCode}
+								 , #{menuArea}
+								 , #{upMenuId}
+								 , #{menuDepth}
+								 , #{menuOrder}
+								 , #{menuStatus}
+								 , #{menuUrl}
+								 , #{menuTitle}
+								 , #{menuImage}
+								 , #{deleteYn}
+								 , #{showYn}
+								 , #{sessionMemSeq}
+								 , NOW()
+								 , #{sessionMemSeq}
+								 , NOW()
+								 , #{etc1}
+								 , #{etc2}
+								 , #{createAuthUrlPattern}
+								 , #{readAuthUrlPattern}
+								 , #{updateAuthUrlPattern}
+								 , #{deleteAuthUrlPattern}
+								 , #{printAuthUrlPattern}
+								 , #{downloadAuthUrlPattern}
+								 , #{otherAuthUrlPattern}
+								 , #{listAuthUrlPattern}
+								)
+	</sql>	
+	<insert id="saveMenuMap" parameterType="java.util.HashMap">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.saveMenuMap ====== */
+		<include refid="saveMenuSQL"/>
+	</insert>
+	<insert id="saveMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.saveMenu ====== */
+		<include refid="saveMenuSQL"/>
+	</insert>
+	
+	<insert id="insertMenuTempCopy" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.insertMenuTempCopy ====== */
+			insert into com_menu_temp
+			select * from com_menu
+			WHERE menu_type = #{menuType}
+		]]>
+	</insert>
+	
+	<insert id="insertTopMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.insertTopMenu ====== */
+			INSERT INTO COM_MENU ( 
+									 MENU_ID
+									 , MENU_TYPE
+									 , MENU_VIEW_TYPE_CODE
+									 , MENU_AREA
+									 , UP_MENU_ID
+									 , MENU_DEPTH
+									 , MENU_ORDER
+									 , MENU_STATUS
+									 , MENU_URL
+									 , MENU_TITLE
+									 , MENU_IMAGE
+									 , DELETE_YN
+									 , SHOW_YN
+									 , INSERT_USER
+									 , INSERT_DATE
+									 , UPDATE_USER
+									 , UPDATE_DATE
+									 , ETC1
+									 , ETC2
+									 , CREATE_AUTH_URL_PATTERN
+									 , READ_AUTH_URL_PATTERN
+									 , UPDATE_AUTH_URL_PATTERN
+									 , DELETE_AUTH_URL_PATTERN
+									 , PRINT_AUTH_URL_PATTERN
+									 , DOWNLOAD_AUTH_URL_PATTERN
+									 , OTHER_AUTH_URL_PATTERN
+									 , LIST_AUTH_URL_PATTERN
+									) 
+					VALUES 
+					( 
+								  #{menuId}
+ 								 ,  #{menuType}
+ 								 ,  #{menuViewTypeCode}
+ 								 ,  #{menuArea}
+ 								 ,  'TOP'
+ 								 ,  '1'
+ 								 ,  ( SELECT max(A.menu_order+1) menu_order FROM COM_MENU A )
+ 								 ,  'A'
+ 								 ,  #{menuUrl}
+ 								 ,  #{menuTitle}
+ 								 ,  #{menuImage}
+ 								 ,  IFNULL(#{deleteYn} , 'N')
+ 								 ,  #{showYn}
+ 								 ,  #{sessionMemSeq}
+ 								 ,  NOW()
+ 								 ,  #{sessionMemSeq}
+ 								 ,  NOW()
+ 								 ,  #{etc1}
+ 								 ,  #{etc2}
+								 , #{createAuthUrlPattern}
+								 , #{readAuthUrlPattern}
+								 , #{updateAuthUrlPattern}
+								 , #{deleteAuthUrlPattern}
+								 , #{printAuthUrlPattern}
+								 , #{downloadAuthUrlPattern}
+								 , #{otherAuthUrlPattern}
+								 , #{listAuthUrlPattern}
+ 					)
+		]]>
+	</insert>
+	
+	<insert id="insertMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.insertMenu ====== */
+			INSERT INTO COM_MENU ( 
+									 MENU_ID
+									 , MENU_TYPE
+									 , MENU_VIEW_TYPE_CODE
+									 , MENU_AREA
+									 , UP_MENU_ID
+									 , MENU_DEPTH
+									 , MENU_ORDER
+									 , MENU_STATUS
+									 , MENU_URL
+									 , MENU_TITLE
+									 , MENU_IMAGE
+									 , DELETE_YN
+									 , SHOW_YN
+									 , INSERT_USER
+									 , INSERT_DATE
+									 , UPDATE_USER
+									 , UPDATE_DATE
+									 , ETC1
+									 , ETC2
+									 , CREATE_AUTH_URL_PATTERN
+									 , READ_AUTH_URL_PATTERN
+									 , UPDATE_AUTH_URL_PATTERN
+									 , DELETE_AUTH_URL_PATTERN
+									 , PRINT_AUTH_URL_PATTERN
+									 , DOWNLOAD_AUTH_URL_PATTERN
+									 , OTHER_AUTH_URL_PATTERN
+									 , LIST_AUTH_URL_PATTERN
+									) 
+					VALUES 
+					( 
+								  #{menuId}
+ 								 ,  #{menuType}
+ 								 ,  #{menuViewTypeCode}
+ 								 ,  #{menuArea}
+ 								 ,  #{upMenuId}
+ 								 ,  #{menuDepth}
+ 								 ,  #{menuOrder}
+ 								 ,  'A'
+ 								 ,  #{menuUrl}
+ 								 ,  #{menuTitle}
+ 								 ,  #{menuImage}
+ 								 ,  IFNULL(#{deleteYn} , 'N')
+ 								 ,  #{showYn}
+ 								 ,  #{sessionMemSeq}
+ 								 ,  NOW()
+ 								 ,  #{sessionMemSeq}
+ 								 ,  NOW()
+ 								 ,  #{etc1}
+ 								 ,  #{etc2}
+								 , #{createAuthUrlPattern}
+								 , #{readAuthUrlPattern}
+								 , #{updateAuthUrlPattern}
+								 , #{deleteAuthUrlPattern}
+								 , #{printAuthUrlPattern}
+								 , #{downloadAuthUrlPattern}
+								 , #{otherAuthUrlPattern}
+								 , #{listAuthUrlPattern}
+ 					)
+		]]>
+	</insert>
+	
+	<insert id="insertMenuAdd" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.insertMenuAdd ====== */
+			INSERT INTO COM_MENU ( 
+									 MENU_ID,
+									 MENU_TYPE,
+									 MENU_VIEW_TYPE_CODE,
+									 MENU_AREA,
+									 UP_MENU_ID,
+									 MENU_DEPTH,
+									 MENU_ORDER,
+									 MENU_STATUS,
+									 MENU_URL,
+									 MENU_TITLE,
+									 MENU_IMAGE,
+									 DELETE_YN,
+									 SHOW_YN,
+									 INSERT_USER,
+									 INSERT_DATE,
+									 UPDATE_USER,
+									 UPDATE_DATE,
+									 ETC1,
+									 ETC2,
+									 CREATE_AUTH_URL_PATTERN,
+									 READ_AUTH_URL_PATTERN,
+									 UPDATE_AUTH_URL_PATTERN,
+									 DELETE_AUTH_URL_PATTERN,
+									 PRINT_AUTH_URL_PATTERN,
+									 DOWNLOAD_AUTH_URL_PATTERN,
+									 OTHER_AUTH_URL_PATTERN,
+									 LIST_AUTH_URL_PATTERN
+									) 
+					select 
+								 #{menuId},
+ 								 #{menuType},
+ 								 #{menuViewTypeCode},
+ 								 #{menuArea},
+ 								 #{upMenuId},
+ 								 #{menuDepth},
+ 								 (
+ 								 	select max(A.MENU_ORDER)+1
+									from com_menu A
+									where A.UP_MENU_ID = #{upMenuId}
+ 								 ) MENU_ORDER,
+ 								 'A',
+                                 #{menuUrl},
+ 								 #{menuTitle},
+ 								 #{menuImage},
+ 								 IFNULL(#{deleteYn} , 'N'),
+ 								 #{showYn},
+ 								 #{sessionMemSeq},
+ 								 NOW(),
+ 								 #{sessionMemSeq},
+ 								 NOW(),
+ 								 #{etc1},
+ 								 #{etc2},
+								 #{createAuthUrlPattern},
+								 #{readAuthUrlPattern},
+								 #{updateAuthUrlPattern},
+								 #{deleteAuthUrlPattern},
+								 #{printAuthUrlPattern},
+								 #{downloadAuthUrlPattern},
+								 #{otherAuthUrlPattern},
+								 #{listAuthUrlPattern}
+					from COM_MENU          
+					where 1 = 1
+		]]>
+		<choose>
+            <when test="upMenuId != null and upMenuId != ''">
+                <if test="upMenuId == 'TOP'">
+                     AND MENU_ID = #{menuIdTemp}
+                </if>
+                <if test="upMenuId != 'TOP'">
+                     AND MENU_ID = #{upMenuId}
+                </if>
+            </when>
+        </choose> 
+	</insert>
+	
+		<insert id="insertMenuTopAdd" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.insertMenuTopAdd ====== */
+			INSERT INTO COM_MENU ( 
+									 MENU_ID,
+									 MENU_TYPE,
+									 MENU_VIEW_TYPE_CODE,
+									 MENU_AREA,
+									 UP_MENU_ID,
+									 MENU_DEPTH,
+									 MENU_ORDER,
+									 MENU_STATUS,
+									 MENU_URL,
+									 MENU_TITLE,
+									 MENU_IMAGE,
+									 DELETE_YN,
+									 SHOW_YN,
+									 INSERT_USER,
+									 INSERT_DATE,
+									 UPDATE_USER,
+									 UPDATE_DATE,
+									 ETC1,
+									 ETC2,
+									 CREATE_AUTH_URL_PATTERN,
+									 READ_AUTH_URL_PATTERN,
+									 UPDATE_AUTH_URL_PATTERN,
+									 DELETE_AUTH_URL_PATTERN,
+									 PRINT_AUTH_URL_PATTERN,
+									 DOWNLOAD_AUTH_URL_PATTERN,
+									 OTHER_AUTH_URL_PATTERN,
+									 LIST_AUTH_URL_PATTERN
+									) 
+					select 
+								 #{menuId},
+ 								 #{menuType},
+ 								 #{menuViewTypeCode},
+ 								 #{menuArea},
+ 								 #{menuIdTemp},
+ 								 #{menuDepth},
+ 								 (
+ 								 	select max(A.MENU_ORDER)+1
+									from com_menu A
+									where A.MENU_ID = #{menuIdTemp}
+ 								 ) MENU_ORDER,
+ 								 'A',
+                                 #{menuUrl},
+ 								 #{menuTitle},
+ 								 #{menuImage},
+ 								 IFNULL(#{deleteYn} , 'N'),
+ 								 #{showYn},
+ 								 #{sessionMemSeq},
+ 								 NOW(),
+ 								 #{sessionMemSeq},
+ 								 NOW(),
+ 								 #{etc1},
+ 								 #{etc2},
+								 #{createAuthUrlPattern},
+								 #{readAuthUrlPattern},
+								 #{updateAuthUrlPattern},
+								 #{deleteAuthUrlPattern},
+								 #{printAuthUrlPattern},
+								 #{downloadAuthUrlPattern},
+								 #{otherAuthUrlPattern},
+								 #{listAuthUrlPattern}
+					from COM_MENU          
+					where 1 = 1
+					AND MENU_ID = #{menuIdTemp}
+		]]>
+	</insert>
+
+	<update id="updateMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.updateMenu ====== */
+	        UPDATE COM_MENU 
+	        SET 
+	          UPDATE_DATE 	= NOW()
+        	, UPDATE_USER 	= #{sessionMemSeq}
+			, MENU_TYPE 	= #{menuType}		 
+			, MENU_VIEW_TYPE_CODE 		= #{menuViewTypeCode}		 
+			, MENU_AREA 				= #{menuArea}		 
+			, UP_MENU_ID 				= #{upMenuId}		 
+			, MENU_DEPTH 				= #{menuDepth}		 
+			, MENU_ORDER 				= #{menuOrder}		 
+			, MENU_STATUS 				= 'A'		 
+			, MENU_URL 					= #{menuUrl}		 
+			, MENU_TITLE 				= #{menuTitle}		 
+			, MENU_IMAGE 				= #{menuImage}		 
+			, DELETE_YN 				= IFNULL(#{deleteYn} , 'N')		 
+			, SHOW_YN 					= #{showYn}		 
+			, ETC1 						= #{etc1}		 
+			, ETC2 						= #{etc2}		 
+			, CREATE_AUTH_URL_PATTERN 	= #{createAuthUrlPattern}		 
+			, READ_AUTH_URL_PATTERN 	= #{readAuthUrlPattern}		 
+			, UPDATE_AUTH_URL_PATTERN 	= #{updateAuthUrlPattern}		 
+			, DELETE_AUTH_URL_PATTERN 	= #{deleteAuthUrlPattern}		 
+			, PRINT_AUTH_URL_PATTERN 	= #{printAuthUrlPattern}		 
+			, DOWNLOAD_AUTH_URL_PATTERN = #{downloadAuthUrlPattern}		 
+			, OTHER_AUTH_URL_PATTERN 	= #{otherAuthUrlPattern}		 
+			, LIST_AUTH_URL_PATTERN 	= #{listAuthUrlPattern}
+			WHERE MENU_ID = #{menuId}
+	</update>
+	
+	<!-- <update id="updateMenuMenuOrder" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.updateMenu ====== */
+	        UPDATE COM_MENU 
+	        SET 
+	          UPDATE_DATE 	= NOW()
+        	, UPDATE_USER 	= #{sessionMemSeq} 	 
+			, MENU_ORDER    = MENU_ORDER+1
+			WHERE MENU_ORDER > (
+				SELECT A.MENU_ORDER FROM (SELECT max(MENU_ORDER-1)+1 MENU_ORDER FROM COM_MENU WHERE UP_MENU_ID = #{upMenuId})A
+			)  
+	</update> -->
+	
+	<update id="updateMenuMenuOrder" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.updateMenu ====== */
+	        UPDATE COM_MENU 
+	        SET 
+	          UPDATE_DATE 	= NOW()
+        	, UPDATE_USER 	= #{sessionMemSeq} 	 
+			, MENU_ORDER    = MENU_ORDER+1
+			WHERE MENU_ORDER > (
+				SELECT A.MENU_ORDER FROM (SELECT max(MENU_ORDER) MENU_ORDER FROM COM_MENU WHERE UP_MENU_ID = #{upMenuId})A
+			)  
+	</update>
+	
+	<update id="updateMenuMenuOrder1" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.updateMenu ====== */
+	        UPDATE COM_MENU 
+	        SET 
+	          UPDATE_DATE 	= NOW()
+        	, UPDATE_USER 	= #{sessionMemSeq} 	 
+			, MENU_ORDER    = 9999
+			WHERE MENU_ORDER > (
+				SELECT A.MENU_ORDER FROM (SELECT MENU_ORDER FROM COM_MENU WHERE MENU_ID = #{menuId})A
+			)  
+	</update>
+	
+	<update id="updateMenuMenuOrder2" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.updateMenu ====== */
+	        UPDATE COM_MENU 
+	        SET 
+	          UPDATE_DATE 	= NOW()
+        	, UPDATE_USER 	= #{sessionMemSeq} 	 
+			, MENU_ORDER    = MENU_ORDER+1
+			WHERE MENU_ORDER > (
+				SELECT A.MENU_ORDER FROM (SELECT MENU_ORDER FROM COM_MENU WHERE MENU_ID = #{menuId})A
+			)  
+	</update>
+
+	<delete id="deleteMenuTemp" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.deleteMenuTemp ====== */
+		DELETE FROM COM_MENU_TEMP 
+		WHERE MENU_TYPE = #{menuType}
+	</delete>
+	
+	<delete id="deleteMenuAll" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.deleteMenuAll ====== */
+		DELETE FROM COM_MENU
+		WHERE MENU_TYPE = #{menuType}
+	</delete>
+
+	<delete id="deleteMenu" parameterType="kr.co.sitglobal.oklms.la.menu.vo.MenuVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.menu.service.impl.MenuMapper.deleteMenu ====== */
+			DELETE FROM COM_MENU 
+		]]>
+			 WHERE MENU_ID IN
+		<foreach collection="delMenuIdList" item="delMenuIds" index="index" open="(" close=")" separator=",">
+			 ${delMenuIds}
+		</foreach>
+	</delete>
+
+</mapper>

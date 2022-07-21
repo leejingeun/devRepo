@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<context:component-scan base-package="egovframework.com">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<!-- exclude-filter -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+	
+	<context:component-scan base-package="kr.co.sitglobal">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<!-- exclude-filter -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+
+	<!-- For Pagination Tag -->
+	<bean id="imageRenderer" class="egovframework.com.cmm.ImagePaginationRenderer"/>
+
+	<bean id="paginationManager" class="egovframework.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager">
+		<property name="rendererType">
+			<map>
+				<entry key="image" value-ref="imageRenderer"/>
+			</map>
+		</property>
+	</bean>
+
+<!-- // TYPE 3 (egovFramework 2.X -> egovFramework 3.x)-->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+        	<list>
+        		<ref bean="mappingJackson2HttpMessageConverter"/>
+        	</list>
+<!--             <util:list list-class="java.util.ArrayList"> -->
+<!--                 <ref bean="mappingJackson2HttpMessageConverter"/> -->
+<!--             </util:list> -->
+        </property>
+    </bean>
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <bean id="mappingJackson2HttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+<!--                 <value>text/html;charset=UTF-8</value> -->
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"></property>
+	</bean>
+
+	<!-- 인터셉터 -->
+	<mvc:interceptors>
+			
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.json" />
+			<bean class="kr.co.sitglobal.oklms.comm.interceptor.JsonInterceptor" />
+		</mvc:interceptor>	
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<mvc:exclude-mapping path="/commbiz/uss/ion/pwm/openPopupManage.do" />
+			<mvc:exclude-mapping path="/utl/web/*" />
+			<mvc:exclude-mapping path="/validator.do" />
+			<mvc:exclude-mapping path="/accessDenied.do" />
+			<mvc:exclude-mapping path="/utl/wed/*" />
+			<mvc:exclude-mapping path="/sym/cal/EgovselectNormalCalendar.do" />
+			<mvc:exclude-mapping path="/sym/cal/EgovNormalCalPopup.do" />
+			<mvc:exclude-mapping path="/la/main/changeMenuArea.do" />
+			<mvc:exclude-mapping path="/**/commbiz/menu/leftMenu.do" />
+			<mvc:exclude-mapping path="/**/commbiz/menu/headMenu.do" />
+			<mvc:exclude-mapping path="/**/cop/bbs/**/*" />
+			<mvc:exclude-mapping path="/**/commbiz/menu/bodyLocation.do" />
+			<mvc:exclude-mapping path="/cmm/error/*" />
+			<mvc:exclude-mapping path="/cmm/fms/*" /><!-- 첨부파일 관련해서는 첵크 하지않음 -->
+			<mvc:exclude-mapping path="/commbiz/**/*" />
+<!-- 			<mvc:exclude-mapping path="/commbiz/atchfle/*" /> -->
+<!-- 			<mvc:exclude-mapping path="/la/login/*" /> LoginCheckInterceptor 에서 처리 -->
+<!-- 			<mvc:exclude-mapping path="/lc/login/*" /> LoginCheckInterceptor 에서 처리 -->
+<!-- 			<mvc:exclude-mapping path="/lu/login/*" /> LoginCheckInterceptor 에서 처리 -->
+
+			<mvc:exclude-mapping path="/lu/join/join/*" /><!-- 회원가입 -->
+			<mvc:exclude-mapping path="/lu/popup/popup/goPopupMemberInfoIdCheck.do" /><!-- 아이디 중복첵크 -->
+			<mvc:exclude-mapping path="/lu/main/*" />
+			<mvc:exclude-mapping path="/mm/main/*" />
+			<mvc:exclude-mapping path="/lu/course/course/**/*" />
+			<mvc:exclude-mapping path="/lu/leceduschedule/lecEduSchedule/*" />
+			<mvc:exclude-mapping path="/lu/intro/intro/*" />
+			<mvc:exclude-mapping path="/cmm/fms/*" /> 
+			<mvc:exclude-mapping path="/prototype/**/*" />
+			<bean class="kr.co.sitglobal.oklms.comm.interceptor.LoginCheckInterceptor" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<mvc:exclude-mapping path="/**/*.jsp" />
+			<mvc:exclude-mapping path="/**/*.json" />
+			<mvc:exclude-mapping path="/commbiz/uss/ion/pwm/openPopupManage.do" />
+			<mvc:exclude-mapping path="/utl/web/*" />
+			<mvc:exclude-mapping path="/validator.do" />
+			<mvc:exclude-mapping path="/accessDenied.do" />
+			<mvc:exclude-mapping path="/utl/wed/*" />
+			<mvc:exclude-mapping path="/sym/cal/EgovselectNormalCalendar.do" />
+			<mvc:exclude-mapping path="/sym/cal/EgovNormalCalPopup.do" />
+			<mvc:exclude-mapping path="/la/main/changeMenuArea.do" />
+			<mvc:exclude-mapping path="/la/commbiz/menu/leftMenu.do" />
+			<mvc:exclude-mapping path="/lu/commbiz/menu/leftMenu.do" />
+			<mvc:exclude-mapping path="/lc/commbiz/menu/leftMenu.do" />
+			<mvc:exclude-mapping path="/**/cop/bbs/anonymous/*" />
+			<mvc:exclude-mapping path="/cmm/error/*" />
+			<mvc:exclude-mapping path="/cmm/fms/*" /><!-- 첨부파일 관련해서는 첵크 하지않음 -->
+			<mvc:exclude-mapping path="/commbiz/**/*" />
+			<mvc:exclude-mapping path="/lu/popup/popup/goPopupMemberInfoIdCheck.do" /><!-- 아이디 중복첵크 -->
+			<mvc:exclude-mapping path="/la/login/*" />
+			<mvc:exclude-mapping path="/mm/login/*" />
+<!-- 			<mvc:exclude-mapping path="/lu/login/*" /> -->
+			<mvc:exclude-mapping path="/lu/main/*" />
+			<mvc:exclude-mapping path="/cmm/fms/*" /> 
+			<mvc:exclude-mapping path="/prototype/**/*" />
+			<bean class="kr.co.sitglobal.oklms.comm.interceptor.MenuInfoInterceptor" />
+		</mvc:interceptor>	
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<mvc:exclude-mapping path="/**/*.jsp" />
+			<mvc:exclude-mapping path="/**/*.json" />
+			<mvc:exclude-mapping path="/commbiz/uss/ion/pwm/openPopupManage.do" />
+			<mvc:exclude-mapping path="/utl/web/*" />
+			<mvc:exclude-mapping path="/validator.do" />
+			<mvc:exclude-mapping path="/accessDenied.do" />
+			<mvc:exclude-mapping path="/utl/wed/*" />
+			<mvc:exclude-mapping path="/sym/cal/EgovselectNormalCalendar.do" />
+			<mvc:exclude-mapping path="/sym/cal/EgovNormalCalPopup*" />
+			<mvc:exclude-mapping path="/la/main/changeMenuArea.do" />
+			<mvc:exclude-mapping path="/**/commbiz/menu/leftMenu.do" />
+			<mvc:exclude-mapping path="/**/commbiz/menu/headMenu.do" />
+			<mvc:exclude-mapping path="/**/commbiz/menu/bodyLocation.do" />
+			<mvc:exclude-mapping path="/la/commbiz/popup/openPopupWindow.do" />
+			<mvc:exclude-mapping path="/**/cop/bbs/anonymous/*" />
+			<mvc:exclude-mapping path="/cmm/error/*" />
+			<mvc:exclude-mapping path="/commbiz/**/*" />	
+				
+			<mvc:exclude-mapping path="/la/login/*" />
+			<mvc:exclude-mapping path="/mm/login/*" />
+			<mvc:exclude-mapping path="/lu/login/*" />
+			
+			<mvc:exclude-mapping path="/lu/join/join/*" /><!-- 회원가입 -->
+			<mvc:exclude-mapping path="/lu/popup/popup/goPopupMemberInfoIdCheck.do" /><!-- 아이디 중복첵크 -->
+			<mvc:exclude-mapping path="/lu/lecture/lectureLms/goLectureSelectInfo.do" /><!-- 강좌 선택 안내 페이지 -->
+			<mvc:exclude-mapping path="/lu/main/*" />
+			<mvc:exclude-mapping path="/mm/main/*" />
+			<mvc:exclude-mapping path="/lu/course/course/**/*" />
+			<mvc:exclude-mapping path="/lu/leceduschedule/lecEduSchedule/*" />
+			<mvc:exclude-mapping path="/lu/intro/intro/*" />
+			<mvc:exclude-mapping path="/prototype/**/*" />
+			<mvc:exclude-mapping path="/cmm/fms/*" /> 
+			<bean class="kr.co.sitglobal.oklms.comm.interceptor.AuthenticCheckInterceptor" />
+		</mvc:interceptor>
+		
+	</mvc:interceptors>
+
+
+
+	
+<!-- 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> -->
+	<bean class="kr.co.sitglobal.oklms.comm.resolver.Simple2MappingExceptionResolver">
+		<property name="defaultErrorView" value="/cmm/error/comError"/>
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.sql.SQLRecoverableException">redirect:/cmm/error/comDataAccessFailure.do</prop>
+				<prop key="org.springframework.dao.DataAccessException">redirect:/cmm/error/comDataAccessFailure.do</prop>
+				<prop key="org.springframework.transaction.TransactionException">redirect:/cmm/error/comDataAccessFailure.do</prop>
+				<prop key="org.springframework.web.HttpSessionRequiredException">redirect:/cmm/error/comHttpSessionException.do</prop>
+				<prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">redirect:/cmm/error/maxUploadSizeExceededException.do</prop>
+				<prop key="org.apache.commons.fileupload.FileUploadBase$SizeLimitExceededException">redirect:/cmm/error/maxUploadSizeExceededException.do</prop>
+				<prop key="org.springframework.web.multipart.MultipartException">redirect:/cmm/error/maxUploadSizeExceededException.do</prop>
+				<prop key="org.springframework.web.multipart.MultipartHttpServletRequest">redirect:/cmm/error/maxUploadSizeExceededException.do</prop>
+				
+				<prop key="org.apache.tiles.request.render.CannotRenderException">redirect:/cmm/error/comPageNotFound.do</prop>
+				<prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">redirect:/cmm/error/comBizException.do</prop>
+				<prop key="kr.co.sitglobal.oklms.comm.exception.AccessDeniedException">redirect:/cmm/error/comAccessDenied.do</prop>
+				<prop key="org.springframework.validation.BindException">validationJsonView</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- Invokes Spring MVC @Controller methods -->
+<!-- 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"> -->
+<!-- 	    <property name="webBindingInitializer"> -->
+<!-- 	        Configures Spring MVC DataBinder instances -->
+<!-- 	        <bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"> -->
+<!-- 	            <property name="validator" ref="beanValidator" /> -->
+<!-- 	        </bean> -->
+<!-- 	    </property> -->
+<!-- 	</bean> -->
+	
+	<!-- Valid Exception Json View -->
+	<bean id="validationJsonView" class="kr.co.sitglobal.oklms.comm.web.ValidationJsonView" />
+
+	<!-- 뷰의 이름과 동일한 이름을 가진 빈을 View로 사용 -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0"/>
+	
+
+<!-- 	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> -->
+	<bean id="viewResolver" class="kr.co.sitglobal.oklms.comm.util.UrlBasedViewResolverWithouthIncludingModeAtttributesInRedirect"><!-- redirect 시 ModelMap 정보가 주소창에 값들이 넘어가는현상 제어 -->
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+		<property name="order" value="1" />
+	</bean>
+	
+	<!-- Tiles 3 -->
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>classpath:egovframework/tiles/context-tiles-oklms.xml</value>
+				<value>classpath:egovframework/tiles/context-tiles-LA_oklms.xml</value>
+				<value>classpath:egovframework/tiles/context-tiles-LU_oklms.xml</value>
+				<value>classpath:egovframework/tiles/context-tiles-MM_oklms.xml</value>
+				<value>classpath:egovframework/tiles/context-tiles-prototype.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="2" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:viewClass="org.springframework.web.servlet.view.JstlView"/><!--  WEB-INF/jsp/cmm/error/페이지 호출에 사용 -->
+	
+	
+	
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="3" />
+        <property name="contentNegotiationManager">
+            <bean class="org.springframework.web.accept.ContentNegotiationManager">
+                <constructor-arg>
+                    <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+                        <constructor-arg>
+                            <map>
+								<entry key="json" value="application/json;charset=UTF-8" />
+								<entry key="jsonp" value="application/javascript;charset=UTF-8" />
+								<entry key="xml" value="application/xml;charset=UTF-8" />
+								<entry key="do" value="text/html;charset=UTF-8" />
+                            </map>
+                        </constructor-arg>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </property>
+        <property name="defaultViews">
+            <list>
+<!--             Spring 3.x : jackson 1.x ( org.codehaus.jackson ) -->
+<!--                 <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"> -->
+<!-- 				Spring 4.x : jackson 2.x ( com.fasterxml.jackson ) -->
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                	<property name="jsonPrefix" value="false" />
+            	</bean>
+            </list>
+        </property>
+    </bean>
+
+	<bean id="excelView" class="kr.co.sitglobal.oklms.comm.view.ExcelView" />
+	
+<!-- 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="messages/message-common"/> -->
+
+
+	<!-- JSON 요청 리턴 처리용 뷰 : spring 3.x , jackson 1.x (org.codehaus.jackson) -->
+<!--     <bean id="jsonView"	class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" /> -->
+<!-- 	<bean id="jsonViewArray" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"  > -->
+<!-- 	    <property name="extractValueFromSingleKeyModel" value="true" /> -->
+<!--     </bean> -->
+	<!-- JSON 요청 리턴 처리용 뷰 : spring 4.x , jackson 2.x ( com.fasterxml.jackson ) -->
+<!--     <bean id="jsonView"	class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" /> -->
+<!-- 	<bean id="jsonViewArray" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"  > -->
+<!-- 	    <property name="extractValueFromSingleKeyModel" value="true" /> -->
+<!--     </bean>    -->
+	
+</beans>

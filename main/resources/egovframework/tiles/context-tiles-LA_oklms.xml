@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<!-- oklms 관리자 Main -->
+	<definition name="oklms.la.main.definition" template="/WEB-INF/jsp/layout/oklms/la/mainLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="left" value="/la/commbiz/menu/leftMenu.do" />
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/oklms/la/header.jsp" />
+		<put-attribute name="body" value="" />
+	<put-attribute name="footer" value="/WEB-INF/jsp/layout/oklms/la/footer.jsp" />
+	</definition>
+	
+	<!-- Sub Page -->
+	<definition name="oklms.la.sub.definition" template="/WEB-INF/jsp/layout/oklms/la/subLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="left" value="/la/commbiz/menu/leftMenu.do" />
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/oklms/la/header.jsp" />
+		<put-attribute name="bodyLocation" value="/la/commbiz/menu/bodyLocation.do" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/oklms/la/footer.jsp" />
+	</definition>
+	<!-- Left 가 없는 페이지  -->
+	<definition name="oklms.la.noneLeft.definition" template="/WEB-INF/jsp/layout/oklms/la/noneLeftLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/oklms/la/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/oklms/la/footer.jsp" />
+	</definition>
+	<!-- body만 있는 페이지  -->
+	<definition name="oklms.la.body.definition" template="/WEB-INF/jsp/layout/oklms/la/bodyLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- body만 있는 페이지 : login page  -->
+	<definition name="oklms.la.login.definition" template="/WEB-INF/jsp/layout/oklms/la/loginLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- Popup 페이지  -->
+	<definition name="oklms.la.popup.definition" template="/WEB-INF/jsp/layout/oklms/la/popupLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="popupTitle" value="/WEB-INF/jsp/layout/oklms/la/popupTitle.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- 빈페이지 -->
+	<definition name="oklms.la.blank.definition" template="/WEB-INF/jsp/layout/oklms/la/blankLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- import 페이지 -->
+	<definition name="oklms.la.import.definition" template="/WEB-INF/jsp/layout/oklms/la/importLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	
+
+	
+	
+	<!-- Main -->
+	<definition name="oklms/la/main/lmsAdminMainPage" extends="oklms.la.main.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/main/lmsAdminMainPage.jsp" />
+	</definition>
+	<!-- Login -->
+	<definition name="oklms_body/la/login/lmsAdminLogin" extends="oklms.la.login.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/login/lmsAdminLogin.jsp" />
+	</definition>
+	
+	
+	<!-- all -->
+	<definition name="oklms/la/egovframework/*/*/*/*/*" extends="oklms.la.sub.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+	<definition name="oklms/la/egovframework/*/*/*/*" extends="oklms.la.sub.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}.jsp" />
+	</definition>	
+	<definition name="oklms/la/*/*" extends="oklms.la.sub.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}.jsp" />
+	</definition>
+	<definition name="oklms/la/*/*/*" extends="oklms.la.sub.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- noneLeft -->
+	<definition name="oklms_noneLeft/la/egovframework/*/*/*/*/*" extends="oklms.la.noneLeft.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+	<definition name="oklms_noneLeft/la/egovframework/*/*/*/*" extends="oklms.la.noneLeft.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	<definition name="oklms_noneLeft/la/*/*" extends="oklms.la.noneLeft.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}.jsp" />
+	</definition>
+	<definition name="oklms_noneLeft/la/*/*/*" extends="oklms.la.noneLeft.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- popup -->
+	<definition name="oklms_popup/la/egovframework/*/*/*/*/*" extends="oklms.la.popup.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+	<definition name="oklms_popup/la/egovframework/*/*/*/*" extends="oklms.la.popup.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	<definition name="oklms_popup/la/*/*" extends="oklms.la.popup.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}.jsp" />
+	</definition>
+	<definition name="oklms_popup/la/*/*/*" extends="oklms.la.popup.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- body -->
+	<definition name="oklms_body/la/egovframework/*/*/*/*/*" extends="oklms.la.body.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+	<definition name="oklms_body/la/egovframework/*/*/*/*" extends="oklms.la.body.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	<definition name="oklms_body/la/*/*" extends="oklms.la.body.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}.jsp" />
+	</definition>
+	<definition name="oklms_body/la/*/*/*" extends="oklms.la.body.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<!-- blank -->
+	<definition name="oklms_blank/la/egovframework/*/*/*/*/*" extends="oklms.la.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+	<definition name="oklms_blank/la/egovframework/*/*/*/*" extends="oklms.la.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	<definition name="oklms_blank/la/*" extends="oklms.la.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}.jsp" />
+	</definition>	
+	<definition name="oklms_blank/la/*/*" extends="oklms.la.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}.jsp" />
+	</definition>	
+	<definition name="oklms_blank/la/*/*/*" extends="oklms.la.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<!-- import -->
+	<definition name="oklms_import/la/egovframework/*/*/*/*/*" extends="oklms.la.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+	<definition name="oklms_import/la/egovframework/*/*/*/*" extends="oklms.la.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/egovframework/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	<definition name="oklms_import/la/*" extends="oklms.la.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}.jsp" />
+	</definition>	
+	<definition name="oklms_import/*/*" extends="oklms.la.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}.jsp" />
+	</definition>	
+	<definition name="oklms_import/la/*/*/*" extends="oklms.la.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/la/{1}/{2}/{3}.jsp" />
+	</definition>
+
+
+</tiles-definitions>    

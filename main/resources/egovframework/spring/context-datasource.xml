@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
+    
+    <bean id="globals.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/egovframework/props/globals.properties</value>
+            </list>
+        </property>
+    </bean>
+	<!-- DataSource -->
+	<alias name="dataSource-${Globals.DbType}" alias="egov.dataSource"/>
+    <alias name="dataSource-${Globals.DbType}" alias="globals.dataSource"/>
+    <alias name="dataSource-${Globals.AunuriDbType}" alias="aunuri.dataSource"/>
+    
+	<!-- DataSource -->
+	
+    <bean id="dataSource-mysql" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+<!--         <property name="driverClassName" value="com.mysql.jdbc.Driver"/> -->
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
+        <property name="url" value="${Globals.Url}" />
+        <property name="username" value="${Globals.UserName}"/>
+        <property name="password" value="${Globals.Password}"/>
+    </bean>
+    
+    <bean id="dataSource-oracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	    <property name="driverClassName" value="${Globals.AunuriDriverClassName}"/> 
+        <property name="url" value="${Globals.AunuriUrl}" />
+        <property name="username" value="${Globals.AunuriUserName}"/>
+        <property name="password" value="${Globals.AunuriPassword}"/>
+    </bean>
+    
+</beans>

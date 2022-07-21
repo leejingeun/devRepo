@@ -1,0 +1,324 @@
+@charset "utf-8";
+
+
+
+/* 검색1 속성 */
+
+.search1													{float:left; width:100%;}
+.search1 li													{float:left;}
+.search1 li select										{display:inline-block; height:32px; font:14px nsM; color:#555; line-height:18px; border:1px solid #CCC; padding-left:3px; margin-right:3px;}
+.search1 li input											{display:inline-block; height:30px; font:14px nsM; color:#555; line-height:18px; border:1px solid #CCC; background:#FFF; padding:0 5px;}
+.search1 li label											{font:14px nsM; color:#555; line-height:18px; padding-left:5px;}
+.search1 li a												{display:inline-block; overflow:hidden; width:32px; height:32px; line-height:150px; text-indent:99999px; vertical-align:top; background:url("/images/oklms/std/board/search_btn_01.png") no-repeat #90B7CA; margin-left:2px;}
+.search1 li a.calendar									{background:url("/images/oklms/std/board/calendar_btn_01.png") no-repeat; margin-left:2px;}
+
+.search1 li.text											{width:40%; font:14px nsM; line-height:18px; color:#555; padding:28px 0 0 0;}
+.search1 li.text span									{color:#009EC0;}
+.search1 li.sbox											{float:right; width:60%; color:#555; text-align:right; padding:21px 0 10px 0;}
+.search1 li.sbox1										{float:left; width:100%; font:14px nsM; color:#555; line-height:18px; text-align:right; padding:21px 0 10px 0;}
+
+
+
+
+
+/* 게시물 리스트 속성 */
+
+table.list														{float:left; clear:both; width:100%; border-top:2px solid #51AFEB; border-spacing:0; padding:0; border-collapse:collapse;}
+table.list tr th												{font:15px nbgM; line-height:20px; color:#222; text-align:center; border-bottom:1px solid #51AFEB; background:#EDF4FA; padding:11px 0;}
+table.list tr td												{font:13px nbgM; line-height:18px; color:#555; text-align:center; border-bottom:1px solid #CCDDEE; padding:10px 0 9px;}
+table.list tr td a											{color:#555;}
+table.list tr td a:hover									{color:#0062A4;}
+
+table.list tr td.subject									{text-align:left; padding:9px 10px 7px;}
+table.list tr td.subject img								{vertical-align:top; margin-right:4px;}
+table.list tr td.subject a								{color:#555; margin-right:4px;}
+table.list tr td.subject a:hover						{color:#0062A4;}
+table.list tr td.chapter									{font:14px nbgM; color:#0B7EA8; text-align:left; background:url("/images/oklms/std/board/bullet_chapter.png") 22px 12px #F9F9F9 no-repeat; padding:11px 0 10px 42px;}
+
+table.list tr td a.btn-1									{display:inline-block; font:12px nsM;color: #FFF; background:url("/images/oklms/std/btn/btn_bg_01.png") repeat; padding:2px 5px;}
+table.list tr td a.btn-2									{display:inline-block; font:12px nsM;color: #FFF; background:url("/images/oklms/std/btn/btn_bg_02.png") repeat; padding:2px 5px;}
+table.list tr td a.btn-3									{display:inline-block; font:12px nsM;color: #FFF; background:url("/images/oklms/std/btn/btn_bg_03.png") repeat; padding:2px 5px;}
+table.list tr td a.btn-4									{display:inline-block; font:12px nsM;color: #FFF; background:url("/images/oklms/std/btn/btn_bg_04.png") repeat; padding:2px 5px;}
+
+table.list tr td span.btn-none							{display:inline-block; font:12px nsM;color: #FFF; background:url("/images/oklms/std/btn/btn_bg_02.png") repeat; padding:2px 5px;}
+
+
+
+
+
+table.notice-1 th.col-1									{width:7%;}
+table.notice-1 th.col-3									{width:13%;}
+table.notice-1 th.col-4									{width:7%;}
+table.notice-1 th.col-5									{width:7%;}
+
+table.data-1 th.col-1									{width:7%;}
+table.data-1 th.col-3									{width:9%;}
+table.data-1 th.col-4									{width:13%;}
+table.data-1 th.col-5									{width:7%;}
+
+table.qna-1 th.col-1										{width:7%;}
+table.qna-1 th.col-3										{width:10%;}
+table.qna-1 th.col-4										{width:13%;}
+table.qna-1 th.col-5										{width:7%;}
+table.qna-1 th.col-6										{width:7%;}
+
+table.qna-2 th.col-1										{width:7%;}
+table.qna-2 th.col-3										{width:10%;}
+table.qna-2 th.col-4										{width:13%;}
+table.qna-2 th.col-5										{width:7%;}
+table.qna-2 th.col-6										{width:7%;}
+table.qna-2 th.col-7										{width:9%;}
+
+table.course-plan th.col-1							{width:8%;}
+table.course-plan th.col-3							{width:9%;}
+table.course-plan th.col-4							{width:9%;}
+table.course-plan th.col-5							{width:9%;}
+table.course-plan th.col-6							{width:9%;}
+table.course-plan th.col-7							{width:9%;}
+
+table.course-1 th.col-1								{width:15%;}
+table.course-1 th.col-3								{width:20%;}
+table.course-1 th.col-4								{width:8%;}
+table.course-1 th.col-5								{width:9%;}
+table.course-1 th.col-6								{width:6%;}
+
+table.course-2 th.col-1								{width:11%;}
+table.course-2 th.col-2								{width:37%;}
+table.course-2 th.col-3								{width:37%;}
+table.course-2 th.col-4								{width:15%;}
+
+table.course-3 th.col-1								{width:11%;}
+table.course-3 th.col-3								{width:15%;}
+
+table.course-4 th.col-1								{width:18%;}
+table.course-4 th.col-3								{width:22%;}
+table.course-4 th.col-4								{width:8%;}
+table.course-4 th.col-5								{width:9%;}
+
+table.course-5 th.col-1								{width:18%;}
+table.course-5 th.col-3								{width:22%;}
+table.course-5 th.col-4								{width:8%;}
+table.course-5 th.col-5								{width:10%;}
+table.course-5 th.col-6								{width:14%;}
+table.course-5 th.col-7								{width:9%;}
+
+table.apply-1 th.col-1									{width:6%;}
+table.apply-1 th.col-2									{width:6%;}
+table.apply-1 th.col-4									{width:13%;}
+table.apply-1 th.col-5									{width:9%;}
+table.apply-1 th.col-6									{width:9%;}
+table.apply-1 th.col-7									{width:9%;}
+table.apply-1 th.col-8									{width:9%;}
+table.apply-1 th.col-9									{width:6%;}
+
+table.report-1 th.col-1									{width:7%;}
+table.report-1 th.col-3									{width:10%;}
+table.report-1 th.col-4									{width:25%;}
+table.report-1 th.col-5									{width:8%;}
+table.report-1 th.col-6									{width:8%;}
+table.report-1 th.col-7									{width:8%;}
+
+table.report-2 th.col-1									{width:17%;}
+table.report-2 th.col-3									{width:15%;}
+table.report-2 th.col-4									{width:18%;}
+table.report-2 th.col-5									{width:15%;}
+table.report-2 th.col-6									{width:18%;}
+
+table.discuss-1 th.col-1								{width:7%;}
+table.discuss-1 th.col-3								{width:9%;}
+table.discuss-1 th.col-4								{width:9%;}
+table.discuss-1 th.col-5								{width:23%;}
+table.discuss-1 th.col-6								{width:10%;}
+table.discuss-1 th.col-7								{width:8%;}
+
+table.progress-1 th.col-2								{width:14%;}
+table.progress-1 th.col-3								{width:14%;}
+table.progress-1 th.col-4								{width:8%;}
+
+table.poll-1 th.col-1										{width:8%;}
+table.poll-1 th.col-3										{width:25%;}
+table.poll-1 th.col-4										{width:12%;}
+
+table.work-1 th.col-1									{width:6%;}
+table.work-1 th.col-3									{width:10%;}
+table.work-1 th.col-4									{width:24%;}
+table.work-1 th.col-5									{width:9%;}
+table.work-1 th.col-6									{width:6%;}
+
+table.schedule-1 th.col-1								{width:8%;}
+table.schedule-1 th.col-2								{width:22%;}
+table.schedule-1 th.col-4								{width:22%;}
+table.schedule-1 th.col-5								{width:7%;}
+
+
+
+
+
+/* 게시물 - 시험 리스트 속성 */
+
+table.list-exam											{float:left; clear:both; width:100%; border-top:2px solid #333; border-spacing:0; padding:0; border-collapse:collapse;}
+table.list-exam tr th										{font:15px nbgM; line-height:20px; color:#333; text-align:left; border-bottom:1px solid #A1A1A1; padding:12px 2% 11px;}
+table.list-exam tr th span								{color:#0062A4;}
+table.list-exam tr td										{font:13px nbgM; line-height:18px; color:#555; border-bottom:1px solid #D8D8D8; padding:20px 2%;}
+table.list-exam tr td.column							{color:#777; background:#F9F9F9; padding:9px 2% 8px;}
+table.list-exam tr td.column span					{color:#333;}
+
+table.list-exam tr td .txt									{float:left; width:37%; font:13px nbgM; line-height:22px; color:#666; padding:7px 0 0 3%;}
+table.list-exam tr td .txt span							{color:#ED174F;}
+
+table.list-exam1											{float:left; width:60%; border:1px solid #829CA6; border-right:none;}
+table.list-exam1 tr th									{font:13px nbgM; line-height:16px; color:#0062A4; text-align:center; border-bottom:1px solid #829CA6;; border-right:1px solid #829CA6; background:#E2EBF0;}
+table.list-exam1 tr td									{font:13px nbgM; line-height:18px; color:#777; text-align:center; border-right:1px solid #829CA6; border-bottom:none; background:#FFF; padding:11px 0 10px;}
+table.list-exam1 tr td a									{display:inline-block; overflow:hidden; vertical-align:middle; font:12px nsM; color:#FFF; text-align:center; padding:5px 5px;}
+table.list-exam1 tr td a.btn1							{background:url("/images/oklms/std/btn/btn_bg_04.png") repeat;}
+table.list-exam1 tr td a.btn2							{background:url("/images/oklms/std/btn/btn_bg_01.png") repeat;}
+
+
+table.list-exam2											{float:left; width:100%; border:1px solid #829CA6; border-right:none; border-spacing:0; padding:0; border-collapse:collapse; margin:7px 0 9px;}
+table.list-exam2 tr th									{font:13px nbgM; line-height:18px; color:#0062A4; text-align:center; border-bottom:1px solid #829CA6;; border-right:1px solid #829CA6; background:#E2EBF0; padding:9px 0 8px;}
+table.list-exam2 tr td									{font:12px nbgM; line-height:18px; color:#777; text-align:center; border-right:1px solid #829CA6; border-bottom:none; background:#FFF; padding:8px 0 7px;}
+table.list-exam2 tr .col-1								{width:17%;}
+table.list-exam2 tr .col-2								{width:14%;}
+table.list-exam2 tr .col-4								{width:24%;}
+
+
+
+
+
+/* 게시물 상세 속성 */
+.view															{float:left; width:100%; border-top:2px solid #51AFEB; margin-top:21px;}
+.view li														{float:left; width:98%; font:13px nbgM; line-height:16px; color:#666; letter-spacing:-0.025em; border-bottom:1px solid #BBC6CE; padding:10px 1%;}
+.view li.title													{font:16px nsM; color:#222; line-height:24px; padding-top:8px; padding-bottom:8px;}
+.view li.title img											{vertical-align:top; margin:4px 4px 0 0;}
+.view li.contents											{line-height:20px; padding-top:18px; padding-bottom:18px;}
+.view li.contents img									{width:100%;}
+
+.view li.column-1										{background:#F9F9F9;}
+.view li.column-1 span								{margin-right:20px;}
+.view li.column-1 span:last-child					{margin-right:0;}
+.view li.column-1 b										{font-weight:normal; color:#666;}
+.view li.column-1 a										{color:#666;}
+.view li.column-1 a:hover								{color:#0062A4;}
+
+.view li.column-2										{display:none;}
+
+
+
+
+
+/* 게시물 쓰기 속성 */
+.write															{float:left; width:100%; border-top:2px solid #51AFEB; margin-top:21px;}
+.write li														{float:left; width:98%; font:14px nbgM; line-height:18px; color:#555; letter-spacing:-0.025em; border-bottom:1px solid #BBC6CE; padding:10px 1%;}
+.write li span												{margin-right:20px;}
+.write li span:last-child								{margin-right:0;}
+.write li b													{font-weight:normal; color:#555;}
+
+.write li input												{width:30%; height:24px; font:13px nbgM; color:#777; line-height:16px; vertical-align:middle; border:1px solid #BBB; margin-left:5px;}
+.write li input.choice									{width:13px; height:13px; vertical-align:middle; border:none; margin:0 4px 0 5px;}
+.write li select												{width:25%; height:26px; font:13px nbgM; color:#777; line-height:16px; vertical-align:middle; border:1px solid #BBB; margin-left:5px;}
+.write li textarea											{width:97%; height:220px; font:13px nbgM; color:#777; line-height:18px; border:5px solid #DDD;}
+
+.write li.title												{color:#555; padding:10px 1%;}
+.write li.title input											{width:91%;}
+.write li.contents											{padding:15px 1%;}
+.write li.column											{background:#F9F9F9;}
+.write li .calendar										{display:inline-block; overflow:hidden; width:24px; height:24px; text-indent:-9999px; vertical-align:middle; background:url("/images/oklms/std/board/calendar_btn_03.png") no-repeat;}
+
+
+
+
+
+/* 게시물 페이지 넘버 속성 */
+.page-num													{float:left; width:100%; height:33px; margin-top:20px;}
+
+.page-num li												{float:left; width:100%; height:33px; text-align:center; color:#FFF; padding-top:5px;}
+.page-num li a											{display:inline-block; overflow:hidden; font:17px nsM; color:#666; line-height:24px; border:1px solid #E5E5E5; background:#FBFBFB;}
+
+.page-num li a.num										{width:31px; height:27px; text-align:center; padding-top:4px;}
+.page-num li a.ing										{width:31px; height:27px; font-weight:bold; color:#FFF; background:#4084F6; border-color:#4084F6; padding-top:4px;}
+
+.page-num li a.page-btn1								{width:33px; height:33px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_01.png") 0 0 no-repeat;}
+.page-num li a.page-btn1:hover					{background-position:0 bottom;}
+.page-num li a.page-btn2								{width:33px; height:33px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_01.png") -33px 0 no-repeat; margin:0 15px 0 0;}
+.page-num li a.page-btn2:hover					{background-position:-33px bottom;}
+.page-num li a.page-btn3								{width:33px; height:33px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_01.png") -66px 0 no-repeat; margin:0 0 0 15px;}
+.page-num li a.page-btn3:hover					{background-position:-66px bottom;}
+.page-num li a.page-btn4								{width:33px; height:33px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_01.png") -99px 0 no-repeat;}
+.page-num li a.page-btn4:hover					{background-position:-99px bottom;}
+
+.page-num li a.btn										{height:27px; font-size:15px; color:#FFF; line-height:22px; vertical-align:top; text-shadow:1px 1px 1px #222; border-radius:5px; border:none; background:url("/images/oklms/std/board/btn_line_01.png") repeat #333; padding:6px 10px 0; margin-left:15px;}
+
+
+
+
+
+.page-btn													{float:left; clear:both; width:100%; height:34px; text-align:right; margin-top:25px;}
+.page-btn a												{display:inline-block; overflow:hidden; font:18px nbgM; color:#FFF; line-height:24px; text-shadow:1px 1px 1px #222; border-radius:5px; background:url("/images/oklms/std/board/btn_line_01.png") repeat #333; padding:6px 15px 4px; margin-left:4px;}
+.page-btn input											{display:inline-block; font:18px nbgM; color:#FFF; line-height:24px; vertical-align:top; text-shadow:1px 1px 1px #760B27; border:0; border-radius:5px; background:url("/images/oklms/std/board/btn_line_01.png") repeat #ED174F; padding:6px 15px 4px; margin-left:4px; cursor:pointer;}
+.page-btn .btn1											{float:left; width:100%; text-align:right;}
+
+
+
+
+
+table.data1													{float:left; width:525px; border-spacing:1px; border-collapse:1px; background:#D9D9D9;}
+table.data1 tr th											{height:35px; font:15px nsM; line-height:16px; color:#333; text-align:center; background:#F6F6F6; }
+table.data1 tr td											{height:31px; font:14px nbgM; line-height:16px; color:#666; text-align:center; background:#FFF;}
+
+
+
+
+
+table.homework-type									{position:relative; float:left; width:100%; border-spacing:1px; border-collapse:1px; background:#D9D9D9;}
+table.homework-type tr th								{width:15%; font:15px nsM; line-height:16px; color:#333; text-align:center; background:#F6F6F6; padding:8px 0 6px;}
+table.homework-type tr td								{position:relative; font:15px nbgM; line-height:16px; color:#666; background:#FFF; padding:7px 2%;}
+table.homework-type tr td input						{float:left; width:99%; height:24px; font:13px nbgM; color:#777; line-height:16px; vertical-align:middle; border:1px solid #BBB;}
+table.homework-type tr td textarea					{float:left; width:98%; height:70px; font:13px nbgM; color:#777; line-height:18px; border:5px solid #DDD;}
+table.homework-type tr td a.checkfile				{float:right; display:inline-block; font-size:14px; color:#666; line-height:24px; border:1px solid #D9D9D9; vertical-align:middle; background:url("/images/oklms/std/btn/icon_check.png") 10px 50% #FFF no-repeat; padding:0 10px 0 30px;}
+
+table.homework-type tr td span .file_hidden	{position:absolute; width:90px; height:24px; right:2%; top:7px; opacity:0; cursor:pointer;}
+table.homework-type tr td .file-find				{width:83%;}
+
+
+
+
+
+table.join-type-1											{float:left; width:100%; border-spacing:1px; border-collapse:1px; background:#D9D9D9; margin-bottom:30px;}
+table.join-type-1 tr th									{height:35px; font:14px nsM; line-height:16px; color:#333; text-align:center; background:#F6F6F6; }
+table.join-type-1 tr td									{font:13px nbgM; line-height:16px; color:#666; text-align:center; background:#FFF; padding:9px 10px 7px;}
+
+
+
+
+
+/* FAQ 속성 */
+
+#faq															{float:left; width:100%; border-top:2px solid #333; padding-top:5px;}
+#faq .faqBody												{margin:0; padding:0;}
+#faq .faqBody .article									{float:left; width:100%; list-style:none;}
+#faq div.faq-q												{border-bottom:1px solid #CCC; margin:0;}
+#faq div.faq-q a											{display:block; font:14px nsM; color:#444; line-height:20px; text-align:left; background:url("/images/oklms/std/board/icon_04.png") 0 11px no-repeat; padding:9px 0 7px 20px;}
+#faq div.faq-a												{font:13px nsM; line-height:18px; color:#777; border-bottom:1px solid #CCC; background:#F9F9F9; padding:10px 15px 10px 20px;}
+
+
+
+
+
+/* 학습지원 프로그램 속성 */
+.support														{float:left; width:100%; margin-top:21px;}
+.support dt													{float:left; width:98%; font:18px nsM; color:#333; line-height:26px; border-bottom:2px solid #777; background:url("/images/oklms/std/board/bullet_02.png") no-repeat; padding:8px 0 8px 2%; margin:35px 0 5px;}
+.support dt:first-child									{margin-top:0;}
+.support dd												{float:left; width:100%; border-bottom:1px solid #DDD; padding:8px 0;}
+
+.support ul													{float:left; width:100%;}
+.support li													{float:left; font:13px nbgM; color:#777; line-height:18px;}
+.support li.icon											{width:10%;}
+.support li.icon img										{margin-left:15px;}
+.support li.title												{width:25%; color:#0B7EA8; padding-top:2px;}
+.support li.text												{width:50%; padding-top:2px;}
+.support li.btn												{width:15%;}
+.support li a												{float:right; display:block; overflow:hidden; width:60px; font:13px nbgM; color:#FFF; line-height:18px; text-align:center; vertical-align:middle; background:url("/images/oklms/std/board/btn_line_01.png") repeat #23B2E9; padding:2px 0; margin-right:5px;}
+
+
+
+

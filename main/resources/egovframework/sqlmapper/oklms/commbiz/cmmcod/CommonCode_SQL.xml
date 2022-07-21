@@ -1,0 +1,1336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper">
+
+	<sql id="list-where">
+	    <choose>
+            <when test="codeGroup != null and codeGroup != ''">
+                <if test="codeGroup == 'memberAccessIp'">
+                     AND AUTH_GROUP_ID IN ('2016AUTH0000001', '2016AUTH0000005')
+                </if>
+                <if test="codeGroup == 'member'">
+                	 <!--
+                	  	"2016AUTH0000001" =>관리자
+						"2016AUTH0000002" =>학습근로자
+						"2016AUTH0000003" =>담당교수
+						"2016AUTH0000004" =>HRD전담자
+						"2016AUTH0000005" =>센터전담자
+						"2016AUTH0000006" =>학과전담자
+						"2016AUTH0000007" =>지도교수
+						"2016AUTH0000008" =>기업현장교사
+                	  -->
+                     AND AUTH_GROUP_ID IN
+                     ('2016AUTH0000001',
+                      '2016AUTH0000002',
+                      '2016AUTH0000003',
+                      '2016AUTH0000004',
+                      '2016AUTH0000005',
+                      '2016AUTH0000006',
+                      '2016AUTH0000007',
+                      '2016AUTH0000008'
+                     )
+                </if>
+            </when>
+        </choose>
+	</sql>
+
+	<select id="selectCmmCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectCmmCodeList	*/
+	    <![CDATA[
+			  SELECT CODE_CODE CODE_ID,
+       				    CODE_NAME
+               FROM COM_COMCODE
+			  WHERE 1 = 1
+			      AND CODE_GROUP = #{codeGroup}
+			      AND CODE_CODE <> '0000'
+			      AND DELETE_YN = 'N'
+			      AND USE_YN = 'Y'
+	    ]]>
+
+			ORDER BY CODE_ORDER ASC
+	</select>
+
+	<select id="selectMyLectureCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyLectureCodeList	*/
+	    <![CDATA[
+			SELECT CATE_CODE CODE_ID,
+       				  CATE_NAME CODE_NAME
+			FROM COM_CATEGORY
+			WHERE DELETE_YN='N' AND CATE_DEPTH = 1
+			AND CATE_TYPE='01'
+	    ]]>
+
+			ORDER BY CATE_RANK
+	</select>
+
+	<select id="selectLecIdAllCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectLecIdAllCodeList	*/
+	    <![CDATA[
+			 SELECT LEC_ID CODE_ID,
+			           '['||substr(LEC_ID,0,4)||'] '||LEC_NAME CODE_NAME
+		      FROM LMS_LECTURE
+		    WHERE DELETE_YN='N'
+	    ]]>
+
+	    ORDER BY CODE_ID DESC
+
+	</select>
+
+	<select id="selectPeriodCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectPeriodCodeList	*/
+	    <![CDATA[
+			SELECT PERIOD_ID CODE_ID,
+			         PERIOD_NAME CODE_NAME
+			 FROM LMS_PERIOD
+			 WHERE DELETE_YN ='N'
+			AND OPEN_YN ='Y'
+			AND LEC_ID = #{lecId}
+	    ]]>
+
+	</select>
+
+	<select id="selectAuthGroupCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectAuthGroupCodeList	*/
+	    <![CDATA[
+			SELECT AUTH_GROUP_ID CODE_ID,
+			         AUTH_GROUP_NAME CODE_NAME
+			 FROM COM_AUTH_GROUP
+			 WHERE DELETE_YN ='N'
+	    ]]>
+
+		<include refid="list-where"/>
+	</select>
+
+	<select id="selectSurveyTmplatCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectSurveyTmplatCodeList	*/
+	    <![CDATA[
+			select QUSTNR_TMPLAT_ID CODE_ID,
+			       QUSTNR_TMPLAT_TY CODE_NAME
+			from comtnqustnrtmplat
+			WHERE DELETE_YN = 'N'
+	    ]]>
+	    ORDER BY QUSTNR_TMPLAT_ID ASC
+
+	</select>
+
+	<!-- 훈련과정 메핑에 학년 목록 -->
+	<select id="selectYearCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectYearCodeList	*/
+	    <![CDATA[
+			SELECT DISTINCT YYYY CODE_ID,
+       				    YYYY CODE_NAME
+               FROM lms_traning_process_mapping
+			  WHERE 1 = 1
+                AND DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND TRANING_PROCESS_ID = #{traningProcessId}
+        </if>
+        UNION SELECT DATE_FORMAT(NOW(),'%Y') CODE_ID, DATE_FORMAT(NOW(),'%Y') CODE_NAME FROM DUAL
+
+	</select>
+
+	<!-- 훈련과정 메핑에 학기 목록 -->
+	<select id="selectTermCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectTermCodeList	*/
+		<![CDATA[
+	    SELECT  '1' CODE_ID,
+        		'1' CODE_NAME
+		  FROM dual
+			union all
+		 SELECT '2' CODE_ID,
+			    '2' CODE_NAME
+	 	  FROM dual
+	 	  union all
+	 	  SELECT '3' CODE_ID,
+			    '여름' CODE_NAME
+	 	  FROM dual
+	 	  union all
+	 	  SELECT '4' CODE_ID,
+			    '겨울' CODE_NAME
+	 	  FROM dual
+	    ]]>
+<!-- 	    <![CDATA[
+			 SELECT DISTINCT TERM CODE_ID,
+       				    TERM CODE_NAME
+               FROM lms_traning_process_mapping
+			  WHERE 1 = 1
+			    AND DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND TRANING_PROCESS_ID = #{traningProcessId}
+        </if> -->
+
+	</select>
+
+	<!-- 훈련과정 메핑에 분반 목록 -->
+	<select id="selectClassCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectClassCodeList	*/
+		<!-- <![CDATA[
+	    	    SELECT  '01' CODE_ID,
+        				'01' CODE_NAME
+				  FROM dual
+					union all
+				 SELECT '02' CODE_ID,
+					    '02' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '03' CODE_ID,
+					    '03' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '04' CODE_ID,
+					    '04' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '05' CODE_ID,
+					    '05' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '06' CODE_ID,
+					    '06' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '07' CODE_ID,
+					    '07' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '08' CODE_ID,
+					    '08' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '09' CODE_ID,
+					    '09' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '10' CODE_ID,
+					    '10' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '11' CODE_ID,
+					    '11' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '12' CODE_ID,
+					    '12' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '13' CODE_ID,
+					    '13' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '14' CODE_ID,
+					    '14' CODE_NAME
+			 	  FROM dual			union all
+				 SELECT '15' CODE_ID,
+					    '15' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '16' CODE_ID,
+					    '16' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '17' CODE_ID,
+					    '17' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '18' CODE_ID,
+					    '18' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '19' CODE_ID,
+					    '19' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '20' CODE_ID,
+					    '20' CODE_NAME
+			 	  FROM dual			union all
+				 SELECT '21' CODE_ID,
+					    '21' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '22' CODE_ID,
+					    '22' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '23' CODE_ID,
+					    '23' CODE_NAME
+			 	  FROM dual			union all
+				 SELECT '24' CODE_ID,
+					    '24' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '25' CODE_ID,
+					    '25' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '26' CODE_ID,
+					    '26' CODE_NAME
+			 	  FROM dual
+		          			union all
+				 SELECT '27' CODE_ID,
+					    '27' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '28' CODE_ID,
+					    '28' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '29' CODE_ID,
+					    '29' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '30' CODE_ID,
+					    '30' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '31' CODE_ID,
+					    '31' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '32' CODE_ID,
+					    '32' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '33' CODE_ID,
+					    '33' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '34' CODE_ID,
+					    '34' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '35' CODE_ID,
+					    '35' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '36' CODE_ID,
+					    '36' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '37' CODE_ID,
+					    '37' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '38' CODE_ID,
+					    '38' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '39' CODE_ID,
+					    '39' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '40' CODE_ID,
+					    '40' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '41' CODE_ID,
+					    '41' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '42' CODE_ID,
+					    '42' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '43' CODE_ID,
+					    '43' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '44' CODE_ID,
+					    '44' CODE_NAME
+			 	  FROM dual
+		          union all
+				 SELECT '45' CODE_ID,
+					    '45' CODE_NAME
+			 	  FROM dual
+	    ]]> -->
+			 SELECT  DISTINCT CLASS CODE_ID,
+       				    CLASS CODE_NAME
+               FROM lms_traning_process_mapping
+			  WHERE 1 = 1
+			    AND DELETE_YN = 'N'
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND TRANING_PROCESS_ID = #{traningProcessId}
+        </if> 
+        <if test="yyyy != null and yyyy != ''">
+         	AND YYYY = #{yyyy}
+        </if> 
+        <if test="yyyy != null and yyyy != ''">
+         	AND TERM = #{term}
+        </if> 
+        <if test="subjectCode != null and subjectCode != ''">
+         	AND SUBJECT_CODE = #{subjectCode}
+        </if> 
+
+	</select>
+
+	<!-- 훈련과정 메핑에 개설강좌코드 목록 -->
+	<select id="selectSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectSubjectCodeList	*/
+	    <![CDATA[
+			SELECT DISTINCT a.SUBJECT_CODE CODE_ID,
+       				    b.SUBJECT_NAME CODE_NAME
+               FROM lms_traning_process_mapping a
+               INNER JOIN lms_subject b
+               on a.yyyy = b.yyyy
+               and a.TERM = b.term
+               and a.SUBJECT_CODE = b.SUBJECT_CODE
+               and a.CLASS = b.CLASS
+			  WHERE 1 = 1
+                  and b.SUBJECT_TRANING_TYPE = 'OJT'
+			      AND a.DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND a.COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND a.TRANING_PROCESS_ID = #{traningProcessId}
+        </if>
+
+	</select>
+
+	<!-- 훈련과정 메핑에 개설강좌명 목록 -->
+	<select id="selectSubjectNameCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectSubjectNameCodeList	*/
+	    <![CDATA[
+			SELECT a.SUBJECT_CODE CODE_ID,
+       			   b.SUBJECT_NAME CODE_NAME
+               FROM lms_traning_process_mapping a
+               INNER JOIN lms_subject b
+               on a.yyyy = b.yyyy
+               and a.TERM = b.term
+               and a.SUBJECT_CODE = b.SUBJECT_CODE
+               and a.CLASS = b.CLASS
+			  WHERE 1 = 1
+			      AND a.DELETE_YN = 'N'
+	    ]]>
+	    <if test="codeGroup != null and codeGroup != ''">
+          	and b.SUBJECT_TRANING_TYPE = #{codeGroup}
+        </if>
+	    <if test="companyId != null and companyId != ''">
+          	AND a.COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND a.TRANING_PROCESS_ID = #{traningProcessId}
+        </if>
+
+        order by a.INSERT_DATE desc
+
+	</select>
+
+	<!-- 기업명 목록 -->
+	<select id="selectCompanyNameCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectCompanyNameCodeList	*/
+	    <![CDATA[
+			SELECT COMPANY_ID CODE_ID,
+			       COMPANY_NAME CODE_NAME
+			 FROM lms_company
+			WHERE 1 = 1
+			  AND DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        ORDER BY COMPANY_NAME ASC
+	</select>
+
+	<!-- 훈련과정 메핑에 훈련과정명 목록 -->
+	<select id="selectTraningProcessCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectTraningProcessCodeList	*/
+	    <![CDATA[
+			select DISTINCT TRANING_PROCESS_ID CODE_ID,
+       			  HRD_TRANING_NAME CODE_NAME
+                  from lms_traning_process
+                  where 1 = 1
+                  AND DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND TRANING_PROCESS_ID = #{traningProcessId}
+        </if>
+
+	</select>
+
+	<!-- 센터담당자 훈련과정코드, 훈련과정명 목록 -->
+	<select id="selectCompanyTraningProcessCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectCompanyTraningProcessCodeList	*/
+	    <![CDATA[
+			SELECT CONCAT(COMPANY_ID,'-',TRANING_PROCESS_ID) CODE_ID,
+			       HRD_TRANING_NAME CODE_NAME
+			  FROM lms_traning_process
+                  where 1 = 1
+                  AND DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        ORDER BY CONCAT(COMPANY_ID,'-',TRANING_PROCESS_ID) ASC
+
+	</select>
+
+	<!-- 센터담당자 개설강좌코드, 개설강좌명 목록 -->
+	<select id="selectCompanyTraningSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectCompanyTraningSubjectCodeList	*/
+	    <![CDATA[
+			SELECT CONCAT(YYYY,'-',TERM,'-',SUBJECT_CODE,'-',CLASS) AS CODE_ID,
+					FN_GETSUBJECT_NAME(YYYY,TERM,SUBJECT_CODE,CLASS) AS CODE_NAME
+					 FROM lms_traning_process_mapping
+					WHERE 1 = 1
+                  where 1 = 1
+                  AND DELETE_YN = 'N'
+	    ]]>
+	    <if test="companyId != null and companyId != ''">
+          	AND COMPANY_ID = #{companyId}
+        </if>
+        <if test="traningProcessId != null and traningProcessId != ''">
+         	AND TRANING_PROCESS_ID = #{traningProcessId}
+        </if>
+        ORDER BY CONCAT(YYYY,'-',TERM,'-',SUBJECT_CODE,'-',CLASS) ASC
+
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 기업명, 기업코드 목록 -->
+	<select id="selectMyCotCompanyCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCompanyCodeList	*/
+	    <![CDATA[
+			SELECT B.COMPANY_ID CODE_ID,
+			       FN_GETCOMPAYNAME(B.COMPANY_ID) CODE_NAME
+			FROM lms_subj_tut_mapping A
+			LEFT OUTER JOIN lms_traning_process_mapping B
+			ON B.YYYY = A.YYYY
+			AND B.TERM = A.TERM
+			AND B.SUBJECT_CODE = A.SUBJECT_CODE
+			AND B.CLASS = A.CLASS
+			WHERE A.DELETE_YN = 'N'
+	    ]]>
+        <!-- 기업현장교사 일떼만 -->
+		<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+			<if test="sessionAuthGroupId == '2016AUTH0000008'">
+				AND A.MEM_SEQ = #{sessionMemSeq}
+			</if>
+		</if>
+
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 훈련과정코드, 훈련과정명 목록 -->
+	<select id="selectMyCotCompanyTraningCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCompanyTraningCodeList	*/
+	    <![CDATA[
+			SELECT CONCAT(B.COMPANY_ID,'-',B.TRANING_PROCESS_ID) CODE_ID,
+			       FN_GETTRANING_PROCESS_NAME(B.TRANING_PROCESS_ID) CODE_NAME
+			FROM lms_subj_tut_mapping A
+			LEFT OUTER JOIN lms_traning_process_mapping B
+			ON B.YYYY = A.YYYY
+			AND B.TERM = A.TERM
+			AND B.SUBJECT_CODE = A.SUBJECT_CODE
+			AND B.CLASS = A.CLASS
+			WHERE A.DELETE_YN = 'N'
+	    ]]>
+        <!-- 기업현장교사 일떼만 -->
+		<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+			<if test="sessionAuthGroupId == '2016AUTH0000008'">
+				AND A.MEM_SEQ = #{sessionMemSeq}
+			</if>
+		</if>
+
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 개설강좌코드, 개설강좌명 목록 -->
+	<select id="selectMyCotSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCompanyTraningCodeList	*/
+	    <![CDATA[
+			select
+			        CONCAT(sub.YYYY,'-',sub.TERM,'-',sub.SUBJECT_CODE,'-',sub.CLASS) AS CODE_ID,
+       				FN_GETSUBJECT_NAME(sub.YYYY,sub.TERM,sub.SUBJECT_CODE,sub.CLASS) AS CODE_NAME
+			  from lms_subject sub,
+			  lms_subj_tut_mapping tut
+			  where 1 = 1
+			  and sub.YYYY = tut.YYYY
+			  and sub.TERM = tut.TERM
+			  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+			  and sub.CLASS = tut.CLASS
+			  and sub.DELETE_YN = 'N'
+			  and tut.DELETE_YN = 'N'
+			  and tut.MEM_SEQ = #{sessionMemSeq}
+			   AND
+		       (
+		         SUB.YYYY,
+		         SUB.TERM
+		       )
+		       IN
+		       (SELECT HAK.YYYY,
+		              HAK.TERM
+		         FROM HAK_SCHEDULE HAK
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		       )
+
+	    ]]>
+
+	    ORDER BY SUB.SUBJECT_NAME
+
+	</select>
+
+	<!-- HRD전담자 본인에게 메핑된 기업명, 기업코드 목록 -->
+	<select id="selectMyCcmCompanyCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCompanyCodeList	*/
+	    <![CDATA[
+			SELECT B.COMPANY_ID CODE_ID,
+       		FN_GETCOMPAYNAME(B.COMPANY_ID) CODE_NAME
+			FROM lms_subj_ccm_mapping A
+			LEFT OUTER JOIN lms_traning_process B
+			ON B.COMPANY_ID = A.COMPANY_ID
+			AND B.TRANING_PROCESS_ID = A.TRANING_PROCESS_ID
+			WHERE A.DELETE_YN = 'N'
+	    ]]>
+        <!-- HRD전담자 일떼만 -->
+		<if test="sessionAuthGroupId != null and sessionAuthGroupId != '' ">
+			<if test="sessionAuthGroupId == '2016AUTH0000004'">
+				AND A.MEM_SEQ = #{sessionMemSeq}
+			</if>
+		</if>
+
+	</select>
+
+	<!-- HRD전담자 본인에게 메핑된 훈련과정코드, 훈련과정명 목록 -->
+	<select id="selectMyCcmCompanyTraningCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCompanyTraningCodeList	*/
+	    <![CDATA[
+			SELECT CONCAT(B.COMPANY_ID,'-',B.TRANING_PROCESS_ID) CODE_ID,
+			       FN_GETTRANING_PROCESS_NAME(B.TRANING_PROCESS_ID) CODE_NAME
+			FROM lms_subj_ccm_mapping A
+			LEFT OUTER JOIN lms_traning_process B
+			ON B.COMPANY_ID = A.COMPANY_ID
+			AND B.TRANING_PROCESS_ID = A.TRANING_PROCESS_ID
+			WHERE A.DELETE_YN = 'N'
+	    ]]>
+        <!-- HRD전담자 일떼만 -->
+		<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+			<if test="sessionAuthGroupId == '2016AUTH0000004'">
+				AND A.MEM_SEQ = #{sessionMemSeq}
+			</if>
+		</if>
+
+	</select>
+
+	<!-- HRD전담자 본인에게 메핑된 개설강좌코드, 개설강좌명 목록 -->
+	<select id="selectMyCcmSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCompanyTraningCodeList	*/
+	    <![CDATA[
+			SELECT CONCAT(C.YYYY,'-',C.TERM,'-',C.SUBJECT_CODE,'-',C.CLASS) AS CODE_ID,
+			       FN_GETSUBJECT_NAME(C.YYYY,C.TERM,C.SUBJECT_CODE,C.CLASS) AS CODE_NAME
+			FROM lms_subj_ccm_mapping A
+			LEFT OUTER JOIN lms_traning_process B
+			ON B.COMPANY_ID = A.COMPANY_ID
+			AND B.TRANING_PROCESS_ID = A.TRANING_PROCESS_ID
+			AND B.DELETE_YN = 'N'
+			LEFT OUTER JOIN lms_traning_process_mapping C
+			ON C.COMPANY_ID = B.COMPANY_ID
+			AND C.TRANING_PROCESS_ID = B.TRANING_PROCESS_ID
+			AND C.DELETE_YN = 'N'
+			WHERE 1 = 1
+			AND A.DELETE_YN = 'N'
+	    ]]>
+        <!-- HRD전담자 일떼만 -->
+		<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+			<if test="sessionAuthGroupId == '2016AUTH0000004'">
+				AND A.MEM_SEQ = #{sessionMemSeq}
+				AND A.COMPANY_ID = #{companyId}
+  				AND A.TRANING_PROCESS_ID = #{traningProcessId}
+			</if>
+		</if>
+
+	</select>
+
+	<select id="selectSmsTableList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectSmsTableList	*/
+<!-- 			SELECT TNAME AS CODE_ID,
+			       SUBSTR(TNAME,8,4)||'년'||SUBSTR(TNAME,12,2)||'월' AS CODE_NAME
+			  FROM TAB
+			 WHERE TABTYPE ='TABLE'
+			       AND TNAME LIKE 'SC_LOG_2%'
+			ORDER BY SUBSTR(TNAME,8,13) ASC   -->
+	</select>
+
+	<select id="selectOjtSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectOjtSubjectCodeList	*/
+	    <![CDATA[
+			SELECT '01,2016,1,AAA001,01,1' CODE_ID,
+			       '기계' CODE_NAME
+			       union all
+			SELECT '01,2016,1,AAA002,01,2' CODE_ID,
+			       '전기전자' CODE_NAME
+			       union all
+			SELECT '01,2016,1,AAA003,01,3' CODE_ID,
+			       '메카트로닉스' CODE_NAME
+			       union all
+			SELECT '01,2016,1,AAA004,01,4' CODE_ID,
+			       '정보통신' CODE_NAME
+			       union all
+			SELECT '01,2016,1,AAA005,01,5' CODE_ID,
+			       '디자인콘텐츠' CODE_NAME
+			       union all
+			SELECT '01,2016,1,AAA006,01,6' CODE_ID,
+			       '화학' CODE_NAME
+	    ]]>
+
+	</select>
+
+	<select id="selectOffJtSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectOffJtSubjectCodeList	*/
+	    <![CDATA[
+			SELECT '02,2016,1,BBB001,01,1' CODE_ID,
+			       '기계' CODE_NAME
+			       union all
+			SELECT '02,2016,1,BBB002,01,2' CODE_ID,
+			       '전기전자' CODE_NAME
+			       union all
+			SELECT '02,2016,1,BBB003,01,3' CODE_ID,
+			       '메카트로닉스' CODE_NAME
+			       union all
+			SELECT '02,2016,1,BBB004,01,4' CODE_ID,
+			       '정보통신' CODE_NAME
+			       union all
+			SELECT '02,2016,1,BBB005,01,5' CODE_ID,
+			       '디자인콘텐츠' CODE_NAME
+			       union all
+			SELECT '02,2016,1,BBB006,01,6' CODE_ID,
+			       '화학' CODE_NAME
+	    ]]>
+
+	</select>
+
+	<select id="selectSubjectNameList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectSubjectNameList	*/
+	    <![CDATA[
+			SELECT
+				SUBJ.SUBJECT_NAME AS  CODE_NAME
+				, SUBJ.SUBJECT_CODE AS CODE_ID
+			FROM lms_subject SUBJ
+			JOIN lms_subj_ins_mapping  MAPP
+			ON SUBJ.SUBJECT_CODE = MAPP.SUBJECT_CODE
+			WHERE
+			1=1
+			AND SUBJ.DELETE_YN = 'N'
+			AND MAPP.MEM_SEQ = #{lecId}
+	    ]]>
+
+	</select>
+
+	<!-- 학습자 본인에게 메핑된 개설강좌코드 목록 -->
+	<select id="selectMyStdSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyStdSubjectCodeList	*/
+	    <![CDATA[
+			select
+            	CONCAT(sub.YYYY,'-',sub.TERM,'-',sub.SUBJECT_CODE,'-',sub.CLASS) AS CODE_ID,
+             	FN_GETSUBJECT_NAME(sub.YYYY,sub.TERM,sub.SUBJECT_CODE,sub.CLASS) AS CODE_NAME
+		     from lms_subject sub,
+		        lms_lesson les
+		        where 1 = 1
+		        and sub.YYYY = les.YYYY
+		        and sub.TERM = les.TERM
+		        and sub.SUBJECT_CODE = les.SUBJECT_CODE
+		        and sub.CLASS = les.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = #{codeGroup}
+		        and sub.DELETE_YN = 'N'
+		        and les.DELETE_YN = 'N'
+		        and les.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+		  	ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+	    ]]>
+
+	</select>
+
+	<!-- 학습자 본인에게 메핑된 분반코드 목록 -->
+	<select id="selectMyStdClassCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyStdClassCodeList	*/
+	    <![CDATA[
+			select
+	            sub.CLASS AS CODE_ID,
+	            sub.CLASS AS CODE_NAME
+	        from lms_subject sub,
+	        lms_lesson les
+	        where 1 = 1
+	        and sub.YYYY = les.YYYY
+	        and sub.TERM = les.TERM
+	        and sub.SUBJECT_CODE = les.SUBJECT_CODE
+	        and sub.CLASS = les.CLASS
+	        and sub.SUBJECT_TRANING_TYPE = #{codeGroup}
+	        and sub.DELETE_YN = 'N'
+	        and les.DELETE_YN = 'N'
+	        and les.MEM_SEQ = #{sessionMemSeq}
+	        and les.YYYY = #{sessionYyyy}
+	        and les.TERM = #{sessionTerm}
+	        and les.SUBJECT_CODE = #{sessionSubjectCode}
+	         AND
+	         (
+	           SUB.YYYY,
+	           SUB.TERM
+	         )
+	         IN
+	         (SELECT HAK.YYYY,
+	                HAK.TERM
+	           FROM HAK_SCHEDULE HAK
+	          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+	                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+	         )
+	  	ORDER BY sub.CLASS asc
+	    ]]>
+
+
+	</select>
+
+	<!-- 담당교수 본인에게 메핑된 개설강좌코드 목록 -->
+	<select id="selectMyPrtSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyPrtSubjectCodeList	*/
+	    <![CDATA[
+			select
+            	CONCAT(sub.YYYY,'-',sub.TERM,'-',sub.SUBJECT_CODE,'-',sub.CLASS) AS CODE_ID,
+             	FN_GETSUBJECT_NAME(sub.YYYY,sub.TERM,sub.SUBJECT_CODE,sub.CLASS) AS CODE_NAME
+		     from lms_subject sub,
+		        lms_subj_ins_mapping ins
+		        where 1 = 1
+		        and sub.YYYY = ins.YYYY
+		        and sub.TERM = ins.TERM
+		        and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+		        and sub.CLASS = ins.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = #{codeGroup}
+		        and sub.DELETE_YN = 'N'
+		        and ins.DELETE_YN = 'N'
+		        and ins.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+	    ]]>
+
+		<choose>
+            <when test="codeGroup != null and codeGroup != ''">
+                <if test="codeGroup == 'OJT'">
+                	<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+						<if test="sessionAuthGroupId == '2016AUTH0000003'">
+							GROUP BY sub.SUBJECT_TRANING_TYPE ,
+					   		  sub.YYYY ,
+						      sub.TERM ,
+						      sub.SUBJECT_CODE ,
+						      sub.CLASS ,
+						      sub.SUBJECT_NAME ,
+						      sub.SUBJECT_TYPE ,
+						      sub.ONLINE_TYPE
+						</if>
+					</if>
+                </if>
+            </when>
+        </choose>
+
+	    ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+
+	</select>
+
+	<!-- 담당교수 본인에게 메핑된 분반코드 목록 -->
+	<select id="selectMyPrtClassCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyPrtClassCodeList	*/
+	    <![CDATA[
+			select
+	            sub.CLASS AS CODE_ID,
+	            sub.CLASS AS CODE_NAME
+	        from lms_subject sub,
+	        lms_subj_ins_mapping ins
+	        where 1 = 1
+	        and sub.YYYY = ins.YYYY
+	        and sub.TERM = ins.TERM
+	        and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+	        and sub.CLASS = ins.CLASS
+	        and sub.SUBJECT_TRANING_TYPE = #{codeGroup}
+	        and sub.DELETE_YN = 'N'
+	        and ins.DELETE_YN = 'N'
+	        and ins.MEM_SEQ = #{sessionMemSeq}
+	        and ins.YYYY = #{sessionYyyy}
+	        and ins.TERM = #{sessionTerm}
+	        and ins.SUBJECT_CODE = #{sessionSubjectCode}
+	         AND
+	         (
+	           SUB.YYYY,
+	           SUB.TERM
+	         )
+	         IN
+	         (SELECT HAK.YYYY,
+	                HAK.TERM
+	           FROM HAK_SCHEDULE HAK
+	          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+	                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+	         )
+	  ORDER BY sub.CLASS asc
+	    ]]>
+
+
+	</select>
+
+	<!-- 학과전담자 본인에게 메핑된 개설강좌코드 목록 -->
+	<select id="selectMyCdpSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCdpSubjectCodeList	*/
+	    <![CDATA[
+			select
+            	CONCAT(sub.YYYY,'-',sub.TERM,'-',sub.SUBJECT_CODE,'-',sub.CLASS) AS CODE_ID,
+             	FN_GETSUBJECT_NAME(sub.YYYY,sub.TERM,sub.SUBJECT_CODE,sub.CLASS) AS CODE_NAME
+		     from lms_subject sub,
+		        lms_subj_cdp_mapping cdp
+		        where 1 = 1
+		        and sub.YYYY = cdp.YYYY
+		        and sub.TERM = cdp.TERM
+		        and sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		        and sub.CLASS = cdp.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = 'OFF'
+		        and sub.DELETE_YN = 'N'
+		        and cdp.DELETE_YN = 'N'
+		        and cdp.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+		  	ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+	    ]]>
+
+	</select>
+
+	<!-- 학과전담자 본인에게 메핑된 분반코드 목록 -->
+	<select id="selectMyCdpClassCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCdpClassCodeList	*/
+	    <![CDATA[
+			select
+	            sub.CLASS AS CODE_ID,
+	            sub.CLASS AS CODE_NAME
+	        from lms_subject sub,
+	        lms_subj_cdp_mapping cdp
+	        where 1 = 1
+	        and sub.YYYY = cdp.YYYY
+	        and sub.TERM = cdp.TERM
+	        and sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+	        and sub.CLASS = cdp.CLASS
+	        and sub.SUBJECT_TRANING_TYPE = 'OFF'
+	        and sub.DELETE_YN = 'N'
+	        and cdp.DELETE_YN = 'N'
+	        and cdp.MEM_SEQ = #{sessionMemSeq}
+	        and cdp.YYYY = #{sessionYyyy}
+	        and cdp.TERM = #{sessionTerm}
+	        and cdp.SUBJECT_CODE = #{sessionSubjectCode}
+	         AND
+	         (
+	           SUB.YYYY,
+	           SUB.TERM
+	         )
+	         IN
+	         (SELECT HAK.YYYY,
+	                HAK.TERM
+	           FROM HAK_SCHEDULE HAK
+	          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+	                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+	         )
+	  ORDER BY sub.CLASS asc
+	    ]]>
+
+
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 개설강좌코드 목록 -->
+	<select id="selectMyCottSubjectCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCottSubjectCodeList	*/
+	    <![CDATA[
+			select
+            	CONCAT(sub.YYYY,'-',sub.TERM,'-',sub.SUBJECT_CODE,'-',sub.CLASS) AS CODE_ID,
+             	FN_GETSUBJECT_NAME(sub.YYYY,sub.TERM,sub.SUBJECT_CODE,sub.CLASS) AS CODE_NAME
+		     from lms_subject sub,
+			  lms_subj_tut_mapping tut
+			  where 1 = 1
+			  and sub.YYYY = tut.YYYY
+			  and sub.TERM = tut.TERM
+			  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+			  and sub.CLASS = tut.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			  and sub.DELETE_YN = 'N'
+			  and tut.DELETE_YN = 'N'
+			  and tut.MEM_SEQ = #{sessionMemSeq}
+			  AND
+		       (
+		         SUB.YYYY,
+		         SUB.TERM
+		       )
+		       IN
+		       (SELECT HAK.YYYY,
+		              HAK.TERM
+		         FROM HAK_SCHEDULE HAK
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		       )
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 분반코드 목록 -->
+	<select id="selectMyCotClassCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCotClassCodeList	*/
+	    <![CDATA[
+	  	select
+			    sub.CLASS AS CODE_ID,
+	            sub.CLASS AS CODE_NAME
+			  from lms_subject sub,
+			  lms_subj_tut_mapping tut
+			  where 1 = 1
+			  and sub.YYYY = tut.YYYY
+			  and sub.TERM = tut.TERM
+			  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+			  and sub.CLASS = tut.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			  and sub.DELETE_YN = 'N'
+			  and tut.DELETE_YN = 'N'
+			  and tut.MEM_SEQ = #{sessionMemSeq}
+			  and tut.YYYY = #{sessionYyyy}
+	          and tut.TERM = #{sessionTerm}
+	          and tut.SUBJECT_CODE = #{sessionSubjectCode}
+			  AND
+		       (
+		         SUB.YYYY,
+		         SUB.TERM
+		       )
+		       IN
+		       (SELECT HAK.YYYY,
+		              HAK.TERM
+		         FROM HAK_SCHEDULE HAK
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		       )
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+
+
+	</select>
+
+	<!-- 학습자 본인에게 메핑된 과목구분코드 목록 -->
+	<select id="selectMyStdSubjectTypeCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyStdSubjectTypeCodeList	*/
+	    <![CDATA[
+			SELECT distinct sub.SUBJECT_TRANING_TYPE as CODE_ID,
+			       IF(sub.SUBJECT_TRANING_TYPE != 'OFF', 'OJT', 'OFF-JT') as CODE_NAME
+			  FROM lms_subject sub,
+			       lms_lesson les
+			 WHERE 1 = 1
+			       AND sub.YYYY = les.YYYY
+			       AND sub.TERM = les.TERM
+			       AND sub.SUBJECT_CODE = les.SUBJECT_CODE
+			       AND sub.CLASS = les.CLASS
+			       AND sub.DELETE_YN = 'N'
+			       AND les.DELETE_YN = 'N'
+			       AND les.MEM_SEQ = #{sessionMemSeq}
+			       AND
+			       (
+			         SUB.YYYY,
+			         SUB.TERM
+			       )
+			       IN
+			       (SELECT HAK.YYYY,
+			              HAK.TERM
+			         FROM HAK_SCHEDULE HAK
+			        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+			              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+			       )
+			ORDER BY sub.SUBJECT_TRANING_TYPE asc
+	    ]]>
+	</select>
+
+	<!-- 담당교수 본인에게 메핑된 과목구분코드 목록 -->
+	<select id="selectMyPrtSubjectTypeCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyPrtSubjectTypeCodeList	*/
+	    <![CDATA[
+			SELECT distinct sub.SUBJECT_TRANING_TYPE as CODE_ID,
+			       IF(sub.SUBJECT_TRANING_TYPE != 'OFF', 'OJT', 'OFF-JT') as CODE_NAME
+			  FROM lms_subject sub,
+			       lms_subj_ins_mapping ins
+			 WHERE 1 = 1
+			       AND sub.YYYY = ins.YYYY
+			       AND sub.TERM = ins.TERM
+			       AND sub.SUBJECT_CODE = ins.SUBJECT_CODE
+			       AND sub.CLASS = ins.CLASS
+			       AND sub.DELETE_YN = 'N'
+			       AND ins.DELETE_YN = 'N'
+			       AND ins.MEM_SEQ = #{sessionMemSeq}
+			       AND
+			       (
+			         SUB.YYYY,
+			         SUB.TERM
+			       )
+			       IN
+			       (SELECT HAK.YYYY,
+			              HAK.TERM
+			         FROM HAK_SCHEDULE HAK
+			        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+			              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+			       )
+			ORDER BY sub.SUBJECT_TRANING_TYPE asc
+	    ]]>
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 과목코드코드 목록 -->
+	<select id="selectMyCotSubjectTypeCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCotSubjectTypeCodeList	*/
+	    <![CDATA[
+			SELECT distinct sub.SUBJECT_TRANING_TYPE as CODE_ID,
+			       IF(sub.SUBJECT_TRANING_TYPE != 'OFF', 'OJT', 'OFF-JT') as CODE_NAME
+			  FROM lms_subject sub,
+			       lms_subj_tut_mapping tut
+			 where 1 = 1
+		       and sub.YYYY = tut.YYYY
+			   and sub.TERM = tut.TERM
+			   and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+			   and sub.CLASS = tut.CLASS
+			   and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			   and sub.DELETE_YN = 'N'
+			   and tut.DELETE_YN = 'N'
+			   and tut.MEM_SEQ = #{sessionMemSeq}
+		       AND
+		       (
+		         SUB.YYYY,
+		         SUB.TERM
+		       )
+		       IN
+		       (SELECT HAK.YYYY,
+		              HAK.TERM
+		         FROM HAK_SCHEDULE HAK
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		       )
+			ORDER BY sub.SUBJECT_TRANING_TYPE asc
+	    ]]>
+	</select>
+
+	<!-- 학과전담자 본인에게 메핑된 과목코드코드 목록 -->
+	<select id="selectMyCdpSubjectTypeCodeList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCdpSubjectTypeCodeList	*/
+	    <![CDATA[
+			SELECT distinct sub.SUBJECT_TRANING_TYPE as CODE_ID,
+			       IF(sub.SUBJECT_TRANING_TYPE != 'OFF', 'OJT', 'OFF-JT') as CODE_NAME
+			  FROM lms_subject sub,
+			       lms_subj_tut_mapping tut
+			 where 1 = 1
+		       and sub.YYYY = tut.YYYY
+			   and sub.TERM = tut.TERM
+			   and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+			   and sub.CLASS = tut.CLASS
+			   and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			   and sub.DELETE_YN = 'N'
+			   and tut.DELETE_YN = 'N'
+			   and tut.MEM_SEQ = #{sessionMemSeq}
+		       AND
+		       (
+		         SUB.YYYY,
+		         SUB.TERM
+		       )
+		       IN
+		       (SELECT HAK.YYYY,
+		              HAK.TERM
+		         FROM HAK_SCHEDULE HAK
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		       )
+			ORDER BY sub.SUBJECT_TRANING_TYPE asc
+	    ]]>
+	</select>
+
+	<!-- 학습자 본인에게 메핑된 개설강좌코드 목록 -->
+	<select id="selectMyStdSubjectList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyStdSubjectList	*/
+	    <![CDATA[
+			select
+            	 sub.YYYY,
+			     sub.TERM,
+			     sub.SUBJECT_CODE,
+			     sub.CLASS as subClass
+		     from lms_subject sub,
+		        lms_lesson les
+		        where 1 = 1
+		        and sub.YYYY = les.YYYY
+		        and sub.TERM = les.TERM
+		        and sub.SUBJECT_CODE = les.SUBJECT_CODE
+		        and sub.CLASS = les.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = #{codeGroup}
+		        and sub.DELETE_YN = 'N'
+		        and les.DELETE_YN = 'N'
+		        and les.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+		  	ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+	    ]]>
+
+	</select>
+
+	<!-- 담당교수 본인에게 메핑된 개설강좌정보 목록 -->
+	<select id="selectMyPrtSubjectList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyPrtSubjectList	*/
+	    <![CDATA[
+			select
+            	 sub.YYYY,
+			     sub.TERM,
+			     sub.SUBJECT_CODE,
+			     sub.CLASS as subClass
+		     from lms_subject sub,
+		        lms_subj_ins_mapping ins
+		        where 1 = 1
+		        and sub.YYYY = ins.YYYY
+		        and sub.TERM = ins.TERM
+		        and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+		        and sub.CLASS = ins.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = #{codeGroup}
+		        and sub.DELETE_YN = 'N'
+		        and ins.DELETE_YN = 'N'
+		        and ins.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+		  	ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+	    ]]>
+
+	</select>
+
+	<!-- 기업현장교사 본인에게 메핑된 개설강좌정보 목록 -->
+	<select id="selectMyCotSubjectList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCotSubjectList	*/
+	    <![CDATA[
+			select
+            	 sub.YYYY,
+			     sub.TERM,
+			     sub.SUBJECT_CODE,
+			     sub.CLASS as subClass
+		     from lms_subject sub,
+		        lms_subj_tut_mapping tut
+		        where 1 = 1
+		        and sub.YYYY = tut.YYYY
+		        and sub.TERM = tut.TERM
+		        and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+		        and sub.CLASS = tut.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = 'OJT'
+		        and sub.DELETE_YN = 'N'
+		        and tut.DELETE_YN = 'N'
+		        and tut.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+		  	ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+	    ]]>
+
+	</select>
+
+	<!-- 학과전담자 본인에게 메핑된 개설강좌정보 목록 -->
+	<select id="selectMyCdpSubjectList" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+		/**	kr.co.sitglobal.oklms.commbiz.cmmcode.service.impl.CommonCodeMapper.selectMyCdpSubjectList	*/
+	    <![CDATA[
+			select
+            	 sub.YYYY,
+			     sub.TERM,
+			     sub.SUBJECT_CODE,
+			     sub.CLASS as subClass
+		     from lms_subject sub,
+		        lms_subj_cdp_mapping cdp
+		        where 1 = 1
+		        and sub.YYYY = cdp.YYYY
+		        and sub.TERM = cdp.TERM
+		        and sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+		        and sub.CLASS = cdp.CLASS
+		        and sub.SUBJECT_TRANING_TYPE = 'OFF'
+		        and sub.DELETE_YN = 'N'
+		        and cdp.DELETE_YN = 'N'
+		        and cdp.MEM_SEQ = #{sessionMemSeq}
+		         AND
+		         (
+		           SUB.YYYY,
+		           SUB.TERM
+		         )
+		         IN
+		         (SELECT HAK.YYYY,
+		                HAK.TERM
+		           FROM HAK_SCHEDULE HAK
+		          WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+		                AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+		         )
+		  	ORDER BY sub.SUBJECT_NAME asc, sub.CLASS asc
+	    ]]>
+
+	</select>
+	<select id="selectYearTerm" parameterType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO" resultType="kr.co.sitglobal.oklms.commbiz.cmmcode.vo.CommonCodeVO">
+             SELECT HAK.YYYY,
+	              HAK.TERM
+	         FROM HAK_SCHEDULE HAK
+	        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')
+	              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE
+
+	</select>
+
+
+
+</mapper>

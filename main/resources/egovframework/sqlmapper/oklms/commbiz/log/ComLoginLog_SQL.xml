@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.commbiz.log.service.impl.ComLoginLogMapper">
+
+	<resultMap id="comLoginLog-result" type="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO">
+		<result column="MEM_SEQ" 			property="memSeq" />
+		<result column="LOGIN_DATE" 			property="loginDate" />
+		<result column="CLIENT_IP" 			property="clientIp" />
+		<result column="MEM_ID" 			property="memId" />
+		<result column="MEM_TYPE" 			property="memType" />
+		</resultMap>
+	
+	<sql id="listComLoginLog-where">
+	
+		<!-- 조회 조건값 ( CLL.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="memSeq != null and memSeq != ''">	AND CLL.MEM_SEQ 	= #{memSeq}		 </if> -->
+				<!-- <if test="loginDate != null and loginDate != ''">	AND CLL.LOGIN_DATE 	= #{loginDate}		 </if> -->
+				<!-- <if test="clientIp != null and clientIp != ''">	AND CLL.CLIENT_IP 	= #{clientIp}		 </if> -->
+				<!-- <if test="memId != null and memId != ''">	AND CLL.MEM_ID 	= #{memId}		 </if> -->
+				<!-- <if test="memType != null and memType != ''">	AND CLL.MEM_TYPE 	= #{memType}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CLL.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<!-- <if test="searchMemSeq != null and searchMemSeq != ''">	AND CLL.MEM_SEQ 	= #{searchMemSeq}		 </if> -->
+				<!-- <if test="searchLoginDate != null and searchLoginDate != ''">	AND CLL.LOGIN_DATE 	= #{searchLoginDate}		 </if> -->
+				<!-- <if test="searchClientIp != null and searchClientIp != ''">	AND CLL.CLIENT_IP 	= #{searchClientIp}		 </if> -->
+				<!-- <if test="searchMemId != null and searchMemId != ''">	AND CLL.MEM_ID 	= #{searchMemId}		 </if> -->
+				<!-- <if test="searchMemType != null and searchMemType != ''">	AND CLL.MEM_TYPE 	= #{searchMemType}		 </if> -->
+			</sql>
+	
+	<select id="getComLoginLog" parameterType="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO" resultType="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO">
+		/* ====== kr.co.sitglobal.oklms.commbiz.log.service.impl.ComLoginLogMapper.getComLoginLog ====== */
+			SELECT 
+								CLL.MEM_SEQ
+								, CLL.LOGIN_DATE
+								, CLL.CLIENT_IP
+								, CLL.MEM_ID
+								, CLL.MEM_TYPE
+							  FROM COM_LOGIN_LOG CLL
+			 WHERE CLL.COM_LOGIN_LOG = #{prototypeId }
+	</select>
+	
+<!-- 	<select id="listComLoginLog" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listComLoginLog" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO"> -->
+<!-- 	<select id="listComLoginLog" parameterType="hashmap" resultMap="comLoginLog-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listComLoginLog" parameterType="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO" resultType="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO">
+		/* ====== kr.co.sitglobal.oklms.commbiz.log.service.impl.ComLoginLogMapper.listComLoginLog ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+			SELECT 
+								CLL.MEM_SEQ
+								, CLL.LOGIN_DATE
+								, CLL.CLIENT_IP
+								, CLL.MEM_ID
+								, CLL.MEM_TYPE
+							  FROM COM_LOGIN_LOG CLL
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listComLoginLog-where"/>
+			ORDER BY CLL.UPDT_YMDTM DESC
+		 <include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getComLoginLogCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.commbiz.log.service.impl.ComLoginLogMapper.getComLoginLogCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_LOGIN_LOG CLL
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listComLoginLog-where"/>
+	</select>
+
+	
+
+	<insert id="insertComLoginLog" parameterType="kr.co.sitglobal.oklms.commbiz.log.vo.ComLoginLogVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.commbiz.log.service.impl.ComLoginLogMapper.insertComLoginLog ====== */
+			INSERT INTO COM_LOGIN_LOG ( 
+								MEM_SEQ
+								, LOGIN_DATE
+								, CLIENT_IP
+								, MEM_ID
+								, MEM_TYPE
+									) 
+					VALUES 
+					( 
+								#{memSeq}
+								, NOW()
+								, #{clientIp}
+								, #{memId}
+								, #{memType}
+								)
+		]]>
+	</insert>
+
+
+
+
+
+</mapper>

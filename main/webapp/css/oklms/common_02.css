@@ -1,0 +1,314 @@
+@charset "utf-8";
+
+
+
+@media all and (min-width:921px) and (max-width:1039px) {
+
+.content-copy1																{width:90%; padding:7px 0 20px 10%; margin-top:15px;}
+
+
+
+.course-img																	{width:25%;}
+.course-title																	{width:98%; padding-left:2%;}
+.course-text																	{width:75%; font-size:13px; line-height:23px; padding-bottom:10px; margin-top:30px;}
+.course-text span															{font-size:18px; line-height:23px;}
+
+
+
+.course-box1																	{width:93%; padding:20px 3%;}
+.course-box1 ul																{width:100%;}
+.course-box1 ul li textarea												{width:98.5%; height:60px;}
+
+.course-box1 ul li.title														{width:98%; padding:0 0 3px 2%;}
+.course-box1 ul li.title1													{width:98%; padding:0 0 5px 2%;}
+.course-box1 ul li.text														{width:98%; padding-left:2%;}
+.course-box1 ul li.text1													{width:98%; padding-left:2%;}
+
+.course-box1 ul li.line														{width:100%;}
+.course-box1 ul li.line1													{width:100%;}
+
+
+.flash-box																		{display:none;}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:920px) {
+
+.content-copy1																{width:89%; padding:7px 0 20px 11%; margin-top:15px;}
+
+
+
+.course-img																	{width:30%;}
+.course-title																	{width:98%; padding-left:2%;}
+.course-text																	{width:70%;}
+
+.course-box1																	{width:93%; padding:20px 3%;}
+.course-box1 ul																{width:100%;}
+.course-box1 ul li textarea												{width:98%; height:60px;}
+
+.course-box1 ul li.title														{width:98%; padding:0 0 3px 2%;}
+.course-box1 ul li.title1													{width:98%; padding:0 0 5px 2%;}
+.course-box1 ul li.text														{width:98%; padding-left:2%;}
+.course-box1 ul li.text1													{width:98%; padding-left:2%;}
+.course-box1 ul li.line														{width:100%;}
+.course-box1 ul li.line1													{width:100%;}
+
+
+.flash-box																		{display:none;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:810px) {
+
+.content-copy1																{width:86%; font-size:13px; line-height:18px; padding:7px 0 20px 14%; margin-top:10px;}
+.content-copy1 p																{font-size:17px; line-height:26px;}
+
+.course-img																	{display:none;}
+.course-title																	{width:97.5%; padding-left:2.5%;}
+.course-text																	{width:100%; margin-top:20px;}
+
+.course-box1																	{width:91%; padding:20px 4%;}
+.course-box1 ul li.title														{width:97.5%; padding:0 0 3px 2.5%;}
+.course-box1 ul li.title1													{width:97.5%; padding:0 0 5px 2.5%;}
+.course-box1 ul li.text														{width:97.5%; padding-left:2.5%;}
+.course-box1 ul li.text1													{width:97.5%; padding-left:2.5%;}
+
+
+
+.box-text																		{width:93%; padding:15px 2% 15px 3%;}
+.box-text li																		{width:97%; font:13px; line-height:18px; padding-right:15px;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:760px) {
+
+.course-title																	{width:97.5%; font-size:16px; line-height:25px; background-position:0 6px; padding-left:2.5%;}
+
+.course-text																	{line-height:22px; padding-bottom:9px;}
+.course-text span															{line-height:22px;}
+
+
+
+.guide-area																	{margin-top:15px;}
+.guide-area li.name															{width:97%; padding-left:3%; margin:15px 0 2px;}
+.guide-area li.text															{width:97%; padding-left:3%;}
+.guide-area li.text span.title												{line-height:22px;}
+.guide-area li.img-1															{padding:3px 0;}
+.guide-area li.img-2															{width:97%; padding:3px 0 20px 3%;}
+.guide-area li.line															{height:15px; margin-bottom:15px;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:635px) {
+
+.content-copy1																{width:100%; font-size:13px; line-height:18px; background:none; padding:5px 0 15px 0; margin-top:10px;}
+.content-copy1 p																{font-size:16px; line-height:24px;}
+
+
+
+.course-title																	{width:97%; padding-left:3%;}
+.course-text																	{font-size:12px; line-height:20px; padding-bottom:8px; margin-top:15px;}
+.course-text span															{font-size:16px; line-height:21px;}
+
+.course-info																	{margin-top:15px;}
+.course-info li.category													{font-size:12px; line-height:20px;}
+.course-info li.course-name-1											{font-size:16px; line-height:21px; padding-bottom:12px;}
+.course-info li.course-name-2											{font-size:16px; line-height:21px; padding-bottom:12px;}
+
+.course-box1																	{width:89%; padding:20px 5%;}
+.course-box1 ul li.title														{width:97%; padding:0 0 3px 3%;}
+.course-box1 ul li.title1													{width:97%; padding:0 0 5px 3%;}
+.course-box1 ul li.text														{width:97%; padding-left:3%;}
+.course-box1 ul li.text1													{width:97%; padding-left:3%;}
+
+
+
+.box-text																		{width:93%; padding:15px 2% 15px 3%;}
+.box-text li																		{width:97%; height:100px; font-size:12px; line-height:17px; padding-right:15px;}
+
+
+
+.faq-tab																			{margin-top:15px;}
+.faq-tab li																		{width:14.9%; height:45px; font-size:14px; padding-right:1.9%;}
+.faq-tab li a																	{height:29px; line-height:30px; border-radius:30px; border:3px solid #DDD;}
+.faq-tab li:hover a, .faq-tab li.on a										{border:3px solid #4084F6;}
+
+
+
+#wrap-error ul																{width:100%; background-size:160px; 160px; background-position:center top; padding-top:180px; padding-right:0; margin-top:30px;}
+#wrap-error li																	{width:100%; text-align:center;}
+#wrap-error .logo															{background-position:center 7px;}
+#wrap-error .h-type															{height:140px;}
+
+#wrap-error .type-11														{text-align:center;}
+#wrap-error .type-12														{text-align:center;}
+
+#wrap-error .type-21														{float:none; font-size:23px; line-height:30px; text-align:center; padding-top:18px;}
+#wrap-error .type-22														{float:none; height:40px; text-align:center; padding-top:5px;}
+#wrap-error .type-23														{float:none; width:100%; height:40px; text-align:center; padding-top:9px;}
+#wrap-error .type-23 a														{width:160px; height:26px; font-size:16px; border-radius:20px; padding-top:9px; margin:0 auto;}
+
+
+
+.guide-area li																	{font-size:12px; line-height:18px;}
+.guide-area li.name															{width:96%; font-size:15px; line-height:20px; background-position:0 3px; padding-left:4%; margin:15px 0 2px;}
+
+.guide-area li.text															{width:96%; padding-left:4%;}
+.guide-area li.text span.title												{font-size:14px; line-height:20px; padding-right:7px;}
+
+.guide-area li.img-1															{width:100%; padding:2px 0;}
+.guide-area li.img-2															{width:96%; padding:3px 0 20px 4%;}
+.guide-area li.img-2 img													{width:98%; border:4px solid #DDD;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:500px) {
+
+.content-copy1																{font-size:12px; line-height:17px; padding:0 0 12px 0; margin-top:10px;}
+.content-copy1 p																{font-size:15px; line-height:23px;}
+
+
+
+.course-title																	{width:96%; font-size:15px; line-height:22px; background-position:0 4px; padding-left:4%; margin-top:20px;}
+.course-text																	{font-size:12px; line-height:20px; padding-bottom:7px; margin-top:13px;}
+.course-text span															{font-size:15px; line-height:20px;}
+
+.course-info																	{margin-top:13px;}
+.course-info li.category													{font-size:12px; line-height:20px;}
+.course-info li.course-name-1											{font-size:15px; line-height:20px; padding-bottom:12px;}
+.course-info li.course-name-2											{font-size:15px; line-height:20px; padding-bottom:12px;}
+
+.course-box1																	{width:87%; padding:20px 5%;}
+.course-box1 ul li.title														{width:95%; padding:0 0 3px 5%;}
+.course-box1 ul li.title span												{font-size:12px; line-height:16px; margin-right:3px;}
+.course-box1 ul li.title1													{width:95%; padding:0 0 5px 5%;}
+.course-box1 ul li.text														{width:95%; font-size:12px; line-height:16px; padding-left:5%;}
+.course-box1 ul li.text1													{width:95%; font-size:12px; line-height:16px; padding-left:5%;}
+
+
+
+.faq-tab																			{height:85px; margin-top:12px;}
+.faq-tab li																		{width:31.5%; height:38px; font-size:14px; padding-right:2%;}
+.faq-tab li:nth-child(3n+3)													{padding-right:0;}
+
+
+
+.guide-area li																	{font-size:12px; line-height:17px;}
+.guide-area li.name															{width:95%; font-size:14px; line-height:18px; background-position:0 3px; padding-left:5%;}
+.guide-area li.text															{width:95%; padding-left:5%;}
+.guide-area li.text span.title												{font-size:13px;}
+
+.guide-area li.img-2															{width:95%; padding:3px 0 20px 5%;}
+.guide-area li.img-2 img													{width:97%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:400px) {
+
+.content-copy1																{font-size:12px; line-height:17px; padding-bottom:10px; margin-top:5px;}
+.content-copy1 p																{font-size:15px; line-height:23px;}
+
+
+
+.course-title																	{width:95%; font-size:14px; line-height:20px; background-position:0 3px; padding-left:5%; margin-top:15px;}
+.course-text																	{line-height:17px; margin-top:10px;}
+.course-text span															{font-size:14px; line-height:18px;}
+
+.course-info																	{margin-top:10px;}
+.course-info li.category													{line-height:18px;}
+.course-info li.course-name-1											{font-size:14px; line-height:18px;}
+.course-info li.course-name-2											{font-size:14px; line-height:18px;}
+
+
+
+.box-text																		{width:90%; padding:15px 3% 15px 4%;}
+.box-text li																		{width:97%; padding-right:15px;}
+
+
+
+.faq-tab																			{height:75px; margin-top:10px;}
+.faq-tab li																		{width:30%; height:34px; font-size:13px; padding-right:4%;}
+.faq-tab li a																	{height:27px; line-height:28px; border:2px solid #DDD;}
+.faq-tab li:hover a, .faq-tab li.on a										{border:2px solid #4084F6;}
+
+
+
+#wrap-error																	{background-position:0 -30px;}
+#wrap-error ul																{background-size:130px; 130px; padding-top:150px;}
+#wrap-error .text																{font-size:13px; line-height:20px;}
+#wrap-error .number														{font-size:12px;}
+#wrap-error .type-11														{font-size:26px; line-height:40px; padding-top:18px;}
+
+#wrap-error .type-21														{font-size:20px;}
+#wrap-error .type-22														{padding-top:0;}
+#wrap-error .type-23														{padding-top:14px;}
+
+
+
+.guide-area li																	{font-size:11px;}
+.guide-area li.name															{width:94%; font-size:13px; line-height:17px; background-position:0 2px; padding-left:6%; margin:10px 0 2px;}
+.guide-area li.text															{width:94%; padding-left:6%;}
+.guide-area li.text span.title												{font-size:12px; line-height:18px;}
+.guide-area li.img-2															{width:94%; padding:3px 0 15px 6%;}
+.guide-area li.img-2 img													{width:97%; border:3px solid #DDD;}
+.guide-area li.line															{height:12px; margin-bottom:12px;}
+
+}
+
+
+

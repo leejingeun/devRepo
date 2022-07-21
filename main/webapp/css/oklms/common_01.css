@@ -1,0 +1,124 @@
+@charset "utf-8";
+
+
+
+.content-copy1																{float:left; width:88%; font:13px nbgM; color:#888; line-height:18px; background:url("/images/oklms/std/img/copyimg_02.png") no-repeat; padding:7px 0 20px 12%; margin-top:20px;}
+.content-copy1 p																{font-size:18px; color:#333; line-height:26px;}
+.content-copy1 p span														{color:#ED174F;}
+.content-copy1 span														{color:#0062A4;}
+
+
+
+
+
+/* 과정소개 속성 */
+.course-img																	{float:left; width:220px; height:154px; margin-top:20px;}
+.course-title																	{float:left; width:97.5%; font:17px nsM; color:#333; line-height:25px; background:url("/images/oklms/std/img/point_01.png") 0 5px no-repeat; padding-left:2.5%; margin:30px 0 5px;}
+
+.course-text																	{float:left; width:520px; font:13px nbgM; line-height:23px; color:#999; padding-bottom:10px; margin-top:30px;}
+.course-text span															{display:inline-block; font:18px nsM; color:#0B7EA8; line-height:23px;}
+
+.course-info																	{float:left; width:100%; margin-top:20px;}
+.course-info li																	{float:left; width:100%;}
+.course-info li.category													{font:13px nbgM; color:#999; line-height:23px;}
+.course-info li.course-name-1											{font:18px nsM; color:#0B7EA8; line-height:23px; background:url("/images/oklms/std/img/line_02.png") bottom repeat-x; padding-bottom:15px;}
+.course-info li.course-name-2											{font:18px nsM; color:#0B7EA8; line-height:23px; padding-bottom:15px;}
+
+
+
+
+
+.course-box1																	{float:left; width:685px; border:5px solid #E9E9E9; padding:20px 25px;}
+.course-box1 ul																{float:left; width:685px;}
+.course-box1 ul li															{float:left; width:100%;}
+.course-box1 ul li textarea												{width:675px; height:60px; font:12px nbgM; color:#777; line-height:18px; border:5px solid #D9D9D9;}
+
+.course-box1 ul li.title														{width:670px; font:15px nbgM; color:#222; line-height:18px; background:url("/images/oklms/std/img/point_02.png") 0 3px no-repeat; padding:0 0 3px 15px;}
+.course-box1 ul li.title span												{color:#0B7EA8; font:13px nbgM; margin-right:3px;}
+.course-box1 ul li.title1													{width:670px; font:15px nbgM; color:#222; line-height:18px; background:url("/images/oklms/std/img/point_01.png") 0 3px no-repeat; padding:0 0 5px 16px;}
+.course-box1 ul li.title1 span											{margin-right:3px;}
+.course-box1 ul li.text														{width:670px; font:13px nbgM; color:#777; line-height:18px; padding-left:15px;}
+.course-box1 ul li.text span												{color:#FF4500;}
+.course-box1 ul li.text1													{width:670px; font:13px nbgM; color:#777; line-height:18px; padding:3px 0 2px 15px;}
+.course-box1 ul li.text1 span											{color:#0B7EA8;}
+.course-box1 ul li.text1 a													{color:#777;}
+.course-box1 ul li.text1 a:hover											{color:#0B7EA8;}
+
+.course-box1 ul li.line														{width:685px; height:30px; background:url("/images/oklms/std/img/line_04.png") 0 14px repeat-x;}
+.course-box1 ul li.line1													{width:685px; height:30px; background:url("/images/oklms/std/img/line_01.png") 0 14px repeat-x;}
+
+.course-box1 ul li a.btn1													{font:12px nbgM; color:#FFF; line-height:14px; vertical-align:middle; background:url("/images/oklms/std/board/btn_line_01.png") repeat #999; padding:1px 5px 2px; margin-left:3px;}
+.course-box1 ul li a.btn2													{font:12px nbgM; color:#FFF; line-height:14px; vertical-align:middle; background:url("/images/oklms/std/board/btn_line_01.png") repeat #4084F6; padding:1px 5px 2px; margin-left:3px;}
+
+
+
+
+
+.box-text																		{float:left; width:94%; border:5px solid #E9E9E9; padding:20px 2% 20px 3%;}
+.box-text li																		{float:left; width:97%; height:110px; font:13px nbgM; color:#777; line-height:18px; overflow:auto; padding-right:15px;}
+
+
+
+
+
+.flash-box																		{float:left; width:685px; text-align:center; border:5px solid #E9E9E9; padding:20px 25px; margin-top:20px;}
+
+
+
+
+
+/* 탭 속성 */
+
+.faq-tab																			{float:left; width:100%; margin-top:21px;;}
+.faq-tab li																		{float:left; width:15%; height:55px; font:16px nsM; padding-right:1.8%;}
+.faq-tab li:last-child															{padding-right:0;}
+
+.faq-tab li a																	{display:block; width:100%; height:34px; color:#999; line-height:35px; text-align:center; border:4px solid #DDD; border-radius:30px; background:#FFF;}
+.faq-tab li:hover a, .faq-tab li.on a										{border:4px solid #4084F6; background:#4084F6; color:#FFF;}
+
+
+
+
+
+/* 접속오류 속성 */
+
+#wrap-error																	{position:relative; float:left; width:100%; height:100%; background:url("/images/oklms/std/img/error_bg_01.png") top #EDEDED repeat-x;}
+#wrap-error ul																{position:relative; width:270px; height:210px; background:url("/images/oklms/std/img/error_bg_02.png") right no-repeat; padding-right:250px; margin:210px auto 0;}
+#wrap-error li																	{float:left; display:block; width:270px; text-align:right;}
+#wrap-error .logo															{height:45px; text-indent:-9999px; background:url("/images/oklms/std/img/error_bg_03.png") right 7px no-repeat;}
+#wrap-error .text																{height:120px; font:14px nbgM; color:#FFF; line-height:20px;}
+#wrap-error .number														{height:33px; font:13px play; color:#333; line-height:18px; padding-top:12px;}
+#wrap-error .number span												{color:#999; background:url("/images/oklms/std/img/error_bg_04.png") right no-repeat; padding-right:10px; margin-right:10px;}
+
+#wrap-error .type-11														{font-size:30px; line-height:40px; text-align:right; text-shadow:1px 1px 1px #004B7C; padding-top:18px;}
+#wrap-error .type-12														{text-align:right; opacity:0.5;}
+
+#wrap-error .type-21														{float:right; font-size:23px; line-height:30px; text-align:right; text-shadow:1px 1px 1px #004B7C; padding-top:22px;}
+#wrap-error .type-22														{float:left; display:inline-block; height:40px; text-align:right; opacity:0.5; padding-top:7px;}
+#wrap-error .type-23														{float:right; display:inline-block; width:90px; height:40px; padding-top:9px;}
+#wrap-error .type-23 a														{display:block; overflow:hidden; width:90px; height:26px; font-size:16px; color:#FFF; text-align:center; border-radius:5px; background:#35b0ff; box-shadow:1px 1px 1px #005084; padding-top:9px;}
+
+
+
+
+
+/* 교육 이용안내 속성 */
+
+.guide-area																	{float:left; clear:both; width:100%; margin-top:20px;}
+.guide-area li																	{float:left; width:100%; font:13px nbgM; color:#777; line-height:19px;}
+
+.guide-area li.name															{width:97.5%; font:17px nsM; color:#333; line-height:25px; background:url("/images/oklms/std/img/point_01.png") 0 6px no-repeat; padding-left:2.5%; margin:20px 0 2px;}
+.guide-area li.name:first-child											{margin-top:0;}
+.guide-area li.text															{width:97.5%; padding-left:2.5%;}
+.guide-area li.text span													{color:#0062A4;}
+.guide-area li.text span.title												{font:15px nbgM; line-height:25px; padding-right:10px;}
+
+.guide-area li.img-1															{width:100%; padding:5px 0;}
+.guide-area li.img-1 img													{width:100%;}
+.guide-area li.img-2															{width:97.5%; padding:5px 0 25px 2.5%;}
+.guide-area li.img-2 img													{width:98%; border:5px solid #DDD;}
+
+.guide-area li.line															{height:20px; border-bottom:1px solid #E5E5E5; margin-bottom:20px;}
+
+
+

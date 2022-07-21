@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sitglobal.include">
+
+	<sql id="paging-start">
+		SELECT data.* from 
+			(
+			SELECT data.* 
+				   ,@SORTNUM  as TOTAL_COUNT
+				   ,@RNUM:=@RNUM+1 AS ROW_NUM
+				   ,@SORTNUM-(@RNUM-1) AS LINE_NUM
+					FROM ( 
+					       SELECT 
+					       data.*,
+					  	   @SORTNUM:=@SORTNUM+1 AS SORTNUM
+					  	   FROM (
+	</sql>
+	<sql id="paging-end">
+					  ) data,
+			          (SELECT @RNUM:=0,@SORTNUM:=0,@TOTCOUNT:=0) R
+				  ORDER BY SORTNUM DESC
+				) data
+			ORDER BY SORTNUM ASC
+			) data
+		<![CDATA[	
+			WHERE data.row_num > ( IFNULL(#{pageIndex , jdbcType=VARCHAR }, 1) -1) * IFNULL(#{pageSize , jdbcType=VARCHAR } ,10)   
+			  AND data.row_num <= IFNULL(#{pageIndex , jdbcType=VARCHAR }, 1)  * IFNULL(#{pageSize , jdbcType=VARCHAR } ,10)		
+		]]>
+		
+	</sql>
+
+	<sql id="paging-end2">
+				 	  ) data,
+			          (SELECT @RNUM:=0,@SORTNUM:=0,@TOTCOUNT:=0) R
+				  ORDER BY SORTNUM DESC
+				) data
+			ORDER BY SORTNUM ASC
+			) data
+		<![CDATA[	
+			WHERE data.row_num > ( IFNULL(#{pageIndex , jdbcType=VARCHAR }, 1) -1) * IFNULL(#{pageSize , jdbcType=VARCHAR } ,10)   
+			  AND rownum <= IFNULL(#{pageSize , jdbcType=VARCHAR } ,10)		
+		]]>
+	</sql>
+	
+	<sql id="paging-end_____">
+					  ) data,
+			          (SELECT @RNUM:=0,@SORTNUM:=0,@TOTCOUNT:=0) R
+				  ORDER BY SORTNUM DESC
+				) data
+			ORDER BY SORTNUM ASC
+			) data
+		<![CDATA[	
+			WHERE data.row_num >= #{page_start_row , jdbcType=VARCHAR } 
+			  AND data.row_num <= #{page_end_row , jdbcType=VARCHAR} 		
+		]]>
+	</sql>
+
+</mapper>

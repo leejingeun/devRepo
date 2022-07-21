@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  *  
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper">
+
+	<select id="selectWorkCertPeriodCnt" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="java.lang.Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.selectWorkCertPeriodCnt ====== */
+			SELECT
+				count(*) as cnt
+			FROM LMS_WORK_PROOF_PERIOD
+            WHERE   YYYY = #{yyyy}
+		   AND TERM  = #{term}
+		   AND DEPT_NO = #{deptNo}
+	</select>
+
+	<select id="selectWorkCert" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.selectWorkCert ====== */
+
+	        SELECT WORK_PROOF_ID
+					, YYYY
+					, TERM
+					, MEM_ID
+					, MEM_NAME
+					, SEND_YN
+					, ATCH_FILE_ID
+					, DOWN_ID
+					, DOWN_DATE
+					, REMOVE_ID
+	   				, REMOVE_DATE
+	          FROM LMS_WORK_PROOF
+	          WHERE MEM_ID = #{sessionMemId}
+	          AND DELETE_YN = 'N'
+	          ORDER BY YYYY ASC, TERM ASC
+
+	</select>
+
+	<select id="selectAtchFileId" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.selectAtchFileId ====== */
+	      SELECT 
+			 	 LWP.PERIOD_ID
+				,LWP.WORK_PROOF_ID
+				,LWP.MEM_ID
+				,LWP.MEM_NAME
+				,LWP.SEND_YN 
+,(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = LWP.ATCH_FILE_ID_INC ) AS ATCH_FILE_ID_INC
+,(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = LWP.ATCH_FILE_ID_REC ) AS ATCH_FILE_ID_REC
+,(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = LWP.ATCH_FILE_ID_DOC ) AS ATCH_FILE_ID_DOC				
+				
+				,LWP.DOWN_ID
+				,LWP.DOWN_DATE
+				,LWP.REMOVE_ID
+				,LWP.REMOVE_DATE
+				,LWP.DEPT_NO
+				,LWP.STATE
+				,LWP.RETURN_REASON
+				,LWP.OFF_INS_YN
+				,LWP.OFF_REC_YN
+				,LWP.OFF_DOC_YN
+				,WPP.YYYY
+				,WPP.TERM
+				,WPP.START_TIME
+				,WPP.END_TIME
+				,WPP.RELATIVE_REGULATION
+				,WPP.INSURANCE_YN
+				,WPP.RECEIPT_YN
+<![CDATA[
+		,IF(WPP.START_TIME <= date_format(now(),'%Y.%m.%d'),'Y','N') AS START_STATE
+		,IF(WPP.END_TIME >= date_format(now(),'%Y.%m.%d'),'Y','N') AS END_STATE
+]]>				
+	        FROM LMS_WORK_PROOF LWP
+	        INNER JOIN LMS_WORK_PROOF_PERIOD WPP ON WPP.PERIOD_ID=LWP.PERIOD_ID AND WPP.DELETE_YN='N'
+	        WHERE LWP.WORK_PROOF_ID = #{workProofId}
+	          AND LWP.DEPT_NO = #{sessionDeptNo}
+	          AND LWP.DELETE_YN = 'N'
+	</select>
+ 
+ 
+	<select id="getWorkCertPeriod" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.getWorkCertPeriod ====== */
+		SELECT
+			PERIOD_ID
+			,YYYY
+			,TERM
+			,START_TIME
+			,END_TIME
+<![CDATA[
+		,IF(START_TIME <= date_format(now(),'%Y.%m.%d'),'Y','N') AS START_STATE
+		,IF(END_TIME >= date_format(now(),'%Y.%m.%d'),'Y','N') AS END_STATE
+]]>				
+			,RELATIVE_REGULATION
+			,DELETE_YN
+			,INSURANCE_YN
+			,RECEIPT_YN
+			,DEPT_NO
+			,INSERT_USER
+			,INSERT_DATE
+			,UPDATE_USER
+			,UPDATE_DATE			
+		FROM LMS_WORK_PROOF_PERIOD
+  	  WHERE  DELETE_YN='N'
+  	<if test="search != null  and search != ''  and search.equals('bottom')">
+		AND PERIOD_ID= #{periodId}
+	</if>
+  	<if test="search != null  and search != '' and search.equals('top')" >	
+		AND YYYY = #{yyyy}
+    	AND TERM = #{term}
+    	AND DEPT_NO = #{deptNo}
+	</if>    	
+    	
+	</select>
+
+	<select id="listWorkCertPeriod" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+ 		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.listWorkCertPeriod ====== */
+ 			SELECT
+			PERIOD_ID
+			,YYYY
+			,TERM
+			,START_TIME
+			,END_TIME
+			,RELATIVE_REGULATION
+			,INSERT_USER
+			,INSERT_DATE
+			,UPDATE_USER
+			,UPDATE_DATE
+			,DELETE_YN
+			,INSURANCE_YN
+			,RECEIPT_YN
+			FROM LMS_WORK_PROOF_PERIOD
+			WHERE DELETE_YN='N'
+			AND DEPT_NO =  #{deptNo}
+		ORDER BY YYYY DESC,TERM DESC
+	</select>
+ 
+	<select id="listWorkCertStatePop" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.listWorkCertStatePop ====== */
+		SELECT
+		PER.PERIOD_ID,
+		PER.YYYY,
+		PER.TERM,
+		PER.INSURANCE_YN,
+		PER.RECEIPT_YN,
+		PER.START_TIME,
+		PER.END_TIME,
+		PER.RELATIVE_REGULATION,
+<![CDATA[
+		IF(PER.START_TIME <= date_format(now(),'%Y.%m.%d'),'Y','N') AS START_STATE,
+		IF(PER.END_TIME >= date_format(now(),'%Y.%m.%d'),'Y','N') AS END_STATE,
+]]>
+		PRO.SEND_YN,
+		PRO.STATE, 
+(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_INC ) AS ATCH_FILE_ID_INC,
+(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_REC ) AS ATCH_FILE_ID_REC,
+(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_DOC ) AS ATCH_FILE_ID_DOC,
+		PRO.WORK_PROOF_ID
+		FROM LMS_WORK_PROOF_PERIOD PER
+		LEFT JOIN LMS_WORK_PROOF PRO 	ON PER.PERIOD_ID = PRO.PERIOD_ID 		AND PRO.MEM_ID = #{memId}
+
+		WHERE  PER.DEPT_NO= #{deptNo}		
+		ORDER BY PER.YYYY DESC,PER.TERM DESC ,PRO.PERIOD_ID DESC
+	</select>
+ 
+
+	<select id="listWorkCertStatePopup" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.listWorkCertStatePopup ====== */
+ 		SELECT
+					PER.PERIOD_ID,
+					PER.YYYY,
+					PER.TERM,
+					PER.INSURANCE_YN,
+					PER.RECEIPT_YN,
+					PER.START_TIME,
+					PER.END_TIME,
+					PER.RELATIVE_REGULATION,
+					SUM(IF(PRO.MEM_ID IS NOT NULL ,'1','0')) MEMBER_TOT,
+					SUM(IF((SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_INC ) IS NOT NULL ,'1','0')) AS INS_TOT,
+					SUM(IF((SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_REC ) IS NOT NULL ,'1','0')) AS REC_TOT,
+					SUM(IF((SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_DOC ) IS NOT NULL ,'1','0')) AS DOC_TOT
+					
+	 
+					FROM LMS_WORK_PROOF_PERIOD PER
+					LEFT JOIN LMS_WORK_PROOF PRO 	ON PER.PERIOD_ID = PRO.PERIOD_ID  AND PRO.DELETE_YN='N' AND PRO.SEND_YN='Y' AND  PRO.STATE='01'
+			
+					WHERE  PER.DEPT_NO= #{deptNo}
+					<if test="term != null  and term != ''">
+					  AND  PER.TERM = #{term}
+					</if>
+					  AND  PER.DELETE_YN='N'
+					GROUP BY 		
+									PER.PERIOD_ID,
+									PER.YYYY,
+									PER.TERM,
+									PER.INSURANCE_YN,
+									PER.RECEIPT_YN,
+									PER.START_TIME,
+									PER.END_TIME,
+									PER.RELATIVE_REGULATION
+					ORDER BY PER.YYYY DESC,PER.TERM DESC ,PRO.PERIOD_ID DESC
+	</select>
+	
+	<select id="listWorkCertDetail" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+ 		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.listWorkCertDetail ====== */
+ 		SELECT 
+				 WPP.YYYY
+				,WPP.TERM
+				,WPP.START_TIME
+				,WPP.END_TIME
+				,WPP.RELATIVE_REGULATION
+				,WPP.INSURANCE_YN
+				,WPP.RECEIPT_YN
+				,CM.MEM_ID
+				,CM.MEM_NAME  
+				,CM.COMPANY_ID
+				,LC.COMPANY_NAME
+				,LWP.PERIOD_ID
+				,LWP.WORK_PROOF_ID
+				,LWP.SEND_YN
+				,(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = LWP.ATCH_FILE_ID_INC ) AS ATCH_FILE_ID_INC
+				,(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = LWP.ATCH_FILE_ID_REC ) AS ATCH_FILE_ID_REC
+				,(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = LWP.ATCH_FILE_ID_DOC ) AS ATCH_FILE_ID_DOC
+				,LWP.DOWN_ID
+				,LWP.DOWN_DATE
+				,LWP.REMOVE_ID
+				,LWP.REMOVE_DATE
+				,LWP.DEPT_NO
+				,LWP.STATE
+				,LWP.RETURN_REASON
+				,LWP.OFF_INS_YN
+				,LWP.OFF_REC_YN
+				,LWP.OFF_DOC_YN
+				FROM LMS_WORK_PROOF_PERIOD WPP
+				INNER JOIN COM_MEMBER CM ON CM.DEPT_NO = WPP.DEPT_NO AND CM.DELETE_YN='N'
+				INNER JOIN LMS_WORK_PROOF LWP   ON WPP.PERIOD_ID=LWP.PERIOD_ID AND CM.MEM_ID = LWP.MEM_ID AND LWP.DELETE_YN='N' 
+				LEFT OUTER JOIN LMS_COMPANY LC ON CM.COMPANY_ID = LC.COMPANY_ID AND LC.DELETE_YN='N'  	         
+				WHERE WPP.YYYY = #{yyyy}          
+				  AND WPP.TERM = #{term}
+				  AND WPP.DEPT_NO = #{sessionDeptNo}
+
+<if test="searchCompanyName != null and searchCompanyName != ''">
+       			AND LC.COMPANY_NAME LIKE CONCAT('%', #{searchCompanyName},'%')
+</if>
+				  
+<if test="searchValue != null and searchValue != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchValue},'%')
+</if>
+
+<if test="searchValue != null and searchValue != ''">
+				AND CM.MEM_ID LIKE CONCAT('%', #{searchValue},'%')
+</if>
+
+<if test="searchState != null and searchState != ''">
+				AND LWP.STATE =  #{searchState}
+</if>
+
+
+				ORDER BY LWP.MEM_ID 	DESC      
+					          
+	</select>
+	 
+	
+	
+	<select id="selectAtchFileIdList" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" resultType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+ 		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.selectAtchFileIdList ====== */
+ 			SELECT
+					PER.PERIOD_ID,
+					PER.YYYY,
+					PER.TERM,
+					PER.INSURANCE_YN,
+					PER.RECEIPT_YN,
+					PER.START_TIME,
+					PER.END_TIME,
+					PER.RELATIVE_REGULATION,
+					PRO.SEND_YN,
+					PRO.STATE, 
+					PRO.MEM_ID,
+					PRO.MEM_NAME,
+			(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_INC ) AS ATCH_FILE_ID_INC,
+			(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_REC ) AS ATCH_FILE_ID_REC,
+			(SELECT AF.ATCH_FILE_ID FROM ATCH_FILE AF WHERE AF.ATCH_FILE_ID = PRO.ATCH_FILE_ID_DOC ) AS ATCH_FILE_ID_DOC,
+					PRO.WORK_PROOF_ID
+					FROM LMS_WORK_PROOF_PERIOD PER
+					INNER JOIN LMS_WORK_PROOF PRO 	ON PER.PERIOD_ID = PRO.PERIOD_ID AND PRO.DELETE_YN='N'			
+					WHERE  PER.DEPT_NO= #{sessionDeptNo}	
+					  AND  PER.TERM = #{term}
+					  AND  PER.YYYY = #{yyyy}	
+						 AND PRO.MEM_ID IN
+					<foreach collection="memIdArr" item="memId" index="index" open="(" close=")" separator=",">
+						 '${memId}'
+					</foreach>
+	</select>
+ 
+	<insert id="goInsertWorkCert" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.insertWorkCertArticle ====== */
+			INSERT INTO LMS_WORK_PROOF (
+								PERIOD_ID
+								,WORK_PROOF_ID
+								,MEM_ID
+								,MEM_NAME
+								,SEND_YN
+					        <if test="atchFileIdInc != null  and atchFileIdInc != ''">
+						        ,ATCH_FILE_ID_INC
+						    </if>
+						    <if test="atchFileIdRec != null  and atchFileIdRec != ''">
+								,ATCH_FILE_ID_REC
+							</if>
+							<if test="atchFileIdDoc != null  and atchFileIdDoc != ''">
+								,ATCH_FILE_ID_DOC
+							</if>
+								,DEPT_NO
+								,DELETE_YN
+								,STATE
+								,CREATOR_ID
+								,CREATE_DATE
+					)
+					VALUES
+					(
+								#{periodId}
+								,#{workProofId}
+								,#{memId}
+								,#{memName}
+								,'Y'
+						<if test="atchFileIdInc != null  and atchFileIdInc != ''">
+					         ,#{atchFileIdInc}
+					    </if>
+					    <if test="atchFileIdRec != null  and atchFileIdRec != ''">
+							,#{atchFileIdRec}
+						</if>
+						<if test="atchFileIdDoc != null  and atchFileIdDoc != ''">
+							,#{atchFileIdDoc}
+						</if>
+								,#{deptNo}
+								,'N'
+								,'00'
+								
+								,#{creatorId}
+								,now()
+					)
+	</insert>
+ 	
+	<insert id="goInsertWorkCertPeriod" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.goInsertWorkCertPeriod ====== */
+
+       INSERT
+       INTO   LMS_WORK_PROOF_PERIOD
+              (
+                     PERIOD_ID,
+                     YYYY,
+                     TERM,
+                     START_TIME,
+                     END_TIME,
+                     RELATIVE_REGULATION,
+                     INSERT_USER,
+                     INSERT_DATE,
+                     DELETE_YN,
+                     INSURANCE_YN,
+                     RECEIPT_YN,
+                     DEPT_NO
+              )
+              values
+              (
+                     #{periodId},
+                     #{yyyy},
+                     #{term},
+                     #{startTime},
+                     #{endTime},
+                     #{relativeRegulation},
+                     #{sessionMemId},
+                     now(),
+                     'N',
+                     #{insuranceYn},
+                     #{receiptYn},
+                     #{sessionDeptNo}
+              )
+
+	</insert> 
+	
+	<update id="downloadWorkCert" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		UPDATE LMS_WORK_PROOF
+		SET
+			DOWN_ID = #{sessionMemId},
+			DOWN_DATE = now()
+		WHERE WORK_PROOF_ID = #{workProofId}
+	</update>
+
+	<update id="removeWorkCert" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		UPDATE LMS_WORK_PROOF
+		SET
+			REMOVE_ID = #{sessionMemId},
+			REMOVE_DATE = now()
+		WHERE WORK_PROOF_ID = #{workProofId}
+	</update>
+
+ 
+	<update id="updateWorkCertMember" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.updateWorkCertMember ====== */
+		UPDATE LMS_WORK_PROOF
+			SET
+			       STATE         = #{state},
+			       RETURN_REASON = #{returnReason}
+			WHERE    MEM_ID = #{memId}
+			  AND    PERIOD_ID = #{periodId}
+
+	</update>
+
+	<update id="updateWorkCert" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.updateWorkCert ====== */
+        UPDATE  LMS_WORK_PROOF
+        SET     
+        <if test="atchFileIdInc != null  and atchFileIdInc != ''">
+	        ATCH_FILE_ID_INC = #{atchFileIdInc},
+	    </if>
+	    <if test="atchFileIdRec != null  and atchFileIdRec != ''">
+			ATCH_FILE_ID_REC = #{atchFileIdRec},
+		</if>
+		<if test="atchFileIdDoc != null  and atchFileIdDoc != ''">
+			ATCH_FILE_ID_DOC = #{atchFileIdDoc},
+		</if>
+			MODIFIER_ID = #{sessionMemSeq},
+			MODIFY_DATE =  now(),
+			STATE = '00'
+      WHERE   DEPT_NO =  #{sessionDeptNo}
+		   AND MEM_ID= #{memId}
+		   AND DELETE_YN = 'N'
+	</update>
+	<update id="updateWorkCertPeriod" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.updateWorkCertPeriod ====== */
+        UPDATE LMS_WORK_PROOF_PERIOD
+        SET
+
+               START_TIME          = #{startTime},
+               END_TIME            = #{endTime},
+               RELATIVE_REGULATION = #{relativeRegulation},
+
+               UPDATE_USER         = #{sessionMemSeq},
+               UPDATE_DATE         = now(),
+               INSURANCE_YN        = #{insuranceYn},
+               RECEIPT_YN          = #{receiptYn}
+      WHERE    YYYY = #{yyyy}
+		   AND TERM  = #{term}
+		   AND DEPT_NO =  #{deptNo}
+		   AND DELETE_YN  = 'N'
+	</update>
+	<update id="deleteWorkCertPeriod" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.deleteWorkCertPeriod ====== */
+        UPDATE LMS_WORK_PROOF_PERIOD
+        set 
+               UPDATE_USER         = #{sessionMemSeq},
+               UPDATE_DATE         = now(),
+               DELETE_YN           = 'Y'
+    	WHERE   PERIOD_ID = #{periodId}
+	</update>
+
+	<update id="updateWorkCertMemberFiledown" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.updateWorkCertMemberFiledown ====== */
+        UPDATE LMS_WORK_PROOF
+        set 
+        
+        	   DOWN_ID = #{sessionMemSeq},
+        	   DOWN_DATE = now() 
+    	WHERE   PERIOD_ID = #{periodId}
+		 AND    MEM_ID IN
+	<foreach collection="memIdArr" item="memId" index="index" open="(" close=")" separator=",">
+		 '${memId}'
+	</foreach>    	
+	</update>
+	<update id="updateOffWorkCertMember" parameterType="kr.co.sitglobal.oklms.lu.workcert.vo.WorkCertVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.WorkCertMapper.updateOffWorkCertMember ====== */
+        UPDATE LMS_WORK_PROOF
+        set 
+		<if test="offInsYn != null  and offInsYn != ''">
+			OFF_INS_YN = #{offInsYn},
+		</if>
+		<if test="offRecYn != null  and offRecYn != ''">
+			OFF_REC_YN = #{offRecYn},
+		</if>
+		<if test="offDocYn != null  and offDocYn != ''">
+			OFF_DOC_YN = #{offDocYn},
+		</if>
+               MODIFIER_ID         = #{sessionMemSeq},
+               MODIFY_DATE         = now()
+    	WHERE  WORK_PROOF_ID = #{workProofId}
+	</update>	
+	
+</mapper>

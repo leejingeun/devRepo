@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+
+
+@font-face {font-family:nbgM; src:url('/images/font/NanumBarunGothic.eot'); src:url('/images/font/NanumBarunGothic.woff') format('woff');}									/* 나눔바른고딕 M */
+@font-face {font-family:nsM; src:url('/images/font/NanumSquareR.eot'); src:url('/images/font/NanumSquareR.woff') format('woff');}												/* 나눔스퀘어 M */
+
+@font-face {font-family:play; font-weight:400; src:url('/images/font/Play-Regular.woff') format('woff');}						/* 플레이 M */
+@font-face {font-family:play; font-weight:700; src:url('/images/font/Play-Bold.woff') format('woff');}								/* 플레이 B */
+
+

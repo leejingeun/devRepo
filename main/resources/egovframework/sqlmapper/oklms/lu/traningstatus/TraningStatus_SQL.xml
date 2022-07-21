@@ -1,0 +1,1415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  *  
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.traningstatus.service.impl.TraningStatusMapper">
+ 
+	<select id="getProgress" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.getProgress  ====== */
+		SELECT A.YYYY
+				,A.TERM
+				 
+				,A.SUBJECT_CODE 
+<![CDATA[				
+		        ,(SELECT COUNT(1) FROM LMS_LESSON B 
+	                  WHERE A.YYYY = B.YYYY 
+	                  AND A.TERM = B.TERM 
+	                  AND B.CLASS = A.CLASS 
+	                  AND B.SUBJECT_CODE = A.SUBJECT_CODE ) AS LESSON_CNT
+					,AVG(A.TOTAL_TIME)  AS TOTAL_TIME       
+					,
+					(	
+					SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+					FROM  LMS_SUBJ_WEEK_TIME WEET 
+					WHERE 
+						WEET.SUBJECT_CODE = A.SUBJECT_CODE 
+					AND WEET.YYYY =  A.YYYY
+					AND WEET.TERM =  A.TERM
+					AND WEET.CLASS =  A.CLASS
+					AND WEET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')
+					AND WEET.DELETE_YN = 'N'
+					) AS ALL_TIME_HOUR_NOW	
+]]>	
+	            ,Floor(SUM(A.TOTAL_STUDY_TIME)/SUM(A.TOTAL_TIME) *100) AS REAL_PROGRESS_RATE
+				FROM (		
+						SELECT   LL.YYYY
+		        				,LL.TERM
+		        				,LL.CLASS
+		        				,LL.SUBJECT_CODE
+				                ,LL.LESSON_ID
+				                ,(
+				                				SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+				                				FROM  LMS_SUBJ_WEEK_TIME WEET 
+				                				WHERE 
+				                					WEET.SUBJECT_CODE = LL.SUBJECT_CODE 
+				                				AND WEET.YYYY =  LL.YYYY
+				                				AND WEET.TERM =  LL.TERM
+				                				AND WEET.CLASS =  LL.CLASS
+				                				AND WEET.DELETE_YN = 'N'
+				                				) AS TOTAL_TIME
+				                ,(
+				                				SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+				                				FROM LMS_TRANING_NOTE_MASTER TNM,
+				                					 LMS_TRANING_NOTE_DETAIL TND
+				                				WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+				                				AND TNM.DELETE_YN='N' 
+				                				AND TND.DELETE_YN='N' 
+				                				AND TNM.SUBJECT_CODE= LL.SUBJECT_CODE
+				                				AND TND.MEM_ID= CM.MEM_ID    
+				                				AND TNM.YYYY=  LL.YYYY   
+				                				AND TNM.CLASS  = LL.CLASS					
+				                				) AS TOTAL_STUDY_TIME				        	
+				        				FROM LMS_LESSON LL   
+				        				
+				        				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+				        										ON WEEK.DELETE_YN='N'
+				        										AND LL.YYYY=WEEK.YYYY  
+				        										AND LL.TERM=WEEK.TERM   
+				        										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+				        										AND LL.CLASS =WEEK.CLASS
+				
+				        				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'					 
+				        			
+				        				WHERE  LL.DELETE_YN='N'
+				        					AND LL.LEC_STATUS='A' 
+				                  AND LL.YYYY=#{yyyy}
+				                  AND LL.TERM=#{term}
+				                  <if test="classId != null and classId != ''">
+				                  AND LL.CLASS = #{classId}
+				                  </if>
+				                  AND LL.SUBJECT_CODE=#{subjectCode}	 
+						            GROUP BY LL.YYYY,LL.TERM,LL.CLASS,LL.SUBJECT_CODE,LL.LESSON_ID,CM.MEM_SEQ
+					) A
+					GROUP BY A.YYYY,A.TERM, A.SUBJECT_CODE,A.CLASS
+				
+	</select>
+ 	<select id="listTraningStatusPrt" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusPrt  ====== */
+ 		SELECT S.* FROM (
+			SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS AS CLASS_ID
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME				
+<![CDATA[  
+				,COUNT(WEEK.WEEK_ID) AS TOTAL_TIME	 /* 전체출석일 */
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS  /* 지각*/
+				
+				,MAX(TO_NUMBER(WEEK.WEEK_CNT)) AS ON_TOTAL_TIME	 /* 전체출석일 */
+]]>					
+<if test="classId != null and classId != ''">
+<![CDATA[
+ 				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND   /* 출석*/
+				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)) AS ON_LATENESS  /* 지각*/
+				,FN_ALL_PROGRESS_RATE_LESSON(LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+]]>		
+</if>
+<![CDATA[
+		        ,
+		        IFNULL(
+				        FLOOR((
+				  				SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+				  				FROM LMS_TRANING_NOTE_MASTER TNM,
+				  					 LMS_TRANING_NOTE_DETAIL TND
+				  				WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+				  				AND TNM.DELETE_YN='N' 
+				  				AND TND.DELETE_YN='N' 
+				  				AND TNM.SUBJECT_CODE= LL.SUBJECT_CODE
+				  				AND TND.MEM_ID= CM.MEM_ID    
+				  				AND TNM.YYYY=  LL.YYYY   
+				  				AND TNM.CLASS  = LL.CLASS					
+				  				)
+				  				/
+				          		(
+				  				SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+				  				FROM  LMS_SUBJ_WEEK_TIME WEET 
+				  				WHERE 
+				  					WEET.SUBJECT_CODE = LL.SUBJECT_CODE 
+				  				AND WEET.YYYY =  LL.YYYY
+				  				AND WEET.TERM =  LL.TERM
+				  				AND WEET.CLASS =  LL.CLASS
+				  				AND WEET.DELETE_YN = 'N'	
+						  		) *100) ,0) AS REAL_PROGRESS_RATE
+]]>					
+				
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN
+											(SELECT LSIM.YYYY,LSIM.TERM,LSIM.SUBJECT_CODE,LSIM.CLASS 
+											  FROM LMS_SUBJ_INS_MAPPING LSIM 
+											 WHERE LSIM.MEM_SEQ= #{sessionMemSeq}
+											   AND LSIM.DELETE_YN='N')
+										
+										
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemName != null and searchMemName != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemName},'%')
+</if>
+<![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+		        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+										ON LSOS.CLASS = LL.CLASS
+										AND LSOS.YYYY = LL.YYYY
+										AND LSOS.TERM = LL.TERM
+										AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+										AND LSOS.DELETE_YN = 'N'													
+]]>				 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+			 
+			          ) S 
+         WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">    
+       	 <if test="searchType.equals('C1')">
+	     AND ( S.REAL_PROGRESS_RATE >= #{searchStartRate}  AND #{searchEndRate} > S.REAL_PROGRESS_RATE )
+	     </if>
+	     <if test="searchType.equals('O1')">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRate} AND  #{searchEndRate} > S.ON_REAL_PROGRESS_RATE  )
+         </if>
+	   </if>
+	   
+	</select>
+	<select id="listTraningStatusDetailPrt" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusDetailPrt  ====== */
+	  SELECT * FROM 
+	  (
+		SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS  AS CLASS_ID
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME
+				,LL.SUBJECT_CODE  
+        		,IFNULL(SUM(TND.STUDY_TIME ),0 )AS STUDY_TIME
+				,IFNULL(SUM(MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )),0 ) AS STUDY_PLAN_TIME
+<if test="classId != null and classId != ''">
+			 	,FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+</if>
+                ,LAN.CONTENT
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN
+														(SELECT LSIM.YYYY,LSIM.TERM,LSIM.SUBJECT_CODE,LSIM.CLASS 
+														  FROM LMS_SUBJ_INS_MAPPING LSIM 
+														 WHERE LSIM.MEM_SEQ= #{sessionMemSeq}
+														   AND LSIM.DELETE_YN='N')
+										
+										
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemNameDetail != null and searchMemNameDetail != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemNameDetail},'%')
+</if>				
+ <![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND date_format(now(),'%Y.%m.%d') >= SWT.TRANING_DATE										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+			    LEFT OUTER JOIN LMS_ACTIVITY_NOTE LAN
+					                    ON  LAN.DELETE_YN = 'N'
+					                    AND LAN.YYYY = LL.YYYY
+					                    AND LAN.TERM = LL.TERM
+					                    AND LAN.SUBJECT_CODE = LL.SUBJECT_CODE
+					                    AND LAN.CLASS = LL.CLASS
+					                    AND LAN.MEM_ID = CM.MEM_ID
+					                    AND WEEK.WEEK_CNT = LAN.WEEK_CNT						
+]]>			 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+       				AND WEEK.WEEK_CNT = #{weekCnt}
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID,LAN.CONTENT
+			 ) S 
+			 WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">
+       	 <if test="searchType.equals('C2')">
+       	 	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+	     AND ( S.STUDY_TIME >= #{searchStartRateDetail}  AND #{searchEndRateDetail} > S.STUDY_TIME )
+	     	</if>
+	     </if>
+	     <if test="searchType.equals('O2')">
+	     	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRateDetail} AND  #{searchEndRateDetail} > S.ON_REAL_PROGRESS_RATE  )
+         	</if>
+         </if>
+	   </if>
+	
+	</select>
+ 	<select id="listTraningStatusCot" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusCot  ====== */
+ 		SELECT S.* FROM (
+			SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS AS CLASS_ID
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME				
+<![CDATA[  
+				,COUNT(WEEK.WEEK_ID) AS TOTAL_TIME	 /* 전체출석일 */
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS  /* 지각*/
+				
+				,MAX(TO_NUMBER(WEEK.WEEK_CNT)) AS ON_TOTAL_TIME	 /* 전체출석일 */
+]]>					
+<if test="classId != null and classId != ''">
+<![CDATA[
+ 				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND   /* 출석*/
+				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)) AS ON_LATENESS  /* 지각*/
+				,FN_ALL_PROGRESS_RATE_LESSON(LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+]]>		
+</if>
+<![CDATA[
+		        ,
+		        IFNULL(
+				        FLOOR((
+				  				SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+				  				FROM LMS_TRANING_NOTE_MASTER TNM,
+				  					 LMS_TRANING_NOTE_DETAIL TND
+				  				WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+				  				AND TNM.DELETE_YN='N' 
+				  				AND TND.DELETE_YN='N' 
+				  				AND TNM.SUBJECT_CODE= LL.SUBJECT_CODE
+				  				AND TND.MEM_ID= CM.MEM_ID    
+				  				AND TNM.YYYY=  LL.YYYY   
+				  				AND TNM.CLASS  = LL.CLASS					
+				  				)
+				  				/
+				          		(
+				  				SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+				  				FROM  LMS_SUBJ_WEEK_TIME WEET 
+				  				WHERE 
+				  					WEET.SUBJECT_CODE = LL.SUBJECT_CODE 
+				  				AND WEET.YYYY =  LL.YYYY
+				  				AND WEET.TERM =  LL.TERM
+				  				AND WEET.CLASS =  LL.CLASS
+				  				AND WEET.DELETE_YN = 'N'	
+						  		) *100) ,0) AS REAL_PROGRESS_RATE
+]]>					
+				
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN
+											(SELECT LSIM.YYYY,LSIM.TERM,LSIM.SUBJECT_CODE,LSIM.CLASS 
+											  FROM LMS_SUBJ_TUT_MAPPING LSIM 
+											 WHERE LSIM.MEM_SEQ= #{sessionMemSeq}
+											   AND LSIM.DELETE_YN='N')
+										
+										
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemName != null and searchMemName != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemName},'%')
+</if>
+<![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+		        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+										ON LSOS.CLASS = LL.CLASS
+										AND LSOS.YYYY = LL.YYYY
+										AND LSOS.TERM = LL.TERM
+										AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+										AND LSOS.DELETE_YN = 'N'													
+]]>				 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+			 
+			          ) S 
+         WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">    
+       	 <if test="searchType.equals('C1')">
+	     AND ( S.REAL_PROGRESS_RATE >= #{searchStartRate}  AND #{searchEndRate} > S.REAL_PROGRESS_RATE )
+	     </if>
+	     <if test="searchType.equals('O1')">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRate} AND  #{searchEndRate} > S.ON_REAL_PROGRESS_RATE  )
+         </if>
+	   </if>
+	   
+	</select>
+	<select id="listTraningStatusDetailCot" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusDetailCot  ====== */
+	  SELECT * FROM 
+	  (
+		SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS  AS CLASS_ID
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME
+				,LL.SUBJECT_CODE  
+        		,IFNULL(SUM(TND.STUDY_TIME ),0 )AS STUDY_TIME
+				,IFNULL(SUM(MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )),0 ) AS STUDY_PLAN_TIME
+<if test="classId != null and classId != ''">
+			 	,FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+</if>
+                ,LAN.CONTENT
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN
+														(SELECT LSIM.YYYY,LSIM.TERM,LSIM.SUBJECT_CODE,LSIM.CLASS 
+														  FROM LMS_SUBJ_TUT_MAPPING LSIM 
+														 WHERE LSIM.MEM_SEQ= #{sessionMemSeq}
+														   AND LSIM.DELETE_YN='N')
+										
+										
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemNameDetail != null and searchMemNameDetail != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemNameDetail},'%')
+</if>				
+ <![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND date_format(now(),'%Y.%m.%d') >= SWT.TRANING_DATE										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+			    LEFT OUTER JOIN LMS_ACTIVITY_NOTE LAN
+					                    ON  LAN.DELETE_YN = 'N'
+					                    AND LAN.YYYY = LL.YYYY
+					                    AND LAN.TERM = LL.TERM
+					                    AND LAN.SUBJECT_CODE = LL.SUBJECT_CODE
+					                    AND LAN.CLASS = LL.CLASS
+					                    AND LAN.MEM_ID = CM.MEM_ID
+					                    AND WEEK.WEEK_CNT = LAN.WEEK_CNT						
+]]>			 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+       				AND WEEK.WEEK_CNT = #{weekCnt}
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID,LAN.CONTENT
+			 ) S 
+			 WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">
+       	 <if test="searchType.equals('C2')">
+       	 	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+	     AND ( S.STUDY_TIME >= #{searchStartRateDetail}  AND #{searchEndRateDetail} > S.STUDY_TIME )
+	     	</if>
+	     </if>
+	     <if test="searchType.equals('O2')">
+	     	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRateDetail} AND  #{searchEndRateDetail} > S.ON_REAL_PROGRESS_RATE  )
+         	</if>
+         </if>
+	   </if>
+	
+	</select>
+	
+	<select id="listTraningStatusCcm" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusCcm  ====== */
+ 		SELECT S.* FROM (
+			SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS AS CLASS_ID
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME				
+<![CDATA[  
+				,COUNT(WEEK.WEEK_ID) AS TOTAL_TIME	 /* 전체출석일 */
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS  /* 지각*/
+				
+				,MAX(TO_NUMBER(WEEK.WEEK_CNT)) AS ON_TOTAL_TIME	 /* 전체출석일 */
+]]>					
+<if test="classId != null and classId != ''">
+<![CDATA[
+ 				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND   /* 출석*/
+				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)) AS ON_LATENESS  /* 지각*/
+				,FN_ALL_PROGRESS_RATE_LESSON(LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+]]>		
+</if>
+<![CDATA[
+		        ,
+		        IFNULL(
+				        FLOOR((
+				  				SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+				  				FROM LMS_TRANING_NOTE_MASTER TNM,
+				  					 LMS_TRANING_NOTE_DETAIL TND
+				  				WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+				  				AND TNM.DELETE_YN='N' 
+				  				AND TND.DELETE_YN='N' 
+				  				AND TNM.SUBJECT_CODE= LL.SUBJECT_CODE
+				  				AND TND.MEM_ID= CM.MEM_ID    
+				  				AND TNM.YYYY=  LL.YYYY   
+				  				AND TNM.CLASS  = LL.CLASS					
+				  				)
+				  				/
+				          		(
+				  				SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+				  				FROM  LMS_SUBJ_WEEK_TIME WEET 
+				  				WHERE 
+				  					WEET.SUBJECT_CODE = LL.SUBJECT_CODE 
+				  				AND WEET.YYYY =  LL.YYYY
+				  				AND WEET.TERM =  LL.TERM
+				  				AND WEET.CLASS =  LL.CLASS
+				  				AND WEET.DELETE_YN = 'N'	
+						  		) *100) ,0) AS REAL_PROGRESS_RATE
+]]>					
+				
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN
+																								(SELECT LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																									FROM  LMS_TRANING_PROCESS_MAPPING LTPM  WHERE LTPM.DELETE_YN='N'
+																										AND (LTPM.COMPANY_ID,LTPM.TRANING_PROCESS_ID) IN (SELECT LSCM.COMPANY_ID,LSCM.TRANING_PROCESS_ID 
+																																						 FROM LMS_SUBJ_CCM_MAPPING LSCM
+																																					   WHERE LSCM.MEM_SEQ=#{sessionMemSeq}
+																																						  AND LSCM.DELETE_YN='N'))
+										
+										
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemName != null and searchMemName != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemName},'%')
+</if>
+<![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+		        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+										ON LSOS.CLASS = LL.CLASS
+										AND LSOS.YYYY = LL.YYYY
+										AND LSOS.TERM = LL.TERM
+										AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+										AND LSOS.DELETE_YN = 'N'													
+]]>				 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+			 
+			          ) S 
+         WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">    
+       	 <if test="searchType.equals('C1')">
+	     AND ( S.REAL_PROGRESS_RATE >= #{searchStartRate}  AND #{searchEndRate} > S.REAL_PROGRESS_RATE )
+	     </if>
+	     <if test="searchType.equals('O1')">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRate} AND  #{searchEndRate} > S.ON_REAL_PROGRESS_RATE  )
+         </if>
+	   </if>
+	   
+	</select>
+	<select id="listTraningStatusDetailCcm" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusDetailCcm  ====== */
+	  SELECT * FROM 
+	  (
+		SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS  AS CLASS_ID
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME
+				,LL.SUBJECT_CODE  
+        		,IFNULL(SUM(TND.STUDY_TIME ),0 )AS STUDY_TIME
+				,IFNULL(SUM(MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )),0 ) AS STUDY_PLAN_TIME
+<if test="classId != null and classId != ''">
+			 	,FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+</if>
+                ,LAN.CONTENT
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN
+														(SELECT LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+															FROM  LMS_TRANING_PROCESS_MAPPING LTPM  WHERE LTPM.DELETE_YN='N'
+																										AND (LTPM.COMPANY_ID,LTPM.TRANING_PROCESS_ID) IN (SELECT LSCM.COMPANY_ID,LSCM.TRANING_PROCESS_ID 
+																																						 FROM LMS_SUBJ_CCM_MAPPING LSCM
+																																					   WHERE LSCM.MEM_SEQ=#{sessionMemSeq}
+																																						  AND LSCM.DELETE_YN='N'))
+										
+										
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemNameDetail != null and searchMemNameDetail != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemNameDetail},'%')
+</if>				
+ <![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND date_format(now(),'%Y.%m.%d') >= SWT.TRANING_DATE										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+			    LEFT OUTER JOIN LMS_ACTIVITY_NOTE LAN
+					                    ON  LAN.DELETE_YN = 'N'
+					                    AND LAN.YYYY = LL.YYYY
+					                    AND LAN.TERM = LL.TERM
+					                    AND LAN.SUBJECT_CODE = LL.SUBJECT_CODE
+					                    AND LAN.CLASS = LL.CLASS
+					                    AND LAN.MEM_ID = CM.MEM_ID
+					                    AND WEEK.WEEK_CNT = LAN.WEEK_CNT						
+]]>			 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+       				AND WEEK.WEEK_CNT = #{weekCnt}
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID,LAN.CONTENT
+			 ) S 
+			 WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">
+       	 <if test="searchType.equals('C2')">
+       	 	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+	     AND ( S.STUDY_TIME >= #{searchStartRateDetail}  AND #{searchEndRateDetail} > S.STUDY_TIME )
+	     	</if>
+	     </if>
+	     <if test="searchType.equals('O2')">
+	     	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRateDetail} AND  #{searchEndRateDetail} > S.ON_REAL_PROGRESS_RATE  )
+         	</if>
+         </if>
+	   </if>
+	
+	</select>
+		
+	<select id="listTraningStatus" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatus  ====== */
+ 		SELECT S.* FROM (
+			SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS AS CLASS_ID
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME				
+<![CDATA[  
+				,COUNT(WEEK.WEEK_ID) AS TOTAL_TIME	 /* 전체출석일 */
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+				,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS  /* 지각*/
+				
+				,MAX(TO_NUMBER(WEEK.WEEK_CNT)) AS ON_TOTAL_TIME	 /* 전체출석일 */
+]]>					
+<if test="classId != null and classId != ''">
+<![CDATA[
+ 				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND   /* 출석*/
+				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)) AS ON_LATENESS  /* 지각*/
+				,FN_ALL_PROGRESS_RATE_LESSON(LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+]]>		
+</if>
+<![CDATA[
+		        ,
+		        IFNULL(
+				        FLOOR((
+				  				SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+				  				FROM LMS_TRANING_NOTE_MASTER TNM,
+				  					 LMS_TRANING_NOTE_DETAIL TND
+				  				WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+				  				AND TNM.DELETE_YN='N' 
+				  				AND TND.DELETE_YN='N' 
+				  				AND TNM.SUBJECT_CODE= LL.SUBJECT_CODE
+				  				AND TND.MEM_ID= CM.MEM_ID    
+				  				AND TNM.YYYY=  LL.YYYY   
+				  				AND TNM.CLASS  = LL.CLASS					
+				  				)
+				  				/
+				          		(
+				  				SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+				  				FROM  LMS_SUBJ_WEEK_TIME WEET 
+				  				WHERE 
+				  					WEET.SUBJECT_CODE = LL.SUBJECT_CODE 
+				  				AND WEET.YYYY =  LL.YYYY
+				  				AND WEET.TERM =  LL.TERM
+				  				AND WEET.CLASS =  LL.CLASS
+				  				AND WEET.DELETE_YN = 'N'	
+						  		) *100) ,0) AS REAL_PROGRESS_RATE
+]]>					
+				
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemName != null and searchMemName != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemName},'%')
+</if>
+<![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+		        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+										ON LSOS.CLASS = LL.CLASS
+										AND LSOS.YYYY = LL.YYYY
+										AND LSOS.TERM = LL.TERM
+										AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+										AND LSOS.DELETE_YN = 'N'													
+]]>				 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID
+			 
+			          ) S 
+         WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">    
+       	 <if test="searchType.equals('C1')">
+	     AND ( S.REAL_PROGRESS_RATE >= #{searchStartRate}  AND #{searchEndRate} > S.REAL_PROGRESS_RATE )
+	     </if>
+	     <if test="searchType.equals('O1')">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRate} AND  #{searchEndRate} > S.ON_REAL_PROGRESS_RATE  )
+         </if>
+	   </if>
+	   
+	</select>
+	
+	
+	
+	
+	<select id="listTraningStatusDetail" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listTraningStatusDetail  ====== */
+	  SELECT * FROM 
+	  (
+		SELECT  CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS  AS CLASS_ID
+				,CM.COMPANY_ID
+				,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME
+				,LL.SUBJECT_CODE  
+        		,IFNULL(SUM(TND.STUDY_TIME ),0 )AS STUDY_TIME
+				,IFNULL(SUM(MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )),0 ) AS STUDY_PLAN_TIME
+<if test="classId != null and classId != ''">
+			 	,FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+</if>
+                ,LAN.CONTENT
+				FROM LMS_LESSON LL
+ 
+				INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+										ON WEEK.DELETE_YN='N'
+										AND LL.YYYY=WEEK.YYYY  
+										AND LL.TERM=WEEK.TERM   
+										AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+										AND LL.CLASS =WEEK.CLASS
+				INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+<if test="searchMemNameDetail != null and searchMemNameDetail != ''">
+       			AND CM.MEM_NAME LIKE CONCAT('%', #{searchMemNameDetail},'%')
+</if>				
+ <![CDATA[ 
+				INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+										AND LL.YYYY=SWT.YYYY  
+										AND LL.TERM=SWT.TERM   
+										AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+										AND LL.CLASS =SWT.CLASS
+										AND WEEK.WEEK_ID = SWT.WEEK_ID
+										AND date_format(now(),'%Y.%m.%d') >= SWT.TRANING_DATE										
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+										ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+										AND TND.DELETE_YN='N'  
+										AND TND.MEM_ID=CM.MEM_ID    
+										AND TND.ADDYN = 'N'
+										AND TND.YYYY=  LL.YYYY   
+										AND TND.CLASS  = LL.CLASS	
+										AND TND.TERM  = LL.TERM	
+										AND TND.TIME_ID = SWT.TIME_ID
+			    LEFT OUTER JOIN LMS_ACTIVITY_NOTE LAN
+					                    ON  LAN.DELETE_YN = 'N'
+					                    AND LAN.YYYY = LL.YYYY
+					                    AND LAN.TERM = LL.TERM
+					                    AND LAN.SUBJECT_CODE = LL.SUBJECT_CODE
+					                    AND LAN.CLASS = LL.CLASS
+					                    AND LAN.MEM_ID = CM.MEM_ID
+					                    AND WEEK.WEEK_CNT = LAN.WEEK_CNT						
+]]>			 
+				WHERE  LL.DELETE_YN='N'
+					AND LL.LEC_STATUS='A' 
+					AND LL.YYYY= #{yyyy}
+					AND LL.TERM=#{term}
+					AND LL.SUBJECT_CODE= #{subjectCode}	
+					  <if test="classId != null and classId != ''">
+					  AND LL.CLASS = #{classId}
+					  </if>		
+       				AND WEEK.WEEK_CNT = #{weekCnt}
+			 GROUP BY CM.MEM_NAME 
+				,LL.LESSON_ID
+				,LL.MEM_SEQ		
+				,CM.MEM_ID	  
+				,LL.YYYY
+				,LL.TERM
+				,LL.CLASS
+				,LL.SUBJECT_CODE
+				,CM.COMPANY_ID,LAN.CONTENT
+			 ) S 
+			 WHERE 1=1
+ 
+       <if test="searchType != null and searchType != '' ">
+       	 <if test="searchType.equals('C2')">
+       	 	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+	     AND ( S.STUDY_TIME >= #{searchStartRateDetail}  AND #{searchEndRateDetail} > S.STUDY_TIME )
+	     	</if>
+	     </if>
+	     <if test="searchType.equals('O2')">
+	     	<if test="searchStartRateDetail != null and searchStartRateDetail != '' and searchEndRateDetail != null and searchEndRateDetail != ''  ">
+         AND ( S.ON_REAL_PROGRESS_RATE >= #{searchStartRateDetail} AND  #{searchEndRateDetail} > S.ON_REAL_PROGRESS_RATE  )
+         	</if>
+         </if>
+	   </if>
+	
+	</select>
+	
+	
+	
+		<select id="popupAttendListOff" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.popupAttendListOff  ====== */
+				
+			SELECT 
+			S.MEM_NAME
+			,S.MEM_SEQ
+			,S.MEM_ID
+			,S.CLASS_ID
+			,S.COMPANY_ID
+			,FN_GETCOMPAYNAME(S.COMPANY_ID) AS COMPANY_NAME
+			,SUM(S.TE1) AS TE1
+			,SUM(S.TE2) AS TE2
+			,SUM(S.TE3) AS TE3
+			,SUM(S.TE4) AS TE4
+			,SUM(S.TE5) AS TE5
+			,SUM(S.TE6) AS TE6
+			,SUM(S.TE7) AS TE7
+			,SUM(S.TE8) AS TE8
+			,SUM(S.TE9) AS TE9
+			,SUM(S.TE10) AS TE10
+			,SUM(S.TE11) AS TE11
+			,SUM(S.TE12) AS TE12
+			,SUM(S.TE13) AS TE13
+			,SUM(S.TE14) AS TE14
+			,SUM(S.TE15) AS TE15
+			,MAX(TO_NUMBER(S.WEEK_CNT)) AS NEXT_WEEK
+			FROM (			
+			      SELECT  CM.MEM_NAME 
+							,LL.LESSON_ID
+							,LL.MEM_SEQ		
+							,CM.MEM_ID	  
+							,LL.YYYY
+							,LL.TERM
+							,LL.CLASS  AS CLASS_ID
+							,LL.SUBJECT_CODE
+							,CM.COMPANY_ID
+							,WEEK.WEEK_CNT
+
+<![CDATA[							
+							,IF (WEEK.WEEK_CNT=1 , 							
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) AS TE1
+							,IF (WEEK.WEEK_CNT=2 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE2
+							,IF (WEEK.WEEK_CNT=3 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE3
+							,IF (WEEK.WEEK_CNT=4 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE4
+							,IF (WEEK.WEEK_CNT=5 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE5
+							,IF (WEEK.WEEK_CNT=6 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE6
+							,IF (WEEK.WEEK_CNT=7 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE7        
+							,IF (WEEK.WEEK_CNT=8 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE8     
+							,IF (WEEK.WEEK_CNT=9 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE9     
+							,IF (WEEK.WEEK_CNT=10 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE10     
+							,IF (WEEK.WEEK_CNT=11 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE11     
+							,IF (WEEK.WEEK_CNT=12 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE12     
+							,IF (WEEK.WEEK_CNT=13 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE13     
+							,IF (WEEK.WEEK_CNT=14 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE14     
+							,IF (WEEK.WEEK_CNT=15 ,
+			        CASE
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME THEN 1
+			        WHEN MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME THEN 2
+			        ELSE 0
+			        END , 0) TE15     
+							FROM LMS_LESSON LL
+			 
+							INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+													ON WEEK.DELETE_YN='N'
+													AND LL.YYYY=WEEK.YYYY  
+													AND LL.TERM=WEEK.TERM   
+													AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+													AND LL.CLASS =WEEK.CLASS
+							INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+			  
+							INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+													AND LL.YYYY=SWT.YYYY  
+													AND LL.TERM=SWT.TERM   
+													AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+													AND LL.CLASS =SWT.CLASS
+													AND WEEK.WEEK_ID = SWT.WEEK_ID
+													AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+							LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+													ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+													AND TND.DELETE_YN='N'  
+													AND TND.MEM_ID=CM.MEM_ID    
+													AND TND.ADDYN = 'N'
+													AND TND.YYYY=  LL.YYYY   
+													AND TND.CLASS  = LL.CLASS	
+													AND TND.TERM  = LL.TERM	
+													AND TND.TIME_ID = SWT.TIME_ID
+					    LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+													ON LSOS.CLASS = LL.CLASS
+													AND LSOS.YYYY = LL.YYYY
+													AND LSOS.TERM = LL.TERM
+													AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+													AND LSOS.DELETE_YN = 'N'													
+]]>				
+							WHERE  LL.DELETE_YN='N'
+								AND LL.LEC_STATUS='A' 
+								AND LL.YYYY=#{yyyy}
+								AND LL.TERM=#{term} 
+								<if test="classId != null and classId != ''">
+								AND LL.CLASS = #{classId} 
+								</if>
+								AND LL.SUBJECT_CODE= #{subjectCode}			
+			
+
+			
+						 GROUP BY CM.MEM_NAME,LL.LESSON_ID,LL.MEM_SEQ,CM.MEM_ID,LL.YYYY,LL.TERM,LL.CLASS,LL.SUBJECT_CODE,WEEK.WEEK_CNT,CM.COMPANY_ID
+						 , WEEK.WEEK_ID,SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR,TND.STUDY_TIME
+					) S
+			        GROUP BY  S.MEM_NAME,S.MEM_SEQ,S.MEM_ID,S.COMPANY_ID,S.CLASS_ID
+
+				
+				
+	</select>				
+			<select id="popupAttendListOnlineOff" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.popupAttendListOnlineOff  ====== */
+	SELECT 
+			S.MEM_NAME
+			,S.MEM_SEQ
+			,S.MEM_ID
+			,S.CLASS_ID
+			,S.COMPANY_ID
+			,FN_GETCOMPAYNAME(S.COMPANY_ID) AS COMPANY_NAME			
+			,SUM(S.TE1) AS TE1
+			,SUM(S.TE2) AS TE2
+			,SUM(S.TE3) AS TE3
+			,SUM(S.TE4) AS TE4
+			,SUM(S.TE5) AS TE5
+			,SUM(S.TE6) AS TE6
+			,SUM(S.TE7) AS TE7
+			,SUM(S.TE8) AS TE8
+			,SUM(S.TE9) AS TE9
+			,SUM(S.TE10) AS TE10
+			,SUM(S.TE11) AS TE11
+			,SUM(S.TE12) AS TE12
+			,SUM(S.TE13) AS TE13
+			,SUM(S.TE14) AS TE14
+			,SUM(S.TE15) AS TE15
+			,MAX(TO_NUMBER(S.WEEK_CNT)) AS NEXT_WEEK
+			FROM (			
+			<![CDATA[
+			      SELECT  CM.MEM_NAME 
+							,LL.LESSON_ID
+							,LL.MEM_SEQ		
+							,CM.MEM_ID	  
+							,LL.YYYY
+							,LL.TERM
+							,LL.CLASS  AS CLASS_ID
+							,LL.SUBJECT_CODE
+							,CM.COMPANY_ID
+							,WEEK.WEEK_CNT
+							,IF (WEEK.WEEK_CNT=1 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) AS TE1
+							,IF (WEEK.WEEK_CNT=2 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE2
+							,IF (WEEK.WEEK_CNT=3 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE3
+							,IF (WEEK.WEEK_CNT=4 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE4
+							,IF (WEEK.WEEK_CNT=5 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE5
+							,IF (WEEK.WEEK_CNT=6 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE6
+							,IF (WEEK.WEEK_CNT=7 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE7        
+							,IF (WEEK.WEEK_CNT=8 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE8     
+							,IF (WEEK.WEEK_CNT=9 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE9     
+							,IF (WEEK.WEEK_CNT=10 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE10     
+							,IF (WEEK.WEEK_CNT=11 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE11     
+							,IF (WEEK.WEEK_CNT=12 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE12     
+							,IF (WEEK.WEEK_CNT=13 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE13     
+							,IF (WEEK.WEEK_CNT=14 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE14     
+							,IF (WEEK.WEEK_CNT=15 ,
+			        CASE
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS THEN 1
+			        WHEN FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS THEN 2
+			        ELSE 0
+			        END , 0) TE15     
+							FROM LMS_LESSON LL
+			 
+							INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+													ON WEEK.DELETE_YN='N'
+													AND LL.YYYY=WEEK.YYYY  
+													AND LL.TERM=WEEK.TERM   
+													AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+													AND LL.CLASS =WEEK.CLASS
+							INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+			  
+							INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+													AND LL.YYYY=SWT.YYYY  
+													AND LL.TERM=SWT.TERM   
+													AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+													AND LL.CLASS =SWT.CLASS
+													AND WEEK.WEEK_ID = SWT.WEEK_ID
+													AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+			        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+											ON LSOS.CLASS = LL.CLASS
+											AND LSOS.YYYY = LL.YYYY
+											AND LSOS.TERM = LL.TERM
+											AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+											AND LSOS.DELETE_YN = 'N' 
+]]>												
+							WHERE  LL.DELETE_YN='N'
+								AND LL.LEC_STATUS='A' 
+								AND LL.YYYY=#{yyyy}
+								AND LL.TERM=#{term} 
+								<if test="classId != null and classId != ''">
+								AND LL.CLASS = #{classId} 
+								</if>
+								AND LL.SUBJECT_CODE= #{subjectCode}				
+			
+						 GROUP BY CM.MEM_NAME 
+							,LL.LESSON_ID
+							,LL.MEM_SEQ		
+							,CM.MEM_ID	  
+							,LL.YYYY
+							,LL.TERM
+							,LL.CLASS
+							,LL.SUBJECT_CODE 
+							,CM.COMPANY_ID ,LSOS.ATTEND_PROGRESS,LSOS.CUT_PROGRESS
+			        ,WEEK.WEEK_CNT) S
+			        GROUP BY  S.MEM_NAME,S.MEM_SEQ,S.MEM_ID,S.CLASS_ID
+				
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="listOffTraningStatus" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listOffTraningStatus  ====== */
+ 		SELECT * 
+ 		FROM LMS_LESSON LL 
+ 		WHERE LL.yyyy = #{yyyy}
+		  AND LL.TERM = #{term}
+		  AND LL.SUBJECT_CODE = #{subjectCode}
+		  <if test="subClass != null and subClass != ''">
+		  AND LL.CLASS = #{subClass}
+		  </if>
+	</select>
+	<select id="listOjtTraningStatus" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listOjtTraningStatus  ====== */
+ 		SELECT * 
+ 		FROM LMS_LESSON LL 
+ 		WHERE LL.yyyy = #{yyyy}
+		  AND LL.TERM = #{term}
+		  AND LL.SUBJECT_CODE = #{subjectCode}
+		  <if test="subClass != null and subClass != ''">
+		  AND LL.CLASS = #{subClass}
+		  </if>
+	</select>
+	<select id="listWeekTraningStatus" parameterType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO" resultType="kr.co.sitglobal.oklms.lu.traningstatus.vo.TraningStatusVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningstatus.service.impl.listWeekTraningStatus  ====== */
+ 		SELECT * 
+ 		FROM LMS_LESSON LL 
+ 		WHERE LL.yyyy = #{yyyy}
+		  AND LL.TERM = #{term}
+		  AND LL.SUBJECT_CODE = #{subjectCode}
+		  <if test="subClass != null and subClass != ''">
+		  AND LL.CLASS = #{subClass}
+		  </if>
+	</select>
+</mapper>

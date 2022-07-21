@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+<!-- 	(FATAL > ERROR > WARN > INFO > DEBUG > TRACE) -->
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="[ [OKLMS-LOG] [%5p] [%c.%M():%L] - %m%n" />
+        </Console>
+		<RollingFile name="logFILE" fileName="D:/eGovFrameDev-3.5.1-64bit/oklms/edu/LOGS/oklms.log" filePattern="D:/eGovFrameDev-3.5.1-64bit/oklms/edu/LOGS/oklms.log.%d{yyyy-MM-dd_HH-mm-ss}" append="true">
+<!-- 			<PatternLayout pattern="%d %5p [%c] %m%n" /> -->
+			<PatternLayout pattern="[ [OKLMS-LOG] %d [%5p] [%c.%M():%L] - %m%n" />
+			<Policies>
+				<!-- size : Byte(default), KB, MB, or GB | 30MB=31,457,280Byte | 50M=52,428,800Byte , 100M=104857600Byte -->
+   				<SizeBasedTriggeringPolicy size="31457280" />
+   				<!-- 1H:3600 , 12H:43200 , 24H:86400-->
+<!-- 				<TimeBasedTriggeringPolicy interval="60" modulate="true"/> -->
+<!-- 				<TimeBasedTriggeringPolicy interval="3600" modulate="true"/> -->
+<!-- 				<TimeBasedTriggeringPolicy interval="43200" modulate="true"/> -->
+<!-- 				<TimeBasedTriggeringPolicy interval="86400" modulate="true"/> -->
+			</Policies>
+		</RollingFile>
+
+	<!-- attribute: name(Appender명), tableName(RDB Table명), columnConfigs, filter, bufferSize, ignoreExceptions, connectionSource -->
+	<!-- element: DataSource(jndi datasource 정보), ConnectionFactory(Connection Factory 정보), Column(Table Column명) -->
+	<!-- 테이블명이 db_log인 테이블에 로깅됨 -->
+<!-- 	<JDBC name="db" tableName="db_log"> -->
+		<!-- DB Connection을 제공해줄 클래스와 메서드명 정의 -->
+		<!-- JDBCAppender가 EgovConnectionFactory.getDatabaseConnection() 메서드를 호출 -->
+		<!-- <DataSource jndiName=”…” /> -->
+<!-- 		<ConnectionFactory	class="egovframework.rte.fdl.logging.db.EgovConnectionFactory"	method="getDatabaseConnection" /> -->
+		<!-- log event가 insert될 컬럼 설정, insert될 값은 PatternLayout의 pattern 사용 -->
+<!-- 		<Column name="eventDate" isEventTimestamp="true" /> -->
+<!-- 		<Column name="level" pattern="%p" /> -->
+<!-- 		<Column name="logger" pattern="%c" /> -->
+<!-- 		<Column name="message" pattern="%m" /> -->
+<!-- 		<Column name="exception" pattern="%ex{full}" /> -->
+<!-- 	</JDBC> -->
+
+    </Appenders>
+    
+    <Loggers>
+	    <Logger name="org.springframework" level="DEBUG" additivity="false">
+	        <AppenderRef ref="console" />
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+        <Logger name="egovframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="logFILE"/>
+        </Logger>
+        
+        <Logger name="org.apache.commons.digester.Digester" level="ERROR" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="logFILE"/>
+        </Logger>
+        
+        <Logger name="org.apache.tiles.definition.dao.BaseLocaleUrlDefinitionDAO" level="ERROR" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="logFILE"/>
+        </Logger>
+	
+		<Logger name="java.sql.ResultSet" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <!-- Query Loggers -->
+	    <Logger name="jdbc.connection" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="jdbc.resultset" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="jdbc.resultsettable" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="jdbc.audit" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="jdbc.sqltiming" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="jdbc.sqlonly" level="DEBUG" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="org.springframework.jdbc.datasource" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+	    <Logger name="org.mybatis.spring.SqlSessionUtils" level="ERROR" additivity="false">  
+	        <appender-ref ref="console"/>  
+            <AppenderRef ref="logFILE"/>
+	    </Logger>
+		
+        <Root level="DEBUG">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="logFILE"/>
+        </Root>
+    </Loggers>
+</Configuration>

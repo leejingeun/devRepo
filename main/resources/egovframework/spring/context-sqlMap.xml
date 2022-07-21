@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+	
+	<bean id="egov.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/egovframework/props/globals.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 실행환경에서 빈이름 참조(EgovAbstractDAO) -->
+	<bean id="egov.lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" lazy-init="true" />
+
+	<!-- SqlMap setup for iBATIS Database Layer : 전자정부 공통 모듈에서만 사용함 -->
+<!-- 	<bean id="egov.sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"> -->
+
+<!-- ASIS ibatis는 오라클용이므로 주석처리함.(jglee) Start  -->
+	<!-- <bean id="egov.sqlMapClient" class="egovframework.rte.psl.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocations">
+			<list>
+				<value>classpath:/egovframework/sqlmap/config/${Globals.DbType}/*.xml</value>
+				<value>classpath:/egovframework/sqlmap/config/oracle/*.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="egov.dataSource"/>
+		<property name="lobHandler" ref="egov.lobHandler"/>
+	</bean> -->
+<!-- 기존ibatis는 오라클용이므로 주석처리함.(jglee) End  -->
+	
+<!-- TOBE ibatis는 mysql용으로 셋팅함.(jglee) Start  -->	
+	<bean id="egov.sqlMapClient" class="egovframework.rte.psl.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocations">
+			<list>
+				<value>classpath:/egovframework/sqlmap/config/${Globals.DbType}/*.xml</value>
+				<value>classpath:/egovframework/sqlmap/config/mysql/*.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="egov.dataSource"/>
+		<property name="lobHandler" ref="egov.lobHandler"/>
+	</bean> 
+<!-- TOBE ibatis는 mysql용으로 셋팅함.(jglee) End  -->
+
+
+	<bean id="egov.sqlMapClient1" class="egovframework.rte.psl.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocations">
+			<list>
+				<value>classpath:/egovframework/sqlmap/config/${Globals.AunuriDbType}/*.xml</value>
+				<value>classpath:/egovframework/sqlmap/config/oracle/*.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="aunuri.dataSource"/>
+		<property name="lobHandler" ref="egov.lobHandler"/>
+	</bean>
+
+</beans>	

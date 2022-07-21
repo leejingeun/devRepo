@@ -1,0 +1,979 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 02. 17          First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper">
+
+	<sql id="list-where">
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND (TPS.TRANING_PROCESS_NAME LIKE CONCAT ('%', #{searchKeyword},'%') OR TPS.TRANING_PROCESS_NO LIKE CONCAT ('%', #{searchKeyword},'%') )
+	    </if>
+	</sql>
+
+	<select id="listTraningProcessManage" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningProcessManage ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			SELECT  TPS.TRANING_PROCESS_ID
+					,TPS.TRANING_PROCESS_NAME
+					,TPS.TRANING_PROCESS_NO
+					,TPS.DELETE_YN AS deleteYn
+					,TPS.INSERT_DATE AS insertDate
+					,TPS.INSERT_USER AS insertUser
+					,TPS.UPDATE_DATE AS updateDate
+					,TPS.UPDATE_USER AS updateUser
+				 FROM lms_traning_process_search TPS
+			 	WHERE 1=1
+			 	AND TPS.DELETE_YN = 'N'
+			 	<include refid="list-where"/>
+			ORDER BY TPS.TRANING_PROCESS_ID ASC
+			<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+	<select id="listOffJtSubjectInfo" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listOjtSubjectInfo ====== */
+			select
+				 tpm.TRANING_PROCESS_MAPPING_ID as traningProcessMappingId,
+			     tpm.COMPANY_ID as companyId,
+			     tpm.TRANING_PROCESS_ID as traningProcessId,
+			     tpm.YYYY as yyyy,
+			     tpm.TERM as term,
+			     tpm.SUBJECT_CODE as subjectCode,
+			     tpm.CLASS as subClass,
+			     sub.SUBJECT_NAME as subjectName
+			from lms_traning_process_mapping tpm,
+			     lms_subject sub
+			where 1 = 1
+			and tpm.YYYY = sub.YYYY
+			and tpm.TERM = sub.TERM
+			and tpm.SUBJECT_CODE = sub.SUBJECT_CODE
+			and tpm.CLASS = sub.CLASS
+			and tpm.COMPANY_ID = #{companyId}
+			and tpm.TRANING_PROCESS_ID = #{traningProcessId}
+			and tpm.DELETE_YN = 'N'
+			and sub.SUBJECT_TRANING_TYPE = 'OFF'
+	</select>
+
+	<select id="listOjtSubjectInfo" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listOjtSubjectInfo ====== */
+			select
+				 tpm.TRANING_PROCESS_MAPPING_ID as traningProcessMappingId,
+			     tpm.COMPANY_ID as companyId,
+			     tpm.TRANING_PROCESS_ID as traningProcessId,
+			     tpm.YYYY as yyyy,
+			     tpm.TERM as term,
+			     tpm.SUBJECT_CODE as subjectCode,
+			     tpm.CLASS as subClass,
+			     sub.SUBJECT_NAME as subjectName
+			from lms_traning_process_mapping tpm,
+			     lms_subject sub
+			where 1 = 1
+			and tpm.YYYY = sub.YYYY
+			and tpm.TERM = sub.TERM
+			and tpm.SUBJECT_CODE = sub.SUBJECT_CODE
+			and tpm.CLASS = sub.CLASS
+			and tpm.COMPANY_ID = #{companyId}
+			and tpm.TRANING_PROCESS_ID = #{traningProcessId}
+			and tpm.DELETE_YN = 'N'
+			and sub.SUBJECT_TRANING_TYPE = 'OJT'
+	</select>
+
+	<select id="listTraningProcessInfo" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningProcessInfo ====== */
+			select
+			     tp.COMPANY_ID as companyId,
+			     tp.TRANING_PROCESS_ID as traningProcessId,
+				 tp.HRD_TRANING_NO as hrdTraningNo,
+				 tp.HRD_TRANING_NAME as hrdTraningName
+			from lms_traning_process tp
+			where 1 = 1
+			and tp.COMPANY_ID = #{companyId}
+			<if test="traningProcessId != null and traningProcessId != ''">
+				and tp.TRANING_PROCESS_ID = #{traningProcessId}
+			</if>
+			and tp.DELETE_YN = 'N'
+	</select>
+
+	<select id="listTraningProcess" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningProcess ====== */
+			select
+			     tp.COMPANY_ID as companyId,
+			     tp.TRANING_PROCESS_ID as traningProcessId,
+				 tp.HRD_TRANING_NO as hrdTraningNo,
+				 tp.HRD_TRANING_NAME as hrdTraningName
+			from lms_traning_process tp
+			where 1 = 1
+			and tp.COMPANY_ID = #{companyId}
+			and tp.DELETE_YN = 'N'
+	</select>
+
+	<select id="listTraningScheduleExcelDownload" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningScheduleExcelDownload ====== */
+			select a.COMPANY_ID,
+			       a.TRANING_PROCESS_ID,
+			       FN_GETCOMPAYNAME(a.COMPANY_ID) company_name,
+			       FN_GETTRANING_PROCESS_NAME(a.TRANING_PROCESS_ID) HRD_TRANING_NAME,
+			       a.YYYY,
+			       a.TERM,
+			       a.SUBJECT_CODE,
+			       a.CLASS as subClass,
+			       c.SUBJECT_NAME,
+			       e.mem_seq,
+			       e.mem_id,
+			       e.mem_name,
+			       e.mem_type
+			  from lms_traning_process_mapping a
+			  inner join lms_subject c
+			  on c.YYYY = a.YYYY
+			  and c.TERM = a.TERM
+			  and c.SUBJECT_CODE = a.SUBJECT_CODE
+			  and c.CLASS = a.CLASS
+			  and c.SUBJECT_TRANING_TYPE = 'OJT'
+			  and c.DELETE_YN = 'N'
+			  left outer join lms_subj_tut_mapping d
+			  on d.YYYY = c.YYYY
+			  and d.TERM = c.TERM
+			  and d.SUBJECT_CODE = c.SUBJECT_CODE
+			  and d.CLASS = c.CLASS
+			  and d.DELETE_YN = 'N'
+			  left outer join com_member e
+			  on e.mem_seq = d.mem_seq
+			  where 1 = 1
+			  and a.DELETE_YN = 'N'
+			  and a.COMPANY_ID = #{companyId}
+			  and a.TRANING_PROCESS_ID = #{traningProcessId}
+			  and a.yyyy = #{yyyy}
+			  and a.TERM = #{term}
+			  and a.CLASS = #{subClass}
+			  and a.SUBJECT_CODE = #{subjectCode}
+	</select>
+
+	<select id="listTraningScheduleView" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningScheduleView ====== */
+			select
+			    tsw.WEEK_CNT,
+			    tswt.TRANING_DATE,
+			    tswt.TRANING_ST_HOUR,
+			    tswt.TRANING_ST_MIN,
+			    tswt.TRANING_ED_HOUR,
+			    tswt.TRANING_ED_MIN,
+			    tswt.NCS_UNIT_NAME,
+			    tswt.NCS_ELEM_NAME,
+			    tswt.LEAD_TIME,
+			    FN_GETSUBJECT_NAME(tswt.YYYY, tswt.TERM, tswt.SUBJECT_CODE, tswt.CLASS) SUBJECT_NAME,
+			    (SELECT FN_GETUSERNAME(tut.MEM_SEQ)
+		         FROM lms_subj_tut_mapping tut
+		        WHERE 1 = 1
+		              AND tut.YYYY = tswt.YYYY
+		              AND tut.TERM = tswt.TERM
+		              AND tut.SUBJECT_CODE = tswt.SUBJECT_CODE
+		              AND tut.CLASS = tswt.CLASS
+		     	ORDER BY UPDATE_DATE desc limit 1
+		       ) MEM_NAME,
+			    tsw.TRAIN_PLACE,
+			    (
+		    	  SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(tswt.TRANING_DATE), 1)
+		    	)AS DAY_OF_WEEK
+			from lms_traning_subj_week_time_sch tswt
+			LEFT OUTER JOIN lms_traning_subj_week_sch tsw
+			ON tsw.WEEK_ID = tswt.WEEK_ID
+			AND tsw.YYYY = tswt.YYYY
+			AND tsw.TERM = tswt.TERM
+			AND tsw.SUBJECT_CODE = tswt.SUBJECT_CODE
+			AND tsw.CLASS = tswt.CLASS
+			WHERE 1 = 1
+			AND tswt.YYYY = #{yyyy}
+			AND tswt.TERM = #{term}
+			AND tswt.SUBJECT_CODE = #{subjectCode}
+			AND tswt.CLASS = #{subClass}
+			AND tswt.DELETE_YN = 'N'
+	</select>
+
+	<select id="listTraningScheduleModifyView" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningScheduleModifyView ====== */
+			select aa.INSERT_DATE,
+			       aa.MEM_NAME,
+			       aa.ATCH_FILE_ID,
+			       FN_GETFILENAME(aa.ATCH_FILE_ID) as orgFileName,
+			       aa.RETUN_REASON,
+			       aa.STATUS,
+			       aa.IP_ADDRESS
+			from(
+			select
+				DATE_FORMAT (tsw.INSERT_DATE, '%Y.%m.%d') as INSERT_DATE,
+			    FN_GETUSERNAME(tsw.INSERT_USER) MEM_NAME,
+			    tsw.ATCH_FILE_ID,
+			    '신규등록' as RETUN_REASON,
+			    tsw.STATUS,
+			    tsw.IP_ADDRESS
+			from lms_traning_subj_week_sch tsw
+			WHERE 1 = 1
+			AND tsw.YYYY = #{yyyy}
+			AND tsw.TERM = #{term}
+			AND tsw.SUBJECT_CODE = #{subjectCode}
+			AND tsw.CLASS = #{subClass}
+			AND tsw.WEEK_CNT = '1'
+			AND (tsw.INSERT_DATE is not null AND tsw.UPDATE_DATE is null)
+			AND tsw.DELETE_YN = 'N'
+			union all
+			select
+				DATE_FORMAT (tsw.UPDATE_DATE, '%Y.%m.%d') as INSERT_DATE,
+			    FN_GETUSERNAME(tsw.INSERT_USER) MEM_NAME,
+			    tsw.ATCH_FILE_ID,
+			    tsw.RETUN_REASON,
+			    tsw.STATUS,
+			    tsw.IP_ADDRESS
+			from lms_traning_subj_week_sch tsw
+			WHERE 1 = 1
+			AND tsw.YYYY = #{yyyy}
+			AND tsw.TERM = #{term}
+			AND tsw.SUBJECT_CODE = #{subjectCode}
+			AND tsw.CLASS = #{subClass}
+			AND tsw.WEEK_CNT = '1'
+			AND (tsw.INSERT_DATE is not null AND tsw.UPDATE_DATE is not null)
+			AND tsw.DELETE_YN = 'N'
+			)aa
+			order by aa.INSERT_DATE desc
+	</select>
+
+	<select id="listTraningSubjWeek" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningSubjWeek ====== */
+			select
+				WEEK_ID,
+				YYYY,
+				TERM,
+				SUBJECT_CODE,
+				CLASS,
+			    WEEK_CNT
+			from LMS_TRANING_SUBJ_WEEK_SCH
+			WHERE 1 = 1
+			AND YYYY = #{searchYyyy}
+			AND TERM = #{searchTerm}
+			AND SUBJECT_CODE = #{searchSubjectCode}
+			AND CLASS = #{searchSubClass}
+			AND DELETE_YN = 'N'
+			ORDER BY WEEK_ID ASC
+	</select>
+
+	<select id="listTraningSubjWeekTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningSubjWeekTime ====== */
+			select
+				WEEK_ID,
+				TIME_ID,
+				YYYY,
+				TERM,
+				SUBJECT_CODE,
+				CLASS,
+				TRANING_DATE,
+				TRANING_ST_HOUR,
+				TRANING_ST_MIN,
+				TRANING_ED_HOUR,
+				TRANING_ED_MIN,
+				NCS_UNIT_NAME,
+				NCS_ELEM_NAME,
+				LEAD_TIME
+			from lms_traning_subj_week_time_sch
+			WHERE 1 = 1
+			AND WEEK_ID = #{oldWeekId}
+			AND YYYY = #{searchYyyy}
+			AND TERM = #{searchTerm}
+			AND SUBJECT_CODE = #{searchSubjectCode}
+			AND CLASS = #{searchSubClass}
+			AND DELETE_YN = 'N'
+			ORDER BY WEEK_ID ASC
+	</select>
+
+	<select id="listTraningSubjNcsUnit" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningSubjNcsUnit ====== */
+			select
+				WEEK_ID,
+				NCS_UNIT_ID,
+				YYYY,
+				TERM,
+				SUBJECT_CODE,
+				CLASS,
+				NCS_UNIT_NAME
+			from lms_traning_subj_ncs_unit_sch
+			WHERE 1 = 1
+			AND WEEK_ID = #{oldWeekId}
+			AND DELETE_YN = 'N'
+			ORDER BY WEEK_ID ASC
+	</select>
+
+	<select id="listTraningSubjNcsElem" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningSubjNcsElem ====== */
+			select
+				WEEK_ID,
+				NCS_UNIT_ID,
+				NCS_ELEM_ID,
+				YYYY,
+				TERM,
+				SUBJECT_CODE,
+				CLASS,
+				NCS_ELEM_NAME
+			from lms_traning_subj_ncs_elem_sch
+			WHERE 1 = 1
+			AND WEEK_ID = #{oldWeekId}
+			AND NCS_UNIT_ID = #{oldNcsUnitId}
+			AND DELETE_YN = 'N'
+			ORDER BY WEEK_ID ASC
+	</select>
+
+	<select id="getOffJtSubjectInfo" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getOffJtSubjectInfo ====== */
+			select
+				 tpm.TRANING_PROCESS_MAPPING_ID as traningProcessMappingId,
+			     tpm.COMPANY_ID as companyId,
+			     FN_GETCOMPAYNAME(tpm.company_id) as companyName,
+			     tpm.TRANING_PROCESS_ID as traningProcessId,
+			     tpm.YYYY as yyyy,
+			     tpm.TERM as term,
+			     tpm.SUBJECT_CODE as subjectCode,
+			     tpm.CLASS as subClass,
+			     sub.SUBJECT_NAME as subjectName,
+			     FN_GETTRANING_PROCESS_NO(tpm.TRANING_PROCESS_ID) as hrdTraningNo,
+                 FN_GETTRANING_PROCESS_NAME(tpm.TRANING_PROCESS_ID) as hrdTraningName
+			from lms_traning_process_mapping tpm,
+			     lms_subject sub
+			where 1 = 1
+			and tpm.YYYY = sub.YYYY
+			and tpm.TERM = sub.TERM
+			and tpm.SUBJECT_CODE = sub.SUBJECT_CODE
+			and tpm.CLASS = sub.CLASS
+			and tpm.COMPANY_ID = #{companyId}
+			and tpm.TRANING_PROCESS_ID = #{traningProcessId}
+			and tpm.DELETE_YN = 'N'
+			and sub.SUBJECT_TRANING_TYPE = 'OFF'
+			LIMIT 0,1
+	</select>
+
+	<select id="getTraningSubjWeekInfo" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningSubjWeekInfo ====== */
+			select
+				WEEK_ID,
+				YYYY,
+				TERM,
+				SUBJECT_CODE,
+				CLASS,
+			    WEEK_CNT,
+			    SUBJCT_TITLE,
+			    ATCH_FILE_ID,
+			    DELETE_YN,
+			    STATUS,
+			    CHANGE_STATUS,
+			    RETUN_REASON,
+				CHANGE_REASON,
+			    INSERT_DATE,
+				INSERT_USER,
+				UPDATE_DATE,
+				UPDATE_USER,
+				FN_GETUSERNAME(UPDATE_USER) AS MEM_NAME
+			from LMS_TRANING_SUBJ_WEEK_SCH
+			WHERE 1 = 1
+			AND YYYY = #{searchYyyy}
+			AND TERM = #{searchTerm}
+			AND SUBJECT_CODE = #{searchSubjectCode}
+			AND CLASS = #{searchSubClass}
+			AND WEEK_CNT = '1'
+			AND DELETE_YN = 'N'
+	</select>
+
+	<select id="getTraningSubjWeekTimeSum" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningSubjWeekTimeSum ====== */
+			select
+				SUM(LEAD_TIME) LEAD_TIME_SUM
+			from lms_traning_subj_week_time_sch
+			WHERE 1 = 1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+			AND DELETE_YN = 'N'
+	</select>
+
+	<select id="getTdOffJtTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTdOffJtTotalCnt ====== */
+	        select
+				 count(1) as tdOjtTotalCnt
+			from lms_traning_process_mapping tpm,
+			     lms_subject sub
+			where 1 = 1
+			and tpm.YYYY = sub.YYYY
+			and tpm.TERM = sub.TERM
+			and tpm.SUBJECT_CODE = sub.SUBJECT_CODE
+			and tpm.CLASS = sub.CLASS
+			and tpm.COMPANY_ID = #{companyId}
+			and tpm.TRANING_PROCESS_ID = #{traningProcessId}
+			and tpm.DELETE_YN = 'N'
+			and sub.SUBJECT_TRANING_TYPE = 'OFF'
+
+	</select>
+
+	<select id="getTdOjtTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTdOjtTotalCnt ====== */
+	        select
+				 count(1) as tdOjtTotalCnt
+			from lms_traning_process_mapping tpm,
+			     lms_subject sub
+			where 1 = 1
+			and tpm.YYYY = sub.YYYY
+			and tpm.TERM = sub.TERM
+			and tpm.SUBJECT_CODE = sub.SUBJECT_CODE
+			and tpm.CLASS = sub.CLASS
+			and tpm.COMPANY_ID = #{companyId}
+			and tpm.TRANING_PROCESS_ID = #{traningProcessId}
+			and tpm.DELETE_YN = 'N'
+			and sub.SUBJECT_TRANING_TYPE = 'OJT'
+
+	</select>
+
+	<select id="getTraningProcessCnt" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="java.lang.Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningProcessCnt ====== */
+			select
+			     count(1) as cnt
+			from lms_traning_process tp
+			where 1 = 1
+			and tp.COMPANY_ID = #{companyId}
+			and tp.TRANING_PROCESS_ID = #{traningProcessId}
+			and tp.DELETE_YN = 'N'
+	</select>
+
+	<select id="getTraningProcessMappingCnt" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="java.lang.Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningProcessMappingCnt ====== */
+			select
+			     count(1) as cnt
+			from lms_traning_process_mapping tp
+			where 1 = 1
+			and tp.COMPANY_ID = #{companyId}
+			and tp.TRANING_PROCESS_ID = #{traningProcessId}
+			and tp.YYYY = #{yyyy}
+			and tp.TERM = #{term}
+			and tp.SUBJECT_CODE = #{subjectCode}
+			and tp.CLASS = #{subClass}
+			and tp.DELETE_YN = 'N'
+	</select>
+
+	<insert id="insertTraningProcessInfoList" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningProcessInfoList ====== */
+		]]>
+			INSERT INTO LMS_TRANING_PROCESS (
+						 TRANING_PROCESS_MANAGE_ID
+						,COMPANY_ID
+						,TRANING_PROCESS_ID
+						,HRD_TRANING_NO
+						,HRD_TRANING_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{traningProcessManageId}
+						,#{companyId}
+						,#{traningProcessId}
+						,#{hrdTraningNo}
+						,#{hrdTraningName}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<insert id="insertTraningProcessMappingInfoList" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningProcessMappingInfoList ====== */
+		]]>
+			INSERT INTO LMS_TRANING_PROCESS_MAPPING (
+						COMPANY_ID
+						,TRANING_PROCESS_ID
+						,TRANING_PROCESS_MAPPING_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{companyId}
+						,#{traningProcessId}
+						,#{traningProcessMappingId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+	
+		<insert id="insertTraningProcessMappingInfoListUpdate" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningProcessMappingInfoList ====== */
+		]]>
+			INSERT INTO LMS_TRANING_PROCESS_MAPPING (
+						COMPANY_ID
+						,TRANING_PROCESS_ID
+						,TRANING_PROCESS_MAPPING_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,INSERT_DATE
+						,INSERT_USER
+						,UPDATE_DATE
+						,UPDATE_USER
+					)
+					VALUES
+					(
+						 #{companyId}
+						,#{traningProcessId}
+						,#{traningProcessMappingId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,now()
+						,#{sessionMemSeq}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<select id="getSubjectTraningType" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO" resultType="String">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getSubjectTraningType ====== */
+		]]>
+		SELECT SUBJECT_TRANING_TYPE FROM LMS_SUBJECT
+		WHERE YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE =	#{subjectCode}
+			AND CLASS = #{subClass}
+	</select>
+
+	<update id="updateMemberCompanyId" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.updateMemberCompanyId ====== */
+		]]>
+			UPDATE COM_MEMBER SET COMPANY_ID = #{companyId}
+			WHERE MEM_SEQ IN (
+				SELECT MEM_SEQ FROM LMS_LESSON
+				WHERE YYYY = #{yyyy}
+					AND TERM = #{term}
+					AND SUBJECT_CODE =	#{subjectCode}
+					AND CLASS = #{subClass}
+			)
+
+	</update>
+
+	<insert id="insertTraningSubjWeekSchExcel" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningSubjWeekSchExcel ====== */
+		]]>
+			INSERT INTO LMS_TRANING_SUBJ_WEEK_SCH (
+						WEEK_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,WEEK_CNT
+						,SUBJCT_TITLE
+						,TRAIN_PLACE
+						,IP_ADDRESS
+						,RETUN_REASON
+						,ATCH_FILE_ID
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{weekCnt}
+						,#{subjctTitle}
+						,#{trainPlace}
+						,#{ipAddress}
+						,#{retunReason}
+						,#{atchFileId}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertTraningSubjWeekTimeSchExcel" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningSubjWeekTimeSchExcel ====== */
+		]]>
+			INSERT INTO LMS_TRANING_SUBJ_WEEK_TIME_SCH (
+						WEEK_ID
+						,TIME_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,TRANING_DATE
+						,TRANING_ST_HOUR
+						,TRANING_ST_MIN
+						,TRANING_ED_HOUR
+						,TRANING_ED_MIN
+						,LEAD_TIME
+						,NCS_UNIT_NAME
+						,NCS_ELEM_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{timeId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{traningDate}
+						,#{traningStHour}
+						,#{traningStMin}
+						,#{traningEdHour}
+						,#{traningEdMin}
+						,#{leadTime}
+						,#{ncsUnitName}
+						,#{ncsElemName}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertTraningSubjWeekNcsUnitSchExcel" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningSubjWeekNcsUnitSchExcel ====== */
+		]]>
+			INSERT INTO LMS_TRANING_SUBJ_NCS_UNIT_SCH (
+						 WEEK_ID
+						,TIME_ID
+						,NCS_UNIT_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,NCS_UNIT_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{timeId}
+						,#{ncsUnitId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{ncsUnitName}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertTraningSubjWeekNcsElemSchExcel" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertTraningSubjWeekNcsElemSchExcel ====== */
+		]]>
+			INSERT INTO LMS_TRANING_SUBJ_NCS_ELEM_SCH (
+						 WEEK_ID
+						,TIME_ID
+						,NCS_UNIT_ID
+						,NCS_ELEM_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,NCS_ELEM_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{timeId}
+						,#{ncsUnitId}
+						,#{ncsElemId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{ncsElemName}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertSubjWeek" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertSubjWeek ====== */
+		]]>
+			INSERT INTO LMS_SUBJ_WEEK (
+						WEEK_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,WEEK_CNT
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{weekCnt}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertSubjWeekTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertSubjWeekTime ====== */
+		]]>
+			INSERT INTO LMS_SUBJ_WEEK_TIME (
+						WEEK_ID
+						,TIME_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,TRANING_DATE
+						,TRANING_ST_HOUR
+						,TRANING_ST_MIN
+						,TRANING_ED_HOUR
+						,TRANING_ED_MIN
+						,LEAD_TIME
+						,NCS_UNIT_NAME
+						,NCS_ELEM_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{timeId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{traningDate}
+						,#{traningStHour}
+						,#{traningStMin}
+						,#{traningEdHour}
+						,#{traningEdMin}
+						,#{leadTime}
+						,#{ncsUnitName}
+						,#{ncsElemName}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertSubjWeekNcsUnit" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertSubjWeekNcsUnit ====== */
+		]]>
+			INSERT INTO LMS_SUBJ_NCS_UNIT (
+						WEEK_ID
+						,NCS_UNIT_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,NCS_UNIT_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{weekId}
+						,#{ncsUnitId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{ncsUnitName}
+						,now()
+						,#{sessionMemSeq}
+					)
+	</insert>
+
+	<insert id="insertSubjWeekNcsElem" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.insertSubjWeekNcsElem ====== */
+		]]>
+			INSERT INTO LMS_TRANING_PROCESS_MAPPING (
+						COMPANY_ID
+						,TRANING_PROCESS_ID
+						,TRANING_PROCESS_MAPPING_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,INSERT_DATE
+						,INSERT_USER
+            )
+            VALUES
+            (
+                 #{companyId}
+                ,#{traningProcessId}
+                ,#{traningProcessMappingId}
+                ,#{yyyy}
+                ,#{term}
+                ,#{subjectCode}
+                ,#{subClass}
+                ,now()
+                ,#{sessionMemSeq}
+            )
+	</insert>
+
+	<update id="updateTraningProcessMappingInfoList" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.updateTraningProcessMappingInfoList ====== */
+			UPDATE LMS_TRANING_PROCESS_MAPPING
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,YYYY = #{yyyy}
+			   ,TERM = #{term}
+			   ,SUBJECT_CODE = #{subjectCode}
+			   ,CLASS = #{subClass}
+			WHERE 1=1
+			AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+	</update>
+
+	<update id="updateTraningSubjWeekSchFileId" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.updateTraningSubjWeekSchFileId ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET ATCH_FILE_ID = #{atchFileId}
+			WHERE 1=1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+	</update>
+
+	<update id="updateTraningSubjWeekSchStatus" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.updateTraningSubjWeekSchStatus ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET STATUS = '2'
+			WHERE 1=1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+	</update>
+
+	<delete id="deleteTraningProcessInfoList" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.deleteTraningProcessInfoList ====== */
+			UPDATE LMS_TRANING_PROCESS
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE 1=1
+			AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+
+	</delete>
+
+	<delete id="deleteTraningProcessMappingInfoList" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.deleteTraningProcessMappingInfoList ====== */
+			UPDATE LMS_TRANING_PROCESS_MAPPING
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE 1=1
+			AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+
+	</delete>
+	
+	<delete id="deleteTraningProcessMappingInfoSubjList" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningProcessMappingVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.deleteTraningProcessMappingInfoSubjList ====== */
+			UPDATE LMS_TRANING_PROCESS_MAPPING
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE 1=1
+			AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+
+	</delete>
+	
+	<select id="getTraningScheduleStatus" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="String">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningScheduleStatus ====== */
+		]]>
+			SELECT STATUS
+			  FROM LMS_TRANING_SUBJ_WEEK_SCH 
+			 WHERE DELETE_YN = 'N' 
+			     AND YYYY = #{yyyy}
+				 AND TERM = #{term}
+				 AND SUBJECT_CODE = #{subjectCode}
+				 AND CLASS = #{subClass}
+			   GROUP BY YYYY,
+			       TERM,
+			       SUBJECT_CODE,
+			       CLASS,
+       			   STATUS
+	</select>
+	
+	<update id="deletetTraningSchedule" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.deletetTraningSchedule ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE DELETE_YN = 'N' 
+			     AND YYYY = #{yyyy}
+				 AND TERM = #{term}
+				 AND SUBJECT_CODE = #{subjectCode}
+				 AND CLASS = #{subClass}
+	</update>
+	
+	<update id="deletetTraningWeekTimeSchedule" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.deletetTraningWeekTimeSchedule ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_TIME_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE DELETE_YN = 'N' 
+			     AND YYYY = #{yyyy}
+				 AND TERM = #{term}
+				 AND SUBJECT_CODE = #{subjectCode}
+				 AND CLASS = #{subClass}
+	</update>
+	
+	
+
+</mapper>

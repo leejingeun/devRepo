@@ -1,0 +1,1692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 02. 17          First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper">
+
+	<select id="listWeekTraningNoteCot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.listWeekTraningNoteCot ====== */
+			SELECT  DISTINCT
+					LTP.HRD_TRANING_NAME,
+					LTP.COMPANY_ID,
+					LTP.TRANING_PROCESS_ID,
+					WEEK.YYYY,
+					WEEK.TERM,
+					WEEK.CLASS as CLASS_ID,
+					WEEK.SUBJECT_CODE,
+					WEEK.WEEK_CNT,					
+					LS.SUBJECT_NAME,
+					(
+					SELECT TNM.STATE
+					FROM LMS_TRANING_NOTE_MASTER TNM 
+					WHERE  TNM.DELETE_YN='N'
+					   AND TNM.YYYY= WEEK.YYYY
+						AND TNM.TERM = WEEK.TERM
+						AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+						AND TNM.CLASS = WEEK.CLASS		
+						AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+						LIMIT 0,1
+					)AS STATE
+					
+					FROM LMS_SUBJ_WEEK  WEEK
+
+ 					INNER JOIN LMS_SUBJECT LS 
+ 									ON  LS.DELETE_YN='N'
+								   AND LS.YYYY= WEEK.YYYY
+ 									AND LS.TERM = WEEK.TERM
+ 									AND LS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+ 									AND LS.CLASS = WEEK.CLASS
+					INNER JOIN LMS_SUBJ_TUT_MAPPING SIM
+									ON  SIM.DELETE_YN = 'N'
+									AND SIM.YYYY = WEEK.YYYY  
+									AND SIM.TERM = WEEK.TERM
+									AND SIM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+									AND SIM.MEM_SEQ =  #{memSeq}
+ 							
+					INNER JOIN COM_MEMBER CM
+									ON  CM.DELETE_YN='N'
+									AND CM.MEM_SEQ=SIM.MEM_SEQ 
+																		
+					INNER JOIN LMS_TRANING_PROCESS_MAPPING TPM
+									ON  TPM.YYYY=WEEK.YYYY  
+									AND TPM.TERM=WEEK.TERM
+									AND TPM.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+									AND TPM.CLASS =WEEK.CLASS
+									AND TPM.DELETE_YN='N'
+									AND TPM.COMPANY_ID = CM.COMPANY_ID
+  									
+					INNER JOIN LMS_TRANING_PROCESS LTP
+									ON LTP.COMPANY_ID=TPM.COMPANY_ID
+									AND LTP.TRANING_PROCESS_ID = TPM.TRANING_PROCESS_ID
+									AND LTP.DELETE_YN='N'
+									 
+					WHERE WEEK.DELETE_YN ='N'
+
+					<if test="weekCnt != null and weekCnt != ''">
+					AND WEEK.WEEK_CNT = #{weekCnt}
+					</if>
+					<if test="term != null and term != ''">
+					AND WEEK.TERM = #{term}
+					</if>
+					<if test="yyyy != null and yyyy != ''">
+					AND WEEK.YYYY =#{yyyy}
+					</if>	 
+					
+					ORDER BY TO_NUMBER(WEEK.WEEK_CNT) DESC
+	</select>
+	<select id="listWeekTraningNoteBottomCot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.listWeekTraningNoteBottomCot ====== */
+			
+			SELECT 
+			      A.YYYY,
+			      A.TERM,
+			      A.WEEK_CNT,
+			      MAX(A.STATE) AS STATE,
+			      MAX(A.ADD_STATE) AS ADD_STATE,
+			      MIN(A.TRANING_ST) AS TRANING_ST,
+			      MAX(A.TRANING_ED) AS TRANING_ED,
+			      A.NOW_WEEK_CNT FROM (
+						SELECT
+								WEEK.YYYY,
+								WEEK.TERM,
+								WEEK.WEEK_CNT,	
+								(
+								SELECT TNM.STATE
+								FROM LMS_TRANING_NOTE_MASTER TNM 
+								WHERE  TNM.DELETE_YN='N'
+									AND TNM.ADDYN = 'N'					
+								   AND TNM.YYYY= WEEK.YYYY
+									AND TNM.TERM = WEEK.TERM
+									AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+									AND TNM.CLASS = WEEK.CLASS		
+									AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+									LIMIT 0,1
+								)AS STATE
+								,	
+								(
+								SELECT TNM.STATE
+								FROM LMS_TRANING_NOTE_MASTER TNM 
+								WHERE  TNM.DELETE_YN='N'
+									AND TNM.ADDYN = 'Y'
+								   AND TNM.YYYY= WEEK.YYYY
+									AND TNM.TERM = WEEK.TERM
+									AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+									AND TNM.CLASS = WEEK.CLASS		
+									AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+									LIMIT 0,1
+								)AS ADD_STATE
+								,
+								(
+								SELECT MIN(TRANING_DATE)
+								FROM LMS_SUBJ_WEEK_TIME LSWT
+								WHERE LSWT.YYYY=WEEK.YYYY 
+								  AND LSWT.DELETE_YN='N'					
+								  AND LSWT.TERM=WEEK.TERM 
+								  AND LSWT.SUBJECT_CODE=WEEK.SUBJECT_CODE 
+								  AND LSWT.CLASS=WEEK.CLASS 					  
+								  AND LSWT.WEEK_ID =WEEK.WEEK_ID					  
+								) AS TRANING_ST
+								,
+								(
+								SELECT MAX(TRANING_DATE)
+								FROM LMS_SUBJ_WEEK_TIME LSWT
+								WHERE LSWT.YYYY=WEEK.YYYY 
+								  AND LSWT.DELETE_YN='N'
+								  AND LSWT.TERM=WEEK.TERM 
+								  AND LSWT.SUBJECT_CODE=WEEK.SUBJECT_CODE 
+								  AND LSWT.CLASS=WEEK.CLASS 
+								  AND LSWT.WEEK_ID =WEEK.WEEK_ID					
+								) AS TRANING_ED
+								,
+			<![CDATA[
+								(	
+								SELECT
+									IFNULL(MAX(TO_NUMBER(WEK.WEEK_CNT)),'1') AS WEEK_CNT
+								FROM LMS_SUBJ_WEEK WEK
+								LEFT JOIN LMS_SUBJ_WEEK_TIME WET
+											ON WEK.SUBJECT_CODE = WET.SUBJECT_CODE
+											AND WET.DELETE_YN = 'N'
+											AND WEK.WEEK_ID = WET.WEEK_ID
+								WHERE WEK.SUBJECT_CODE = WEEK.SUBJECT_CODE
+								AND WEK.DELETE_YN ='N'
+								AND WEK.YYYY=  WEEK.YYYY
+								AND WEK.CLASS  = WEEK.CLASS
+								AND WET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')					
+								) AS NOW_WEEK_CNT
+			]]>
+			
+								FROM LMS_SUBJ_WEEK  WEEK 
+								INNER JOIN LMS_SUBJ_TUT_MAPPING SIM
+												ON  SIM.DELETE_YN = 'N'
+												AND SIM.YYYY = WEEK.YYYY  
+												AND SIM.TERM = WEEK.TERM
+												AND SIM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+												AND SIM.MEM_SEQ =  #{memSeq}
+												
+								INNER JOIN COM_MEMBER CM
+												ON  CM.DELETE_YN='N'
+												AND CM.MEM_SEQ=SIM.MEM_SEQ 
+																					
+								INNER JOIN LMS_TRANING_PROCESS_MAPPING TPM
+												ON  TPM.YYYY=WEEK.YYYY  
+												AND TPM.TERM=WEEK.TERM
+												AND TPM.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+												AND TPM.CLASS =WEEK.CLASS
+												AND TPM.DELETE_YN='N'
+												AND TPM.COMPANY_ID = CM.COMPANY_ID
+			  									
+								INNER JOIN LMS_TRANING_PROCESS LTP
+												ON LTP.COMPANY_ID=TPM.COMPANY_ID
+												AND LTP.TRANING_PROCESS_ID = TPM.TRANING_PROCESS_ID
+												AND LTP.DELETE_YN='N'
+												 
+								WHERE WEEK.DELETE_YN ='N'
+								<if test="term != null and term != ''">
+								AND WEEK.TERM = #{term}
+								</if>
+								<if test="yyyy != null and yyyy != ''">
+								AND WEEK.YYYY =#{yyyy}
+								</if>	
+			 ) A
+			 GROUP BY       A.YYYY, A.TERM,A.WEEK_CNT,A.NOW_WEEK_CNT
+			 ORDER BY TO_NUMBER(WEEK_CNT) DESC
+	</select>
+		
+	<update id="updateWeekTraningNoteCot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.updateWeekTraningNoteCot ====== */
+		
+		UPDATE LMS_TRANING_NOTE_MASTER A
+		SET 
+			A.STATE = 'I',
+			A.UPDATE_USER = #{sessionMemSeq},
+			A.UPDATE_DATE = now()
+		WHERE  (A.YYYY,A.TERM,A.SUBJECT_CODE) IN 
+									(SELECT SIM.YYYY,SIM.TERM,SIM.SUBJECT_CODE FROM  LMS_SUBJ_TUT_MAPPING SIM
+									WHERE  SIM.DELETE_YN = 'N'
+									AND SIM.MEM_SEQ =   #{memSeq}
+									AND SIM.YYYY=#{yyyy}
+		  					      AND SIM.TERM=#{term})
+		AND A.WEEK_CNT=#{weekCnt}
+		AND A.STATE IN ('W','X')
+	</update>
+	<select id="getWeekTraningNoteCot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNoteCot ====== */
+		SELECT LESS.LESSON_ID ,
+			   LESS.CLASS AS CLASS_ID,
+				 (
+				 SELECT COUNT(LL.LESSON_ID) FROM LMS_LESSON LL
+				  WHERE LL.YYYY=LESS.YYYY
+				    AND LL.TERM=LESS.TERM
+				    AND LL.SUBJECT_CODE = LESS.SUBJECT_CODE
+				    AND LL.CLASS = LESS.CLASS
+				    AND LL.DELETE_YN = 'N'
+				 ) AS LL_COUNT,
+				 WEET.TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+	       	   UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,				 
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ ,
+		       MEMB.COMPANY_ID,
+		       FN_GETCOMPAYNAME(MEMB.COMPANY_ID) AS COMPANY_NAME, 
+		       MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) STUDY_TIME_PLAN,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE
+		FROM   LMS_LESSON LESS
+		       INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND LESS.MEM_SEQ = MEMB.MEM_SEQ
+									
+			    INNER JOIN LMS_SUBJ_TUT_MAPPING SIM
+								ON  SIM.DELETE_YN = 'N'
+								AND SIM.YYYY = LESS.YYYY  
+								AND SIM.TERM = LESS.TERM
+								AND SIM.SUBJECT_CODE = LESS.SUBJECT_CODE
+								AND SIM.CLASS =LESS.CLASS
+								AND SIM.MEM_SEQ =  #{memSeq}
+								
+				 LEFT OUTER JOIN LMS_SUBJECT LS
+				 ON LS.DELETE_YN = 'N'
+		       AND    LESS.YYYY         = LS.YYYY
+		       AND    LESS.TERM         = LS.TERM
+		       AND    LESS.CLASS        = LS.CLASS
+		       AND    LESS.SUBJECT_CODE = LS.SUBJECT_CODE
+		       
+		       LEFT OUTER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'
+				 AND    LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS
+		       AND    WEEK.WEEK_CNT                 = #{weekCnt}
+		       
+		       LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME WEET
+		       ON     WEET.DELETE_YN = 'N' 
+				 AND 	  LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+		       AND    WEEK.WEEK_ID      = WEET.WEEK_ID
+		       AND    WEET.YYYY         = LESS.YYYY
+		       AND    WEET.TERM         = LESS.TERM
+		       AND    WEET.CLASS        = LESS.CLASS
+ 		       
+ 		       LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = LESS.YYYY
+		       AND    MAS.TERM                     = LESS.TERM
+		       AND    MAS.CLASS                    = LESS.CLASS
+				 AND    MAS.SUBJECT_CODE 				 = LESS.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = #{addyn}
+		       AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+		       AND    MAS.TIME_ID                  = WEET.TIME_ID		
+			 		       
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+		       AND    MEMB.MEM_ID       = DET.MEM_ID
+		       AND    DET.DELETE_YN     = 'N'
+		       AND    DET.ADDYN         = #{addyn}
+		       			       
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    LESS.YYYY         = UNIT.YYYY
+				AND    LESS.TERM         = UNIT.TERM
+				AND    LESS.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    LESS.YYYY         = ELEM.YYYY
+				AND    LESS.TERM         = ELEM.TERM
+				AND    LESS.SUBJECT_CODE = ELEM.SUBJECT_CODE
+					       
+					       
+	       
+			WHERE  LESS.DELETE_YN           ='N'
+					<if test="term != null and term != ''">
+					AND LESS.TERM = #{term}
+					</if>
+					<if test="yyyy != null and yyyy != ''">
+					AND LESS.YYYY =#{yyyy}
+					</if>							
+
+	</select>
+	<select id="getWeekTraningNoteAddCot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNoteAddCot ====== */
+		SELECT LESS.LESSON_ID ,
+				 (
+		          SELECT 
+						 COUNT(1)
+						 FROM LMS_TRANING_NOTE_DETAIL A 
+						 WHERE MAS.TRANINING_NOTE_MASTER_ID = A.TRANINING_NOTE_MASTER_ID		       
+		 		       	AND    A.DELETE_YN     = 'N' 
+				       	AND    A.ADDYN         = 'Y'
+				 ) AS LL_COUNT,
+				 WEET.TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+	       	   UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,				 
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ , 
+		       MEMB.COMPANY_ID,
+		       FN_GETCOMPAYNAME(MEMB.COMPANY_ID) AS COMPANY_NAME, 		       
+		       MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) STUDY_TIME_PLAN,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE
+		FROM   LMS_LESSON LESS
+		       INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND LESS.MEM_SEQ = MEMB.MEM_SEQ
+									
+			   INNER JOIN LMS_SUBJ_TUT_MAPPING SIM
+								ON  SIM.DELETE_YN = 'N'
+								AND SIM.YYYY = LESS.YYYY  
+								AND SIM.TERM = LESS.TERM
+								AND SIM.SUBJECT_CODE = LESS.SUBJECT_CODE
+								AND SIM.CLASS =LESS.CLASS
+								AND SIM.MEM_SEQ =  #{memSeq}
+								
+			   INNER JOIN LMS_SUBJECT LS
+				 ON LS.DELETE_YN = 'N'
+		       AND    LESS.YYYY         = LS.YYYY
+		       AND    LESS.TERM         = LS.TERM
+		       AND    LESS.CLASS        = LS.CLASS
+		       AND    LESS.SUBJECT_CODE = LS.SUBJECT_CODE
+		       
+		       INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'
+				 AND    LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS
+		       AND    WEEK.WEEK_CNT                 = #{weekCnt}
+		       
+		       INNER JOIN LMS_SUBJ_WEEK_TIME_ENRICHMENT WEET
+		       ON     WEET.DELETE_YN = 'N' 
+				 AND 	  LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+		       AND    WEEK.WEEK_ID      = WEET.WEEK_ID
+		       AND    WEET.YYYY         = LESS.YYYY
+		       AND    WEET.TERM         = LESS.TERM
+		       AND    WEET.CLASS        = LESS.CLASS
+ 		       
+ 		       INNER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = LESS.YYYY
+		       AND    MAS.TERM                     = LESS.TERM
+		       AND    MAS.CLASS                    = LESS.CLASS
+			   AND    MAS.SUBJECT_CODE 				 = LESS.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = #{addyn}
+		       AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+		       AND    MAS.TIME_ID                  = WEET.TIME_ID		
+			 		       
+		       INNER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+		       AND    MEMB.MEM_ID       = DET.MEM_ID
+		       AND    DET.DELETE_YN     = 'N'
+		       AND    DET.ADDYN         = #{addyn}
+		       			       
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    LESS.YYYY         = UNIT.YYYY
+				AND    LESS.TERM         = UNIT.TERM
+				AND    LESS.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    LESS.YYYY         = ELEM.YYYY
+				AND    LESS.TERM         = ELEM.TERM
+				AND    LESS.SUBJECT_CODE = ELEM.SUBJECT_CODE
+					       
+					       
+	       
+			WHERE  LESS.DELETE_YN           ='N'
+					<if test="term != null and term != ''">
+					AND LESS.TERM = #{term}
+					</if>
+					<if test="yyyy != null and yyyy != ''">
+					AND LESS.YYYY =#{yyyy}
+					</if>							
+
+	</select>	
+	<select id="listWeekTraningNotePrd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.listWeekTraningNotePrd ====== */
+SELECT 
+A.HRD_TRANING_NAME,
+A.SUBJECT_TRANING_TYPE,
+A.YYYY,
+A.TERM, 
+A.SUBJECT_CODE,
+A.WEEK_CNT,					
+A.SUBJECT_NAME,
+A.STATE 
+FROM
+(
+			SELECT
+					LTP.HRD_TRANING_NAME,
+					LS.SUBJECT_TRANING_TYPE,
+					WEEK.YYYY,
+					WEEK.TERM,
+					WEEK.SUBJECT_CODE,
+					WEEK.WEEK_CNT,					
+					LS.SUBJECT_NAME,
+					(
+					SELECT TNM.STATE
+					FROM LMS_TRANING_NOTE_MASTER TNM 
+					WHERE  TNM.DELETE_YN='N'
+					   AND TNM.YYYY= WEEK.YYYY
+						AND TNM.TERM = WEEK.TERM
+						AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+						AND TNM.CLASS = WEEK.CLASS		
+						AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+						LIMIT 0,1
+					) AS STATE
+					
+					FROM LMS_SUBJ_WEEK  WEEK
+
+ 					INNER JOIN LMS_SUBJECT LS 
+ 									ON  LS.DELETE_YN='N'
+								   AND LS.YYYY= WEEK.YYYY
+ 									AND LS.TERM = WEEK.TERM
+ 									AND LS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+ 									AND LS.CLASS = WEEK.CLASS
+ 									AND ((LS.SUBJECT_TYPE = 'HSKILL' AND LS.SUBJECT_TRANING_TYPE = 'OJT') OR LS.SUBJECT_TRANING_TYPE = 'OFF' )
+					INNER JOIN LMS_SUBJ_INS_MAPPING SIM
+									ON  SIM.DELETE_YN = 'N'
+									AND SIM.YYYY = WEEK.YYYY  
+									AND SIM.TERM = WEEK.TERM
+									AND SIM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+									AND SIM.MEM_SEQ =  #{memSeq}
+ 							 																		
+					INNER JOIN LMS_TRANING_PROCESS_MAPPING TPM
+									ON  TPM.YYYY=WEEK.YYYY  
+									AND TPM.TERM=WEEK.TERM
+									AND TPM.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+									AND TPM.CLASS =WEEK.CLASS
+									AND TPM.DELETE_YN='N' 
+									
+					INNER JOIN LMS_TRANING_PROCESS LTP
+									ON LTP.COMPANY_ID=TPM.COMPANY_ID
+									AND LTP.TRANING_PROCESS_ID = TPM.TRANING_PROCESS_ID
+									AND LTP.DELETE_YN='N'
+									 
+					WHERE WEEK.DELETE_YN ='N'
+
+					<if test="weekCnt != null and weekCnt != ''">
+					AND WEEK.WEEK_CNT = #{weekCnt}
+					</if>
+					<if test="term != null and term != ''">
+					AND WEEK.TERM = #{term}
+					</if>
+					<if test="yyyy != null and yyyy != ''">
+					AND WEEK.YYYY =#{yyyy}
+					</if>	
+					 
+					GROUP BY WEEK.YYYY,WEEK.TERM, WEEK.WEEK_CNT,WEEK.CLASS,WEEK.SUBJECT_CODE ,WEEK.WEEK_ID,LTP.HRD_TRANING_NAME,LS.SUBJECT_TRANING_TYPE
+) A 
+GROUP BY 					A.HRD_TRANING_NAME,
+					A.SUBJECT_TRANING_TYPE,
+					A.YYYY,
+					A.TERM, 
+					A.SUBJECT_CODE,
+					A.WEEK_CNT,					
+					A.SUBJECT_NAME,
+					A.STATE
+	</select>
+	<select id="listWeekTraningNoteBottomPrd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.listWeekTraningNoteBottomPrd ====== */
+SELECT 
+B.YYYY,
+B.TERM,
+B.WEEK_CNT,
+MAX(B.STATE) AS STATE,
+MAX(B.ADD_STATE) AS ADD_STATE,
+MAX(B.OJT_STATE) AS OJT_STATE,
+MIN(B.TRANING_ST) AS TRANING_ST,
+MAX(B.TRANING_ED) AS TRANING_ED,
+B.NOW_WEEK_CNT
+
+
+FROM (
+
+
+			SELECT
+					WEEK.YYYY,
+					WEEK.TERM,
+					WEEK.WEEK_CNT,	
+					(
+					SELECT TNM.STATE
+					FROM LMS_TRANING_NOTE_MASTER TNM 
+					WHERE  TNM.DELETE_YN='N'
+						AND TNM.ADDYN = 'N'					
+					   AND TNM.YYYY= WEEK.YYYY
+						AND TNM.TERM = WEEK.TERM
+						AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+						AND TNM.CLASS = WEEK.CLASS		
+						AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+						AND TNM.TRANING_TYPE = 'OFF'						
+						LIMIT 0,1
+					)AS STATE
+					,	
+					(
+					SELECT TNM.STATE
+					FROM LMS_TRANING_NOTE_MASTER TNM 
+					WHERE  TNM.DELETE_YN='N'
+						AND TNM.ADDYN = 'Y'
+					   AND TNM.YYYY= WEEK.YYYY
+						AND TNM.TERM = WEEK.TERM
+						AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+						AND TNM.CLASS = WEEK.CLASS		
+						AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+						AND TNM.TRANING_TYPE = 'OFF'
+						LIMIT 0,1
+					)AS ADD_STATE
+					,
+					(
+					SELECT TNM.STATE
+					FROM LMS_TRANING_NOTE_MASTER TNM 
+					WHERE  TNM.DELETE_YN='N'
+						AND TNM.ADDYN = 'N'					
+					   AND TNM.YYYY= LS.YYYY
+						AND TNM.TERM = LS.TERM
+						AND TNM.SUBJECT_CODE = LS.SUBJECT_CODE
+						AND TNM.CLASS = LS.CLASS		
+						AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+						AND TNM.TRANING_TYPE = 'OJT'						
+						LIMIT 0,1
+					)AS OJT_STATE
+					,	
+					(
+					SELECT TNM.STATE
+					FROM LMS_TRANING_NOTE_MASTER TNM 
+					WHERE  TNM.DELETE_YN='N'
+						AND TNM.ADDYN = 'Y'
+					   AND TNM.YYYY= LS.YYYY
+						AND TNM.TERM = LS.TERM
+						AND TNM.SUBJECT_CODE = LS.SUBJECT_CODE
+						AND TNM.CLASS = LS.CLASS		
+						AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+						AND TNM.TRANING_TYPE = 'OJT'
+						LIMIT 0,1
+					)AS OJT_ADD_STATE
+					,
+					(
+					SELECT MIN(TRANING_DATE)
+					FROM LMS_SUBJ_WEEK_TIME LSWT
+					WHERE LSWT.YYYY=WEEK.YYYY 
+					  AND LSWT.DELETE_YN='N'					
+					  AND LSWT.TERM=WEEK.TERM 
+					  AND LSWT.SUBJECT_CODE=WEEK.SUBJECT_CODE 
+					  AND LSWT.CLASS=WEEK.CLASS 					  
+					  AND LSWT.WEEK_ID =WEEK.WEEK_ID					  
+					) AS TRANING_ST
+					,
+					(
+					SELECT MAX(TRANING_DATE)
+					FROM LMS_SUBJ_WEEK_TIME LSWT
+					WHERE LSWT.YYYY=WEEK.YYYY 
+					  AND LSWT.DELETE_YN='N'
+					  AND LSWT.TERM=WEEK.TERM 
+					  AND LSWT.SUBJECT_CODE=WEEK.SUBJECT_CODE 
+					  AND LSWT.CLASS=WEEK.CLASS 
+					  AND LSWT.WEEK_ID =WEEK.WEEK_ID					
+					) AS TRANING_ED
+					,
+<![CDATA[
+					(	
+					SELECT
+						IFNULL(MAX(TO_NUMBER(WEK.WEEK_CNT)),'1') AS WEEK_CNT
+					FROM LMS_SUBJ_WEEK WEK
+					LEFT JOIN LMS_SUBJ_WEEK_TIME WET
+								ON  WET.DELETE_YN = 'N'
+								AND WEK.WEEK_ID = WET.WEEK_ID
+								AND WEK.YYYY=  WET.YYYY
+                				AND WEK.TERM=  WET.TERM
+                				AND WEK.CLASS =WET.CLASS
+                				AND WEK.SUBJECT_CODE = WET.SUBJECT_CODE
+					WHERE WEK.SUBJECT_CODE = WEEK.SUBJECT_CODE
+					AND WEK.DELETE_YN ='N'
+					AND WEK.YYYY=  WEEK.YYYY
+					AND WEK.TERM = WEEK.TERM
+					AND WEK.CLASS  = WEEK.CLASS
+					AND WET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')					
+					) AS NOW_WEEK_CNT
+]]>
+
+					FROM LMS_SUBJ_WEEK  WEEK 
+					INNER JOIN LMS_SUBJECT LS 
+									ON LS.DELETE_YN='N'
+									AND LS.YYYY = WEEK.YYYY  
+									AND LS.TERM = WEEK.TERM
+									AND LS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+									AND LS.CLASS = WEEK.CLASS
+									AND ((LS.SUBJECT_TYPE = 'HSKILL' AND LS.SUBJECT_TRANING_TYPE = 'OJT') OR LS.SUBJECT_TRANING_TYPE = 'OFF' )
+														
+					INNER JOIN LMS_SUBJ_INS_MAPPING SIM
+									ON  SIM.DELETE_YN = 'N'
+									AND SIM.YYYY = WEEK.YYYY  
+									AND SIM.TERM = WEEK.TERM
+									AND SIM.SUBJECT_CODE = WEEK.SUBJECT_CODE
+									AND SIM.MEM_SEQ =  #{memSeq}
+									 									
+					LEFT OUTER JOIN LMS_TRANING_PROCESS_MAPPING TPM
+									ON  TPM.YYYY=WEEK.YYYY  
+									AND TPM.TERM=WEEK.TERM
+									AND TPM.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+									AND TPM.CLASS =WEEK.CLASS
+									AND TPM.DELETE_YN='N' 
+  									
+					LEFT OUTER JOIN LMS_TRANING_PROCESS LTP
+									ON LTP.COMPANY_ID=TPM.COMPANY_ID
+									AND LTP.TRANING_PROCESS_ID = TPM.TRANING_PROCESS_ID
+									AND LTP.DELETE_YN='N'
+
+ 
+									
+					WHERE WEEK.DELETE_YN ='N'
+					<if test="term != null and term != ''">
+					AND WEEK.TERM = #{term}
+					</if>
+					<if test="yyyy != null and yyyy != ''">
+					AND WEEK.YYYY =#{yyyy}
+					</if>	
+					GROUP BY WEEK.YYYY,WEEK.TERM, WEEK.WEEK_CNT,WEEK.CLASS,WEEK.SUBJECT_CODE ,WEEK.WEEK_ID
+) B
+GROUP BY B.YYYY,B.TERM,B.WEEK_CNT,B.NOW_WEEK_CNT
+ORDER BY TO_NUMBER(B.WEEK_CNT) DESC
+	</select>
+		
+	<update id="updateWeekTraningNotePrd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.updateWeekTraningNotePrd ====== */
+		
+		UPDATE LMS_TRANING_NOTE_MASTER A
+		SET 
+			A.STATE = 'I',
+			A.UPDATE_USER = #{sessionMemSeq},
+			A.UPDATE_DATE = now()
+		WHERE  (A.YYYY,A.TERM,A.SUBJECT_CODE) IN 
+									(SELECT SIM.YYYY,SIM.TERM,SIM.SUBJECT_CODE FROM  LMS_SUBJ_INS_MAPPING SIM
+									WHERE  SIM.DELETE_YN = 'N'
+									AND SIM.MEM_SEQ =   #{memSeq}
+									AND SIM.YYYY=#{yyyy}
+		  					      AND SIM.TERM=#{term})
+		AND A.WEEK_CNT=#{weekCnt}
+		AND A.STATE IN ('W','X')
+	</update>
+
+	<select id="listWeekTraningNoteBottomCcn" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.listWeekTraningNoteBottomCcn ====== */
+		<![CDATA[
+			SELECT 
+			A.YYYY,
+			A.TERM,
+			A.WEEK_CNT,
+			MAX(A.STATE) AS STATE,
+			MAX(A.ADD_STATE) AS ADD_STATE,
+			MAX(A.OJT_STATE) AS OJT_STATE,
+			MAX(A.OJT_ADD_STATE) AS OJT_ADD_STATE,
+			MIN(A.TRANING_ST) AS TRANING_ST,
+			MAX(A.TRANING_ED) AS TRANING_ED ,
+			MAX(IF( A.TRANING_ED < date_format(now(),'%Y.%m.%d'),A.WEEK_CNT,'0')) AS NOW_WEEK_CNT
+			
+			 FROM(
+						SELECT
+								WEEK.YYYY,
+								WEEK.TERM,
+								WEEK.WEEK_CNT,	
+								(
+								SELECT TNM.STATE
+								FROM LMS_TRANING_NOTE_MASTER TNM 
+								WHERE  TNM.DELETE_YN='N'
+									AND TNM.ADDYN = 'N'					
+								    AND TNM.YYYY= WEEK.YYYY
+									AND TNM.TERM = WEEK.TERM
+									AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+									AND TNM.CLASS = WEEK.CLASS
+									AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+									AND TNM.TRANING_TYPE = 'OFF'						
+									LIMIT 0,1
+								)AS STATE
+								,	
+								(
+								SELECT TNM.STATE
+								FROM LMS_TRANING_NOTE_MASTER TNM 
+								WHERE  TNM.DELETE_YN='N'
+									AND TNM.ADDYN = 'Y'
+								   AND TNM.YYYY= WEEK.YYYY
+									AND TNM.TERM = WEEK.TERM
+									AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+									AND TNM.CLASS = WEEK.CLASS
+									AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+									AND TNM.TRANING_TYPE = 'OFF'
+									LIMIT 0,1
+								)AS ADD_STATE
+								,
+								(
+								SELECT TNM.STATE
+								FROM LMS_TRANING_NOTE_MASTER TNM 
+								WHERE  TNM.DELETE_YN='N'
+									AND TNM.ADDYN = 'N'					
+								   AND TNM.YYYY= WEEK.YYYY
+									AND TNM.TERM = WEEK.TERM
+									AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+									AND TNM.CLASS = WEEK.CLASS
+									AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+									AND TNM.TRANING_TYPE = 'OJT'						
+									LIMIT 0,1
+								)AS OJT_STATE
+								,	
+								(
+								SELECT TNM.STATE
+								FROM LMS_TRANING_NOTE_MASTER TNM 
+								WHERE  TNM.DELETE_YN='N'
+									AND TNM.ADDYN = 'Y'
+								   AND TNM.YYYY= WEEK.YYYY
+									AND TNM.TERM = WEEK.TERM
+									AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+									AND TNM.CLASS = WEEK.CLASS
+									AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+									AND TNM.TRANING_TYPE = 'OJT'
+									LIMIT 0,1
+								)AS OJT_ADD_STATE
+								,
+								(
+								SELECT MIN(TRANING_DATE)
+								FROM LMS_SUBJ_WEEK_TIME LSWT
+								WHERE  LSWT.WEEK_ID=WEEK.WEEK_ID
+								  AND LSWT.DELETE_YN='N'					
+								  				  
+								) AS TRANING_ST
+								,
+								(
+								SELECT MAX(TRANING_DATE)
+								FROM LMS_SUBJ_WEEK_TIME LSWT
+								WHERE LSWT.WEEK_ID=WEEK.WEEK_ID
+								  AND LSWT.DELETE_YN='N'
+								) AS TRANING_ED
+			 					,
+								(
+								SELECT IF( TRANING_ED < date_format(now(),'%Y.%m.%d'), WEEK.WEEK_CNT,'0')
+								FROM LMS_SUBJ_WEEK_TIME LSWT
+								WHERE LSWT.WEEK_ID=WEEK.WEEK_ID
+								  AND LSWT.DELETE_YN='N'
+								  LIMIT 1
+								)  AS NOW_WEEK_CNT
+			]]>						
+								  
+								FROM LMS_SUBJ_WEEK  WEEK   
+								WHERE WEEK.DELETE_YN ='N'  					
+								AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN 
+																(SELECT YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_TRANING_PROCESS_MAPPING TPM
+																				WHERE   TPM.DELETE_YN='N' 
+											  									AND TPM.COMPANY_ID = #{companyId}
+											  									AND TPM.TRANING_PROCESS_ID = #{traningProcessId}											  									
+																				<if test="term != null and term != ''">
+																				AND TPM.TERM = #{term}
+																				</if>
+																				<if test="yyyy != null and yyyy != ''">
+																				AND TPM.YYYY =#{yyyy}
+																				</if>																							  									
+
+																															  )
+								GROUP BY WEEK.YYYY,WEEK.TERM, WEEK.WEEK_CNT,WEEK.SUBJECT_CODE,WEEK.WEEK_ID,WEEK.CLASS
+			) A GROUP BY A.YYYY,A.TERM,A.WEEK_CNT
+			ORDER BY TO_NUMBER(A.WEEK_CNT) DESC		
+ 
+	</select>		
+	<select id="getWeekTraningNoteCcn" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNoteCcn ====== */
+		SELECT LESS.LESSON_ID ,
+				 (
+				 SELECT COUNT(LL.LESSON_ID) FROM LMS_LESSON LL
+				  WHERE LL.YYYY=LESS.YYYY
+				    AND LL.TERM=LESS.TERM
+				    AND LL.SUBJECT_CODE = LESS.SUBJECT_CODE
+				    AND LL.CLASS = LESS.CLASS
+				 ) AS LL_COUNT,
+				 LS.CLASS AS CLASS_ID,
+				 WEET.TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+	       	   UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,				 
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ , 
+		       MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) STUDY_TIME_PLAN,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE
+		FROM   LMS_LESSON LESS
+		       INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND LESS.MEM_SEQ = MEMB.MEM_SEQ
+			   INNER JOIN LMS_TRANING_PROCESS_MAPPING TPM
+									ON  TPM.YYYY=LESS.YYYY  
+									AND TPM.TERM=LESS.TERM
+									AND TPM.SUBJECT_CODE=LESS.SUBJECT_CODE  
+									AND TPM.CLASS =LESS.CLASS
+									AND TPM.DELETE_YN='N' 
+  									AND TPM.COMPANY_ID = #{companyId}
+  									AND TPM.TRANING_PROCESS_ID = #{traningProcessId}
+									  		
+				INNER JOIN LMS_SUBJECT LS
+				 					ON LS.DELETE_YN = 'N'
+							       AND    LESS.YYYY         = LS.YYYY
+							       AND    LESS.TERM         = LS.TERM
+							       AND    LESS.CLASS        = LS.CLASS
+							       AND    LESS.SUBJECT_CODE = LS.SUBJECT_CODE
+							       AND    LS.SUBJECT_TRANING_TYPE = #{traningType}
+		       
+		       INNER JOIN   LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'
+				 AND    LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS
+		       AND    WEEK.WEEK_CNT                 = #{weekCnt}
+		       
+		       INNER JOIN LMS_SUBJ_WEEK_TIME WEET
+		       ON     WEET.DELETE_YN = 'N' 
+				 AND 	  LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+		       AND    WEEK.WEEK_ID      = WEET.WEEK_ID
+		       AND    WEET.YYYY         = LESS.YYYY
+		       AND    WEET.TERM         = LESS.TERM
+		       AND    WEET.CLASS        = LESS.CLASS
+ 		       
+ 		       LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = LESS.YYYY
+		       AND    MAS.TERM                     = LESS.TERM
+		       AND    MAS.CLASS                    = LESS.CLASS
+				 AND    MAS.SUBJECT_CODE 				 = LESS.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = #{addyn}
+		       AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+		       AND    MAS.TIME_ID                  = WEET.TIME_ID		
+			 		       
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+		       AND    MEMB.MEM_ID       = DET.MEM_ID
+		       AND    DET.DELETE_YN     = 'N'
+		       AND    DET.ADDYN         = #{addyn}
+		       			       
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    LESS.YYYY         = UNIT.YYYY
+				AND    LESS.TERM         = UNIT.TERM
+				AND    LESS.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				AND    LESS.CLASS         = UNIT.CLASS
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    LESS.YYYY         = ELEM.YYYY
+				AND    LESS.TERM         = ELEM.TERM
+				AND    LESS.SUBJECT_CODE = ELEM.SUBJECT_CODE
+				AND    LESS.CLASS         = ELEM.CLASS	       
+					       
+	       
+			WHERE  LESS.DELETE_YN           ='N'
+					<if test="term != null and term != ''">
+					AND LESS.TERM = #{term}
+					</if>
+					<if test="yyyy != null and yyyy != ''">
+					AND LESS.YYYY =#{yyyy}
+					</if>							
+
+	</select>
+
+	<update id="updateWeekTraningNoteCcn" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.updateWeekTraningNoteCcn ====== */
+		UPDATE LMS_TRANING_NOTE_MASTER TNM SET 
+		TNM.STATE = #{state},
+		TNM.UPDATE_USER = #{sessionMemSeq},
+		<if test="returnComment != null and returnComment != ''">
+		TNM.RETURN_COMMENT= #{returnComment},
+		</if>
+		TNM.UPDATE_DATE = now()
+		WHERE (TNM.YYYY,TNM.TERM,TNM.SUBJECT_CODE,TNM.CLASS)
+					IN (
+							SELECT TPM.YYYY,TPM.TERM,TPM.SUBJECT_CODE,TPM.CLASS
+							FROM     LMS_TRANING_PROCESS_MAPPING TPM
+							WHERE TPM.DELETE_YN='N' 
+		  					AND TPM.COMPANY_ID = #{companyId}
+		  					AND TPM.TRANING_PROCESS_ID =  #{traningProcessId}
+							)
+				AND TNM.DELETE_YN           = 'N'
+				AND TNM.YYYY                = #{yyyy}
+				AND TNM.TERM                = #{term}
+				AND TNM.WEEK_CNT            = #{weekCnt}
+				AND TNM.TRANING_TYPE		= #{traningType}
+	</update>
+
+
+	<select id="getWeekTraningNoteAddCcn" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNoteAddCcn ====== */
+		SELECT distinct (
+				 SELECT 
+				 COUNT(1)
+				 FROM LMS_TRANING_NOTE_DETAIL A 
+				 WHERE MAS.TRANINING_NOTE_MASTER_ID = A.TRANINING_NOTE_MASTER_ID		       
+ 		       	AND    A.DELETE_YN     = 'N' 
+		       	AND    A.ADDYN         = #{addyn}
+				 ) AS LL_COUNT,
+				 LS.CLASS AS CLASS_ID,
+				 MAS.STUDY_DATE TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+				 
+	       	   UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,		
+		       		 
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ , 
+		       MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) AS STUDY_TIME_PLAN ,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE,
+		       MAS.RETURN_COMMENT
+		FROM  LMS_TRANING_PROCESS_MAPPING TPM												   					  		
+				 INNER JOIN LMS_SUBJECT LS
+				 ON LS.DELETE_YN = 'N'
+		       AND    TPM.YYYY         = LS.YYYY
+		       AND    TPM.TERM         = LS.TERM
+		       AND    TPM.CLASS        = LS.CLASS
+		       AND    TPM.SUBJECT_CODE = LS.SUBJECT_CODE
+		       AND    LS.SUBJECT_TRANING_TYPE = #{traningType}
+		       
+		       INNER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = TPM.YYYY
+		       AND    MAS.TERM                     = TPM.TERM
+		       AND    MAS.CLASS                    = TPM.CLASS
+			   AND    MAS.SUBJECT_CODE 				 = TPM.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = #{addyn}
+		       AND    MAS.WEEK_CNT                 =  #{weekCnt}
+			 		  
+		       INNER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+ 		       AND    DET.DELETE_YN     = 'N' 
+		       AND    DET.ADDYN         = #{addyn}
+		       
+			   INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND DET.MEM_ID = MEMB.MEM_ID AND TPM.COMPANY_ID = MEMB.COMPANY_ID 
+
+		       INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'
+			   AND    WEEK.SUBJECT_CODE = TPM.SUBJECT_CODE
+		       AND    WEEK.YYYY         = TPM.YYYY
+		       AND    WEEK.TERM         = TPM.TERM
+		       AND    WEEK.CLASS        = TPM.CLASS
+		       AND    WEEK.WEEK_CNT     = MAS.WEEK_CNT 
+		       
+		       LEFT OUTER  JOIN LMS_SUBJ_WEEK_TIME SWT
+		       ON     SWT.DELETE_YN='N'
+			   AND    SWT.SUBJECT_CODE = TPM.SUBJECT_CODE
+		       AND    SWT.YYYY         = TPM.YYYY
+		       AND    SWT.TERM         = TPM.TERM
+		       AND    SWT.CLASS        = TPM.CLASS
+		       AND 	 SWT.WEEK_ID 		= WEEK.WEEK_ID  		  
+		        
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    TPM.YYYY         = UNIT.YYYY
+				AND    TPM.TERM         = UNIT.TERM
+				AND    TPM.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				AND    TPM.CLASS        = UNIT.CLASS
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    TPM.YYYY         = ELEM.YYYY
+				AND    TPM.TERM         = ELEM.TERM
+				AND    TPM.SUBJECT_CODE = ELEM.SUBJECT_CODE
+				AND    TPM.CLASS        = ELEM.CLASS
+				
+				WHERE  TPM.DELETE_YN           ='N'
+					AND TPM.TERM = #{term}
+					AND TPM.YYYY = #{yyyy}
+					AND TPM.DELETE_YN='N' 
+					AND TPM.COMPANY_ID =  #{companyId}
+					AND TPM.TRANING_PROCESS_ID = #{traningProcessId}				
+		ORDER BY MAS.STUDY_DATE,LS.SUBJECT_CODE,MEMB.MEM_SEQ
+	</select>
+	<select id="getWeekTraningNoteAddCcnAdd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNoteAddCcnAdd ====== */
+		SELECT distinct (
+				 SELECT 
+				 COUNT(1)
+				 FROM LMS_TRANING_NOTE_DETAIL A 
+				 WHERE MAS.TRANINING_NOTE_MASTER_ID = A.TRANINING_NOTE_MASTER_ID		       
+ 		       	AND    A.DELETE_YN     = 'N' 
+		       	AND    A.ADDYN         = 'Y'
+				 ) AS LL_COUNT,
+				 LS.CLASS AS CLASS_ID,
+				 MAS.STUDY_DATE TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+				 
+	       	   UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,		
+		       		 
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ , 
+		       MOD(SWTE.TRANING_ED_HOUR,SWTE.TRANING_ST_HOUR ) AS STUDY_TIME_PLAN ,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE,
+		       MAS.RETURN_COMMENT
+		FROM  LMS_TRANING_PROCESS_MAPPING TPM												   					  		
+				 INNER JOIN LMS_SUBJECT LS
+				 ON LS.DELETE_YN = 'N'
+		       AND    TPM.YYYY         = LS.YYYY
+		       AND    TPM.TERM         = LS.TERM
+		       AND    TPM.CLASS        = LS.CLASS
+		       AND    TPM.SUBJECT_CODE = LS.SUBJECT_CODE
+		       AND    LS.SUBJECT_TRANING_TYPE = #{traningType}
+		       
+		       INNER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = TPM.YYYY
+		       AND    MAS.TERM                     = TPM.TERM
+		       AND    MAS.CLASS                    = TPM.CLASS
+			   AND    MAS.SUBJECT_CODE 				 = TPM.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = 'Y'
+		       AND    MAS.WEEK_CNT                 =  #{weekCnt}
+			 		  
+		       INNER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+ 		       AND    DET.DELETE_YN     = 'N' 
+		       AND    DET.ADDYN         = 'Y'
+		       
+			   INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND DET.MEM_ID = MEMB.MEM_ID AND TPM.COMPANY_ID = MEMB.COMPANY_ID 
+
+		       INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'
+			   AND    WEEK.SUBJECT_CODE = TPM.SUBJECT_CODE
+		       AND    WEEK.YYYY         = TPM.YYYY
+		       AND    WEEK.TERM         = TPM.TERM
+		       AND    WEEK.CLASS        = TPM.CLASS
+		       AND    WEEK.WEEK_CNT     = MAS.WEEK_CNT 
+		       
+ 		       LEFT OUTER  JOIN LMS_SUBJ_WEEK_TIME_ENRICHMENT SWTE
+		       ON     SWTE.DELETE_YN='N'
+			   AND    SWTE.SUBJECT_CODE = TPM.SUBJECT_CODE
+		       AND    SWTE.YYYY         = TPM.YYYY
+		       AND    SWTE.TERM         = TPM.TERM
+		       AND    SWTE.CLASS        = TPM.CLASS
+		       AND 	 SWTE.WEEK_ID 		= WEEK.WEEK_ID  		       
+ 		       
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    TPM.YYYY         = UNIT.YYYY
+				AND    TPM.TERM         = UNIT.TERM
+				AND    TPM.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				AND    TPM.CLASS        = UNIT.CLASS
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    TPM.YYYY         = ELEM.YYYY
+				AND    TPM.TERM         = ELEM.TERM
+				AND    TPM.SUBJECT_CODE = ELEM.SUBJECT_CODE
+				AND    TPM.CLASS        = ELEM.CLASS
+				
+				WHERE  TPM.DELETE_YN           ='N'
+					AND TPM.TERM = #{term}
+					AND TPM.YYYY = #{yyyy}
+					AND TPM.DELETE_YN='N' 
+					AND TPM.COMPANY_ID =  #{companyId}
+					AND TPM.TRANING_PROCESS_ID = #{traningProcessId}				
+		ORDER BY MAS.STUDY_DATE,LS.SUBJECT_CODE,MEMB.MEM_SEQ
+	</select>		
+	<select id="getWeekTraningNotePrd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNotePrd ====== */
+		SELECT LESS.LESSON_ID ,
+				 (
+				 SELECT COUNT(LL.LESSON_ID) FROM LMS_LESSON LL
+				  WHERE LL.YYYY=LESS.YYYY
+				    AND LL.TERM=LESS.TERM
+				    AND LL.SUBJECT_CODE = LESS.SUBJECT_CODE
+				 
+				 ) AS LL_COUNT,
+				 WEET.TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+				 
+	       	   <!-- UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,	 -->
+		       
+		       CASE WHEN LS.SUBJECT_TRANING_TYPE = 'OJT' 
+		       		THEN WEET.NCS_UNIT_NAME
+		       		ELSE UNIT.NCS_UNIT_NAME 
+		       END NCS_UNIT_NAME,
+		       
+		       CASE WHEN LS.SUBJECT_TRANING_TYPE = 'OJT' 
+		       		THEN WEET.NCS_ELEM_NAME
+		       		ELSE ELEM.NCS_ELEM_NAME 
+		       END NCS_ELEM_NAME,
+		      
+		       MEMB.MEM_NAME ,
+           MEMB.COMPANY_ID,
+           FN_GETCOMPAYNAME(MEMB.COMPANY_ID) AS COMPANY_NAME,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ , 
+		       MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) STUDY_TIME_PLAN,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE
+		FROM   LMS_LESSON LESS
+		     INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND LESS.MEM_SEQ = MEMB.MEM_SEQ
+
+			 INNER JOIN LMS_SUBJECT LS
+			   ON LS.DELETE_YN = 'N'
+		       AND    LESS.YYYY         = LS.YYYY
+		       AND    LESS.TERM         = LS.TERM
+		       AND    LESS.CLASS        = LS.CLASS
+		       AND    LESS.SUBJECT_CODE = LS.SUBJECT_CODE
+		       
+		     INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'           
+				   AND    LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS		       
+		       LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME WEET
+		       ON     WEET.DELETE_YN = 'N' 
+				 AND 	  LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+		       AND    WEEK.WEEK_ID      = WEET.WEEK_ID
+		       AND    WEET.YYYY         = LESS.YYYY
+		       AND    WEET.TERM         = LESS.TERM
+		       AND    WEET.CLASS        = LESS.CLASS
+ 		       
+ 		       LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = LESS.YYYY
+		       AND    MAS.TERM                     = LESS.TERM
+		       AND    MAS.CLASS                    = LESS.CLASS
+			   AND    MAS.SUBJECT_CODE 				 = LESS.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = #{addyn}
+		       AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+		       AND    MAS.TIME_ID                  = WEET.TIME_ID		
+			 		       
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+		       AND    MEMB.MEM_ID       = DET.MEM_ID
+		       AND    DET.DELETE_YN     = 'N'
+		       AND    DET.ADDYN         = #{addyn}
+		       			       
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    LESS.YYYY         = UNIT.YYYY
+				AND    LESS.TERM         = UNIT.TERM
+				AND    LESS.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    LESS.YYYY         = ELEM.YYYY
+				AND    LESS.TERM         = ELEM.TERM
+				AND    LESS.SUBJECT_CODE = ELEM.SUBJECT_CODE
+					       					       	       
+			WHERE  LESS.DELETE_YN     = 'N'
+        	  AND LESS.SUBJECT_CODE = #{subjectCode}
+			<if test="term != null and term != ''">
+			AND LESS.TERM = #{term}
+			</if>
+			<if test="yyyy != null and yyyy != ''">
+			AND LESS.YYYY =#{yyyy}
+			</if>
+		      AND WEEK.WEEK_CNT = #{weekCnt}          
+      ORDER BY WEET.TRANING_DATE , MEMB.MEM_ID							
+
+	</select>
+	<select id="getWeekTraningNoteAddPrd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.getWeekTraningNoteAddHrd ====== */
+		SELECT LESS.LESSON_ID ,
+				 (
+		          SELECT 
+						 COUNT(1)
+						 FROM LMS_TRANING_NOTE_DETAIL A 
+						 WHERE MAS.TRANINING_NOTE_MASTER_ID = A.TRANINING_NOTE_MASTER_ID		       
+		 		       	AND    A.DELETE_YN     = 'N' 
+				       	AND    A.ADDYN         = 'Y'
+				 ) AS LL_COUNT,
+				 WEET.TRANING_DATE,
+				 LS.SUBJECT_NAME,
+				 LS.SUBJECT_CODE,
+	       	   UNIT.NCS_UNIT_NAME ,
+		       ELEM.NCS_ELEM_NAME ,				 
+		       MEMB.MEM_NAME ,
+           MEMB.COMPANY_ID,
+           FN_GETCOMPAYNAME(MEMB.COMPANY_ID) AS COMPANY_NAME,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ , 
+		       MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) STUDY_TIME_PLAN,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW, 
+		       MAS.STATE
+		FROM   LMS_LESSON LESS
+		     INNER JOIN COM_MEMBER MEMB       ON  MEMB.DELETE_YN='N' AND LESS.MEM_SEQ = MEMB.MEM_SEQ
+
+				 INNER JOIN LMS_SUBJECT LS
+				 ON LS.DELETE_YN = 'N'
+		       AND    LESS.YYYY         = LS.YYYY
+		       AND    LESS.TERM         = LS.TERM
+		       AND    LESS.CLASS        = LS.CLASS
+		       AND    LESS.SUBJECT_CODE = LS.SUBJECT_CODE
+		       
+		     INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     WEEK.DELETE_YN='N'           
+				   AND    LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS		       
+		       INNER JOIN  LMS_SUBJ_WEEK_TIME_ENRICHMENT WEET
+		       ON     WEET.DELETE_YN = 'N' 
+				 AND 	  LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+		       AND    WEEK.WEEK_ID      = WEET.WEEK_ID
+		       AND    WEET.YYYY         = LESS.YYYY
+		       AND    WEET.TERM         = LESS.TERM
+		       AND    WEET.CLASS        = LESS.CLASS
+ 		       
+ 		       INNER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.DELETE_YN                = 'N'
+		       AND    MAS.YYYY                     = LESS.YYYY
+		       AND    MAS.TERM                     = LESS.TERM
+		       AND    MAS.CLASS                    = LESS.CLASS
+			   AND    MAS.SUBJECT_CODE 				 = LESS.SUBJECT_CODE
+		       AND    MAS.ADDYN                    = #{addyn}
+		       AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+		       AND    MAS.TIME_ID                  = WEET.TIME_ID		
+			 		       
+		       INNER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		       
+		       AND    MEMB.MEM_ID       = DET.MEM_ID
+		       AND    DET.DELETE_YN     = 'N'
+		       AND    DET.ADDYN         = #{addyn}
+		       			       
+				LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT
+				ON     UNIT.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = UNIT.WEEK_ID
+				AND    LESS.YYYY         = UNIT.YYYY
+				AND    LESS.TERM         = UNIT.TERM
+				AND    LESS.SUBJECT_CODE = UNIT.SUBJECT_CODE
+				
+				LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM
+				ON     ELEM.DELETE_YN           ='N'
+				AND    WEEK.WEEK_ID       = ELEM.WEEK_ID
+				AND    LESS.YYYY         = ELEM.YYYY
+				AND    LESS.TERM         = ELEM.TERM
+				AND    LESS.SUBJECT_CODE = ELEM.SUBJECT_CODE
+					       					       	       
+			WHERE  LESS.DELETE_YN     = 'N'
+        	  AND LESS.SUBJECT_CODE =  #{subjectCode}
+			<if test="term != null and term != ''">
+			AND LESS.TERM = #{term}
+			</if>
+			<if test="yyyy != null and yyyy != ''">
+			AND LESS.YYYY =#{yyyy}
+			</if>
+		      AND WEEK.WEEK_CNT = #{weekCnt}          
+      ORDER BY WEET.TRANING_DATE , MEM.MEM_ID							
+
+ 	</select>
+	<select id="detailTraningNotePrd" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.detailTraningNotePrd ====== */
+		SELECT 
+		A.DEPARTMENT_NAME,
+		FN_GETCOMPAYNAME(A.COMPANY_ID) COMPANY_NAME,
+		group_concat(A.PRT_NAME) AS PRT_NAME,
+		group_concat(A.COT_NAME) AS COT_NAME,
+		MIN(A.ST_DATE) as TRANING_ST,
+		MAX(A.ED_DATE) AS TRANING_ED
+		FROM (
+				SELECT LS.DEPARTMENT_NAME,
+				FN_GETINSNAME(LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) AS PRT_NAME,
+				FN_GETTUTNAME(LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) AS COT_NAME,
+				MIN(LSWT.TRANING_DATE) AS ST_DATE,
+				MAX(LSWTE.TRANING_DATE) AS ED_DATE,
+				LTPM.COMPANY_ID
+				FROM LMS_SUBJ_WEEK  LSW
+				INNER JOIN LMS_SUBJECT LS 
+							ON  LS.DELETE_YN='N'
+						   AND LS.YYYY= LSW.YYYY
+							AND LS.TERM = LSW.TERM
+							AND LS.SUBJECT_CODE = LSW.SUBJECT_CODE
+							AND LS.CLASS = LSW.CLASS
+							AND ((LS.SUBJECT_TYPE = 'HSKILL' AND LS.SUBJECT_TRANING_TYPE = 'OJT') OR LS.SUBJECT_TRANING_TYPE = 'OFF' )
+				INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID =LSW.WEEK_ID
+												AND LSWT.YYYY = LS.YYYY
+												AND LSWT.TERM = LS.TERM
+												AND LSWT.SUBJECT_CODE = LS.SUBJECT_CODE
+												AND LSWT.CLASS = LS.CLASS
+												AND LSWT.DELETE_YN='N'
+				INNER JOIN LMS_SUBJ_WEEK_TIME LSWTE ON LSWTE.WEEK_ID =LSW.WEEK_ID
+												AND LSWTE.YYYY = LS.YYYY
+												AND LSWTE.TERM = LS.TERM
+												AND LSWTE.SUBJECT_CODE = LS.SUBJECT_CODE
+												AND LSWTE.CLASS = LS.CLASS
+												AND LSWTE.DELETE_YN='N'	
+		      INNER JOIN LMS_TRANING_PROCESS_MAPPING LTPM ON  LTPM.YYYY = LS.YYYY
+ 														AND LTPM.TERM = LS.TERM
+ 														AND LTPM.SUBJECT_CODE = LS.SUBJECT_CODE
+ 														AND LTPM.CLASS = LS.CLASS
+ 														AND LTPM.DELETE_YN='N'
+				WHERE LSW.DELETE_YN ='N'
+									
+				AND LSW.WEEK_CNT =#{weekCnt}
+			<if test="yyyy != null and yyyy != ''">
+				AND LSW.YYYY =#{yyyy}
+			</if>				
+			<if test="term != null and term != ''">
+				AND LSW.TERM = #{term}
+			</if>				
+			<if test="subjectCode != null and subjectCode != ''">				
+				AND LSW.SUBJECT_CODE=#{subjectCode}
+			</if>
+			<if test="classId != null and classId != ''">	
+				AND LSW.CLASS = #{classId}
+			</if>	
+				GROUP BY LS.DEPARTMENT_NAME,LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,LTPM.COMPANY_ID	
+				) A 
+		GROUP BY A.DEPARTMENT_NAME  , A.COMPANY_ID
+	</select>
+	<select id="detailTraningNoteCot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.detailTraningNoteCot ====== */
+		
+		SELECT 
+		A.DEPARTMENT_NAME,
+		FN_GETCOMPAYNAME(A.COMPANY_ID) COMPANY_NAME,
+		group_concat(A.PRT_NAME) AS PRT_NAME,
+		group_concat(A.COT_NAME) AS COT_NAME,
+		min(A.ST_DATE) as TRANING_ST,
+		max(A.ED_DATE) AS TRANING_ED
+		FROM (
+				SELECT LS.DEPARTMENT_NAME,
+				FN_GETINSNAME(LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) AS PRT_NAME,
+				FN_GETTUTNAME(LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) AS COT_NAME,
+				MIN(LSWT.TRANING_DATE) AS ST_DATE,
+				MAX(LSWTE.TRANING_DATE) AS ED_DATE,
+				LTPM.COMPANY_ID
+				FROM LMS_SUBJ_WEEK  LSW
+				INNER JOIN LMS_SUBJECT LS 
+							ON  LS.DELETE_YN='N'
+						   AND LS.YYYY= LSW.YYYY
+							AND LS.TERM = LSW.TERM
+							AND LS.SUBJECT_CODE = LSW.SUBJECT_CODE
+							AND LS.CLASS = LSW.CLASS
+				INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID =LSW.WEEK_ID
+												AND LSWT.YYYY = LS.YYYY
+												AND LSWT.TERM = LS.TERM
+												AND LSWT.SUBJECT_CODE = LS.SUBJECT_CODE
+												AND LSWT.CLASS = LS.CLASS
+												AND LSWT.DELETE_YN='N'
+				INNER JOIN LMS_SUBJ_WEEK_TIME LSWTE ON LSWTE.WEEK_ID =LSW.WEEK_ID
+												AND LSWTE.YYYY = LS.YYYY
+												AND LSWTE.TERM = LS.TERM
+												AND LSWTE.SUBJECT_CODE = LS.SUBJECT_CODE
+												AND LSWTE.CLASS = LS.CLASS
+												AND LSWTE.DELETE_YN='N'			 
+		      INNER JOIN LMS_TRANING_PROCESS_MAPPING LTPM ON  LTPM.YYYY = LS.YYYY
+		      															AND LTPM.TERM = LS.TERM
+		      															AND LTPM.SUBJECT_CODE = LS.SUBJECT_CODE
+		      															AND LTPM.CLASS = LS.CLASS
+		      															AND LTPM.DELETE_YN='N'
+				WHERE LSW.DELETE_YN ='N'
+									
+							
+				AND LSW.WEEK_CNT =#{weekCnt}
+			<if test="yyyy != null and yyyy != ''">
+			AND LSW.YYYY =#{yyyy}
+			</if>
+			<if test="term != null and term != ''">
+			AND LSW.TERM = #{term}
+			</if>
+			<if test="subjectCode != null and subjectCode != ''">				
+				AND LSW.SUBJECT_CODE=#{subjectCode}
+			</if>
+			<if test="classId != null and classId != ''">	
+				AND LSW.CLASS = #{classId}
+			</if>	
+				GROUP BY LS.DEPARTMENT_NAME,LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,LTPM.COMPANY_ID
+				) A 
+		GROUP BY A.DEPARTMENT_NAME , A.COMPANY_ID
+	</select>
+	
+	<select id="selectDayTraningNoteAll" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.selectDayTraningNoteAll ====== */
+		SELECT #{traningDate} as  TRANING_DATE ,CM.MEM_SEQ,CM.MEM_ID,CM.MEM_NAME,
+		(SELECT SUM(A.STUDY_TIME) 
+		   FROM LMS_TRANING_NOTE_DETAIL A ,LMS_SUBJECT LS
+		  WHERE CM.MEM_ID=A.MEM_ID
+			 AND A.YYYY=LS.YYYY 
+			 AND A.TERM=LS.TERM 
+			 AND A.SUBJECT_CODE=LS.SUBJECT_CODE 
+			 AND A.CLASS =LS.CLASS
+			 AND LS.SUBJECT_TRANING_TYPE = 'OFF'
+			 AND LS.DELETE_YN='N'
+			 AND A.DELETE_YN='N' 
+			 AND A.STUDY_DATE=#{traningDate} 
+			 AND A.ADDYN='N'
+ 			 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+															 (SELECT 
+																 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																 WHERE LTPM.YYYY=#{yyyy}
+																 AND LTPM.COMPANY_ID=#{companyId}
+																 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																 )
+		)  AS STUDY_TIME_OFF,
+		(SELECT SUM(A.STUDY_TIME) FROM LMS_TRANING_NOTE_DETAIL A ,LMS_SUBJECT LS
+			WHERE CM.MEM_ID=A.MEM_ID  
+			 AND A.YYYY=LS.YYYY 
+			 AND A.TERM=LS.TERM 
+			 AND A.SUBJECT_CODE=LS.SUBJECT_CODE 
+			 AND A.CLASS =LS.CLASS
+			 AND LS.SUBJECT_TRANING_TYPE = 'OJT'
+			 AND LS.DELETE_YN='N'	 
+			 AND A.DELETE_YN='N' 
+			 AND A.STUDY_DATE=#{traningDate}
+			 AND A.ADDYN='N'
+ 			 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+															 (SELECT 
+																 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																 WHERE LTPM.YYYY=#{yyyy}
+																 AND LTPM.COMPANY_ID=#{companyId}
+																 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																 )			 
+		)  AS STUDY_TIME_OJT,		
+		Concat('(add:',(SELECT SUM(B.STUDY_TIME) FROM LMS_TRANING_NOTE_DETAIL B ,LMS_SUBJECT LS
+																WHERE CM.MEM_ID=B.MEM_ID  
+																 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+															 (SELECT 
+																 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																 WHERE LTPM.YYYY=#{yyyy}
+																 AND LTPM.COMPANY_ID=#{companyId}
+																 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																 )
+																 AND B.YYYY=LS.YYYY 
+																 AND B.TERM=LS.TERM 
+																 AND B.SUBJECT_CODE=LS.SUBJECT_CODE 
+																 AND B.CLASS =LS.CLASS
+																 AND LS.SUBJECT_TRANING_TYPE = 'OFF'	 
+																 AND LS.DELETE_YN='N'
+																AND B.DELETE_YN='N' 
+																AND B.STUDY_DATE=#{traningDate}
+																AND B.ADDYN='Y'),')')  AS ADD_STUDY_TIME_OFF,
+		concat('(add:',(SELECT SUM(B.STUDY_TIME) FROM LMS_TRANING_NOTE_DETAIL B ,LMS_SUBJECT LS
+																WHERE CM.MEM_ID=B.MEM_ID  
+																 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+															 (SELECT 
+																 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																 WHERE LTPM.YYYY=#{yyyy}
+																 AND LTPM.COMPANY_ID=#{companyId}
+																 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																 )
+																 AND B.YYYY=LS.YYYY 
+																 AND B.TERM=LS.TERM 
+																 AND B.SUBJECT_CODE=LS.SUBJECT_CODE 
+																 AND B.CLASS =LS.CLASS
+																 AND LS.SUBJECT_TRANING_TYPE = 'OFF'	 
+																 AND LS.DELETE_YN='N'														
+																AND B.DELETE_YN='N' 
+																AND B.STUDY_DATE=#{traningDate}
+																AND B.ADDYN='Y'),')')  AS ADD_STUDY_TIME_OJT
+		FROM  COM_MEMBER CM
+		WHERE CM.COMPANY_ID=#{companyId}
+		AND CM.MEM_TYPE='STD'
+		ORDER BY MEM_SEQ
+	</select>
+	<select id="selectDayTraningNoteTotal" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.selectDayTraningNoteTotal ====== */
+			SELECT #{traningMonth} as  TRANING_DATE ,CM.MEM_SEQ,CM.MEM_ID,CM.MEM_NAME,
+				(SELECT SUM(A.STUDY_TIME) 
+				   FROM LMS_TRANING_NOTE_DETAIL A ,LMS_SUBJECT LS
+				  WHERE CM.MEM_ID=A.MEM_ID
+					 AND A.YYYY=LS.YYYY 
+					 AND A.TERM=LS.TERM 
+					 AND A.SUBJECT_CODE=LS.SUBJECT_CODE 
+					 AND A.CLASS =LS.CLASS
+					 AND LS.SUBJECT_TRANING_TYPE = 'OFF'
+					 AND LS.DELETE_YN='N'
+					 AND A.DELETE_YN='N' 
+					 AND SUBSTR(A.STUDY_DATE,1,7)=#{traningMonth}
+					 AND A.ADDYN='N'
+					 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+																						 (SELECT 
+																							 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																							 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																							 WHERE LTPM.YYYY=#{yyyy}
+																							 AND LTPM.COMPANY_ID=#{companyId}
+																							 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																							 )
+					 
+				)  AS STUDY_TIME_OFF,
+				(SELECT SUM(A.STUDY_TIME) FROM LMS_TRANING_NOTE_DETAIL A ,LMS_SUBJECT LS
+					WHERE CM.MEM_ID=A.MEM_ID  
+					 AND A.YYYY=LS.YYYY 
+					 AND A.TERM=LS.TERM 
+					 AND A.SUBJECT_CODE=LS.SUBJECT_CODE 
+					 AND A.CLASS =LS.CLASS
+					 AND LS.SUBJECT_TRANING_TYPE = 'OJT'
+					 AND LS.DELETE_YN='N'	 
+					 AND A.DELETE_YN='N' 
+					 AND SUBSTR(A.STUDY_DATE,1,7) =#{traningMonth}
+					 AND A.ADDYN='N'
+					 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+																						 (SELECT 
+																							 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																							 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																							 WHERE LTPM.YYYY=#{yyyy}
+																							 AND LTPM.COMPANY_ID=#{companyId}
+																						 	 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																							 )			 
+				)  AS STUDY_TIME_OJT,		
+				Concat('(add:',(SELECT SUM(B.STUDY_TIME) FROM LMS_TRANING_NOTE_DETAIL B ,LMS_SUBJECT LS
+																		WHERE CM.MEM_ID=B.MEM_ID  
+																		 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+																			 (SELECT 
+																				 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																				 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																				 WHERE LTPM.YYYY=#{yyyy}
+																				 AND LTPM.COMPANY_ID=#{companyId}
+																				 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																				 )
+																		 AND B.YYYY=LS.YYYY 
+																		 AND B.TERM=LS.TERM 
+																		 AND B.SUBJECT_CODE=LS.SUBJECT_CODE 
+																		 AND B.CLASS =LS.CLASS
+																		 AND LS.SUBJECT_TRANING_TYPE = 'OFF'	 
+																		 AND LS.DELETE_YN='N'
+																		AND B.DELETE_YN='N' 
+																		AND  SUBSTR(B.STUDY_DATE,1,7)=#{traningMonth}
+																		AND B.ADDYN='Y'),')')  AS ADD_STUDY_TIME_OFF,
+				concat('(add:',(SELECT SUM(B.STUDY_TIME) FROM LMS_TRANING_NOTE_DETAIL B ,LMS_SUBJECT LS
+																		WHERE CM.MEM_ID=B.MEM_ID  
+																		 AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+																			 (SELECT 
+																				 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																				 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																				 WHERE LTPM.YYYY=#{yyyy}
+																				 AND LTPM.COMPANY_ID=#{companyId}
+																				 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																				 )
+																		 AND B.YYYY=LS.YYYY 
+																		 AND B.TERM=LS.TERM 
+																		 AND B.SUBJECT_CODE=LS.SUBJECT_CODE 
+																		 AND B.CLASS =LS.CLASS
+																		 AND LS.SUBJECT_TRANING_TYPE = 'OFF'	 
+																		 AND LS.DELETE_YN='N'														
+																		AND B.DELETE_YN='N' 
+																		AND SUBSTR(B.STUDY_DATE,1,7)=#{traningMonth}
+																		AND B.ADDYN='Y'),')')  AS ADD_STUDY_TIME_OJT
+				FROM  COM_MEMBER CM
+				WHERE CM.COMPANY_ID=#{companyId}
+				AND CM.MEM_TYPE='STD'
+				ORDER BY MEM_SEQ
+	
+	</select>
+ 	<select id="selectDayTraningNoteAllSum" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.WeekTraningMapper.selectDayTraningNoteAllSum ====== */
+		SELECT 
+		SUM(A.SUM_TIME_OFF) AS SUM_TIME_OFF,
+		SUM(A.SUM_TIME_OJT) AS SUM_TIME_OJT ,
+		SUM(A.ADD_SUM_TIME_OFF) AS ADD_SUM_TIME_OFF,
+		SUM(A.ADD_SUM_TIME_OJT) AS ADD_SUM_TIME_OJT,
+		SUM(A.SUM_TIME_OFF)+SUM(A.ADD_SUM_TIME_OFF) AS TOT_TIME_OFF,
+		SUM(A.SUM_TIME_OJT)+SUM(A.ADD_SUM_TIME_OJT) AS TOT_TIME_OJT
+		FROM (
+					SELECT
+					SUM(IF(LS.SUBJECT_TRANING_TYPE='OFF', MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ),0)) AS SUM_TIME_OFF,
+					SUM(IF(LS.SUBJECT_TRANING_TYPE='OJT', MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ),0)) AS SUM_TIME_OJT,
+					0 AS ADD_SUM_TIME_OFF,
+					0 AS ADD_SUM_TIME_OJT
+					FROM LMS_SUBJ_WEEK_TIME LSWT 
+					INNER JOIN LMS_SUBJECT LS ON LSWT.YYYY = LS.YYYY 
+													 AND LSWT.TERM = LS.TERM 
+													 AND LSWT.SUBJECT_CODE = LS.SUBJECT_CODE 
+													 AND LSWT.CLASS = LS.CLASS 
+													 AND LS.DELETE_YN='N'
+					WHERE  (LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) IN
+																									 (SELECT 
+																										 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																										 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																										 WHERE LTPM.YYYY=#{yyyy}
+																										 AND LTPM.COMPANY_ID=#{companyId}
+																										 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																										 )
+					AND SUBSTR(LSWT.TRANING_DATE,1,7) = #{traningMonth}
+					UNION 
+					SELECT
+					0 AS SUM_TIME_OFF,
+					0 AS SUM_TIME_OJT,
+					SUM(IF(LS.SUBJECT_TRANING_TYPE='OFF', MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ),0)) AS ADD_SUM_TIME_OFF,
+					SUM(IF(LS.SUBJECT_TRANING_TYPE='OJT', MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ),0)) AS ADD_SUM_TIME_OJT
+					FROM LMS_SUBJ_WEEK_TIME_ENRICHMENT LSWT 
+					INNER JOIN LMS_SUBJECT LS ON LSWT.YYYY = LS.YYYY 
+													 AND LSWT.TERM = LS.TERM 
+													 AND LSWT.SUBJECT_CODE = LS.SUBJECT_CODE 
+													 AND LSWT.CLASS = LS.CLASS 
+													 AND LS.DELETE_YN='N'
+					WHERE  (LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) IN
+																									 (SELECT 
+																										 LTPM.YYYY,LTPM.TERM,LTPM.SUBJECT_CODE,LTPM.CLASS
+																										 FROM LMS_TRANING_PROCESS_MAPPING LTPM 
+																										 WHERE LTPM.YYYY=#{yyyy}
+																										 AND LTPM.COMPANY_ID=#{companyId}
+																										 AND LTPM.TRANING_PROCESS_ID = #{traningProcessId} 
+																										 )
+					 AND SUBSTR(LSWT.TRANING_DATE,1,7) = #{traningMonth}
+					 ) A 
+		  		  limit 0,1
+	</select>
+	
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.ifx.service.impl.CmsIfxMapper">
+
+	<sql id="list-where">
+	    
+	</sql>
+	
+	
+	<select id="getCourseContentSummaryCnt" resultType="java.lang.Integer">
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.ifx.service.impl.CmsIfxMapper.getCourseContentSummaryCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM CMS_COURSE_CONTENT_SUMMARY 
+	    ]]>
+	</select>
+	
+	<insert id="insertCourseContentSummary" parameterType="kr.co.sitglobal.ifx.vo.CmsCourseContentVO">
+		/* ====== kr.co.sitglobal.ifx.service.impl.CmsIfxMapper.insertCourseContentSummary ====== */
+		INSERT 
+			  INTO CMS_COURSE_CONTENT_SUMMARY 
+			       ( 
+			          TITLE 
+			         ,INSTITUTION_ID 
+			         ,COURSE_CODE
+			         ,IS_OPERATING 
+			         ,REGISTERED_FROM_DEVICE_TYPE_CODE 
+			         ,ID 
+			         ,STUDY_TIME_IN_HOURS 
+			         ,IS_AVAILABLE 
+			         ,SUBTITLE 
+			         ,REGISTERED_DATE
+       				 ,LAST_MODIFIED_DATE
+			         ,INSERT_DATE 
+			       ) 
+			       VALUES 
+			       ( 
+			          #{title} 
+			         ,#{institution_id} 
+			         ,#{course_code}  
+			         ,#{is_operating}  
+			         ,#{registered_from_device_type_code}
+			         ,#{id}
+			         ,#{study_time_in_hours}  
+			         ,#{is_available}
+			         ,#{subtitle} 
+			         ,#{registered_date} 
+			         ,#{last_modified_date} 
+			         ,NOW()  
+			       )  
+	</insert>
+	
+	<select id="listCourseContentSummary" parameterType="kr.co.sitglobal.ifx.vo.CmsCourseBaseVO" resultType="kr.co.sitglobal.ifx.vo.CmsCourseContentVO">
+		/* ====== kr.co.sitglobal.ifx.service.impl.CmsIfxMapper.listCourseContentSummary ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+		select cms_course_summary_seq, 
+			       title, 
+			       institution_id, 
+			       course_code as courseCode, 
+			       is_operating, 
+			       registered_from_device_type_code, 
+			       id, 
+			       substring(course_code,2,4) as year, 
+			       study_time_in_hours, 
+			       is_available, 
+			       subtitle, 
+			       registered_date as registeredDate, 
+			       last_modified_date, 
+			       insert_date , 
+			       case 
+			           when substring(course_code,1,1) = 'A' 
+			           THEN '평생능력' 
+			           ELSE '코리아텍' 
+			       end  institutionName, 
+			       case 
+			           when registered_from_device_type_code = '1' 
+			           THEN 'PC+M' 
+			           WHEN registered_from_device_type_code = '2' 
+			           THEN 'PC+M' 
+			           WHEN registered_from_device_type_code = '3' 
+			           THEN 'PC+M' 
+			           WHEN registered_from_device_type_code = '4' 
+			           THEN 'PC' 
+			           WHEN registered_from_device_type_code = '5' 
+			           THEN '모바일' 
+			           ELSE '기타' 
+			       END deviceName, 
+			       CASE 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '08' 
+			           THEN '디자인콘텐츠' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '14' 
+			           THEN '건축/설계' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '15' 
+			           THEN '기계' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '16' 
+			           THEN '재료' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '17' 
+			           THEN '화학' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '19' 
+			           THEN '전기전자' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '20' 
+			           THEN '정보통신' 
+			           WHEN SUBSTRING(COURSE_CODE,13,2) = '30' 
+			           THEN '메카트로닉스' 
+			           WHEN registered_from_device_type_code = '40' 
+			           THEN '직업기초' 
+			           WHEN registered_from_device_type_code = '50' 
+			           THEN '공통과목' 
+			           ELSE '기타과목' 
+			       END cateName 
+			  FROM CMS_COURSE_CONTENT_SUMMARY 
+				 WHERE LOWER(COURSE_CODE) like '%life%' 
+				 		AND SUBTITLE LIKE CONCAT('%','학부','%') 
+				 	<if test="searchYear != null  and searchYear != ''">
+				 		AND SUBSTRING(COURSE_CODE,2,4) = #{searchYear}  
+				 	</if>	
+				 	
+				 	<if test="searchInstitutionId != null  and searchInstitutionId != ''">
+				 		<choose>
+				            <when test='searchInstitutionId eq "A"'>
+				                	AND SUBSTRING(COURSE_CODE,1,1) = #{searchInstitutionId} 
+				            </when>
+				            <otherwise>
+				            <![CDATA[
+				            		AND SUBSTRING(COURSE_CODE,1,1) <> 'A' 
+				            ]]>		
+				            </otherwise>
+				        </choose>
+				 	</if>	
+				 	<if test="searchWrd != null  and searchWrd != ''">
+				 		AND SUBTITLE LIKE CONCAT('%',#{searchWrd},'%') 
+				    </if>	   
+				    
+				    <if test="searchStDate != null  and searchStDate != ''">
+				    	AND SUBSTRING(REGISTERED_DATE,1,10) >= #{searchStDate}
+				    </if>
+				    <if test="searchEdDate != null  and searchEdDate != ''">
+				      <![CDATA[
+				    	AND SUBSTRING(REGISTERED_DATE,1,10) <= #{searchEdDate}
+				    	 ]]>	
+				    </if>
+				    
+				    ORDER BY cms_course_summary_seq 
+			<include refid="kr.co.sitglobal.include.paging-end"/>	       
+	</select>
+	
+
+</mapper>

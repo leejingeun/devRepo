@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<!-- 프로토타입 Main -->
+	<definition name="prototype.main.definition" template="/WEB-INF/jsp/layout/prototype/mainLayout.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/prototype/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/prototype/footer.jsp" />
+	</definition>
+	<!-- Sub Page -->
+	<definition name="prototype.sub.definition" template="/WEB-INF/jsp/layout/prototype/subLayout.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="header" value="/WEB-INF/jsp/layout/prototype/header.jsp" />
+		<put-attribute name="left" value="/WEB-INF/jsp/layout/prototype/left.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layout/prototype/footer.jsp" />
+	</definition>
+	<!-- Header, Left, Footer 가 없는 페이지  -->
+	<definition name="prototype.popup.definition" template="/WEB-INF/jsp/layout/prototype/popupLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- excel download 페이지 -->
+	<definition name="prototype.excel.definition" template="/WEB-INF/jsp/layout/prototype/excelLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- 빈페이지 -->
+	<definition name="prototype.none.definition" template="/WEB-INF/jsp/layout/prototype/nonLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	
+
+	
+<!-- 	<definition name="cmm/error/*" extends="prototype.sub.definition"> -->
+<!-- 		<put-attribute name="body" value="/WEB-INF/jsp/cmm/error/{1}.jsp" /> -->
+<!-- 	</definition> -->
+
+	<!-- 프로토타입 -->
+	<definition name="prototype/prototypeMain" extends="prototype.main.definition">
+		<put-attribute name="title" value="프로토타입" />
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/prototypeMain.jsp" />
+	</definition>
+	
+	<definition name="prototype/*/*" extends="prototype.sub.definition">
+		<put-attribute name="title" value="프로토타입" />
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="prototype/*/*/*" extends="prototype.sub.definition">
+		<put-attribute name="title" value="프로토타입" />
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="prototype/*/*/*/*" extends="prototype.sub.definition">
+		<put-attribute name="title" value="프로토타입" />
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+
+	<definition name="prototype_excel/*/*" extends="prototype.excel.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="prototype_excel/*/*/*" extends="prototype.excel.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<definition name="prototype_excel/*/*/*/*" extends="prototype.excel.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<definition name="prototype/*/*/*" extends="prototype.none.definition">
+		<put-attribute name="title" value="프로토타입" />
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<definition name="prototype/*/*/*/*" extends="prototype.none.definition">
+		<put-attribute name="title" value="프로토타입" />
+		<put-attribute name="body" value="/WEB-INF/jsp/prototype/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+</tiles-definitions>    

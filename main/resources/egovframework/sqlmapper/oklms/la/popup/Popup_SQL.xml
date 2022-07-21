@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.popup.service.impl.PopupMapper">
+<!-- 
+	<resultMap id="menu-result" type="kr.co.sitglobal.oklms.la.popup.vo.PopupVO">
+		<result column="POPUP_ID" 				property="popupId" /> 팝업 아이디
+		<result column="PAGE_TYPE" 				property="pageType" /> 노출위치(공통그룹코드)
+		<result column="TITLE" 					property="title" /> 제목
+		<result column="START_DATE" 			property="startDate" /> 게시기간 시작일자
+		<result column="FINISH_DATE" 			property="finishDate" /> 게시기간 종료일자
+		
+		<result column="POPUP_TYPE" 			property="popupType" /> 팝업형식 (w: windows, l: layer)
+		<result column="IS_CLOSE_VIEW_SETTINGS" property="isCloseViewSettings" /> 그만 보기 설정 값들 (d: 오늘하루그만보기, w: 일주일그만보기)
+		<result column="POPUP_WIDTH" 			property="popupWidth" /> 팝업창 가로크기
+		<result column="POPUP_HEIGHT" 			property="popupHeight" /> 팝업창 세로크기
+		<result column="POSITION_TOP" 			property="positionTop" /> 팝업 상단위치
+		
+		<result column="POSITION_LEFT" 			property="positionLeft" /> 팝업 왼쪽위치
+		<result column="CONTENT_TYPE" 			property="contentType" /> 컨텐츠 종류 (i: 이미지 업로드, h: html)
+		<result column="IMAGE_FILE_ID" 			property="imageFileId" /> 이미지 파일아이디
+		<result column="CONTENT" 				property="content" /> 내용
+		<result column="IS_USE" 				property="isUse" /> 사용여부
+
+		<result column="CREATOR_ID" 			property="creatorId" /> 생성자아이디
+		<result column="CREATE_DATE" 			property="createDate" /> 생성일
+		<result column="MODIFIER_ID" 			property="modifierId" /> 수정자아이디
+		<result column="MODIFY_DATE" 			property="modifyDate" /> 수정일
+		<result column="PAGE_URL" 				property="pageUrl" /> 페이지url
+	</resultMap>
+	
+ -->	
+ <select id="getPopupAllList" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" resultType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO">
+		SELECT 
+			P.POPUP_ID as popupId,
+			P.POPUP_TYPE as popupType,
+			P.CONTENT_TYPE as contentType,
+			P.IS_USE as isUse,
+			START_DATE as startDate,
+			P.FINISH_DATE as finishDate,
+			P.IMAGE_FILE_ID as imageFileId,
+			P.CREATE_DATE as createDate,
+			P.MODIFY_DATE as modifyDate,
+			P.CONTENT as content,
+			P.TITLE as title,
+			POPUP_WIDTH as popupWidth,
+			P.POPUP_HEIGHT as popupHeight,
+			P.POSITION_TOP as positionTop,
+			P.POSITION_LEFT as positionLeft,
+			P.PAGE_TYPE as pageType,
+			P.IS_CLOSE_VIEW_SETTINGS as isCloseViewSettings,
+			P.CREATOR_ID as creatorId,
+			P.MODIFIER_ID as modifierId,
+			P.PAGE_URL as pageUrl,
+			'' as imageWidth,
+			'' as imageHeight
+		FROM LMS_POPUP P
+		WHERE DATE_FORMAT(now(), '%Y%m%d%H%i%s') BETWEEN P.START_DATE AND P.FINISH_DATE
+		AND P.IS_USE = 'Y'
+		<if test="pageType != null  and pageType != ''">
+			AND P.PAGE_TYPE = #{pageType}
+		</if>		
+	</select>
+	
+	<select id="getPopupList" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" resultType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO">
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+		SELECT 
+			A.*
+		FROM
+		(
+			SELECT 
+				P.POPUP_ID as popupId,
+				P.POPUP_TYPE as popupType,
+				P.CONTENT_TYPE as contentType,
+				P.IS_USE as isUse,
+				START_DATE as startDate,
+				P.FINISH_DATE as finishDate,
+				P.IMAGE_FILE_ID as imageFileId,
+				P.CREATE_DATE as createDate,
+				P.MODIFY_DATE as modifyDate,
+				P.CONTENT as content,
+				P.TITLE as title,
+				POPUP_WIDTH as popupWidth,
+				P.POPUP_HEIGHT as popupHeight,
+				P.POSITION_TOP as positionTop,
+				P.POSITION_LEFT as positionLeft,
+				P.PAGE_TYPE as pageType,
+				P.IS_CLOSE_VIEW_SETTINGS as isCloseViewSettings,
+				P.CREATOR_ID as creatorId,
+				P.MODIFIER_ID as modifierId,
+				P.PAGE_URL as pageUrl,
+				'' as imageWidth,
+				'' as imageHeight,
+				U.MEM_NAME as userName
+			FROM LMS_POPUP P
+			LEFT JOIN COM_MEMBER U
+			ON P.CREATOR_ID = U.MEM_ID
+		]]>
+			<include refid="getPopupListSearchSql"/>
+		 <![CDATA[
+		) A
+		]]>
+<!-- 		
+WHERE R BETWEEN #{startRowNum} AND #{endRowNum} 
+-->
+		order by
+		<choose>
+			<when test="orderKey == 'createDate'">A.createDate</when>
+			<when test="orderKey == 'title'">A.title</when>
+			<when test="orderKey == 'startDate'">A.startDate</when>
+			<when test="orderKey == 'creatorId'">A.creatorId</when>
+			<otherwise>A.createDate</otherwise>
+		</choose>
+		<choose>
+			<when test="orderDir == 'ASC'">ASC</when>
+			<otherwise>DESC</otherwise>
+		</choose>		
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getPopupListCount" parameterType="map" resultType="int" databaseId="sqlserver">
+		SELECT COUNT(1)
+		FROM LMS_POPUP P
+		LEFT JOIN COM_MEMBER U
+		ON P.CREATOR_ID = U.MEM_ID		
+		<include refid="getPopupListSearchSql"/>
+	</select>
+	
+	<sql id="getPopupListSearchSql">
+		WHERE 1=1
+		<if test="pageType != null  and pageType != ''">
+		AND P.PAGE_TYPE = #{pageType}
+		</if>
+		<if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+		<if test="searchKeyword == 'title'">
+		AND P.TITLE LIKE '%${searchCondition}%'
+		</if>
+		<if test="searchKeyword == 'creatorId'">
+		AND ( P.CREATOR_ID LIKE '%${searchCondition}%' OR U.USER_NAME LIKE '%${searchCondition}%' )
+		</if>
+		</if>
+		<if test="startDate != null  and startDate != '' and finishDate != null  and finishDate != ''">
+		AND ( P.START_DATE <![CDATA[>=]]> #{startDate} AND P.START_DATE <![CDATA[<=]]> #{finishDate}  )
+		</if>
+	</sql>
+	
+	<select id="getPopup" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" resultType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO">
+		SELECT
+			P.POPUP_ID as popupId,
+			P.POPUP_TYPE as popupType,
+			P.CONTENT_TYPE as contentType,
+			P.IS_USE as isUse,
+			START_DATE as startDate,
+			P.FINISH_DATE as finishDate,
+			P.IMAGE_FILE_ID as imageFileId,
+			P.CREATE_DATE as createDate,
+			P.MODIFY_DATE as modifyDate,
+			P.CONTENT as content,
+			P.TITLE as title,
+			POPUP_WIDTH as popupWidth,
+			P.POPUP_HEIGHT as popupHeight,
+			P.POSITION_TOP as positionTop,
+			P.POSITION_LEFT as positionLeft,
+			P.PAGE_TYPE as pageType,
+			P.IS_CLOSE_VIEW_SETTINGS as isCloseViewSettings,
+			P.CREATOR_ID as creatorId,
+			P.MODIFIER_ID as modifierId,
+			P.PAGE_URL as pageUrl,
+			'' as imageWidth,
+			'' as imageHeight
+		FROM LMS_POPUP P
+		WHERE P.POPUP_ID = #{popupId}
+	</select>
+	
+	<select id="getPopupMinDateMaxDate" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" resultType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO">
+		SELECT 
+			MIN(START_DATE) as startDate,
+			MAX(FINISH_DATE) as finishDate
+		FROM LMS_POPUP
+	</select>
+	
+	<insert id="insertPopup" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" >
+		INSERT INTO LMS_POPUP 
+		(
+			POPUP_ID,
+			POPUP_TYPE,
+			CONTENT_TYPE,
+			IS_USE,
+			START_DATE,
+			FINISH_DATE,
+			IMAGE_FILE_ID,
+			CREATE_DATE,
+			MODIFY_DATE,
+			CONTENT,
+			TITLE,
+			POPUP_WIDTH,
+			POPUP_HEIGHT,
+			POSITION_TOP,
+			POSITION_LEFT,
+			PAGE_TYPE,
+			IS_CLOSE_VIEW_SETTINGS,
+			CREATOR_ID,
+			MODIFIER_ID,
+			PAGE_URL
+		)
+		VALUES
+		(
+			#{popupId},
+			#{popupType},
+			#{contentType},
+			#{isUse},
+			#{startDate},
+			#{finishDate},
+			#{imageFileId},
+			DATE_FORMAT(now(), '%Y%m%d%H%i%s'),
+			#{modifyDate},
+			#{content},
+			#{title},
+			#{popupWidth},
+			#{popupHeight},
+			#{positionTop},
+			#{positionLeft},
+			#{pageType},
+			#{isCloseViewSettings},
+			#{sessionMemSeq},
+			#{modifierId},
+			#{pageUrl}
+		)
+			
+	</insert>
+	
+	<update id="updatePopup" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" >
+		UPDATE LMS_POPUP 
+		SET
+			POPUP_TYPE = #{popupType},
+			CONTENT_TYPE = #{contentType},
+			IS_USE = #{isUse}, 
+			START_DATE = #{startDate}, 
+			FINISH_DATE = #{finishDate},
+			IMAGE_FILE_ID = #{imageFileId},
+			MODIFY_DATE = DATE_FORMAT(now(), '%Y%m%d%H%i%s'),
+			CONTENT = #{content},
+			TITLE = #{title},
+			POPUP_WIDTH = #{popupWidth},
+			POPUP_HEIGHT = #{popupHeight},
+			POSITION_TOP = #{positionTop},
+			POSITION_LEFT = #{positionLeft},
+			PAGE_TYPE = #{pageType},
+			IS_CLOSE_VIEW_SETTINGS = #{isCloseViewSettings},
+			MODIFIER_ID = #{sessionMemSeq},
+			PAGE_URL = #{pageUrl}
+		WHERE POPUP_ID = #{popupId}
+	</update>
+	
+	<update id="modifyPopupIsUse" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" >
+		UPDATE LMS_POPUP 
+		SET
+			IS_USE = #{isUse}
+		WHERE POPUP_ID = #{popupId}	
+	</update>	
+	
+	<delete id="deletePopup" parameterType="kr.co.sitglobal.oklms.la.popup.vo.PopupVO" >
+		DELETE FROM LMS_POPUP 
+		WHERE POPUP_ID = #{popupId}
+	</delete>	
+</mapper>

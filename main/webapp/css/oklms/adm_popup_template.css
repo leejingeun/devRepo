@@ -1,0 +1,117 @@
+/* 기본설정 */
+* {margin:0; padding:0;}
+html,body												{height:100%; margin:0; padding:0; font:12px nbgM, Dotum, play, sans-serif; color:#333; line-height:18px;}
+div, table												{margin:0; padding:0;}
+input, select											{padding:0}
+img, fieldset											{border:0;}
+img														{vertical-align:top;}
+ul, ol														{list-style:none;}
+a:link, a:visited, a:active, a:hover				{text-decoration:none;}
+hr															{display:none;}
+
+.button													{border:none;}
+.button:hover											{cursor:pointer;}
+.hidden, legend, caption							{position:absolute; overflow:hidden; visibility:hidden; width:0; height:0; left:0; top:0; font-size:0; line-height:0; padding:0; margin:0;}
+
+
+
+
+
+
+/* 템플릿-1 속성 */
+
+#temp1-wrapper									{position:relative; width:100%; height:100%; background:url("/images/oklms/adm/temp_01/pop_border_01.png") left repeat-y #FFF;}
+#temp1-header									{position:absolute; width:100%; height:60px; left:0; top:0; background:url("/images/oklms/adm/temp_01/pop_border_02.png") right no-repeat;}
+#temp1-header h1								{float:left; width:100%; height:35px; font:700 15px play; color:#52A72B; line-height:30px; text-align:center; background:url("/images/oklms/adm/temp_01/pop_border_03.png") left no-repeat; padding-top:25px;}
+
+#temp1-content-area							{min-height:100%; margin:0 0 -75px; background:url("/images/oklms/adm/temp_01/pop_border_04.png") right 0 repeat-y ;}
+* html #temp1-content-area					{height:100%;} /* IE6 핵 */
+#temp1-container								{padding:60px 35px 75px;}
+#temp1-title										{clear:both; width:84%; font:18px nbgM; color:#FFF; line-height:23px; text-align:center; background:#4AA520; padding:9px 8% 6px;}
+#temp1-body										{clear:both; width:98%; font:13px nbgM; color:#888; line-height:18px; padding:0 1%; margin-top:18px;}
+
+#temp1-footer										{float:left; width:100%; height:75px; background:url("/images/oklms/adm/temp_01/pop_border_05.png") right no-repeat;}
+#temp1-close										{width:100%; height:30px; font-size:13px; color:#707D69; text-align:right; background:url('../images/oklms/adm/temp_01/pop_border_06.png') left no-repeat; padding-top:45px;}
+#temp1-close label								{padding-right:15px;}
+#temp1-close input								{width:13px; height:13px; vertical-align:middle; margin-right:5px;}
+
+
+
+
+
+/* 템플릿-2 속성 */
+
+#temp2-wrapper									{position:relative; width:100%; height:100%; background:url("/images/oklms/adm/temp_02/pop_border_01.png") left repeat-y #FFF;}
+#temp2-header									{position:absolute; width:100%; height:60px; left:0; top:0; background:url("/images/oklms/adm/temp_02/pop_border_02.png") right no-repeat;}
+#temp2-header h1								{float:left; width:100%; height:47px; font:700 20px play; color:#185371; line-height:30px; text-indent:15px; background:url("/images/oklms/adm/temp_02/pop_border_03.png") left no-repeat; padding-top:13px;}
+
+#temp2-content-area							{min-height:100%; margin:0 0 -75px; background:url("/images/oklms/adm/temp_02/pop_border_04.png") right 0 repeat-y ;}
+* html #temp2-content-area					{height:100%;} /* IE6 핵 */
+#temp2-container								{padding:60px 40px 75px;}
+#temp2-guide										{clear:both; width:96%; height:95px; border-bottom:1px dotted #425056; background:url("/images/oklms/adm/temp_02/topimg.png") left no-repeat; padding:0 2%;}
+#temp2-guide p.type-1							{width:100%; font:23px nbgM; color:#0066A9; line-height:30px; text-align:right; padding:25px 0 3px;}
+#temp2-guide p.type-2							{width:100%; font:12px nbgM; color:#999; line-height:18px; text-align:right;}
+#temp2-guide span								{color:#D2D2D2;}
+#temp2-title										{clear:both; width:100%; font:18px nbgM; color:#222; line-height:23px; margin-top:20px;}
+#temp2-body										{clear:both; width:100%; font:13px nbgM; color:#888; line-height:18px; margin-top:5px;}
+
+#temp2-footer										{float:left; width:100%; height:75px; background:url("/images/oklms/adm/temp_02/pop_border_05.png") right no-repeat;}
+#temp2-close										{width:100%; height:30px; font-size:13px; color:#5B686F; text-align:right; background:url('../images/oklms/adm/temp_02/pop_border_06.png') left no-repeat; padding-top:45px;}
+#temp2-close label								{padding-right:15px;}
+#temp2-close input								{width:13px; height:13px; vertical-align:middle; margin-right:5px;}
+
+
+
+
+
+/* 템플릿-3 속성 */
+
+#temp3-wrapper									{position:relative; width:100%; height:100%; background:url("/images/oklms/adm/temp_03/pop_border_01.png") repeat;}
+#temp3-header									{position:absolute; width:100%; height:100px; left:0; top:0; background:url("/images/oklms/adm/temp_03/topimg.png") right no-repeat;}
+#temp3-header p.type-1						{font:25px nbgM; color:#275976; line-height:30px; padding:32px 40px 3px;}
+#temp3-header p.type-2						{font:13px nbgM; color:#777; line-height:18px; padding-left:40px;}
+#temp3-header span							{color:#D2D2D2;}
+
+#temp3-content-area							{min-height:100%; margin:0 0 -40px;}
+* html #temp3-content-area					{height:100%;} /* IE6 핵 */
+#temp3-container								{height:100%; padding:100px 15px 40px;}
+#temp3-content									{float:left; height:100%; border-radius:10px; background:#E1E6E9; padding:0 25px 30px;}
+#temp3-title										{clear:both; width:100%; font:18px nbgM; color:#2D2E2F; line-height:23px; border-bottom:1px dotted #38444B; padding-bottom:8px; margin-top:25px;}
+#temp3-body										{clear:both; width:100%; font:13px nbgM; color:#656869; line-height:18px; margin-top:15px;}
+
+#temp3-footer										{float:left; width:100%; height:40px; background:#5A6165;}
+#temp3-close										{width:100%; height:28px; font-size:13px; color:#ADB0B2; text-align:right; padding-top:12px;}
+#temp3-close label								{padding-right:20px;}
+#temp3-close input								{width:13px; height:13px; vertical-align:middle; margin-right:5px;}
+
+
+
+
+
+
+
+/* 템플릿-4 속성 */
+
+#temp4-wrapper									{position:relative; width:100%; height:100%; background:url("/images/oklms/adm/temp_04/pop_border_01.png") left repeat-y;}
+#temp4-header									{position:absolute; width:100%; height:145px; left:0; top:0; background:url("/images/oklms/adm/temp_04/pop_border_02.png") right no-repeat;}
+
+#temp4-guide										{width:100%; height:120px; background:url("/images/oklms/adm/temp_04/pop_border_03.png") left no-repeat; padding-top:25px;}
+#temp4-guide h1									{width:110px; font:700 15px play; color:#FFF; line-height:18px; text-align:center; border-radius:10px; background:#7F8D98; padding-bottom:2px; margin-left:40px;}
+#temp4-guide p.type-1							{font:23px nbgM; color:#333; line-height:30px; padding:10px 0 0 40px;}
+#temp4-guide p.type-2							{font:12px nbgM; color:#999; line-height:18px; padding-left:40px;}
+#temp4-guide span								{color:#C4CACE;}
+
+#temp4-content-area							{min-height:100%; margin:0 0 -75px; background:url("/images/oklms/adm/temp_04/pop_border_04.png") right 0 repeat-y ;}
+* html #temp4-content-area					{height:100%;} /* IE6 핵 */
+#temp4-container								{padding:145px 40px 75px;}
+
+#temp4-title										{clear:both; width:100%; font:18px nbgM; color:#2065AB; line-height:23px; border-bottom:1px dotted #5A81A1; padding-bottom:5px;}
+#temp4-body										{clear:both; width:100%; font:13px nbgM; color:#888; line-height:18px; margin-top:10px;}
+
+#temp4-footer										{float:left; width:100%; height:75px; background:url("/images/oklms/adm/temp_04/pop_border_05.png") right no-repeat;}
+#temp4-close										{width:100%; height:30px; font-size:13px; color:#5B686F; text-align:right; background:url('../images/oklms/adm/temp_04/pop_border_06.png') left no-repeat; padding-top:45px;}
+#temp4-close label								{padding-right:20px;}
+#temp4-close input								{width:13px; height:13px; vertical-align:middle; margin-right:5px;}
+
+
+

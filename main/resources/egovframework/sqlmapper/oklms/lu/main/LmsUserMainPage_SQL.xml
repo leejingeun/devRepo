@@ -1,0 +1,1795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 01. 23          First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper">
+
+	<!-- HRD 담당자 기업체현황  -->
+	<select id="listLmsUserMainPageCcmCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcnCnt ====== */
+		<![CDATA[
+		SELECT  A.YYYY, 
+		        A.TERM,  
+				A.HRD_TRANING_NO, 
+		        A.HRD_TRANING_NAME,
+		        A.COMPANY_ID,
+		        A.TRANING_PROCESS_ID,
+		        A.SCHOOL_YEAR,
+				SUM(A.STU_CNT) AS STU_CNT,
+				SUM(A.OUT_CNT) AS OUT_CNT
+				 FROM (
+							SELECT  
+								  MAP.YYYY, 
+							      MAP.TERM, 
+							      MAP.SUBJECT_CODE, 
+							      MAP.CLASS , 
+									PRO.HRD_TRANING_NO, 
+							      PRO.HRD_TRANING_NAME,
+							      PRO.COMPANY_ID,
+							      PRO.TRANING_PROCESS_ID,
+							      (SELECT CASE WHEN SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,2) != '20'
+								              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LES.MEM_SEQ)),1,4)
+								              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,4)
+								           END
+							          FROM LMS_LESSON LES 
+							               WHERE LES.YYYY = MAP.YYYY 
+							               AND LES.TERM = MAP.TERM 
+							               AND LES.SUBJECT_CODE = MAP.SUBJECT_CODE 
+							               AND LES.CLASS = MAP.CLASS 
+							               AND LES.DELETE_YN = 'N' 
+							               LIMIT 0,1
+							        ) AS SCHOOL_YEAR,      
+							      (SELECT COUNT(LES.MEM_SEQ)
+							          FROM LMS_LESSON LES 
+							               WHERE LES.YYYY = MAP.YYYY 
+							               AND LES.TERM = MAP.TERM 
+							               AND LES.SUBJECT_CODE = MAP.SUBJECT_CODE 
+							               AND LES.CLASS = MAP.CLASS 
+							               AND LES.DELETE_YN = 'N' 
+							        ) AS STU_CNT,
+							     (SELECT COUNT(LES.MEM_SEQ) 
+							          FROM   LMS_LESSON LES 
+							             INNER JOIN COM_MEMBER MEM 
+							                 ON MEM.mem_seq = LES.MEM_SEQ 
+							               AND MEM.delete_yn = 'N' 
+							               AND MEM.out_yn = 'Y'           
+							            WHERE LES.YYYY = MAP.YYYY 
+							               AND LES.TERM = MAP.TERM 
+							               AND LES.SUBJECT_CODE = MAP.SUBJECT_CODE 
+							               AND LES.CLASS = MAP.CLASS 
+							               AND LES.DELETE_YN = 'N' 
+							        ) AS OUT_CNT
+									 FROM LMS_TRANING_PROCESS PRO
+									 INNER JOIN LMS_TRANING_PROCESS_MAPPING MAP ON PRO.TRANING_PROCESS_ID = MAP.TRANING_PROCESS_ID AND MAP.DELETE_YN = 'N'
+									 WHERE PRO.DELETE_YN = 'N'
+										AND PRO.COMPANY_ID = #{sessionCompanyId}
+										AND (MAP.YYYY,MAP.TERM) IN (
+																				SELECT HAK.YYYY,HAK.TERM 
+																				FROM HAK_SCHEDULE HAK 
+																				WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																				AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+							GROUP BY		MAP.YYYY, 
+							      MAP.TERM, 
+							      MAP.SUBJECT_CODE, 
+							      MAP.CLASS , 
+								  PRO.HRD_TRANING_NO, 
+							      PRO.HRD_TRANING_NAME,
+							      PRO.COMPANY_ID,
+							      PRO.TRANING_PROCESS_ID) A
+		      GROUP BY A.YYYY,A.TERM, A.HRD_TRANING_NO, A.HRD_TRANING_NAME,A.COMPANY_ID,A.TRANING_PROCESS_ID,A.SCHOOL_YEAR		 
+		]]>
+	</select>
+	
+	<!-- 센터전담자 기업체현황  -->
+	<select id="listLmsUserMainPageCcnCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcnCnt ====== */
+		<![CDATA[
+		SELECT  A.SUBJECT_GRADE AS SCHOOL_YEAR ,
+				COUNT(A.COMPANY_ID) AS COMPANY_CNT ,
+				COUNT(A.MEM_ID) -SUM(A.OUT_YN) AS ALL_STUDENT_CNT,
+				SUM(A.OUT_YN) AS DROPOUT_CNT
+		FROM 
+		(
+		SELECT 
+		CASE WHEN SUBSTRING(FN_GETUSERID(CM.MEM_SEQ),1,2) != '20'
+		              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(CM.MEM_SEQ)),1,4)
+		              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(CM.MEM_SEQ),1,4)
+		           END SUBJECT_GRADE
+					  ,CM.MEM_ID,LL.MEM_SEQ,CM.COMPANY_ID,IF(CM.OUT_YN = 'Y' ,1,0 ) OUT_YN FROM LMS_LESSON LL
+		INNER JOIN COM_MEMBER CM ON CM.DELETE_YN='N' AND CM.MEM_SEQ=LL.MEM_SEQ AND CM.MEM_TYPE='STD'
+					WHERE LL.DELETE_YN='N'
+					AND (LL.YYYY,LL.TERM) IN (
+												SELECT HAK.YYYY,HAK.TERM 
+												FROM HAK_SCHEDULE HAK 
+												WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+												AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+		GROUP BY  CM.MEM_ID,LL.MEM_SEQ,CM.COMPANY_ID ,CM.OUT_YN
+		) A
+		GROUP BY A.SUBJECT_GRADE
+		]]>
+	</select>
+	
+	<!--HRD담당자 강의일정 목록  -->
+	<select id="listLmsUserMainPageCcmSchedule" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcmSchedule ====== */
+		<![CDATA[
+ 
+					SELECT  
+						  MAP.YYYY, 
+					      MAP.TERM, 
+					      MAP.SUBJECT_CODE, 
+					      MAP.CLASS  AS SUB_CLASS, 
+					      LS.SUBJECT_TRANING_TYPE,
+					      LS.SUBJECT_NAME,					      
+						  PRO.HRD_TRANING_NO, 
+					      PRO.HRD_TRANING_NAME,
+					      PRO.COMPANY_ID,
+					      PRO.TRANING_PROCESS_ID,
+					 FN_GETINSNAME(LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) AS  MEMBER_PRT_NAME,
+					 FN_GETTUTNAME(LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) AS MEMBER_COT_NAME,					      
+							 LSWT.TRANING_ST_HOUR AS TRANING_ST_HOUR ,
+							 LSWT.TRANING_ST_MIN AS TRANING_ST_MIN,
+							 LSWT.TRANING_ED_HOUR AS TRANING_ED_HOUR,
+							 LSWT.TRANING_ED_MIN  AS TRANING_ED_MIN,					      
+					      (SELECT CASE WHEN SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,2) != '20'
+						              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LES.MEM_SEQ)),1,4)
+						              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,4)
+						           END
+					          FROM LMS_LESSON LES 
+					               WHERE LES.YYYY = MAP.YYYY 
+					               AND LES.TERM = MAP.TERM 
+					               AND LES.SUBJECT_CODE = MAP.SUBJECT_CODE 
+					               AND LES.CLASS = MAP.CLASS 
+					               AND LES.DELETE_YN = 'N' 
+					               LIMIT 0,1
+					        ) AS SCHOOL_YEAR 
+							 FROM LMS_TRANING_PROCESS PRO
+							 INNER JOIN LMS_TRANING_PROCESS_MAPPING MAP ON PRO.TRANING_PROCESS_ID = MAP.TRANING_PROCESS_ID AND MAP.DELETE_YN = 'N'
+							 INNER JOIN LMS_SUBJECT LS ON LS.YYYY= MAP.YYYY 
+							 												AND LS.TERM=MAP.TERM 
+																			AND LS.SUBJECT_CODE = MAP.SUBJECT_CODE 
+																			AND LS.CLASS= MAP.CLASS 
+																			AND LS.DELETE_YN='N' 
+							 INNER JOIN LMS_SUBJ_WEEK LSW ON LSW.YYYY= MAP.YYYY 
+							 												AND LSW.TERM=MAP.TERM 
+																			AND LSW.SUBJECT_CODE = MAP.SUBJECT_CODE 
+																			AND LSW.CLASS= MAP.CLASS 
+																			AND LSW.DELETE_YN='N' 
+							 INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON  LSWT.YYYY = LSW.YYYY 
+																			 AND LSWT.TERM =LSW.TERM 
+																			 AND LSWT.SUBJECT_CODE = LSW.SUBJECT_CODE 
+																			 AND LSWT.CLASS = LSW.CLASS 
+																			 AND LSWT.WEEK_ID = LSW.WEEK_ID
+																			 AND LSWT.DELETE_YN='N'
+																			 AND LSWT.TRANING_DATE = #{traningDate}
+							 WHERE PRO.DELETE_YN = 'N'
+								AND PRO.COMPANY_ID = #{sessionCompanyId}
+								AND (MAP.YYYY,MAP.TERM) IN (
+																		SELECT HAK.YYYY,HAK.TERM 
+																		FROM HAK_SCHEDULE HAK 
+																		WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																		AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+					
+		
+		
+		]]>
+	</select>
+	 
+	<!--교수 강의일정 목록  -->
+	<select id="listLmsUserMainPagePrtSchedule" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+	/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPagePrtSchedule ====== */
+			 SELECT
+			 		 LSW.WEEK_CNT,
+			 		 LSWT.YYYY,
+			 		 LSWT.TERM,
+			 		 LSWT.SUBJECT_CODE,
+			 		 (SELECT FN_GETCOMPAYNAME(COMPANY_ID)
+						FROM LMS_TRANING_PROCESS_MAPPING A
+						WHERE A.YYYY=LSWT.YYYY
+						AND A.TERM=LSWT.TERM
+						AND A.SUBJECT_CODE=LSWT.SUBJECT_CODE
+						AND A.CLASS=LSWT.CLASS
+						AND A.DELETE_YN='N'
+						LIMIT 0,1) AS COMPANY_NAME,
+			 		 LS.SUBJECT_TYPE,
+					 LS.ONLINE_TYPE,
+					 LS.LCTRUM_NM,
+					 
+					 CASE
+				       		WHEN LS.ONLINE_TYPE IN ('104','105') THEN '플립러닝'
+				       		WHEN LS.ONLINE_TYPE = '101' THEN '순수온라인'
+				            WHEN LS.ONLINE_TYPE = '102' THEN '브렌디드'
+				            WHEN LS.ONLINE_TYPE = '103' THEN '보조활용'
+				         ELSE  '없음'
+				   	  END ONLINE_TYPE_NAME,
+					 
+			 		 (SELECT MAX(TO_NUMBER(WEEK_CNT)) 
+					  	FROM LMS_SUBJ_WEEK A 
+						  WHERE A.YYYY=LSWT.YYYY 
+						  AND A.TERM=LSWT.TERM 
+						  AND A.SUBJECT_CODE= LSWT.SUBJECT_CODE 
+						  AND A.CLASS = LSWT.CLASS 
+						  AND A.DELETE_YN='N') MAX_WEEK_CNT,
+					 (SELECT 
+					  CASE WHEN SUBSTRING(FN_GETUSERID(LL.MEM_SEQ ),1,2) != '20'
+					              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LL.MEM_SEQ )),1,4)
+					              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LL.MEM_SEQ ),1,4)
+					           END SUBJECT_GRADE  FROM LMS_LESSON LL 
+					  WHERE LL.YYYY = LSWT.YYYY
+						AND LL.TERM = LSWT.TERM
+						AND LL.SUBJECT_CODE = LSWT.SUBJECT_CODE
+						AND LL.CLASS = LSWT.CLASS 
+						LIMIT 0,1
+						) AS SCHOOL_YEAR ,				  
+					 UNIT.NCS_UNIT_NAME ,
+					 ELEM.NCS_ELEM_NAME ,
+					 LSWT.WEEK_ID,
+					 LSWT.TRANING_DATE,
+					 FN_GETUSERNAME(LSIM.MEM_SEQ) AS  MEMBER_PRT_NAME,
+					 FN_GETTUTNAME(LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) AS MEMBER_COT_NAME,
+					 LS.SUBJECT_NAME,
+					 LS.SUBJECT_TRANING_TYPE,
+					 LS.CLASS AS SUB_CLASS,		 
+					 LSWT.TRANING_ST_HOUR AS TRANING_ST_HOUR ,
+					 LSWT.TRANING_ST_MIN AS TRANING_ST_MIN,
+					 LSWT.TRANING_ED_HOUR AS TRANING_ED_HOUR,
+					 LSWT.TRANING_ED_MIN  AS TRANING_ED_MIN,
+					 FN_GETUSERNAME(LSIM.MEM_SEQ) AS  MEMBER_PRT_NAME,
+					 FN_GETTUTNAME(LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) AS MEMBER_COT_NAME
+					 
+					 FROM LMS_SUBJ_WEEK_TIME LSWT
+					 INNER JOIN LMS_SUBJ_WEEK LSW ON LSW.WEEK_ID=LSWT.WEEK_ID
+					 									AND LSW.YYYY = LSWT.YYYY
+														AND LSW.TERM = LSWT.TERM
+														AND LSW.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LSW.CLASS = LSWT.CLASS
+					 									 AND LSW.DELETE_YN='N'
+					 INNER JOIN LMS_SUBJECT LS ON  LS.YYYY = LSWT.YYYY
+														AND LS.TERM = LSWT.TERM
+														AND LS.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LS.CLASS = LSWT.CLASS
+														AND LS.DELETE_YN='N' 
+														 												 		
+					 INNER JOIN LMS_SUBJ_INS_MAPPING LSIM ON  LSIM.YYYY = LSWT.YYYY
+														AND LSIM.TERM = LSWT.TERM
+														AND LSIM.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LSIM.CLASS = LSWT.CLASS
+														AND LSIM.MEM_SEQ=#{sessionMemSeq}
+														AND LSIM.DELETE_YN='N'
+					LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT ON LS.YYYY = UNIT.YYYY 
+					
+														AND LS.TERM = UNIT.TERM 
+														AND LS.SUBJECT_CODE  = UNIT.SUBJECT_CODE 
+		                                    AND LS.CLASS = UNIT.CLASS 
+													   AND LSW.WEEK_ID = UNIT.WEEK_ID 
+													   AND UNIT.DELETE_YN ='N'
+					LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM ON LS.YYYY = ELEM.YYYY 
+													   AND LS.TERM = ELEM.TERM 
+													   AND LS.SUBJECT_CODE  = ELEM.SUBJECT_CODE	   
+		       									   AND LS.CLASS = ELEM.CLASS 
+														AND LSW.WEEK_ID = ELEM.WEEK_ID 
+														AND UNIT.DELETE_YN ='N'
+						       									  
+		 			WHERE LSWT.DELETE_YN='N'  
+					  AND LSWT.TRANING_DATE = #{traningDate} 
+					  AND LS.SUBJECT_TRANING_TYPE = #{subjectTraningType}
+		
+	</select>
+	
+	<!--현장교사 강의일정 목록  -->
+	<select id="listLmsUserMainPageCotSchedule" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+	/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCotSchedule ====== */
+			 SELECT
+			 		 LSW.WEEK_CNT,
+			 		 LSWT.YYYY,
+			 		 LSWT.TERM,
+			 		 LSWT.SUBJECT_CODE,
+			 		 LS.SUBJECT_TYPE,
+					 LS.ONLINE_TYPE,
+			 		 (SELECT MAX(TO_NUMBER(WEEK_CNT)) 
+					  	FROM LMS_SUBJ_WEEK A 
+						  WHERE A.YYYY=LSWT.YYYY 
+						  AND A.TERM=LSWT.TERM 
+						  AND A.SUBJECT_CODE= LSWT.SUBJECT_CODE 
+						  AND A.CLASS = LSWT.CLASS 
+						  AND A.DELETE_YN='N') MAX_WEEK_CNT,
+					 (SELECT 
+					  CASE WHEN SUBSTRING(FN_GETUSERID(LL.MEM_SEQ ),1,2) != '20'
+					              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LL.MEM_SEQ )),1,4)
+					              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LL.MEM_SEQ ),1,4)
+					           END SUBJECT_GRADE  FROM LMS_LESSON LL 
+					  WHERE LL.YYYY = LSWT.YYYY
+						AND LL.TERM = LSWT.TERM
+						AND LL.SUBJECT_CODE = LSWT.SUBJECT_CODE
+						AND LL.CLASS = LSWT.CLASS 
+						LIMIT 0,1
+						) AS SCHOOL_YEAR ,				  
+					 UNIT.NCS_UNIT_NAME ,
+					 ELEM.NCS_ELEM_NAME ,
+					 LSWT.WEEK_ID,
+					 LSWT.TRANING_DATE,
+					 FN_GETUSERNAME(LSIM.MEM_SEQ) AS  MEMBER_PRT_NAME,
+					 FN_GETTUTNAME(LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) AS MEMBER_COT_NAME,
+					 LS.SUBJECT_NAME,
+					 LS.SUBJECT_TRANING_TYPE,
+					 LS.CLASS AS SUB_CLASS,		 
+					 LSWT.TRANING_ST_HOUR AS TRANING_ST_HOUR ,
+					 LSWT.TRANING_ST_MIN AS TRANING_ST_MIN,
+					 LSWT.TRANING_ED_HOUR AS TRANING_ED_HOUR,
+					 LSWT.TRANING_ED_MIN  AS TRANING_ED_MIN
+					 
+					 FROM LMS_SUBJ_WEEK_TIME LSWT
+					 INNER JOIN LMS_SUBJ_WEEK LSW ON LSW.WEEK_ID=LSWT.WEEK_ID
+					 									AND LSW.YYYY = LSWT.YYYY
+														AND LSW.TERM = LSWT.TERM
+														AND LSW.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LSW.CLASS = LSWT.CLASS					  
+					 									AND LSW.DELETE_YN='N'
+					 INNER JOIN LMS_SUBJECT LS ON  LS.YYYY = LSWT.YYYY
+														AND LS.TERM = LSWT.TERM
+														AND LS.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LS.CLASS = LSWT.CLASS
+														AND LS.DELETE_YN='N'
+					 INNER JOIN LMS_SUBJ_TUT_MAPPING LSTM ON  LSTM.YYYY = LSWT.YYYY
+														AND LSTM.TERM = LSWT.TERM
+														AND LSTM.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LSTM.CLASS = LSWT.CLASS
+														AND LSTM.DELETE_YN='N' 
+					 									AND LSTM.MEM_SEQ = #{sessionMemSeq}
+														 												 		
+					 LEFT OUTER JOIN LMS_SUBJ_INS_MAPPING LSIM ON  LSIM.YYYY = LSWT.YYYY
+														AND LSIM.TERM = LSWT.TERM
+														AND LSIM.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LSIM.CLASS = LSWT.CLASS
+														AND LSIM.DELETE_YN='N'
+					LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT ON LS.YYYY = UNIT.YYYY 
+														AND LS.TERM = UNIT.TERM 
+														AND LS.SUBJECT_CODE  = UNIT.SUBJECT_CODE 
+		                                    			AND LS.CLASS = UNIT.CLASS 
+													   AND LSW.WEEK_ID = UNIT.WEEK_ID 
+													   AND UNIT.DELETE_YN ='N'
+					LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM ON LS.YYYY = ELEM.YYYY 
+													   AND LS.TERM = ELEM.TERM 
+													   AND LS.SUBJECT_CODE  = ELEM.SUBJECT_CODE	   
+		       									   AND LS.CLASS = ELEM.CLASS 
+														AND LSW.WEEK_ID = ELEM.WEEK_ID 
+														AND UNIT.DELETE_YN ='N'
+						       									  
+		 			WHERE LSWT.DELETE_YN='N'  
+						AND LSWT.TRANING_DATE = #{traningDate} 	
+	
+	
+	</select>
+	<!--센터담당자 일정 목록  -->
+	<select id="listLmsUserMainPageCcnSchedule" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+	/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcnSchedule ====== */
+	 SELECT 
+	 		 (SELECT 
+			  CASE WHEN SUBSTRING(FN_GETUSERID(LL.MEM_SEQ ),1,2) != '20'
+			              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LL.MEM_SEQ )),1,4)
+			              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LL.MEM_SEQ ),1,4)
+			           END SUBJECT_GRADE  FROM LMS_LESSON LL 
+			  WHERE LL.YYYY = LSWT.YYYY
+				AND LL.TERM = LSWT.TERM
+				AND LL.SUBJECT_CODE = LSWT.SUBJECT_CODE
+				AND LL.CLASS = LSWT.CLASS 
+				LIMIT 0,1
+				) AS SCHOOL_YEAR ,
+			 LTPM.COMPANY_ID,
+			 LTP.HRD_TRANING_NAME,
+			 FN_GETCOMPAYNAME(LTPM.COMPANY_ID) AS COMPANY_NAME,
+			 FN_GETUSERNAME(LSIM.MEM_SEQ) AS  MEMBER_PRT_NAME,
+			 FN_GETTUTNAME(LSWT.YYYY,LSWT.TERM,LSWT.SUBJECT_CODE,LSWT.CLASS) AS MEMBER_COT_NAME,
+			 LS.SUBJECT_NAME,
+			 LS.SUBJECT_TRANING_TYPE,
+			 LS.CLASS AS SUB_CLASS,		 
+			 LSWT.TRANING_ST_HOUR AS TRANING_ST_HOUR ,
+			 LSWT.TRANING_ST_MIN AS TRANING_ST_MIN,
+			 LSWT.TRANING_ED_HOUR AS TRANING_ED_HOUR,
+			 LSWT.TRANING_ED_MIN  AS TRANING_ED_MIN
+			 
+			 FROM LMS_SUBJ_WEEK_TIME LSWT
+			 INNER JOIN LMS_SUBJECT LS ON  LS.YYYY = LSWT.YYYY
+												AND LS.TERM = LSWT.TERM
+												AND LS.SUBJECT_CODE = LSWT.SUBJECT_CODE
+												AND LS.CLASS = LSWT.CLASS
+												AND LS.DELETE_YN='N'
+			 LEFT OUTER JOIN LMS_TRANING_PROCESS_MAPPING LTPM ON LTPM.YYYY = LSWT.YYYY
+												AND LTPM.TERM = LSWT.TERM
+												AND LTPM.SUBJECT_CODE = LSWT.SUBJECT_CODE
+												AND LTPM.CLASS = LSWT.CLASS
+												AND LTPM.DELETE_YN='N'
+		 	 LEFT OUTER JOIN LMS_TRANING_PROCESS LTP ON LTP.COMPANY_ID = LTPM.COMPANY_ID
+											AND LTP.TRANING_PROCESS_ID = LTPM.TRANING_PROCESS_ID 
+											AND LTP.DELETE_YN='N'
+																							
+			 LEFT OUTER JOIN LMS_SUBJ_INS_MAPPING LSIM ON  LSIM.YYYY = LSWT.YYYY
+												AND LSIM.TERM = LSWT.TERM
+												AND LSIM.SUBJECT_CODE = LSWT.SUBJECT_CODE
+												AND LSIM.CLASS = LSWT.CLASS 
+												AND LSIM.DELETE_YN='N'										
+			 			WHERE LSWT.DELETE_YN='N' 
+			<if test="traningDate != null and traningDate != ''">
+			AND LSWT.TRANING_DATE = #{traningDate}
+			</if>
+									 
+	</select>	
+	<!--학습근로자 강의일정 목록  -->
+	<select id="listLmsUserMainPageStdSchedule" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageStdSchedule ====== */
+			SELECT  LL.LESSON_ID,
+					LSWT.ADDYN,
+					LSW.WEEK_CNT,
+					LSW.WEEK_ID,
+					(SELECT MAX(TO_NUMBER(IFNULL(A.WEEK_CNT,0))) 
+								FROM LMS_SUBJ_WEEK A 
+								WHERE A.YYYY = LL.YYYY 
+								AND A.TERM = LL.TERM 
+								AND A.CLASS =LL.CLASS 
+								AND A.SUBJECT_CODE =LL.SUBJECT_CODE 
+								AND A.DELETE_YN='N' ) AS MAX_WEEK_CNT,
+					LS.YYYY,
+					LS.TERM,
+					LS.LCTRUM_NM,
+					LS.SUBJECT_CODE,
+					LS.CLASS AS SUB_CLASS,
+					FN_GETTUTNAME(LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS ) AS TUT_NAMES,
+					LS.SUBJECT_TRANING_TYPE,
+					
+					CASE
+			       		WHEN LS.ONLINE_TYPE IN ('104','105') THEN '플립러닝'
+			       		WHEN LS.ONLINE_TYPE = '101' THEN '순수온라인'
+			            WHEN LS.ONLINE_TYPE = '102' THEN '브렌디드'
+			            WHEN LS.ONLINE_TYPE = '103' THEN '보조활용'
+			         ELSE  '없음'
+			   	  END ONLINE_TYPE_NAME,
+					
+					CASE 
+					  WHEN LS.SUBJECT_TRANING_TYPE = 'OJT' 
+					  THEN 'OJT' 
+					  ELSE 'Off-JT' 
+					END SUBJECT_TRANING_TYPE_NAME, 
+					 CASE 
+					     WHEN LS.SUBJECT_TYPE = 'NORMAL' 
+					     THEN '일반' 
+					     ELSE '고숙련' 
+					 END SUBJECT_TYPE_NAME, 
+					 CASE WHEN LS.ONLINE_TYPE = '101' THEN '온라인'
+					      WHEN LS.ONLINE_TYPE = '102' THEN '블렌디드'
+					      WHEN LS.ONLINE_TYPE = '103 ' THEN '보조활용'
+					      WHEN LS.ONLINE_TYPE = '104' THEN '플립러닝4주'     
+					      WHEN LS.ONLINE_TYPE = '105' THEN '플립러닝10주'     
+					      ELSE  '없음'     
+					 END ONLINE_TYPE_NAME,
+					(
+					SELECT
+					FN_GETCOMPAYNAME(AA.COMPANY_ID) 
+					FROM LMS_TRANING_PROCESS_MAPPING AA 
+					WHERE AA.YYYY = LS.YYYY
+					AND AA.TERM = LS.TERM
+					AND AA.SUBJECT_CODE = LS.SUBJECT_CODE
+					AND AA.CLASS = LS.CLASS
+					AND AA.DELETE_YN = 'N'
+					LIMIT 1
+					) AS COMPANY_NAME,
+					(
+					SELECT 
+					AA.COMPANY_ID
+					FROM LMS_TRANING_PROCESS_MAPPING AA 
+					WHERE AA.YYYY = LS.YYYY
+					AND AA.TERM = LS.TERM
+					AND AA.SUBJECT_CODE = LS.SUBJECT_CODE
+					AND AA.CLASS = LS.CLASS
+					AND AA.DELETE_YN = 'N'
+					LIMIT 1
+					) AS COMPANY_ID,
+					(
+					SELECT 
+					AA.TRANING_PROCESS_ID
+					FROM LMS_TRANING_PROCESS_MAPPING AA 
+					WHERE AA.YYYY = LS.YYYY
+					AND AA.TERM = LS.TERM
+					AND AA.SUBJECT_CODE = LS.SUBJECT_CODE
+					AND AA.CLASS = LS.CLASS
+					AND AA.DELETE_YN = 'N'
+					LIMIT 1
+					) AS TRANING_PROCESS_ID ,
+					FN_WEEK_PROGRESS_RATE(LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,LSW.WEEK_ID,LL.LESSON_ID) AS WEEK_PROGRESS_RATE ,
+					CON.CONTENT_NAME,
+					(SELECT COUNT(1)     
+					   FROM LMS_SUBJ_WEEK_SCH SCH 
+					  WHERE SCH.DELETE_YN = 'N' 
+					        AND SCH.WEEK_ID = LSW.WEEK_ID 
+					 ) WEEK_MAPPING_CNT,
+					LS.SUBJECT_NAME,
+					LS.DEPARTMENT_NAME,
+					LS.GRADE,
+					LS.POINT_USE_YN,
+					LS.POINT,
+					LS.SUBJECT_TYPE,
+					LS.ONLINE_TYPE,
+					LS.TRANING_HOUR,
+					LS.FIRST_STUDY_YN,
+					LS.GRADE_RATIO, 
+					LS.DEPARTMENT_NO,
+					UNIT.NCS_UNIT_NAME ,
+					ELEM.NCS_ELEM_NAME ,
+					LSWT.TRANING_ST_HOUR,
+					LSWT.TRANING_ST_MIN,
+					LSWT.TRANING_ED_HOUR,
+					LSWT.TRANING_ED_MIN ,
+					LSOS.ATTEND_PROGRESS, 
+					LSOS.CUT_PROGRESS, 
+					LSOS.PROGRESS_ATTEND_TYPE_CODE
+			FROM LMS_LESSON LL
+			INNER JOIN LMS_SUBJECT LS ON LS.YYYY = LL.YYYY AND LS.TERM = LL.TERM AND LS.CLASS =LL.CLASS AND LS.SUBJECT_CODE =LL.SUBJECT_CODE AND LS.DELETE_YN='N'
+			INNER JOIN LMS_SUBJ_WEEK LSW ON LSW.YYYY = LL.YYYY AND LSW.TERM = LL.TERM AND LSW.CLASS =LL.CLASS AND LSW.SUBJECT_CODE =LL.SUBJECT_CODE AND LSW.DELETE_YN='N'
+			LEFT OUTER JOIN LMS_SUBJ_NCS_UNIT UNIT ON LS.YYYY = UNIT.YYYY AND LS.TERM = UNIT.TERM AND LS.SUBJECT_CODE  = UNIT.SUBJECT_CODE 
+			                                      AND LS.CLASS = UNIT.CLASS AND LSW.WEEK_ID = UNIT.WEEK_ID AND UNIT.DELETE_YN ='N'
+			LEFT OUTER JOIN LMS_SUBJ_NCS_ELEM ELEM ON LS.YYYY = ELEM.YYYY AND LS.TERM = ELEM.TERM AND LS.SUBJECT_CODE  = ELEM.SUBJECT_CODE	   
+				       									  AND LS.CLASS = ELEM.CLASS AND LSW.WEEK_ID = ELEM.WEEK_ID AND UNIT.DELETE_YN ='N'
+			LEFT OUTER JOIN (    SELECT 
+										'N' AS ADDYN,
+										A.WEEK_ID,
+										A.TIME_ID,
+										A.YYYY,
+										A.TERM,
+										A.SUBJECT_CODE,
+										A.CLASS,
+										A.TRANING_DATE,
+										A.TRANING_ST_HOUR,
+										A.TRANING_ST_MIN,
+										A.TRANING_ED_HOUR,
+										A.TRANING_ED_MIN,
+										A.LEAD_TIME,
+										A.INSERT_DATE,
+										A.INSERT_USER,
+										A.UPDATE_DATE,
+										A.UPDATE_USER,
+										A.DELETE_YN,
+										A.REVIEW 
+										FROM  LMS_SUBJ_WEEK_TIME A 
+										WHERE A.DELETE_YN= 'N'
+										UNION ALL
+										SELECT 
+										'Y' AS ADDYN,
+										B.WEEK_ID,
+										B.TIME_ID,
+										B.YYYY,
+										B.TERM,
+										B.SUBJECT_CODE,
+										B.CLASS,
+										B.TRANING_DATE,
+										B.TRANING_ST_HOUR,
+										B.TRANING_ST_MIN,
+										B.TRANING_ED_HOUR,
+										B.TRANING_ED_MIN,
+										'' AS LEAD_TIME,
+										B.INSERT_DATE,
+										B.INSERT_USER,
+										B.UPDATE_DATE,
+										B.UPDATE_USER,
+										B.DELETE_YN,
+										B.REVIEW 
+										FROM LMS_SUBJ_WEEK_TIME_ENRICHMENT B 
+										WHERE B.DELETE_YN= 'N') LSWT ON LSWT.WEEK_ID =LSW.WEEK_ID
+					 									AND LSW.YYYY = LSWT.YYYY
+														AND LSW.TERM = LSWT.TERM
+														AND LSW.SUBJECT_CODE = LSWT.SUBJECT_CODE
+														AND LSW.CLASS = LSWT.CLASS
+																	AND LSWT.DELETE_YN='N'
+			LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT CON  ON LSW.WEEK_ID = CON.WEEK_ID AND CON.DELETE_YN = 'N'
+			
+			LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS ON  LSOS.YYYY = LL.YYYY AND LSOS.TERM = LL.TERM AND LSOS.CLASS =LL.CLASS AND LSOS.SUBJECT_CODE =LL.SUBJECT_CODE AND LSOS.DELETE_YN='N'
+															
+			WHERE LL.DELETE_YN='N'
+			AND LL.MEM_SEQ = #{sessionMemSeq}
+						
+			<if test="subjectTraningType != null and subjectTraningType != ''">
+			AND LS.SUBJECT_TRANING_TYPE=#{subjectTraningType}
+			</if>
+			<if test="traningDate != null and traningDate != ''">
+			AND LSWT.TRANING_DATE = #{traningDate}
+			</if>
+
+	</select>
+
+	<!--사용자별 퀵메뉴 전체 건수 Start  -->
+	<select id="listLmsUserMainPageStdTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageStdTotalCnt ====== */
+		SELECT '1' myPageTotalCnt1, /* 학습활동서작성 */
+		       '2' myPageTotalCnt2, /* 질문과답변 */
+		       '3' myPageTotalCnt3, /* 과제제출 */
+		       '4' myPageTotalCnt4, /* 팀프로젝트과제제출 */
+		       '5' myPageTotalCnt5 /* 토론개설 */
+		from dual
+	</select>
+
+	<select id="listLmsUserMainPageTchTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageTchTotalCnt ====== */
+	    SELECT '1' myPageTotalCnt1, /* 훈련일지작성 */
+		       '2' myPageTotalCnt2, /* 학습활동서승인 */
+		       '3' myPageTotalCnt3, /* Q and A */
+		       '4' myPageTotalCnt4, /* 개별과제 확인 */
+		       '5' myPageTotalCnt5 /* 팀프로젝트 확인 */
+		from dual
+	</select>
+
+	<select id="listLmsUserMainPageSubTchTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageSubTchTotalCnt ====== */
+	    SELECT '1' myPageTotalCnt1, /* 훈련일지작성 */
+		       '2' myPageTotalCnt2, /* 학습활동서승인 */
+		       '3' myPageTotalCnt3, /* Q and A */
+		       '4' myPageTotalCnt4, /* 공지사항 */
+		       '5' myPageTotalCnt5 /* 면담일지 작성 */
+		from dual
+	</select>
+
+	<select id="listLmsUserMainPageCcmTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcmTotalCnt ====== */
+        SELECT '1' myPageTotalCnt1, /* 활동내역서작성 */
+		       '2' myPageTotalCnt2, /* 주간훈련일지 미제출 */
+		       '3' myPageTotalCnt3 /* 주차별학습할동서 미제출 */
+		from dual
+	</select>
+
+	<select id="listLmsUserMainPageCcnTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcnTotalCnt ====== */
+		SELECT '1' myPageTotalCnt1, /* 주간훈련일지 미제출건 */
+		       '2' myPageTotalCnt2, /* 학습활동서 미제출자 */
+		       '3' myPageTotalCnt3, /* 면담일지 미제출건 */
+		       '4' myPageTotalCnt4, /* 훈련시간표 변경신청건 */
+		       '5' myPageTotalCnt5 /* 담당자 변경신청건 */
+		from dual
+	</select>
+
+	<select id="listLmsUserMainPageCdpTotalCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCdpTotalCnt ====== */
+		SELECT '1' myPageTotalCnt1, /* Q and A 답변대기 */
+		       '2' myPageTotalCnt2, /* 개별과제미제출 */
+		       '3' myPageTotalCnt3, /* 팀프로젝트과제 미제출 */
+		       '4' myPageTotalCnt4 /* 재직증빙서류 미승인 */
+		from dual
+	</select>
+	<!--사용자별 퀵메뉴 전체 건수 End  -->
+
+	<!--사용자별 마이페이지 Today 건수 Start  -->
+	<select id="listLmsUserMainPageStdTodayCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageStdTodayCnt ====== */
+		SELECT 
+			SUM(X.ACTIVITY_CNT) as myPageTodayCnt1, 
+			X.BBS_NTT_CNT as myPageTodayCnt2, 
+			SUM(X.REPORT_CNT) as myPageTodayCnt3, 
+			SUM(X.TEAM_PROJECT_CNT) as myPageTodayCnt4, 
+			SUM(X.DISCUSS_CNT)  as myPageTodayCnt5
+			FROM (
+			SELECT  
+			COUNT(LSW.WEEK_CNT)-COUNT(LA.ACTIVITY_NOTE_ID) AS ACTIVITY_CNT,
+			(
+			SELECT COUNT(CBA.NTT_ID) FROM COMTNBBS CB ,COMTNBBS CBA
+			WHERE CB.FRST_REGISTER_ID =#{sessionMemSeq}
+			AND CB.NTT_ID = CBA.PARNTSCTT_NO
+			AND CB.BBS_ID = CBA.BBS_ID
+			AND CBA.NTT_NO = 2
+			AND CB.BBS_ID IN ('BBSMSTR_000000000007','BBSMSTR_000000000010')
+			AND CBA.ANSWER_AT='Y'
+			AND CB.USE_AT = 'Y'
+			AND CBA.USE_AT = 'Y'
+			) AS BBS_NTT_CNT,
+			IFNULL((SELECT COUNT(LR.REPORT_ID) - COUNT(LRS.REPORT_SUBMIT_ID) 
+						 FROM LMS_REPORT LR 
+						 LEFT OUTER JOIN LMS_REPORT_SUBMIT LRS ON LR.REPORT_ID =LRS.REPORT_ID AND LRS.DELETE_YN='N'  AND LRS.INSERT_USER = #{sessionMemSeq}
+						 WHERE A.YYYY = LR.YYYY 
+						 AND A.TERM=LR.TERM 
+						 AND A.SUBJECT_CODE=LR.SUBJECT_CODE 
+						 AND A.CLASS = LR.CLASS 
+						 AND LR.DELETE_YN='N'
+						 AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN LR.SUBMIT_START_DATE  AND LR.SUBMIT_END_DATE
+			) ,0) AS REPORT_CNT,
+			
+			IFNULL((SELECT COUNT(LTP.TEAM_PROJECT_ID) - COUNT(LTPS.ATCH_FILE_ID ) 
+						FROM LMS_TEAM_PROJECT LTP 
+						LEFT OUTER JOIN LMS_TEAM_PROJECT_SUBMIT LTPS ON LTP.TEAM_PROJECT_ID = LTPS.TEAM_PROJECT_ID AND LTPS.DELETE_YN='N'
+						WHERE DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN  LTP.PROJECT_START_DATE AND LTP.PROJECT_END_DATE
+						 AND A.YYYY = LTP.YYYY 
+						 AND A.TERM=LTP.TERM 
+						 AND A.SUBJECT_CODE=LTP.SUBJECT_CODE 
+						 AND A.CLASS = LTP.CLASS 
+						 AND LTPS.MEM_ID = #{sessionMemId}
+			) ,0) AS TEAM_PROJECT_CNT,
+			
+			IFNULL((SELECT COUNT(1)
+						FROM LMS_DISCUSS LD
+						WHERE DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN  LD.START_DATE AND LD.END_DATE
+						 AND A.YYYY = LD.YYYY 
+						 AND A.TERM=LD.TERM 
+						 AND A.SUBJECT_CODE=LD.SUBJECT_CODE 
+						 AND A.CLASS = LD.CLASS 
+			),0) AS DISCUSS_CNT
+			
+			FROM (SELECT LESSON_ID,YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_LESSON LL 
+					WHERE LL.MEM_SEQ=#{sessionMemSeq}
+					AND (LL.YYYY,LL.TERM) IN (
+													SELECT HAK.YYYY,HAK.TERM 
+													FROM HAK_SCHEDULE HAK 
+													WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+													AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)) A
+			INNER JOIN LMS_SUBJ_WEEK LSW ON A.YYYY = LSW.YYYY AND A.TERM=LSW.TERM AND A.SUBJECT_CODE=LSW.SUBJECT_CODE AND A.CLASS = LSW.CLASS AND LSW.DELETE_YN = 'N'
+<![CDATA[
+			INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID= LSW.WEEK_ID
+			 									AND LSW.YYYY = LSWT.YYYY
+												AND LSW.TERM = LSWT.TERM
+												AND LSW.SUBJECT_CODE = LSWT.SUBJECT_CODE
+												AND LSW.CLASS = LSWT.CLASS
+												AND LSWT.DELETE_YN = 'N' AND LSWT.TRANING_DATE <= DATE_FORMAT(NOW(),'%Y.%m.%d')
+]]>
+			LEFT OUTER JOIN LMS_ACTIVITY_NOTE LA ON A.YYYY = LA.YYYY AND A.TERM=LA.TERM AND A.SUBJECT_CODE=LA.SUBJECT_CODE AND A.CLASS = LA.CLASS AND LSW.WEEK_CNT = LA.WEEK_CNT
+
+			GROUP BY A.YYYY,A.TERM, A.SUBJECT_CODE, A.CLASS
+			) X
+			GROUP BY X.BBS_NTT_CNT
+			
+		
+	</select>
+
+	<select id="listLmsUserMainPageTchTodayCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageTchTodayCnt ====== */
+<![CDATA[		
+	    SELECT (
+				SELECT COUNT(1)
+				FROM
+				(
+						SELECT
+						(SELECT CASE WHEN SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,2) != '20'
+				              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LES.MEM_SEQ)),1,4)
+				              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,4)
+				           END
+				       FROM LMS_LESSON LES 
+				            WHERE LES.YYYY = LS.YYYY 
+				            AND LES.TERM = LS.TERM 
+				            AND LES.SUBJECT_CODE = LS.SUBJECT_CODE 
+				            AND LES.CLASS = LS.CLASS 
+				            AND LES.DELETE_YN = 'N' 
+				            LIMIT 0,1
+				     ) AS SCHOOL_YEAR,LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,
+						LS.SUBJECT_NAME,LSW.WEEK_CNT,LS.SUBJECT_TRANING_TYPE,COUNT(LSWT.TIME_ID) - COUNT(LTNM.TRANINING_NOTE_MASTER_ID) NOTE_CNT
+						FROM LMS_SUBJECT LS 
+						INNER JOIN LMS_SUBJ_WEEK LSW ON LS.YYYY = LSW.YYYY 
+															 AND LS.TERM =LSW.TERM 
+															 AND LS.SUBJECT_CODE =LSW.SUBJECT_CODE 
+															 AND LS.CLASS=LSW.CLASS 
+															 AND LSW.DELETE_YN='N'
+																	
+						INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID=LSW.WEEK_ID 
+																	 AND LSWT.YYYY = LSW.YYYY 
+																	 AND LSWT.TERM =LSW.TERM 
+																	 AND LSWT.SUBJECT_CODE =LSW.SUBJECT_CODE 
+																	 AND LSWT.CLASS=LSW.CLASS 
+																	 AND LSWT.DELETE_YN='N'													
+																	 AND 	DATE_FORMAT(NOW(),'%Y.%m.%d') > LSWT.TRANING_DATE  		
+																			
+						LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER LTNM ON LTNM.DELETE_YN='N' 
+																					AND LTNM.ADDYN='N'
+																					AND LS.YYYY = LTNM.YYYY 
+																					AND LS.TERM =LTNM.TERM 
+																					AND LS.SUBJECT_CODE =LTNM.SUBJECT_CODE 
+																					AND LS.CLASS=LTNM.CLASS
+																					AND LTNM.WEEK_CNT =LSW.WEEK_CNT
+																					AND LTNM.TIME_ID=LSWT.TIME_ID
+						WHERE LS.DELETE_YN='N'
+						AND (LS.SUBJECT_TRANING_TYPE='OFF' OR (LS.SUBJECT_TYPE='HSKILL' AND LS.SUBJECT_TRANING_TYPE='OJT'))
+						AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+									(SELECT LSIM.YYYY,LSIM.TERM,LSIM.SUBJECT_CODE,LSIM.CLASS 
+									  FROM LMS_SUBJ_INS_MAPPING LSIM 
+									 WHERE LSIM.MEM_SEQ= #{sessionMemSeq}
+									   AND LSIM.DELETE_YN='N')				
+						GROUP BY  LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,LS.SUBJECT_NAME,LSW.WEEK_CNT,LS.SUBJECT_TRANING_TYPE
+						
+						
+						ORDER BY TO_NUMBER(LSW.WEEK_CNT) DESC,LS.SUBJECT_NAME
+				) A
+				WHERE A.NOTE_CNT > 0 
+				)		 AS myPageTodayCnt1, /* 훈련일지작성 */
+		       '0' myPageTodayCnt2, /* 학습활동서승인 */
+		       '0' myPageTodayCnt3, /* Q and A */
+		       (SELECT 
+					COUNT(1)
+					FROM LMS_REPORT LR 
+					INNER JOIN LMS_SUBJECT LS ON LS.YYYY = LR.YYYY 
+												AND LS.TERM =LR.TERM 
+												AND LS.SUBJECT_CODE = LR.SUBJECT_CODE 
+												AND LS.CLASS = LR.CLASS 
+												AND LS.DELETE_YN='N'  
+					INNER JOIN LMS_SUBJ_INS_MAPPING LSIM ON LSIM.MEM_SEQ =#{sessionMemSeq}
+		 	
+														AND LSIM.YYYY = LS.YYYY 
+														AND LSIM.TERM = LS.TERM 
+														AND LSIM.SUBJECT_CODE = LS.SUBJECT_CODE 
+														AND LSIM.CLASS = LS.CLASS 
+														AND LSIM.DELETE_YN='N'
+					WHERE LR.DELETE_YN='N' 
+					AND LR.SUBMIT_START_DATE <= DATE_FORMAT(NOW(),'%Y.%m.%d')
+					AND LR.SUBMIT_END_DATE >= DATE_FORMAT(NOW(),'%Y.%m.%d')) myPageTodayCnt4, /* 개별과제 확인 */
+		       (SELECT 
+					COUNT(1)
+					FROM LMS_TEAM_PROJECT LTP	
+					INNER JOIN LMS_SUBJECT LS ON LS.YYYY = LTP.YYYY 
+													AND LS.TERM =LTP.TERM 
+													AND LS.SUBJECT_CODE = LTP.SUBJECT_CODE 
+													AND LS.CLASS = LTP.CLASS 
+													AND LS.DELETE_YN='N' 
+													
+					INNER JOIN LMS_SUBJ_INS_MAPPING LSIM ON LSIM.MEM_SEQ =#{sessionMemSeq}
+																AND LSIM.YYYY = LS.YYYY 
+																AND LSIM.TERM = LS.TERM 
+																AND LSIM.SUBJECT_CODE = LS.SUBJECT_CODE 
+																AND LSIM.CLASS = LS.CLASS 
+																AND LSIM.DELETE_YN='N'
+													
+					WHERE LTP.PROJECT_START_DATE <=  date_format(NOW(),'%Y.%m.%d' )
+					AND   LTP.PROJECT_END_DATE >=  date_format(NOW(),'%Y.%m.%d' )
+					AND   LTP.DELETE_YN='N') myPageTodayCnt5 /* 팀프로젝트 확인 */
+		from dual
+]]>
+	</select>
+
+	<select id="listLmsUserMainPageSubTchTodayCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageSubTchTodayCnt ====== */
+	    SELECT (
+	    		SELECT COUNT(1)
+				FROM(
+					SELECT A.SUBJECT_TRANING_TYPE,A.SUBJECT_NAME,A.WEEK_CNT,A.SCHOOL_YEAR,A.YYYY,A.TERM,A.SUBJECT_CODE,A.CLASS AS SUB_CLASS
+					FROM
+					(
+							SELECT
+							(SELECT CASE WHEN SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,2) != '20'
+					              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LES.MEM_SEQ)),1,4)
+					              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LES.MEM_SEQ),1,4)
+					           END
+					       FROM LMS_LESSON LES 
+					            WHERE LES.YYYY = LS.YYYY 
+					            AND LES.TERM = LS.TERM 
+					            AND LES.SUBJECT_CODE = LS.SUBJECT_CODE 
+					            AND LES.CLASS = LS.CLASS 
+					            AND LES.DELETE_YN = 'N' 
+					            LIMIT 0,1
+					     ) AS SCHOOL_YEAR,LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,
+							LS.SUBJECT_NAME,LSW.WEEK_CNT,LS.SUBJECT_TRANING_TYPE,COUNT(LSWT.TIME_ID) - COUNT(LTNM.TRANINING_NOTE_MASTER_ID) NOTE_CNT
+							FROM LMS_SUBJECT LS 
+							INNER JOIN LMS_SUBJ_WEEK LSW ON LS.YYYY = LSW.YYYY 
+																 AND LS.TERM =LSW.TERM 
+																 AND LS.SUBJECT_CODE =LSW.SUBJECT_CODE 
+																 AND LS.CLASS=LSW.CLASS 
+																 AND LSW.DELETE_YN='N'
+																		
+							INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID=LSW.WEEK_ID 
+																		 AND LSWT.YYYY = LSW.YYYY 
+																		 AND LSWT.TERM =LSW.TERM 
+																		 AND LSWT.SUBJECT_CODE =LSW.SUBJECT_CODE 
+																		 AND LSWT.CLASS=LSW.CLASS 
+																		 AND LSWT.DELETE_YN='N'													
+																		 AND 	DATE_FORMAT(NOW(),'%Y.%m.%d') > LSWT.TRANING_DATE  		
+																				
+							LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER LTNM ON LTNM.DELETE_YN='N' 
+																						AND LTNM.ADDYN='N'
+																						AND LS.YYYY = LTNM.YYYY 
+																						AND LS.TERM =LTNM.TERM 
+																						AND LS.SUBJECT_CODE =LTNM.SUBJECT_CODE 
+																						AND LS.CLASS=LTNM.CLASS
+																						AND LTNM.WEEK_CNT =LSW.WEEK_CNT
+																						AND LTNM.TIME_ID=LSWT.TIME_ID
+							WHERE LS.DELETE_YN='N' 
+							AND (LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS) IN
+										(SELECT LSIM.YYYY,LSIM.TERM,LSIM.SUBJECT_CODE,LSIM.CLASS 
+										  FROM LMS_SUBJ_TUT_MAPPING LSIM 
+										 WHERE LSIM.MEM_SEQ=#{sessionMemSeq}
+										   AND LSIM.DELETE_YN='N')				
+							GROUP BY  LS.YYYY,LS.TERM,LS.SUBJECT_CODE,LS.CLASS,LS.SUBJECT_NAME,LSW.WEEK_CNT,LS.SUBJECT_TRANING_TYPE
+							
+							
+							ORDER BY TO_NUMBER(LSW.WEEK_CNT) DESC,LS.SUBJECT_NAME
+					) A
+					WHERE A.NOTE_CNT > 0 
+					
+					) B)
+			  myPageTodayCnt1, /* 훈련일지작성 */
+		       '2' myPageTodayCnt2, /* 학습활동서승인 */
+		       '3' myPageTodayCnt3, /* Q and A */
+		       '4' myPageTodayCnt4, /* 공지사항 */
+		       '5' myPageTodayCnt5 /* 면담일지 작성 */
+		from dual
+	</select>
+
+	<select id="listLmsUserMainPageCcmTodayCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcmTodayCnt ====== */
+<![CDATA[	
+		SELECT (SELECT	COUNT(A.MM)-COUNT(ACT.PRINT_DATE ) AS ACTIVITY_CNT
+				FROM
+				(
+					SELECT  1 AS MM FROM DUAL UNION 
+					SELECT  2 AS MM FROM DUAL UNION 
+					SELECT  3 AS MM  FROM DUAL UNION 
+					SELECT  4 AS MM  FROM DUAL UNION 
+					SELECT  5 AS MM  FROM DUAL UNION 
+					SELECT  6 AS MM  FROM DUAL UNION 
+					SELECT  7 AS MM  FROM DUAL UNION 
+					SELECT  8 AS MM  FROM DUAL UNION 
+					SELECT  9 AS MM  FROM DUAL UNION 
+					SELECT  10 AS MM  FROM DUAL UNION 
+					SELECT  11 AS MM  FROM DUAL UNION 
+					SELECT  12 AS MM  FROM DUAL) A
+				LEFT OUTER JOIN LMS_ACTIVITY ACT ON ACT.MM = A.MM
+														AND ACT.DELETE_YN = 'N' 
+														AND ACT.COMPANY_ID =  #{sessionCompanyId}
+														
+				WHERE   A.MM <= TO_NUMBER(DATE_FORMAT(NOW(),'%m'))) myPageTodayCnt1, /* 활동내역서작성 */
+				
+		       (SELECT  MAX(TO_NUMBER(B.WEEK_CNT)) -(SUM(IF(B.STATE='I',1,0)) + SUM(IF(B.OJT_STATE='I',1,0))) AS SUM_STATE
+				 FROM(
+					SELECT  
+					A.WEEK_CNT,
+					MIN(A.ST_DATE) ST_DATE,
+					MAX(A.ED_DATE) ED_DATE,
+					MAX(A.STATE) AS STATE,
+					MAX(A.OJT_STATE) AS OJT_STATE
+					 FROM(
+								SELECT
+										WEEK.YYYY,
+										WEEK.TERM,
+										WEEK.WEEK_CNT,	
+										MIN(LSWT.TRANING_DATE) ST_DATE,
+										MAX(LSWT.TRANING_DATE) ED_DATE,
+										(
+										SELECT TNM.STATE
+										FROM LMS_TRANING_NOTE_MASTER TNM 
+										WHERE  TNM.DELETE_YN='N'
+											AND TNM.ADDYN = 'N'					
+										   AND TNM.YYYY= WEEK.YYYY
+											AND TNM.TERM = WEEK.TERM
+											AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+											AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+											AND TNM.TRANING_TYPE = 'OFF'						
+											LIMIT 0,1
+										)AS STATE
+										,
+										(
+										SELECT TNM.STATE
+										FROM LMS_TRANING_NOTE_MASTER TNM 
+										WHERE  TNM.DELETE_YN='N'
+											AND TNM.ADDYN = 'N'					
+										   AND TNM.YYYY= WEEK.YYYY
+											AND TNM.TERM = WEEK.TERM
+											AND TNM.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+											AND TNM.WEEK_CNT = WEEK.WEEK_CNT	
+											AND TNM.TRANING_TYPE = 'OJT'						
+											LIMIT 0,1
+										)AS OJT_STATE
+										  
+										FROM LMS_SUBJ_WEEK  WEEK   
+										INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON WEEK.YYYY=LSWT.YYYY 
+																					 AND WEEK.TERM=LSWT.TERM 
+																					 AND WEEK.SUBJECT_CODE=LSWT.SUBJECT_CODE 
+																					 AND WEEK.CLASS=LSWT.CLASS
+																					 AND WEEK.WEEK_ID =LSWT.WEEK_ID
+										WHERE WEEK.DELETE_YN ='N'  					
+										AND (WEEK.YYYY,WEEK.TERM,WEEK.SUBJECT_CODE,WEEK.CLASS) IN 
+																		(SELECT YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_TRANING_PROCESS_MAPPING TPM
+																						WHERE   TPM.DELETE_YN='N' 																				
+													  									AND TPM.COMPANY_ID = #{sessionCompanyId}
+																						AND (TPM.YYYY ,TPM.TERM)
+																										IN (
+																							SELECT HAK.YYYY,HAK.TERM 
+																							FROM HAK_SCHEDULE HAK 
+																							WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																							AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE))
+																							
+																														 
+										GROUP BY WEEK.YYYY,WEEK.TERM, WEEK.WEEK_CNT,WEEK.SUBJECT_CODE,WEEK.WEEK_ID
+					) A 
+					WHERE DATE_FORMAT(NOW(),'%Y.%m.%d') >= A.ED_DATE
+					GROUP BY  A.WEEK_CNT  
+					) B) myPageTodayCnt2, /* 주간훈련일지 미제출 */
+					
+		       (SELECT
+				SUM(IF( B.OJT_WORK_COUNT =0,0,1 ) + IF( B.OFF_WORK_COUNT =0,0,1 )) AS ACTIVITY_CNT
+				FROM (
+				SELECT  			A.WEEK_CNT,					
+									MIN(A.WEEK_ST_DATE) AS WEEK_ST_DATE,
+									MAX(A.WEEK_ED_DATE) AS WEEK_ED_DATE ,
+									SUM(A.OJT_WORK_COUNT) -SUM(A.OJT_COUNT)  AS OJT_WORK_COUNT,
+									SUM(A.OFF_WORK_COUNT) -SUM(A.OFF_COUNT) AS OFF_WORK_COUNT
+				FROM (
+							SELECT  	
+									WEEK.YYYY,
+									WEEK.TERM,
+									 
+									WEEK.WEEK_CNT,
+									MIN(SWT.TRANING_DATE) AS WEEK_ST_DATE ,
+									MAX(SWT.TRANING_DATE) AS WEEK_ED_DATE ,
+									(
+										SELECT COUNT(1) 
+										FROM LMS_ACTIVITY_NOTE AN 
+										WHERE  AN.YYYY = WEEK.YYYY 
+										  AND  AN.TERM = WEEK.TERM 
+										  AND  AN.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+										  AND  AN.CLASS = WEEK.CLASS 
+										  AND  AN.WEEK_CNT = WEEK.WEEK_CNT 
+										  AND  AN.TRANING_TYPE = 'OJT'
+										  AND  AN.DELETE_YN='N'
+									) AS OJT_COUNT,	
+									(
+										SELECT COUNT(1) 
+										FROM LMS_LESSON LL ,LMS_SUBJECT LS
+										WHERE  LL.YYYY=LS.YYYY 
+										AND LL.TERM =LS.TERM 
+										AND LL.SUBJECT_CODE =LS.SUBJECT_CODE 
+										AND LL.CLASS =LS.CLASS 			
+										AND LS.SUBJECT_TRANING_TYPE = 'OJT' 
+										AND LL.YYYY=WEEK.YYYY 
+										AND LL.TERM =WEEK.TERM 
+										AND LL.SUBJECT_CODE =WEEK.SUBJECT_CODE 
+										AND LL.CLASS =WEEK.CLASS 
+										AND  LL.DELETE_YN='N'
+									) AS OJT_WORK_COUNT ,		
+									(
+										SELECT COUNT(1) 
+										FROM LMS_ACTIVITY_NOTE AN 
+										WHERE  AN.YYYY = WEEK.YYYY 
+										  AND  AN.TERM = WEEK.TERM 
+										  AND  AN.SUBJECT_CODE = WEEK.SUBJECT_CODE 
+										  AND  AN.CLASS = WEEK.CLASS 
+										  AND  AN.WEEK_CNT = WEEK.WEEK_CNT 
+							  			  AND  AN.TRANING_TYPE = 'OFF'
+										  AND  AN.DELETE_YN='N'
+									) AS OFF_COUNT,	
+									(
+										SELECT COUNT(1) 
+										FROM LMS_LESSON LL ,LMS_SUBJECT LS
+										WHERE  LL.YYYY=LS.YYYY 
+										AND LL.TERM =LS.TERM 
+										AND LL.SUBJECT_CODE =LS.SUBJECT_CODE 
+										AND LL.CLASS =LS.CLASS 			
+										AND LS.SUBJECT_TRANING_TYPE = 'OFF' 
+										AND LL.YYYY=WEEK.YYYY 
+										AND LL.TERM =WEEK.TERM 
+										AND LL.SUBJECT_CODE =WEEK.SUBJECT_CODE 
+										AND LL.CLASS =WEEK.CLASS 
+										AND  LL.DELETE_YN='N'
+									) AS OFF_WORK_COUNT 
+									FROM LMS_SUBJ_WEEK  WEEK
+									INNER JOIN LMS_TRANING_PROCESS_MAPPING TPM 
+													ON  TPM.YYYY=WEEK.YYYY  AND TPM.TERM=WEEK.TERM   
+													AND TPM.SUBJECT_CODE=WEEK.SUBJECT_CODE  AND TPM.CLASS =WEEK.CLASS  
+													AND TPM.DELETE_YN='N' 
+													
+													AND TPM.COMPANY_ID = #{sessionCompanyId}
+				
+													AND (TPM.YYYY ,TPM.TERM) IN (
+																											SELECT HAK.YYYY,HAK.TERM 
+																											FROM HAK_SCHEDULE HAK 
+																											WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																											AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+				
+									LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.WEEK_ID = WEEK.WEEK_ID 
+													AND WEEK.SUBJECT_CODE = SWT.SUBJECT_CODE
+													AND SWT.YYYY =  WEEK.YYYY
+													AND SWT.TERM =  WEEK.TERM
+													AND SWT.CLASS =  WEEK.CLASS AND  SWT.DELETE_YN='N'
+									
+									WHERE WEEK.DELETE_YN ='N' 
+									GROUP BY WEEK.YYYY,WEEK.TERM, WEEK.WEEK_CNT,WEEK.CLASS,WEEK.SUBJECT_CODE ,WEEK.WEEK_ID
+								 
+				) A
+				GROUP BY A.YYYY,A.TERM,	A.WEEK_CNT) B
+				WHERE   DATE_FORMAT(NOW(),'%Y.%m.%d') >= B.WEEK_ED_DATE
+				 ) myPageTodayCnt3 /* 주차별학습할동서 미제출 */
+		from dual
+]]>		
+	</select>
+
+	<select id="listLmsUserMainPageCcnTodayCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCcnTodayCnt ====== */
+<![CDATA[		
+		SELECT 
+		(SELECT COUNT(1) FROM (								
+									SELECT LTNM.WEEK_CNT,LTNM.SUBJECT_CODE FROM LMS_TRANING_NOTE_MASTER LTNM
+									WHERE LTNM.ADDYN='N'
+									 AND LTNM.DELETE_YN='N'
+									 AND LTNM.STATE = 'W'
+									 AND LTNM.STUDY_DATE < DATE_FORMAT(ADDDATE(NOW() , -14),'%Y.%m.%d')
+									 AND (LTNM.YYYY,LTNM.TERM) IN (
+																	SELECT HAK.YYYY,HAK.TERM 
+																	FROM HAK_SCHEDULE HAK 
+																	WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																	AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+									GROUP BY LTNM.WEEK_CNT,LTNM.SUBJECT_CODE) A
+		) AS myPageTodayCnt1 ,
+		
+		/*
+		 (SELECT  SUM(A.ACTIVITY_CNT) FROM (	
+						SELECT  
+									IF( COUNT(LSW.WEEK_CNT)-COUNT(LA.ACTIVITY_NOTE_ID) = 0 ,0,1 )AS ACTIVITY_CNT			
+									FROM (
+											SELECT MEM_SEQ,YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_LESSON LL 
+													WHERE  (LL.YYYY,LL.TERM) IN (	SELECT HAK.YYYY,HAK.TERM 
+																							FROM HAK_SCHEDULE HAK 
+																							WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																							AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)		
+											) A
+									INNER JOIN LMS_SUBJ_WEEK LSW ON A.YYYY = LSW.YYYY AND A.TERM=LSW.TERM AND A.SUBJECT_CODE=LSW.SUBJECT_CODE AND A.CLASS = LSW.CLASS AND LSW.DELETE_YN = 'N'
+									INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID= LSW.WEEK_ID
+									 										AND LSWT.YYYY=LSW.YYYY
+																			AND LSWT.TERM=LSW.TERM 
+																			AND LSWT.SUBJECT_CODE=LSW.SUBJECT_CODE 
+																			AND LSWT.CLASS = LSW.CLASS
+																		AND LSWT.DELETE_YN = 'N' AND LSWT.TRANING_DATE <= DATE_FORMAT(NOW(),'%Y.%m.%d') 
+									LEFT OUTER JOIN LMS_ACTIVITY_NOTE LA ON A.YYYY = LA.YYYY 
+																						AND A.TERM=LA.TERM 
+																						AND A.SUBJECT_CODE=LA.SUBJECT_CODE 
+																						AND A.CLASS = LA.CLASS 
+																						AND LSW.WEEK_CNT = LA.WEEK_CNT 
+																						AND A.MEM_SEQ =(SELECT CM.MEM_SEQ FROM COM_MEMBER CM WHERE CM.MEM_ID=LA.MEM_ID)
+									GROUP BY A.YYYY,A.TERM, A.SUBJECT_CODE, A.CLASS,A.MEM_SEQ) A
+		)  AS myPageTodayCnt2 , -->
+		*/ 0 myPageTodayCnt2,
+		(SELECT COUNT(A.COMPANY_ID)-COUNT(LIN.INTERVIEW_NOTE_ID) FROM 
+		(SELECT COMPANY_ID , TRANING_PROCESS_ID FROM LMS_TRANING_PROCESS_MAPPING LTPM
+			WHERE LTPM.DELETE_YN='N'
+			AND (LTPM.YYYY,LTPM.TERM) IN (
+										SELECT HAK.YYYY,HAK.TERM 
+										FROM HAK_SCHEDULE HAK 
+										WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+										AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+			GROUP BY COMPANY_ID , TRANING_PROCESS_ID) A
+			LEFT OUTER JOIN LMS_INTERVIEW_NOTE LIN ON  LIN.COMPANY_ID = A.COMPANY_ID 
+																AND LIN.TRANING_PROCESS_ID =A.TRANING_PROCESS_ID 
+																AND DATE_FORMAT(LIN.INTERVIEW_NOTE_DATE,'%m')    = DATE_FORMAT(NOW(),'%m')  
+		) AS myPageTodayCnt3,
+		(
+			SELECT COUNT(*)
+			FROM lms_traning_subj_week_sch A 
+			WHERE  A.DELETE_YN = 'N' 
+			AND A.CHANGE_STATUS ='1'
+			AND A.STATUS ='1'
+		) AS myPageTodayCnt4,
+		(
+			SELECT COUNT(1) FROM COM_MEMBER CM WHERE CM.UPDT_APPLICATION_STATUS = '2' AND CM.STATUS='1'
+		) AS myPageTodayCnt5
+		FROM DUAL
+]]>		
+	</select>
+
+	<select id="listLmsUserMainPageCdpTodayCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCdpTodayCnt ====== */
+		SELECT 
+			(
+			SELECT COUNT(1) FROM
+								(
+								SELECT CBA.NTT_ID AS FIRST_ID ,CB.* FROM COMTNBBS CB 
+								LEFT OUTER JOIN COMTNBBS CBA ON CB.NTT_ID = CBA.PARNTSCTT_NO AND CB.BBS_ID = CBA.BBS_ID AND CBA.ANSWER_AT='Y' AND CBA.USE_AT = 'Y'
+								WHERE CB.BBS_ID IN ('BBSMSTR_000000000007','BBSMSTR_000000000010')			
+								AND CB.USE_AT = 'Y'
+								AND CB.ANSWER_AT='N'
+								AND (CB.YYYY ,CB.TERM ,CB.SUBJECT_CODE ,CB.CLASS)
+												IN (SELECT YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_SUBJ_CDP_MAPPING LSCM 
+																	WHERE LSCM.MEM_SEQ=  #{sessionMemSeq} 
+																	AND (LSCM.YYYY,LSCM.TERM) IN (
+																									SELECT HAK.YYYY,HAK.TERM 
+																									FROM HAK_SCHEDULE HAK 
+																									WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																									AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)) 
+				) A WHERE  A.FIRST_ID IS NULL
+			) AS myPageTodayCnt1
+			,
+			(
+			SELECT COUNT(1) FROM
+								(
+								SELECT (SELECT COUNT(1) FROM LMS_REPORT_SUBMIT LRS WHERE LRS.REPORT_ID = LR.REPORT_ID AND LRS.INSERT_USER=LE.MEM_SEQ) AS REPORT_CNT
+								FROM LMS_LESSON LE 
+		
+								INNER JOIN LMS_REPORT LR ON LR.YYYY = LE.YYYY AND LR.TERM = LE.TERM AND LR.SUBJECT_CODE = LE.SUBJECT_CODE 
+									AND LR.CLASS = LE.CLASS  AND LR.DELETE_YN = 'N' AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN LR.SUBMIT_START_DATE AND LR.SUBMIT_END_DATE
+									
+								LEFT OUTER JOIN COM_MEMBER ME ON ME.MEM_SEQ = LE.MEM_SEQ
+								WHERE (LE.YYYY ,LE.TERM ,LE.SUBJECT_CODE ,LE.CLASS)
+								IN (SELECT YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_SUBJ_CDP_MAPPING LSCM 
+													WHERE LSCM.MEM_SEQ= #{sessionMemSeq} 
+													AND (LSCM.YYYY,LSCM.TERM) IN (
+																					SELECT HAK.YYYY,HAK.TERM 
+																					FROM HAK_SCHEDULE HAK 
+																					WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																					AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE))
+		
+								 ) A WHERE A.REPORT_CNT=0
+			) AS myPageTodayCnt2
+			,
+			(
+			SELECT * FROM
+							(
+							SELECT 
+							COUNT(LE.LESSON_ID)-COUNT(LTPS.SUBMIT_DATE) 
+							FROM LMS_LESSON LE 
+							INNER JOIN COM_MEMBER CM ON LE.MEM_SEQ=CM.MEM_SEQ AND CM.DELETE_YN='N'
+							INNER JOIN LMS_TEAM_PROJECT LTP ON LTP.YYYY = LE.YYYY AND LTP.TERM = LE.TERM AND LTP.SUBJECT_CODE = LE.SUBJECT_CODE 
+								AND LTP.CLASS = LE.CLASS  AND LTP.DELETE_YN = 'N' AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN LTP.PROJECT_START_DATE AND LTP.PROJECT_END_DATE
+								
+							INNER JOIN LMS_TEAM_PROJECT_SUBMIT LTPS ON LTPS.TEAM_PROJECT_ID = LTP.TEAM_PROJECT_ID AND LTPS.MEM_ID= CM.MEM_ID
+		
+							WHERE (LE.YYYY ,LE.TERM ,LE.SUBJECT_CODE ,LE.CLASS)
+							IN (SELECT YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_SUBJ_CDP_MAPPING LSCM 
+												WHERE LSCM.MEM_SEQ= #{sessionMemSeq} 
+												AND (LSCM.YYYY,LSCM.TERM) IN (
+																				SELECT HAK.YYYY,HAK.TERM 
+																				FROM HAK_SCHEDULE HAK 
+																				WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																				AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)) 
+							 ) A 
+			) AS myPageTodayCnt3
+			,
+			(
+			SELECT COUNT(1) FROM 
+							(
+							SELECT ME.MEM_ID ,ME.MEM_NAME ,DI.DISCUSS_ID,
+							(SELECT COUNT(1) FROM lms_discuss_opinion DO WHERE DO.DISCUSS_ID = DI.DISCUSS_ID AND DO.INSERT_USER = ME.MEM_SEQ AND DO.DELETE_YN = 'N' ) opinionCnt /* 의견수 */ ,
+							(SELECT count(1) from lms_discuss_comment CO where CO.DISCUSS_ID = DI.DISCUSS_ID AND CO.INSERT_USER = ME.MEM_SEQ AND CO.DELETE_YN = 'N' ) commentCnt /* 댓글수 */
+		
+							FROM LMS_LESSON LE 
+							INNER JOIN LMS_DISCUSS DI ON DI.YYYY = LE.YYYY AND DI.TERM = LE.TERM AND DI.SUBJECT_CODE = LE.SUBJECT_CODE 
+								AND DI.CLASS = LE.CLASS  AND DI.DELETE_YN = 'N' AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN DI.START_DATE AND DI.END_DATE
+								
+							LEFT OUTER JOIN COM_MEMBER ME ON ME.MEM_SEQ = LE.MEM_SEQ
+							WHERE (LE.YYYY ,LE.TERM ,LE.SUBJECT_CODE ,LE.CLASS)
+							IN (SELECT YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_SUBJ_CDP_MAPPING LSCM 
+												WHERE LSCM.MEM_SEQ= #{sessionMemSeq} 
+												AND (LSCM.YYYY,LSCM.TERM) IN (
+																				SELECT HAK.YYYY,HAK.TERM 
+																				FROM HAK_SCHEDULE HAK 
+																				WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																				AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE))) A 
+							WHERE A.OPINIONCNT = 0 AND A.COMMENTCNT = 0 ORDER BY MEM_ID
+			) AS myPageTodayCnt4
+			,
+			'0' AS myPageTodayCnt5
+			,
+			(
+			SELECT COUNT(1) FROM (SELECT * FROM LMS_WORK_PROOF LWP WHERE LWP.PERIOD_ID IN (
+									SELECT PERIOD_ID FROM LMS_WORK_PROOF_PERIOD LWPP 
+									WHERE LWPP.DEPT_NO=#{sessionDeptNo}
+									AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN LWPP.START_TIME AND LWPP.END_TIME
+									)) A WHERE A.STATE='00'
+			) AS myPageTodayCnt6
+			FROM DUAL		
+	</select>
+	<!--사용자별 마이페이지 Today 건수 End  -->
+
+	<select id="listLectureS?cheduleStd" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLectureS?cheduleStd ====== */
+		select '09:00' start_lecture_time, /* 시작 시간 */
+		'12:00' end_lecture_time, /* 종료 시간 */
+		'한국사_기업명' subject_name, /* 교과목명 */
+		'01' sub_class, /* 분반 */
+		'플립러닝' online_lecture, /* 온라인강의 */
+		'공학1관-C410' lecture_place, /* 장소 */
+		'담당교수' member_prt_name, /* 담당교수 */
+		'기업현장교사' member_cot_name /* 기업현장교사 */
+		union all
+		select '13:00' start_lecture_time, /* 시작 시간 */
+		'17:00' end_lecture_time, /* 종료 시간 */
+		'한국사_기업명' subject_name, /* 교과목명 */
+		'01' sub_class, /* 분반 */
+		'플립러닝' online_lecture, /* 온라인강의 */
+		'공학1관-C410' lecture_place, /* 장소 */
+		'담당교수' member_prt_name, /* 담당교수 */
+		'기업현장교사' member_cot_name /* 기업현장교사 */
+		union all
+		select '18:00' start_lecture_time, /* 시작 시간 */
+		'23:00' end_lecture_time, /* 종료 시간 */
+		'한국사_기업명' subject_name, /* 교과목명 */
+		'01' sub_class, /* 분반 */
+		'없음' online_lecture, /* 온라인강의 */
+		'공학1관-C410' lecture_place, /* 장소 */
+		'담당교수' member_prt_name, /* 담당교수 */
+		'기업현장교사' member_cot_name /* 기업현장교사 */
+	</select>
+	
+	
+	<select id="listLectureOjtS​chedulePrt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLectureOjtS​chedulePrt ====== */
+		SELECT SUB.SUBJECT_NAME, 
+			       WEE.YYYY, 
+			       WEE.TERM, 
+			       WEE.SUBJECT_CODE, 
+			       WEE.CLASS AS SUBJECT_CLASS , 
+			       WEE.WEEK_CNT , 
+			       WEE.WEEK_ID, 
+			       TIM.TRANING_DATE, 
+			       TIM.TRANING_ST_HOUR, 
+			       TIM.TRANING_ST_MIN, 
+			       TIM.TRANING_ED_HOUR, 
+			       TIM.TRANING_ED_MIN , 
+			       (SELECT ELEM.NCS_ELEM_NAME 
+			         FROM LMS_SUBJ_NCS_UNIT UNIT 
+			            INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+			                ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+			              AND ELEM.DELETE_YN = 'N' 
+			        WHERE UNIT.DELETE_YN = 'N' 
+			              AND UNIT.WEEK_ID = WEE.WEEK_ID LIMIT 1 
+			       ) NCS_ELEM_NAME , 
+			       (SELECT COUNT(*) 
+			         FROM LMS_SUBJ_WEEK LSW 
+			        WHERE LSW.DELETE_YN = 'N' 
+			              AND LSW.YYYY = WEE.YYYY 
+			              AND LSW.TERM = WEE.TERM 
+			              AND LSW.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND LSW.CLASS = WEE.CLASS 
+			       ) TOT_WEEK_CNT , 
+			       (SELECT FN_GETCOMPAYNAME(AA.COMPANY_ID) 
+			         FROM LMS_TRANING_PROCESS_MAPPING AA 
+			        WHERE AA.YYYY = WEE.YYYY 
+			              AND AA.TERM = WEE.TERM 
+			              AND AA.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND AA.CLASS = WEE.CLASS 
+			              AND AA.DELETE_YN = 'N' LIMIT 1 
+			       ) AS COMPANY_NAME , 
+			       (SELECT GROUP_CONCAT(FN_GETUSERNAME(AA.MEM_SEQ)) 
+			         FROM LMS_SUBJ_TUT_MAPPING AA 
+			        WHERE AA.YYYY = WEE.YYYY 
+			              AND AA.TERM = WEE.TERM 
+			              AND AA.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND AA.CLASS = WEE.CLASS 
+			              AND AA.DELETE_YN = 'N' 
+			       ) AS TUT_NAME 
+			  FROM LMS_SUBJ_WEEK WEE 
+			     INNER JOIN LMS_SUBJECT SUB 
+			         ON WEE.YYYY = SUB.YYYY 
+			       AND WEE.TERM = SUB.TERM 
+			       AND WEE.SUBJECT_CODE = SUB.SUBJECT_CODE 
+			       AND WEE.CLASS = SUB.CLASS 
+			       AND SUB.SUBJECT_TRANING_TYPE = 'OJT' 
+			     INNER JOIN LMS_SUBJ_INS_MAPPING INS 
+			         ON WEE.YYYY = INS.YYYY 
+			       AND WEE.TERM = INS.TERM 
+			       AND WEE.SUBJECT_CODE = INS.SUBJECT_CODE 
+			       AND WEE.CLASS = INS.CLASS 
+			       AND INS.DELETE_YN = 'N' 
+			       AND INS.MEM_SEQ = #{sessionMemSeq} 
+			     INNER JOIN LMS_SUBJ_WEEK_TIME TIM 
+			         ON TIM.WEEK_ID = WEE.WEEK_ID 
+					AND TIM.YYYY = WEE.YYYY
+					AND TIM.TERM = WEE.TERM
+					AND TIM.SUBJECT_CODE = WEE.SUBJECT_CODE
+					AND TIM.CLASS = WEE.CLASS			         
+			       AND TIM.DELETE_YN = 'N' 
+			 WHERE WEE.DELETE_YN = 'N' 
+			       AND DATE_FORMAT(TRANING_DATE,'%Y.%m.%d') = DATE_FORMAT(NOW(),'%Y.%m.%d')
+	</select>
+	
+	<select id="listLmsUserMainPageStdStatusCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageStdStatusCnt ====== */
+<![CDATA[		
+		SELECT  
+				A.LESSON_ID,
+				A.YYYY,
+				A.TERM, 
+				A.SUBJECT_CODE, 
+				A.CLASS as SUB_CLASS,
+				LS.SUBJECT_TRANING_TYPE,
+				LS.SUBJECT_NAME,LS.SUBJECT_TYPE,LS.ONLINE_TYPE,
+				COUNT(LSW.WEEK_CNT)-COUNT(LA.ACTIVITY_NOTE_ID) AS ACTIVITY_NOTE_CNT 
+				,COUNT(LSW.WEEK_ID) AS TOTAL_TIME	 /* 전체출석일 */
+				,SUM(IF (MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+				,MAX(TO_NUMBER(LSW.WEEK_CNT)) AS ON_TOTAL_TIME	 /* 온라인전체출석일 */
+				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,A.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND   /* 온라인출석*/
+				,IFNULL(
+					     FLOOR((
+								SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+								FROM LMS_TRANING_NOTE_MASTER TNM,
+									 LMS_TRANING_NOTE_DETAIL TND
+								WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+								AND TNM.DELETE_YN='N' 
+								AND TND.DELETE_YN='N' 
+								AND TNM.SUBJECT_CODE= A.SUBJECT_CODE
+								AND TND.MEM_ID= #{sessionMemId}
+								AND TNM.YYYY=  A.YYYY   
+								AND TNM.CLASS  = A.CLASS					
+								)
+								/
+					       		(
+								SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+								FROM  LMS_SUBJ_WEEK_TIME WEET 
+								WHERE 
+									WEET.SUBJECT_CODE = A.SUBJECT_CODE 
+								AND WEET.YYYY =  A.YYYY
+								AND WEET.TERM =  A.TERM
+								AND WEET.CLASS =  A.CLASS
+								AND WEET.DELETE_YN = 'N'	
+						  		) *100) ,0) AS REAL_PROGRESS_RATE
+				FROM (SELECT LESSON_ID,YYYY,TERM,SUBJECT_CODE,CLASS FROM LMS_LESSON LL 
+						WHERE LL.MEM_SEQ= #{sessionMemSeq} 
+						AND (LL.YYYY,LL.TERM) IN (
+														SELECT HAK.YYYY,HAK.TERM 
+														FROM HAK_SCHEDULE HAK 
+														WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+														AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)) A
+				INNER JOIN LMS_SUBJECT LS ON A.YYYY = LS.YYYY AND A.TERM=LS.TERM AND A.SUBJECT_CODE=LS.SUBJECT_CODE AND A.CLASS = LS.CLASS AND LS.DELETE_YN = 'N'	
+				INNER JOIN LMS_SUBJ_WEEK LSW ON A.YYYY = LSW.YYYY AND A.TERM=LSW.TERM AND A.SUBJECT_CODE=LSW.SUBJECT_CODE AND A.CLASS = LSW.CLASS AND LSW.DELETE_YN = 'N'
+				INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID= LSW.WEEK_ID
+				
+													AND	LSWT.SUBJECT_CODE = LSW.SUBJECT_CODE 
+													AND LSWT.YYYY =  LSW.YYYY
+													AND LSWT.TERM =  LSW.TERM
+													AND LSWT.CLASS =  LSW.CLASS			
+													AND LSWT.DELETE_YN = 'N' AND LSWT.TRANING_DATE <= DATE_FORMAT(NOW(),'%Y.%m.%d')
+				LEFT OUTER JOIN LMS_ACTIVITY_NOTE LA ON A.YYYY = LA.YYYY AND A.TERM=LA.TERM AND A.SUBJECT_CODE=LA.SUBJECT_CODE AND A.CLASS = LA.CLASS AND LSW.WEEK_CNT = LA.WEEK_CNT
+				
+				LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND 
+					ON  TND.YYYY= A.YYYY 
+				   AND TND.SUBJECT_CODE= A.SUBJECT_CODE 			
+					AND TND.CLASS = A.CLASS 
+					AND TND.TERM = A.TERM 
+					AND TND.DELETE_YN='N' 
+					AND TND.MEM_ID= #{sessionMemId}
+					AND TND.ADDYN = 'N' 
+					AND TND.TIME_ID = LSWT.TIME_ID 
+				
+				LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS 
+					ON LSOS.CLASS = A.CLASS 
+					AND LSOS.YYYY = A.YYYY 
+					AND LSOS.TERM = A.TERM 
+					AND LSOS.SUBJECT_CODE = A.SUBJECT_CODE 
+					AND LSOS.DELETE_YN = 'N' 
+				
+				GROUP BY A.LESSON_ID ,A.YYYY,A.TERM, A.SUBJECT_CODE, A.CLASS				
+]]>		
+		
+	</select>
+ 
+<select id="listLmsUserMainPageCotStatusCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPageCotStatusCnt ====== */
+<![CDATA[		
+			SELECT 
+					LSW.WEEK_CNT,
+					LSTM.YYYY,
+					LSTM.TERM,
+					LSTM.SUBJECT_CODE,
+					LS.SUBJECT_NAME,
+					LSTM.CLASS,						
+					COUNT(LSW.WEEK_CNT)-COUNT(LA.ACTIVITY_NOTE_ID) AS ACTIVITY_NOTE_CNT ,
+					COUNT(LSW.WEEK_ID) AS TOTAL_TIME	,  /* 전체출석일 */
+					SUM(IF (MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR )-1 <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+					FROM LMS_SUBJ_TUT_MAPPING LSTM
+					
+			INNER JOIN  LMS_LESSON LL ON LSTM.YYYY=LL.YYYY AND LSTM.SUBJECT_CODE= LL.SUBJECT_CODE	AND LSTM.CLASS = LL.CLASS AND LSTM.TERM = LL.TERM 	AND LL.DELETE_YN='N' 
+			INNER JOIN LMS_SUBJECT LS ON LSTM.YYYY = LS.YYYY AND LSTM.TERM=LS.TERM AND LSTM.SUBJECT_CODE=LS.SUBJECT_CODE AND LSTM.CLASS = LS.CLASS AND LS.DELETE_YN = 'N' 
+			INNER JOIN LMS_SUBJ_WEEK LSW ON LSTM.YYYY = LSW.YYYY AND LSTM.TERM=LSW.TERM AND LSTM.SUBJECT_CODE=LSW.SUBJECT_CODE 
+													AND LSTM.CLASS = LSW.CLASS AND LSW.DELETE_YN = 'N'
+			INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID= LSW.WEEK_ID
+			
+			 					AND	LSWT.SUBJECT_CODE = LSW.SUBJECT_CODE 
+								AND LSWT.YYYY =  LSW.YYYY
+								AND LSWT.TERM =  LSW.TERM
+								AND LSWT.CLASS =  LSW.CLASS	
+								
+												AND LSWT.DELETE_YN = 'N' 	AND #{traningDate} > LSWT.TRANING_DATE 
+			LEFT OUTER JOIN LMS_ACTIVITY_NOTE LA ON LSTM.YYYY = LA.YYYY AND LSTM.TERM=LA.TERM AND LSTM.SUBJECT_CODE=LA.SUBJECT_CODE 
+															AND LSTM.CLASS = LA.CLASS AND LSW.WEEK_CNT = LA.WEEK_CNT 
+			LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND 
+				 ON TND.YYYY= LSTM.YYYY 
+				AND TND.SUBJECT_CODE= LSTM.SUBJECT_CODE
+				AND TND.CLASS = LSTM.CLASS 
+				AND TND.TERM = LSTM.TERM 
+				AND TND.DELETE_YN='N' 
+				AND TND.MEM_ID= (SELECT CM.MEM_ID FROM COM_MEMBER CM WHERE CM.DELETE_YN='N' AND  CM.MEM_SEQ = LL.MEM_SEQ)
+				AND TND.ADDYN = 'N' 
+				AND TND.TIME_ID = LSWT.TIME_ID
+			
+			WHERE LSTM.DELETE_YN='N' 
+					AND LSW.WEEK_CNT =	(SELECT MAX(TO_NUMBER(A.WEEK_CNT)) 
+													FROM LMS_SUBJ_WEEK A ,LMS_SUBJ_WEEK_TIME B
+												  WHERE A.WEEK_ID = B.WEEK_ID
+								AND	A.SUBJECT_CODE = B.SUBJECT_CODE 
+								AND A.YYYY =  B.YYYY
+								AND A.TERM =  B.TERM
+								AND A.CLASS =  B.CLASS													  
+													AND B.DELETE_YN='N'
+													AND A.DELETE_YN='N'
+													AND A.YYYY = LL.YYYY 
+													AND A.TERM = LL.TERM 
+													AND A.CLASS =LL.CLASS 
+													AND A.SUBJECT_CODE =LL.SUBJECT_CODE 
+													AND  #{traningDate} > B.TRANING_DATE)
+					AND LSTM.MEM_SEQ = #{sessionMemSeq} 
+					AND (LSTM.YYYY,LSTM.TERM) IN (
+													SELECT HAK.YYYY,HAK.TERM 
+													FROM HAK_SCHEDULE HAK 
+													WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+													AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+			GROUP BY LSW.WEEK_CNT, LSTM.YYYY,LSTM.TERM,LSTM.SUBJECT_CODE,LSTM.CLASS
+		
+]]>		
+		
+	</select>
+	<select id="listLmsUserMainPagePrtStatusCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPagePrtStatusCnt ====== */
+<![CDATA[
+
+				SELECT 		 	A.WEEK_CNT,
+								(SELECT MAX(TO_NUMBER(AA.WEEK_CNT)) 
+									FROM LMS_SUBJ_WEEK AA ,LMS_SUBJ_WEEK_TIME B
+								  WHERE AA.WEEK_ID = B.WEEK_ID
+									AND AA.YYYY = B.YYYY 
+									AND AA.TERM = B.TERM 
+									AND AA.CLASS =B.CLASS 
+									AND AA.SUBJECT_CODE =B.SUBJECT_CODE 												  
+									AND B.DELETE_YN='N'
+									AND AA.DELETE_YN='N'
+									AND AA.YYYY = A.YYYY 
+									AND AA.TERM = A.TERM 
+									AND AA.CLASS =A.CLASS 
+									AND AA.SUBJECT_CODE =A.SUBJECT_CODE ) as MAX_WEEK_CNT,				
+									A.YYYY,
+									A.TERM,
+									A.SUBJECT_CODE,
+									A.SUBJECT_NAME,
+									A.SUBJECT_GRADE as SCHOOL_YEAR,
+									A.CLASS,
+				 					A.TOTAL_CNT,
+				 					A.ON_TOTAL_CNT,
+				 					(
+									SELECT
+											COUNT(B.COMPANY_ID) COMPANY_CNT
+											FROM LMS_TRANING_PROCESS_MAPPING B
+											WHERE B.DELETE_YN='N'
+											AND B.YYYY=A.YYYY
+											AND B.TERM=A.TERM
+											AND B.SUBJECT_CODE=A.SUBJECT_CODE
+									) AS COMPANY_CNT,
+				 					SUM(A.ACTIVITY_NOTE_CNT) AS ACTIVITY_NOTE_CNT,
+				 					SUM(A.TOTAL_TIME) AS TOTAL_TIME,
+				 					SUM(A.ATTEND) AS ATTEND,
+				 					SUM(A.LATENESS) AS LATENESS,
+				 					SUM(A.ON_ATTEND) AS ON_ATTEND,
+				 					SUM(A.ON_LATENESS) AS ON_LATENESS
+				 FROM(
+							SELECT 
+									LSW.WEEK_CNT,
+									LSTM.YYYY,
+									LSTM.TERM,
+									LSTM.SUBJECT_CODE,
+									LS.SUBJECT_NAME,
+									LSTM.CLASS,
+									CASE WHEN SUBSTRING(FN_GETUSERID(LL.MEM_SEQ),1,2) != '20'
+						              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LL.MEM_SEQ)),1,4)
+						              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LL.MEM_SEQ),1,4)
+						           END SUBJECT_GRADE,
+									(SELECT COUNT(1) FROM LMS_LESSON A WHERE A.YYYY=LSTM.YYYY AND A.TERM=LSTM.TERM AND A.SUBJECT_CODE=LSTM.SUBJECT_CODE AND A.CLASS = LSTM.CLASS AND A.DELETE_YN='N')
+									AS TOTAL_CNT,	/*전체학생수*/
+									COUNT(LSW.WEEK_CNT)-COUNT(LA.ACTIVITY_NOTE_ID) AS ACTIVITY_NOTE_CNT , /* 미작성자 */
+									COUNT(LSWT.WEEK_ID) AS TOTAL_TIME	,  /* 전체출석일 */
+									SUM(IF (MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ) = TND.STUDY_TIME , 1, 0)) AS ATTEND,   /* 출석*/
+									SUM(IF (MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS,   /* 지각*/
+									COUNT(LSWC.WEEK_ID) AS ON_TOTAL_CNT,
+				 				SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND,   /* 온라인출석*/
+								SUM(
+								IF (FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)
+								) AS ON_LATENESS  /* 지각*/ 
+				
+									FROM LMS_SUBJ_INS_MAPPING LSTM
+									
+							INNER JOIN  LMS_LESSON LL ON LSTM.YYYY=LL.YYYY AND LSTM.SUBJECT_CODE= LL.SUBJECT_CODE	AND LSTM.CLASS = LL.CLASS AND LSTM.TERM = LL.TERM 	AND LL.DELETE_YN='N' 
+							INNER JOIN LMS_SUBJECT LS ON LSTM.YYYY = LS.YYYY AND LSTM.TERM=LS.TERM AND LSTM.SUBJECT_CODE=LS.SUBJECT_CODE AND LSTM.CLASS = LS.CLASS 
+														AND LS.DELETE_YN = 'N' AND LS.SUBJECT_TRANING_TYPE= #{subjectTraningType} 
+							INNER JOIN LMS_SUBJ_WEEK LSW ON LSTM.YYYY = LSW.YYYY AND LSTM.TERM=LSW.TERM AND LSTM.SUBJECT_CODE=LSW.SUBJECT_CODE 
+																	AND LSTM.CLASS = LSW.CLASS AND LSW.DELETE_YN = 'N'
+							INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID= LSW.WEEK_ID
+																			AND LSWT.YYYY = LSW.YYYY 
+																			AND LSWT.TERM=LSW.TERM 
+																			AND LSWT.SUBJECT_CODE=LSW.SUBJECT_CODE 
+																			AND LSWT.CLASS = LSW.CLASS 
+																			AND LSWT.DELETE_YN = 'N' 	
+																			AND #{traningDate} >= LSWT.TRANING_DATE
+																			
+				  			LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT  LSWC ON  LSWC.WEEK_ID= LSW.WEEK_ID AND LSWC.DELETE_YN='N'
+							
+							LEFT OUTER JOIN LMS_ACTIVITY_NOTE LA ON LSTM.YYYY = LA.YYYY AND LSTM.TERM=LA.TERM AND LSTM.SUBJECT_CODE=LA.SUBJECT_CODE 
+																			AND LSTM.CLASS = LA.CLASS AND LSW.WEEK_CNT = LA.WEEK_CNT 
+																			AND LA.MEM_ID= (SELECT MEM_ID FROM COM_MEMBER A WHERE A.MEM_SEQ=LL.MEM_SEQ )
+																			AND LA.DELETE_YN='N'
+							LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND 
+								 ON TND.YYYY= LSTM.YYYY 
+								AND TND.SUBJECT_CODE= LSTM.SUBJECT_CODE
+								AND TND.CLASS = LSTM.CLASS 
+								AND TND.TERM = LSTM.TERM 
+								AND TND.DELETE_YN='N' 
+								AND TND.MEM_ID= (SELECT CM.MEM_ID FROM COM_MEMBER CM WHERE CM.DELETE_YN='N' AND  CM.MEM_SEQ = LL.MEM_SEQ)
+								AND TND.ADDYN = 'N' 
+								AND TND.TIME_ID = LSWT.TIME_ID
+							
+				        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+												ON LSOS.CLASS = LL.CLASS
+												AND LSOS.YYYY = LL.YYYY
+												AND LSOS.TERM = LL.TERM
+												AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+												AND LSOS.DELETE_YN = 'N'
+															
+							WHERE LSTM.DELETE_YN='N' 
+									AND LSW.WEEK_CNT =	(SELECT MAX(TO_NUMBER(A.WEEK_CNT)) 
+																	FROM LMS_SUBJ_WEEK A ,LMS_SUBJ_WEEK_TIME B
+																  WHERE A.WEEK_ID = B.WEEK_ID
+																	AND A.YYYY = B.YYYY 
+																	AND A.TERM = B.TERM 
+																	AND A.CLASS =B.CLASS 
+																	AND A.SUBJECT_CODE =B.SUBJECT_CODE
+																	AND B.DELETE_YN='N'
+																	AND A.DELETE_YN='N'
+																	AND A.YYYY = LL.YYYY 
+																	AND A.TERM = LL.TERM 
+																	AND A.CLASS =LL.CLASS 
+																	AND A.SUBJECT_CODE =LL.SUBJECT_CODE 
+																	AND  #{traningDate} >= B.TRANING_DATE)
+									AND LSTM.MEM_SEQ =  #{sessionMemSeq} 
+									AND (LSTM.YYYY,LSTM.TERM) IN (
+																				SELECT HAK.YYYY,HAK.TERM 
+																				FROM HAK_SCHEDULE HAK 
+																				WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																				AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+																	
+							GROUP BY LSW.WEEK_CNT, LSTM.YYYY,LSTM.TERM,LSTM.SUBJECT_CODE,LSTM.CLASS,LL.LESSON_ID,LL.MEM_SEQ
+				 ) A GROUP BY 	A.WEEK_CNT,
+								A.SUBJECT_GRADE,
+								A.YYYY,
+								A.TERM,
+								A.SUBJECT_CODE,
+								A.SUBJECT_NAME,
+								A.CLASS,
+								A.TOTAL_CNT,A.ON_TOTAL_CNT
+		
+]]>
+	</select>
+	<select id="listLmsUserMainPagePrtStatusPrtCnt" parameterType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO" resultType="kr.co.sitglobal.oklms.lu.main.vo.LmsUserMainPageVO">
+		/* ====== kr.co.sitglobal.oklms.lu.main.service.impl.LmsUserMainPageMapper.listLmsUserMainPagePrtStatusPrtCnt ====== */
+<![CDATA[
+
+				SELECT 		 	A.WEEK_CNT,
+								(SELECT MAX(TO_NUMBER(AA.WEEK_CNT)) 
+									FROM LMS_SUBJ_WEEK AA ,LMS_SUBJ_WEEK_TIME B
+								  WHERE AA.WEEK_ID = B.WEEK_ID
+									AND AA.YYYY = B.YYYY 
+									AND AA.TERM = B.TERM 
+									AND AA.CLASS =B.CLASS 
+									AND AA.SUBJECT_CODE =B.SUBJECT_CODE 												  
+									AND B.DELETE_YN='N'
+									AND AA.DELETE_YN='N'
+									AND AA.YYYY = A.YYYY 
+									AND AA.TERM = A.TERM  
+									AND AA.SUBJECT_CODE =A.SUBJECT_CODE ) as MAX_WEEK_CNT,				
+									A.YYYY,
+									A.TERM,
+									A.SUBJECT_CODE,
+									A.SUBJECT_NAME,
+									A.SUBJECT_GRADE as SCHOOL_YEAR, 
+				 					A.TOTAL_CNT,
+				 					A.ON_TOTAL_CNT,
+				 					(
+									SELECT
+											COUNT(B.COMPANY_ID) COMPANY_CNT
+											FROM LMS_TRANING_PROCESS_MAPPING B
+											WHERE B.DELETE_YN='N'
+											AND B.YYYY=A.YYYY
+											AND B.TERM=A.TERM
+											AND B.SUBJECT_CODE=A.SUBJECT_CODE
+									) AS COMPANY_CNT,
+				 					SUM(A.ACTIVITY_NOTE_CNT) AS ACTIVITY_NOTE_CNT,
+				 					SUM(A.TOTAL_TIME) AS TOTAL_TIME,
+				 					SUM(A.ATTEND) AS ATTEND,
+				 					SUM(A.LATENESS) AS LATENESS,
+				 					SUM(A.ON_ATTEND) AS ON_ATTEND,
+				 					SUM(A.ON_LATENESS) AS ON_LATENESS
+				 FROM(
+							SELECT 
+									LSW.WEEK_CNT,
+									LSTM.YYYY,
+									LSTM.TERM,
+									LSTM.SUBJECT_CODE,
+									LS.SUBJECT_NAME,
+									LSTM.CLASS,
+									CASE WHEN SUBSTRING(FN_GETUSERID(LL.MEM_SEQ),1,2) != '20'
+						              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(LL.MEM_SEQ)),1,4)
+						              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(LL.MEM_SEQ),1,4)
+						           END SUBJECT_GRADE,
+									(SELECT COUNT(1) FROM LMS_LESSON A WHERE A.YYYY=LSTM.YYYY AND A.TERM=LSTM.TERM AND A.SUBJECT_CODE=LSTM.SUBJECT_CODE AND A.CLASS = LSTM.CLASS AND A.DELETE_YN='N')
+									AS TOTAL_CNT,	/*전체학생수*/
+									COUNT(LSW.WEEK_CNT)-COUNT(LA.ACTIVITY_NOTE_ID) AS ACTIVITY_NOTE_CNT , /* 미작성자 */
+									COUNT(LSWT.WEEK_ID) AS TOTAL_TIME	,  /* 전체출석일 */
+									SUM(IF (MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR ) = TND.STUDY_TIME , 1, 0)) AS ATTEND,   /* 출석*/
+									SUM(IF (MOD(LSWT.TRANING_ED_HOUR,LSWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS,   /* 지각*/
+									COUNT(LSWC.WEEK_ID) AS ON_TOTAL_CNT,
+				 				SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND,   /* 온라인출석*/
+								SUM(
+								IF (FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(LSW.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)
+								) AS ON_LATENESS  /* 지각*/ 
+				
+									FROM LMS_SUBJ_INS_MAPPING LSTM
+									
+							INNER JOIN  LMS_LESSON LL ON LSTM.YYYY=LL.YYYY AND LSTM.SUBJECT_CODE= LL.SUBJECT_CODE	AND LSTM.CLASS = LL.CLASS AND LSTM.TERM = LL.TERM 	AND LL.DELETE_YN='N' 
+							INNER JOIN LMS_SUBJECT LS ON LSTM.YYYY = LS.YYYY AND LSTM.TERM=LS.TERM AND LSTM.SUBJECT_CODE=LS.SUBJECT_CODE AND LSTM.CLASS = LS.CLASS 
+														AND LS.DELETE_YN = 'N' AND LS.SUBJECT_TRANING_TYPE= #{subjectTraningType} 
+							INNER JOIN LMS_SUBJ_WEEK LSW ON LSTM.YYYY = LSW.YYYY AND LSTM.TERM=LSW.TERM AND LSTM.SUBJECT_CODE=LSW.SUBJECT_CODE 
+																	AND LSTM.CLASS = LSW.CLASS AND LSW.DELETE_YN = 'N'
+							INNER JOIN LMS_SUBJ_WEEK_TIME LSWT ON LSWT.WEEK_ID= LSW.WEEK_ID
+																			AND LSWT.YYYY = LSW.YYYY 
+																			AND LSWT.TERM=LSW.TERM 
+																			AND LSWT.SUBJECT_CODE=LSW.SUBJECT_CODE 
+																			AND LSWT.CLASS = LSW.CLASS 
+																			AND LSWT.DELETE_YN = 'N' 	
+																			AND #{traningDate} >= LSWT.TRANING_DATE
+																			
+				  			LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT  LSWC ON  LSWC.WEEK_ID= LSW.WEEK_ID AND LSWC.DELETE_YN='N'
+							
+							LEFT OUTER JOIN LMS_ACTIVITY_NOTE LA ON LSTM.YYYY = LA.YYYY AND LSTM.TERM=LA.TERM AND LSTM.SUBJECT_CODE=LA.SUBJECT_CODE 
+																			AND LSTM.CLASS = LA.CLASS AND LSW.WEEK_CNT = LA.WEEK_CNT 
+																			AND LA.MEM_ID= (SELECT MEM_ID FROM COM_MEMBER A WHERE A.MEM_SEQ=LL.MEM_SEQ )
+																			AND LA.DELETE_YN='N'
+							LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND 
+								 ON TND.YYYY= LSTM.YYYY 
+								AND TND.SUBJECT_CODE= LSTM.SUBJECT_CODE
+								AND TND.CLASS = LSTM.CLASS 
+								AND TND.TERM = LSTM.TERM 
+								AND TND.DELETE_YN='N' 
+								AND TND.MEM_ID= (SELECT CM.MEM_ID FROM COM_MEMBER CM WHERE CM.DELETE_YN='N' AND  CM.MEM_SEQ = LL.MEM_SEQ)
+								AND TND.ADDYN = 'N' 
+								AND TND.TIME_ID = LSWT.TIME_ID
+							
+				        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+												ON LSOS.CLASS = LL.CLASS
+												AND LSOS.YYYY = LL.YYYY
+												AND LSOS.TERM = LL.TERM
+												AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+												AND LSOS.DELETE_YN = 'N'
+															
+							WHERE LSTM.DELETE_YN='N' 
+									AND LSW.WEEK_CNT =	(SELECT MAX(TO_NUMBER(A.WEEK_CNT)) 
+																	FROM LMS_SUBJ_WEEK A ,LMS_SUBJ_WEEK_TIME B
+																  WHERE A.WEEK_ID = B.WEEK_ID
+																	AND A.YYYY = B.YYYY 
+																	AND A.TERM = B.TERM 
+																	AND A.CLASS =B.CLASS 
+																	AND A.SUBJECT_CODE =B.SUBJECT_CODE
+																	AND B.DELETE_YN='N'
+																	AND A.DELETE_YN='N'
+																	AND A.YYYY = LL.YYYY 
+																	AND A.TERM = LL.TERM 
+																	AND A.CLASS =LL.CLASS 
+																	AND A.SUBJECT_CODE =LL.SUBJECT_CODE 
+																	AND  #{traningDate} >= B.TRANING_DATE)
+									AND LSTM.MEM_SEQ =  #{sessionMemSeq} 
+									AND (LSTM.YYYY,LSTM.TERM) IN (
+																				SELECT HAK.YYYY,HAK.TERM 
+																				FROM HAK_SCHEDULE HAK 
+																				WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+																				AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE)
+																	
+							GROUP BY LSW.WEEK_CNT, LSTM.YYYY,LSTM.TERM,LSTM.SUBJECT_CODE,LSTM.CLASS,LL.LESSON_ID,LL.MEM_SEQ
+				 ) A GROUP BY 	A.WEEK_CNT,
+								A.SUBJECT_GRADE,
+								A.YYYY,
+								A.TERM,
+								A.SUBJECT_CODE,
+								A.SUBJECT_NAME, 
+								A.TOTAL_CNT,A.ON_TOTAL_CNT
+		
+]]>
+	</select>
+</mapper>

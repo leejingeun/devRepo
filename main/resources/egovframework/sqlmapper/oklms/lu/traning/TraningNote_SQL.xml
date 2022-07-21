@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.traning.service.impl.TraningNoteMapper">
+ 
+	<select id="getTraningNote" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningNote ====== */
+		SELECT DISTINCT
+	       (
+	       SELECT MIN(LSWT.TRANING_DATE)
+	       FROM    LMS_SUBJ_WEEK_TIME LSWT
+	       WHERE   LSWT.DELETE_YN    = 'N'
+	       AND     SUBJ.YYYY         = LSWT.YYYY
+	       AND     SUBJ.TERM         = LSWT.TERM
+	       AND     SUBJ.SUBJECT_CODE = LSWT.SUBJECT_CODE
+	       AND     SUBJ.CLASS        = LSWT.CLASS
+	       )
+	       AS TRANING_ST_DATE ,
+	       (
+	       SELECT MAX(LSWT.TRANING_DATE)
+	       FROM    LMS_SUBJ_WEEK_TIME LSWT
+	       WHERE   LSWT.DELETE_YN    = 'N'
+	       AND     SUBJ.YYYY         = LSWT.YYYY
+	       AND     SUBJ.TERM         = LSWT.TERM
+	       AND     SUBJ.SUBJECT_CODE = LSWT.SUBJECT_CODE
+	       AND     SUBJ.CLASS        = LSWT.CLASS
+	       )
+	       AS TRANING_END_DATE ,
+	       (
+		   SELECT  SUM(MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ))
+	       FROM    LMS_SUBJ_WEEK_TIME SWT
+	       WHERE    SWT.DELETE_YN    = 'N'
+	       AND     SUBJ.YYYY         = SWT.YYYY
+	       AND     SUBJ.TERM         = SWT.TERM
+	       AND     SUBJ.SUBJECT_CODE = SWT.SUBJECT_CODE
+	       AND     SUBJ.CLASS        = SWT.CLASS
+	       AND     WEK.WEEK_ID       = SWT.WEEK_ID
+			 ) AS TIME_HOUR,
+	       
+	       <!-- 
+			CASE WHEN  SUBJ.SUBJECT_TRANING_TYPE = 'OJT'
+			THEN 
+			(
+			SELECT GROUP_CONCAT(NCS_UNIT_NAME)
+			FROM LMS_SUBJ_WEEK_TIME SWT
+			 WHERE    SWT.DELETE_YN    = 'N'
+		       AND     SUBJ.YYYY         = SWT.YYYY
+		       AND     SUBJ.TERM         = SWT.TERM
+		       AND     SUBJ.SUBJECT_CODE = SWT.SUBJECT_CODE
+		       AND     SUBJ.CLASS        = SWT.CLASS
+		       AND     WEK.WEEK_ID       = SWT.WEEK_ID
+			)
+			ELSE UNIT.NCS_UNIT_NAME
+			END NCS_UNIT_NAME,
+			
+			CASE WHEN  SUBJ.SUBJECT_TRANING_TYPE = 'OJT'
+			THEN 
+			(
+			SELECT GROUP_CONCAT(NCS_ELEM_NAME)
+			FROM LMS_SUBJ_WEEK_TIME SWT
+			 WHERE    SWT.DELETE_YN    = 'N'
+		       AND     SUBJ.YYYY         = SWT.YYYY
+		       AND     SUBJ.TERM         = SWT.TERM
+		       AND     SUBJ.SUBJECT_CODE = SWT.SUBJECT_CODE
+		       AND     SUBJ.CLASS        = SWT.CLASS
+		       AND     WEK.WEEK_ID       = SWT.WEEK_ID
+			)
+			ELSE ELEM.NCS_ELEM_NAME
+			END NCS_ELEM_NAME,  
+			-->
+			
+			CASE WHEN  SUBJ.SUBJECT_TRANING_TYPE = 'OJT'
+			THEN SWT.NCS_UNIT_NAME
+			ELSE UNIT.NCS_UNIT_NAME
+			END NCS_UNIT_NAME,
+			
+			CASE WHEN  SUBJ.SUBJECT_TRANING_TYPE = 'OJT'
+			THEN SWT.NCS_ELEM_NAME
+			ELSE ELEM.NCS_ELEM_NAME
+			END NCS_ELEM_NAME,  
+	       
+	       
+	       WEK.LESSON_CN,
+	       SUBJ.traning_hour ,
+	       WEK.WEEK_ID ,
+	       SUBJ.SUBJECT_NAME ,
+	       SUBJ.CLASS AS CLASS_ID ,
+	       SUBJ.SUBJECT_CODE ,
+	       SUBJ.SUBJECT_TRANING_TYPE ,
+	       SUBJ.TERM,
+	       WEK.WEEK_CNT,
+	       LTPM.COMPANY_ID,
+	       FN_GETCOMPAYNAME(LTPM.COMPANY_ID) as COMPANY_NAME      
+	FROM   LMS_SUBJECT SUBJ
+	
+	       INNER JOIN LMS_SUBJ_WEEK WEK
+	       ON     SUBJ.SUBJECT_CODE = WEK.SUBJECT_CODE
+	       AND 	  SUBJ.CLASS = WEK.CLASS
+	       AND    WEK.DELETE_YN           ='N'
+	       AND    WEK.YYYY          = SUBJ.YYYY
+	       AND    WEK.TERM          = SUBJ.TERM
+	       
+	       INNER JOIN LMS_SUBJ_WEEK_TIME SWT
+	       ON     SWT.DELETE_YN    = 'N'
+	       AND     SUBJ.YYYY         = SWT.YYYY
+	       AND     SUBJ.TERM         = SWT.TERM
+	       AND     SUBJ.SUBJECT_CODE = SWT.SUBJECT_CODE
+	       AND     SUBJ.CLASS        = SWT.CLASS
+	       AND     WEK.WEEK_ID       = SWT.WEEK_ID	    
+	          
+	       LEFT JOIN lms_subj_ncs_unit UNIT
+	       ON     SUBJ.SUBJECT_CODE = UNIT.SUBJECT_CODE
+	       AND    UNIT.DELETE_YN           ='N'
+	       AND    WEK.WEEK_ID       = UNIT.WEEK_ID
+	       AND    SUBJ.YYYY         = UNIT.YYYY
+	       AND    SUBJ.TERM         = UNIT.TERM
+	       
+	       LEFT JOIN lms_subj_ncs_elem ELEM
+	       ON     SUBJ.SUBJECT_CODE = ELEM.SUBJECT_CODE
+		   AND    ELEM.DELETE_YN           ='N'
+	       AND    WEK.WEEK_ID       = ELEM.WEEK_ID
+	       AND    SUBJ.YYYY         = ELEM.YYYY
+	       AND    SUBJ.TERM         = ELEM.TERM
+	       
+	       LEFT OUTER JOIN LMS_TRANING_PROCESS_MAPPING  LTPM
+	       ON    LTPM.DELETE_YN='N'
+		   AND     SUBJ.YYYY         = LTPM.YYYY
+	       AND     SUBJ.TERM         = LTPM.TERM
+	       AND     SUBJ.SUBJECT_CODE = LTPM.SUBJECT_CODE
+	       AND     SUBJ.CLASS        = LTPM.CLASS	 
+	             
+	WHERE      SUBJ.DELETE_YN           ='N'
+		AND    SUBJ.YYYY                = #{yyyy}
+		AND    SUBJ.TERM                = #{term}
+		AND    SUBJ.SUBJECT_CODE        = #{subjectCode}
+		AND    WEK.WEEK_CNT =#{weekCnt}
+		<if test="classId != null and classId != ''">
+		AND    SUBJ.CLASS  =#{classId}
+		</if>
+ 		LIMIT 0,1
+	</select>
+	<select id="getTraningRegularClassMemberCnt" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="java.lang.Integer" >
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningRegularClassMemberCnt ====== */
+		SELECT COUNT(*) AS CNT FROM LMS_TRANING_NOTE_DETAIL
+		WHERE 1=1
+		AND SUBJECT_CODE        = #{subjectCode}
+		AND DELETE_YN           ='N'
+		AND YYYY                =  #{yyyy}
+		AND TERM                =  #{term}
+		AND WEEK_CNT = #{weekCnt}
+		AND TIME_ID = #{timeId}
+	</select>
+	<select id="listTraningRegularClassMember" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningRegularClassMember ====== */
+		SELECT LESS.LESSON_ID ,
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.mem_seq ,
+		       MEMB.COMPANY_ID ,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW ,
+		       FN_WEEK_PROGRESS_RATE(LESS.YYYY,LESS.TERM,LESS.SUBJECT_CODE , LESS.CLASS ,WEEK.WEEK_ID ,LESS.LESSON_ID )AS ATTEND_PROGRESS ,
+		       FN_GETCOMPAYNAME(MEMB.COMPANY_ID)                                                                       AS COMPANY_NAME
+		FROM   LMS_LESSON LESS
+		       INNER JOIN COM_MEMBER  MEMB
+		       ON     LESS.MEM_SEQ = MEMB.MEM_SEQ AND MEMB.DELETE_YN='N'
+		       		
+		       INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS
+		       
+		       LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME  WEET
+		       ON     LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+		       AND    WEEK.WEEK_ID      = WEET.WEEK_ID
+		       AND    WEET.YYYY         = LESS.YYYY
+		       AND    WEET.TERM         = LESS.TERM
+		       AND    WEET.CLASS        = LESS.CLASS
+		       
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL DET
+		       ON     LESS.SUBJECT_CODE = DET.SUBJECT_CODE
+		       AND    MEMB.MEM_ID       = DET.MEM_ID
+		       AND    DET.DELETE_YN     = 'N'
+		       AND    DET.ADDYN         = 'N'
+		       AND    DET.WEEK_CNT      = WEEK.WEEK_CNT
+		  	   AND    DET.TIME_ID       = WEET.TIME_ID
+		       AND    DET.YYYY          = LESS.YYYY
+		       AND    DET.TERM          = LESS.TERM
+		       AND    DET.CLASS         = LESS.CLASS
+		       
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID
+		       AND    MAS.DELETE_YN                = 'N'
+		       AND    MAS.ADDYN                    = 'N'
+			   AND    MAS.TIME_ID                  = WEET.TIME_ID
+		WHERE    LESS.SUBJECT_CODE        = #{subjectCode}
+		AND LESS.DELETE_YN           ='N'
+		AND LESS.YYYY                =  #{yyyy}
+		AND LESS.TERM                =  #{term}
+		AND WEEK.WEEK_CNT = #{weekCnt}
+		<if test="memSeq != null and memSeq != ''">
+		AND MEMB.MEM_SEQ = #{memSeq}
+		</if>
+		<if test="classId != null and classId != ''">
+		AND LESS.CLASS  =#{classId}
+		</if>
+		<if test="timeId != null and timeId != ''">
+		AND WEET.TIME_ID = #{timeId}
+		</if>
+
+	</select>
+	
+	 
+	<select id="listTraningClassMember" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningClassMember ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+		SELECT MEMB.COMPANY_ID,
+			   FN_GETCOMPAYNAME(MEMB.COMPANY_ID)  AS COMPANY_NAME,
+			   MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.MEM_SEQ  
+		FROM   LMS_LESSON LESS
+		       INNER JOIN COM_MEMBER  MEMB
+		       ON     LESS.MEM_SEQ = MEMB.MEM_SEQ AND MEMB.DELETE_YN='N'
+		       		
+		       INNER JOIN LMS_SUBJ_WEEK WEEK
+		       ON     LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+		       AND    WEEK.YYYY         = LESS.YYYY
+		       AND    WEEK.TERM         = LESS.TERM
+		       AND    WEEK.CLASS        = LESS.CLASS
+		       
+		WHERE    LESS.SUBJECT_CODE        = #{subjectCode}
+		AND LESS.DELETE_YN           ='N'
+		AND LESS.YYYY                =  #{yyyy}
+		AND LESS.TERM                =  #{term}
+		AND WEEK.WEEK_CNT = #{weekCnt}
+		
+		<if test="classId != null and classId != ''">
+		AND LESS.CLASS  =#{classId}
+		</if>
+		<if test="timeId != null and timeId != ''">
+		AND WEET.TIME_ID = #{timeId}
+		</if>
+		
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>	
+	
+	
+	
+	<select id="listTraningRegularClassMember2" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningRegularClassMember2 ====== */
+		SELECT LESS.LESSON_ID ,
+		       MEMB.MEM_NAME ,
+		       MEMB.MEM_ID ,
+		       MEMB.mem_seq ,
+		       MEMB.COMPANY_ID ,
+		       DET.STUDY_TIME ,
+		       IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+		       DET.BIGO ,
+		       DET.TRANINING_NOTE_DETAIL_ID ,
+		       DET.TRANINING_NOTE_MASTER_ID ,
+		       MAS.REVIEW ,
+		       WEEK.WEEK_CNT ,
+		       FN_WEEK_PROGRESS_RATE(LESS.YYYY,LESS.TERM,LESS.SUBJECT_CODE , LESS.CLASS ,WEEK.WEEK_ID ,LESS.LESSON_ID  )AS ATTEND_PROGRESS ,
+		       FN_GETCOMPAYNAME(MEMB.COMPANY_ID) AS COMPANY_NAME
+		FROM   LMS_LESSON LESS
+		
+		       LEFT JOIN LMS_SUBJ_WEEK WEEK
+		       ON  LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+	           AND WEEK.YYYY = LESS.YYYY
+		       AND WEEK.TERM = LESS.TERM
+		       AND WEEK.CLASS = LESS.CLASS
+		       AND WEEK.DELETE_YN='N'
+		       
+		       LEFT JOIN COM_MEMBER MEMB
+		       ON     LESS.MEM_SEQ = MEMB.MEM_SEQ AND MEMB.DELETE_YN='N'
+		       
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL DET
+			   ON     LESS.SUBJECT_CODE = DET.SUBJECT_CODE
+			   AND MEMB.MEM_ID = DET.MEM_ID
+			   AND DET.DELETE_YN = 'N'
+			   AND DET.ADDYN = 'N'
+			   AND DET.WEEK_CNT = #{weekCnt}
+			   AND DET.YYYY = LESS.YYYY
+			   AND DET.TERM = LESS.TERM
+			   AND DET.CLASS = LESS.CLASS
+			   AND DET.TIME_ID = #{timeId}
+			   
+		       LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+		       ON  MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID		        
+		       AND MAS.DELETE_YN = 'N'
+		       AND MAS.ADDYN = 'N'
+			   AND MAS.TIME_ID                  = DET.TIME_ID
+		WHERE  LESS.SUBJECT_CODE        = #{subjectCode}
+		AND LESS.DELETE_YN           ='N'
+		AND LESS.YYYY                =  #{yyyy}
+		AND LESS.TERM                =  #{term}
+		AND WEEK.WEEK_CNT = #{weekCnt}
+		<if test="memSeq != null and memSeq != ''">
+		AND MEMB.MEM_SEQ = #{memSeq}
+		</if>
+		<if test="classId != null and classId != ''">
+		AND LESS.CLASS  =#{classId}
+		</if>
+
+
+	</select>
+
+
+	<select id="listTraningEnrichmentClassMember" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningEnrichmentClassMember ====== */
+		SELECT LESS.LESSON_ID ,
+	        MEMB.MEM_NAME ,
+	        MEMB.MEM_ID ,
+	        MEMB.mem_seq ,
+	        MEMB.COMPANY_ID ,
+	        DET.STUDY_TIME ,
+	        IFNULL(DET.ACHIEVEMENT,0 ) AS ACHIEVEMENT,
+	        DET.BIGO ,
+	        DET.TRANINING_NOTE_DETAIL_ID ,
+	        DET.TRANINING_NOTE_MASTER_ID ,
+	        MAS.REVIEW ,
+	        WEEK.WEEK_CNT ,
+	        WEET.TRANING_ST_HOUR ,
+	        STA.ATTEND_PROGRESS ,
+	        FN_GETCOMPAYNAME(MEMB.COMPANY_ID) AS COMPANY_NAME
+	 FROM   LMS_LESSON LESS
+	 
+	        INNER JOIN LMS_SUBJ_WEEK WEEK
+	        ON     LESS.SUBJECT_CODE = WEEK.SUBJECT_CODE
+	        AND    WEEK.YYYY         = LESS.YYYY
+	        AND    WEEK.TERM         = LESS.TERM
+	        AND    WEEK.CLASS        = LESS.CLASS
+	        AND    WEEK.DELETE_YN    = 'N'
+	        
+	        INNER JOIN LMS_SUBJ_WEEK_TIME_ENRICHMENT WEET
+	        ON     LESS.SUBJECT_CODE = WEET.SUBJECT_CODE
+	        AND    WEET.YYYY         = LESS.YYYY
+	        AND    WEET.TERM         = LESS.TERM
+	        AND    WEET.CLASS        = LESS.CLASS
+	        AND    WEET.DELETE_YN    = 'N'
+	        
+	        INNER JOIN COM_MEMBER MEMB
+	        ON     LESS.MEM_SEQ = MEMB.MEM_SEQ  AND MEMB.DELETE_YN='N'
+	        
+	        INNER JOIN LMS_TRANING_NOTE_DETAIL DET
+	        ON     LESS.SUBJECT_CODE = DET.SUBJECT_CODE
+	        AND    MEMB.MEM_ID       = DET.MEM_ID
+	        AND    DET.DELETE_YN     = 'N'
+	        AND    DET.ADDYN         = 'Y'
+	        AND    DET.WEEK_CNT      = WEEK.WEEK_CNT
+	        AND    DET.YYYY          = LESS.YYYY
+	        AND    DET.TERM          = LESS.TERM
+	        AND    DET.CLASS         = LESS.CLASS
+	        
+	        INNER JOIN LMS_TRANING_NOTE_MASTER MAS
+	        ON     MAS.TRANINING_NOTE_MASTER_ID = DET.TRANINING_NOTE_MASTER_ID
+	        AND    MAS.DELETE_YN                = 'N'
+	        AND    MAS.ADDYN                    = 'Y'
+	        AND    MAS.TIME_ID                  = WEET.TIME_ID
+		<if test="traniningNoteMasterId != null and traniningNoteMasterId != ''">	        
+	        AND    MAS.TRANINING_NOTE_MASTER_ID = #{traniningNoteMasterId}
+	    </if>    
+	        LEFT OUTER JOIN LMS_SUBJ_ON_STAND  STA
+	        ON     LESS.SUBJECT_CODE = STA.SUBJECT_CODE
+	        AND    STA.YYYY          = LESS.YYYY
+	        AND    STA.TERM          = LESS.TERM
+	        AND    STA.CLASS         = LESS.CLASS
+	        AND    STA.DELETE_YN    = 'N'
+	        
+ 		WHERE   LESS.SUBJECT_CODE        = #{subjectCode}
+			AND LESS.DELETE_YN           = 'N'
+			AND LESS.YYYY                = #{yyyy}
+			AND LESS.TERM                = #{term}
+			AND WEEK.WEEK_CNT 			 = #{weekCnt}
+		<if test="memSeq != null and memSeq != ''">
+			AND MEMB.MEM_SEQ = #{memSeq}
+		</if>
+		<if test="classId != null and classId != ''">
+			AND LESS.CLASS  =#{classId}
+		</if>
+
+	</select>
+
+
+	<select id="getTraningRegularTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningRegularTime ====== */
+		SELECT
+			(
+		    	SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(WEET.TRANING_DATE), 1)
+		    )AS DAY_OF_WEEK
+			,WEET.TRANING_DATE
+			,concat( WEET.TRANING_ST_HOUR ,':', WEET.TRANING_ST_MIN) as TRANING_ST
+			,concat( WEET.TRANING_ED_HOUR ,':', WEET.TRANING_ED_MIN) as TRANING_ED
+			,MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) AS TIME_HOUR
+			,MOD(WEET.TRANING_ED_MIN, WEET.TRANING_ST_MIN ) AS TIME_MIN
+            ,WEET.TRANING_ST_HOUR
+            ,WEET.TRANING_ST_MIN
+            ,WEET.TRANING_ED_HOUR
+            ,WEET.TRANING_ED_MIN
+            ,WEET.WEEK_ID
+            ,WEET.TIME_ID
+            ,MAS.REVIEW
+            ,WEET.CLASS AS CLASS_ID
+            
+		FROM LMS_SUBJ_WEEK WEEK
+		
+		LEFT JOIN LMS_SUBJ_WEEK_TIME WEET
+		ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE
+		AND WEET.DELETE_YN = 'N'
+		AND WEEK.WEEK_ID = WEET.WEEK_ID
+		
+		LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+        ON     MAS.SUBJECT_CODE  			= WEET.SUBJECT_CODE
+        AND    MAS.DELETE_YN                = 'N'
+        AND    MAS.ADDYN                    = 'N'
+        AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+        AND    MAS.TIME_ID                  = WEET.TIME_ID
+        AND    MAS.YYYY                     = WEET.YYYY
+        AND    MAS.TERM                     = WEET.TERM
+        AND    MAS.CLASS                    = WEET.CLASS				
+			
+		
+		
+		WHERE WEEK.SUBJECT_CODE = #{subjectCode}
+		AND WEEK.WEEK_CNT = #{weekCnt}
+		AND WEEK.DELETE_YN ='N'
+		AND WEEK.YYYY=  #{yyyy}
+		AND WEET.TIME_ID         = #{timeId}
+		<if test="classId != null and classId != ''">
+		AND WEEK.CLASS  =#{classId}
+		</if>
+
+	</select>
+
+	<select id="getTraningNowWeekCnt" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningNowWeekCnt ====== */
+		SELECT
+			IFNULL(MAX(TO_NUMBER(WEEK.WEEK_CNT)),'1') AS WEEK_CNT   
+		FROM LMS_SUBJ_WEEK WEEK
+		
+		LEFT JOIN LMS_SUBJ_WEEK_TIME WEET
+		ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE
+		AND WEET.DELETE_YN = 'N'
+		AND WEEK.WEEK_ID = WEET.WEEK_ID
+		
+		WHERE WEEK.SUBJECT_CODE = #{subjectCode}
+		AND WEEK.DELETE_YN ='N'
+		AND WEEK.YYYY=  #{yyyy}
+		<if test="classId != null and classId != ''">
+		AND WEEK.CLASS  =#{classId}
+		</if>
+<![CDATA[
+		AND WEET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')
+]]>	
+	</select>
+	
+	<select id="listTraningRegularTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listTraningRegularTime ====== */
+		SELECT
+			(
+		    	SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(WEET.TRANING_DATE), 1)
+		    )AS DAY_OF_WEEK
+			,WEET.TRANING_DATE
+			,concat( WEET.TRANING_ST_HOUR ,':', WEET.TRANING_ST_MIN) as TRANING_ST
+			,concat( WEET.TRANING_ED_HOUR ,':', WEET.TRANING_ED_MIN) as TRANING_ED
+			,MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) AS TIME_HOUR
+			,MOD(WEET.TRANING_ED_MIN, WEET.TRANING_ST_MIN ) AS TIME_MIN
+            ,WEET.TRANING_ST_HOUR
+            ,WEET.TRANING_ST_MIN
+            ,WEET.TRANING_ED_HOUR
+            ,WEET.TRANING_ED_MIN
+            ,WEET.WEEK_ID
+            ,WEET.TIME_ID
+            ,MAS.REVIEW
+            ,WEET.CLASS AS CLASS_ID
+		FROM LMS_SUBJ_WEEK WEEK
+		
+		LEFT JOIN LMS_SUBJ_WEEK_TIME WEET
+		ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE
+		AND WEET.DELETE_YN = 'N'
+		AND WEEK.WEEK_ID = WEET.WEEK_ID
+		
+		LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+	        ON     MAS.SUBJECT_CODE  			= WEET.SUBJECT_CODE
+	        AND    MAS.DELETE_YN                = 'N'
+	        AND    MAS.ADDYN                    = 'N'
+	        AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+	        AND    MAS.TIME_ID                  = WEET.TIME_ID
+	        AND    MAS.YYYY                     = WEET.YYYY
+	        AND    MAS.TERM                     = WEET.TERM
+	        AND    MAS.CLASS                    = WEET.CLASS				
+				
+		
+		WHERE WEEK.SUBJECT_CODE = #{subjectCode}
+		AND WEEK.WEEK_CNT = #{weekCnt}
+		AND WEEK.DELETE_YN ='N'
+		AND WEEK.YYYY=  #{yyyy}
+		<if test="classId != null and classId != ''">
+		AND WEEK.CLASS  =#{classId}
+		</if>
+	</select>
+
+	<select id="getTraningEnrichmentTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.getTraningEnrichmentTime ====== */
+		SELECT
+			(
+		    	SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(WEET.TRANING_DATE), 1)
+		    )AS DAY_OF_WEEK
+			,WEET.TRANING_DATE
+			,concat( WEET.TRANING_ST_HOUR ,':', WEET.TRANING_ST_MIN) as TRANING_ST
+			,concat( WEET.TRANING_ED_HOUR ,':', WEET.TRANING_ED_MIN) as TRANING_ED
+			,MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) AS TIME_HOUR
+			,MOD(WEET.TRANING_ED_MIN, WEET.TRANING_ST_MIN ) AS TIME_MIN
+            ,WEET.TRANING_ST_HOUR
+            ,WEET.TRANING_ST_MIN
+            ,WEET.TRANING_ED_HOUR
+            ,WEET.TRANING_ED_MIN
+            ,WEET.WEEK_ID
+            ,WEET.TIME_ID
+            ,MAS.REVIEW
+            ,WEET.CLASS AS CLASS_ID
+            ,MAS.TRANINING_NOTE_MASTER_ID
+		FROM LMS_SUBJ_WEEK WEEK
+		INNER JOIN LMS_SUBJ_WEEK_TIME_ENRICHMENT  WEET
+				ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE
+				AND WEET.DELETE_YN = 'N'
+				AND WEEK.WEEK_ID = WEET.WEEK_ID
+				
+	    LEFT OUTER JOIN LMS_TRANING_NOTE_MASTER MAS
+	        ON     MAS.SUBJECT_CODE  			= WEET.SUBJECT_CODE
+	        AND    MAS.DELETE_YN                = 'N'
+	        AND    MAS.ADDYN                    = 'Y'
+	        AND    MAS.WEEK_CNT                 = WEEK.WEEK_CNT
+	        AND    MAS.TIME_ID                  = WEET.TIME_ID
+	        AND    MAS.YYYY                     = WEET.YYYY
+	        AND    MAS.TERM                     = WEET.TERM
+	        AND    MAS.CLASS                    = WEET.CLASS				
+				
+		WHERE WEEK.SUBJECT_CODE = #{subjectCode}
+			AND WEEK.WEEK_CNT = #{weekCnt}
+			AND WEEK.DELETE_YN ='N'
+			AND WEEK.YYYY=  #{yyyy}
+		<if test="classId != null and classId != ''">
+			AND WEEK.CLASS  =#{classId}
+		</if>
+	</select>
+
+	<insert id="goInsertTraningNoteDetail" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" >
+
+	<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goInsertTraningNoteDetail ====== */
+		]]>
+			INSERT INTO LMS_TRANING_NOTE_DETAIL (
+					TRANINING_NOTE_DETAIL_ID
+					,TRANINING_NOTE_MASTER_ID
+					,YYYY
+					,TERM
+					,SUBJECT_CODE
+
+					,CLASS
+					,WEEK_CNT
+					,ADDYN
+					,STUDY_DATE
+					,START_TIME
+
+					,FINISH_TIME
+					,MEM_ID
+					,MEM_NM
+					,PLAN_TIME
+					,STUDY_TIME
+
+					,ACHIEVEMENT
+					,BIGO
+					,DELETE_YN
+					,INSERT_USER
+					,INSERT_DATE
+					,TIME_ID
+
+				)
+				VALUES
+				(
+					#{traniningNoteDetailId}
+					,#{traniningNoteMasterId}
+					,#{yyyy}
+					,#{term}
+					,#{subjectCode}
+
+					,#{classId}
+					,#{weekCnt}
+					,#{addyn}
+					,#{studyDate}
+					,#{traningEdHour}
+
+					,#{traningEdHour}
+					,#{memId}
+					,#{memNm}
+					,#{startTime}
+					,#{startTime}
+			<if test="achievement == null or achievement == ''">
+					, '0'
+			</if>	
+			<if test="achievement != null and achievement != ''">
+					,#{achievement}
+			</if>				 
+					,#{bigo}
+					,'N'
+					,#{sessionMemSeq}
+					,now()
+					,#{timeId}
+				)
+
+	</insert>
+
+	<insert id="goInsertTraningNoteMaster" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" >
+
+	<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goInsertTraningNoteMaster ====== */
+		]]>
+			INSERT INTO LMS_TRANING_NOTE_MASTER (
+					TRANINING_NOTE_MASTER_ID
+					,YYYY
+					,TERM
+					,SUBJECT_CODE
+					,CLASS
+					,WEEK_CNT
+					,ADDYN
+					,STUDY_DATE
+					,TRANING_TYPE
+					,STATE
+					,START_DATE
+					,FINISH_DATE
+					,FEEDBACK
+					,DELETE_YN
+					,REVIEW
+					,INSERT_USER
+					,INSERT_DATE
+					,TIME_ID
+				)
+				VALUES
+				(
+					#{traniningNoteMasterId}
+					,#{yyyy}
+					,#{term}
+					,#{subjectCode}
+					,#{classId}
+					,#{weekCnt}
+					,#{addyn}
+					,#{studyDate}
+					,#{traningType}
+					,#{state}
+					,#{traningEdHour}
+					,#{traningEdHour}
+					,#{feedback}
+					,'N'
+					,#{review}
+					,#{sessionMemSeq}
+					,now()
+					,#{timeId}
+				)
+
+	</insert>
+
+	<insert id="goInsertEnrichmentTraningTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" >
+
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goInsertEnrichmentTraningTime ====== */
+		]]>
+			insert
+				into   LMS_SUBJ_WEEK_TIME_ENRICHMENT
+				       (
+				              WEEK_ID,
+				              TIME_ID,
+				              YYYY,
+				              TERM,
+				              SUBJECT_CODE,
+
+				              CLASS,
+				              TRANING_DATE,
+				              TRANING_ST_HOUR,
+				              TRANING_ED_HOUR,
+				              TRANING_ED_MIN,
+
+				              INSERT_DATE,
+				              INSERT_USER,
+				              DELETE_YN,
+				              TRANING_ST_MIN,
+				              REVIEW
+
+
+				       )
+				       values
+				       (
+							#{weekId}
+							,#{timeId}
+							,#{yyyy}
+							,#{term}
+							,#{subjectCode}
+
+							,#{classId}
+							,#{studyDate}
+							,#{traningStHour}
+							,#{traningEdHour}
+							,#{traningEdMin}
+
+							,now()
+							,#{sessionMemSeq}
+							,'N'
+							,#{traningStMin}
+							,#{review}
+				       )
+
+
+	</insert>
+
+	<update id="goUpdateEnrichmentTraningTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goUpdateEnrichmentTraningTime ====== */
+		]]>
+			update LMS_SUBJ_WEEK_TIME_ENRICHMENT
+				set
+				       TRANING_DATE    = #{studyDate},
+				       TRANING_ST_HOUR = #{traningStHour},
+				       TRANING_ED_HOUR = #{traningEdHour},
+				       TRANING_ED_MIN  = #{traningEdMin},
+				       UPDATE_DATE     = now(),
+				       UPDATE_USER     = #{sessionMemSeq},
+				       DELETE_YN       = 'N',
+				       TRANING_ST_MIN  = #{traningStMin},
+				       REVIEW 		   = #{review}
+
+			WHERE   1=1
+				AND	WEEK_ID         = #{weekId}
+				AND TIME_ID         = #{timeId}
+
+	</update>
+
+	<update id="goUpdateTraningTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goUpdateTraningTime ====== */
+		]]>
+			UPDATE LMS_SUBJ_WEEK_TIME
+			SET
+				       UPDATE_DATE     = now(),
+				       UPDATE_USER     = #{sessionMemSeq},
+				       REVIEW 		   = #{review}
+
+			WHERE   1=1
+				AND	WEEK_ID         = #{weekId}
+				AND TIME_ID         = #{timeId}
+
+	</update>
+
+	<update id="goUpdateTraningNoteMaster" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goUpdateTraningNoteMaster ====== */
+		]]>
+			UPDATE  LMS_TRANING_NOTE_MASTER
+			SET
+			       <if test="review != null and review != ''">			
+			       REVIEW                   = #{review},
+			       </if>
+			       <if test="deleteYn != null and deleteYn != ''">
+			       DELETE_YN  =#{deleteYn},
+			       </if>
+			       
+			       <if test="state != null and state != ''">
+			       STATE  =#{state},
+			       </if>
+			       <if test="subjectCode != null and subjectCode != ''">			       
+			       SUBJECT_CODE    = #{subjectCode},
+			       </if>
+			       UPDATE_USER              = #{sessionMemSeq},
+			       UPDATE_DATE              = now()
+			WHERE
+				TRANINING_NOTE_MASTER_ID = #{traniningNoteMasterId}
+	</update>
+
+	<update id="goUpdateTraningNoteDetail" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.goUpdateTraningNoteDetail ====== */
+		]]>
+			UPDATE LMS_TRANING_NOTE_DETAIL
+			SET
+			<if test="achievement != null and achievement != ''">
+			       ACHIEVEMENT              = #{achievement},
+			</if>
+			<if test="achievement == null or achievement == ''">
+					ACHIEVEMENT              = '0',
+			</if>
+			<if test="bigo != null and bigo != ''">
+			       BIGO                     = #{bigo},
+			</if>       
+			<if test="deleteYn != null and deleteYn != ''">
+			       DELETE_YN 				= #{deleteYn},
+			</if>
+			<if test="startTime != null and startTime != ''">
+			       STUDY_TIME				=#{startTime},
+			</if>
+			<if test="subjectCode != null and subjectCode != ''">
+			       SUBJECT_CODE    			= #{subjectCode},
+			</if>
+			       UPDATE_USER              = #{sessionMemSeq},
+			       UPDATE_DATE              = now()       
+			WHERE
+				TRANINING_NOTE_MASTER_ID = #{traniningNoteMasterId}
+				AND TRANINING_NOTE_DETAIL_ID = #{traniningNoteDetailId}
+	</update>
+
+ 
+
+	<select id="listSubjcetName" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningNoteVO">
+		<![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.TraningMapper.listSubjcetName ====== */
+		]]>
+
+		SELECT INSM.SUBJECT_CODE , 
+			       INSM.CLASS AS CLASS_ID , 
+			       COMP.COMPANY_ID, 
+			       FN_GETCOMPAYNAME (COMP.COMPANY_ID) AS COMPANY_NAME 
+			  FROM LMS_SUBJ_INS_MAPPING INSM 
+			     LEFT OUTER JOIN
+			       (SELECT MAPP.SUBJECT_CODE , 
+			              MAPP.YYYY , 
+			              MAPP.TERM , 
+			              MAPP.CLASS , 
+			              PROC.COMPANY_ID, 
+			              FN_GETCOMPAYNAME (PROC.COMPANY_ID) AS COMPANY_NAME 
+			         FROM LMS_TRANING_PROCESS PROC 
+			            LEFT OUTER JOIN LMS_TRANING_PROCESS_MAPPING MAPP 
+			                ON PROC.TRANING_PROCESS_ID = MAPP.TRANING_PROCESS_ID 
+			              AND PROC.COMPANY_ID = MAPP.COMPANY_ID 
+			              AND MAPP.DELETE_YN='N' 
+			        WHERE PROC.DELETE_YN='N' 
+			       ) COMP 
+			         ON INSM.SUBJECT_CODE = COMP.SUBJECT_CODE 
+			       AND INSM.YYYY = COMP.YYYY 
+			       AND INSM.TERM = COMP.TERM 
+			       AND INSM.CLASS = COMP.CLASS 
+			 WHERE INSM.SUBJECT_CODE = #{subjectCode} 
+			       AND INSM.YYYY = #{yyyy}
+			       AND INSM.TERM = #{term} 
+			       AND INSM.MEM_SEQ = #{sessionMemSeq} 
+			       AND INSM.DELETE_YN='N' 
+			ORDER BY INSM.CLASS 
+
+			<!-- SELECT MAPP.SUBJECT_CODE ,
+			       MAPP.CLASS AS CLASS_ID ,
+			       PROC.COMPANY_ID,
+			       FN_GETCOMPAYNAME (PROC.COMPANY_ID) AS COMPANY_NAME
+			FROM   LMS_TRANING_PROCESS  PROC
+			       LEFT OUTER JOIN LMS_TRANING_PROCESS_MAPPING  MAPP
+			       ON     PROC.TRANING_PROCESS_ID = MAPP.TRANING_PROCESS_ID
+			       AND    PROC.COMPANY_ID         = MAPP.COMPANY_ID
+			       AND    PROC.DELETE_YN='N'
+			WHERE    MAPP.SUBJECT_CODE =  #{subjectCode}
+		 	AND MAPP.YYYY = #{yyyy}
+			AND MAPP.TERM = #{term}
+			AND MAPP.DELETE_YN='N' -->
+ 
+	</select>
+
+</mapper>

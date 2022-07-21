@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.ifx.service.impl.IfxMapper">
+
+	<sql id="list-where">
+	    
+	</sql>
+	
+	<select id="getOjtAunuriSubjectLessonList" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="kr.co.sitglobal.ifx.vo.AunuriSubjectVO">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOjtAunuriSubjectLessonList	*/
+	    <![CDATA[
+			  select
+			      sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+				  sub.YYYY AS year,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.CLASS AS subClass,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.SUBJECT_TYPE AS subjectType,
+			      sub.ONLINE_TYPE AS onlineType
+			  from lms_subject sub,
+			  lms_lesson les
+			  where 1 = 1
+			  and sub.YYYY = les.YYYY
+			  and sub.TERM = les.TERM
+			  and sub.SUBJECT_CODE = les.SUBJECT_CODE
+			  and sub.CLASS = les.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			  and sub.DELETE_YN = 'N'
+			  and les.DELETE_YN = 'N'
+			  and les.MEM_SEQ = #{sessionMemSeq}
+			  
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+	    			
+	</select>
+	
+	<select id="getOffJtAunuriSubjectLessonList" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="kr.co.sitglobal.ifx.vo.AunuriSubjectVO">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOffJtAunuriSubjectLessonList	*/
+	    <![CDATA[
+			select
+			      sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+				  sub.YYYY AS year,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.CLASS AS subClass,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.SUBJECT_TYPE AS subjectType,
+			      IF(sub.ONLINE_TYPE != 'NONE', 'ONLINE','NONE') AS onlineType
+			  from lms_subject sub,
+			  lms_lesson les
+			  where 1 = 1
+			  and sub.YYYY = les.YYYY
+			  and sub.TERM = les.TERM
+			  and sub.SUBJECT_CODE = les.SUBJECT_CODE
+			  and sub.CLASS = les.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OFF'
+			  and sub.DELETE_YN = 'N'
+			  and les.DELETE_YN = 'N'
+			  and les.MEM_SEQ = #{sessionMemSeq}
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+
+	</select>
+	
+	
+	
+		<select id="getOjtAunuriSubjectInsMappingList" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="kr.co.sitglobal.ifx.vo.AunuriSubjectVO">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOjtAunuriSubjectInsMappingList	*/
+	    <![CDATA[
+			 select
+			      sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+				  sub.YYYY AS year,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.SUBJECT_TYPE AS subjectType,
+			      sub.ONLINE_TYPE AS onlineType,
+			      (
+			      SELECT COUNT(*) FROM LMS_LESSON LES
+			      	INNER JOIN COM_MEMBER MEM
+				      	ON LES.MEM_SEQ = MEM.MEM_SEQ
+				     	AND MEM.DELETE_YN = 'N' 
+				      	AND MEM.OUT_YN = 'N'
+			      	WHERE LES.DELETE_YN = 'N'
+			      	AND LES.LEC_STATUS = 'A'
+			      	AND LES.YYYY = SUB.YYYY
+			      	AND LES.TERM = SUB.TERM
+			      	AND LES.SUBJECT_CODE = SUB.SUBJECT_CODE
+			      ) AS STU_CNT
+			  from lms_subject sub,
+			  lms_subj_ins_mapping ins
+			  where 1 = 1
+			  and sub.YYYY = ins.YYYY
+			  and sub.TERM = ins.TERM
+			  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+			  and sub.CLASS = ins.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			  and sub.DELETE_YN = 'N'
+			  and ins.DELETE_YN = 'N'
+			  and ins.MEM_SEQ = #{sessionMemSeq}
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		GROUP BY sub.SUBJECT_TRANING_TYPE ,
+				   sub.YYYY ,
+			      sub.TERM ,
+			      sub.SUBJECT_CODE ,
+			      sub.SUBJECT_NAME ,
+			      sub.SUBJECT_TYPE ,
+			      sub.ONLINE_TYPE
+			      
+		ORDER BY SUB.SUBJECT_NAME	    			
+	    ]]>
+
+	</select>
+	
+	<select id="getOffJtAunuriSubjectInsMappingList" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="kr.co.sitglobal.ifx.vo.AunuriSubjectVO">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOffJtAunuriSubjectInsMappingList	*/
+	    <![CDATA[
+			select
+			      sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+				  sub.YYYY AS year,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.CLASS AS subClass,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.SUBJECT_TYPE AS subjectType,
+			      IF(sub.ONLINE_TYPE != 'NONE', 'ONLINE','NONE') AS onlineType,
+			        (
+			      SELECT COUNT(*) FROM LMS_LESSON LES
+			      	INNER JOIN COM_MEMBER MEM
+				      	ON LES.MEM_SEQ = MEM.MEM_SEQ
+				     	AND MEM.DELETE_YN = 'N' 
+				      	AND MEM.OUT_YN = 'N'
+			      	WHERE LES.DELETE_YN = 'N'
+			      	AND LES.LEC_STATUS = 'A'
+			      	AND LES.YYYY = SUB.YYYY
+			      	AND LES.TERM = SUB.TERM
+			      	AND LES.SUBJECT_CODE = SUB.SUBJECT_CODE
+			      	AND LES.CLASS = SUB.CLASS
+			      ) AS STU_CNT
+			  from lms_subject sub,
+			  lms_subj_ins_mapping ins
+			  where 1 = 1
+			  and sub.YYYY = ins.YYYY
+			  and sub.TERM = ins.TERM
+			  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+			  and sub.CLASS = ins.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OFF'
+			  and sub.DELETE_YN = 'N'
+			  and ins.DELETE_YN = 'N'
+			  and ins.MEM_SEQ = #{sessionMemSeq}
+			  
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+
+	</select>
+	
+	<select id="getOjtAunuriSubjectTutMappingList" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="kr.co.sitglobal.ifx.vo.AunuriSubjectVO">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOjtAunuriSubjectTutMappingList	*/
+	    <![CDATA[
+			select
+			      sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+				  sub.YYYY AS year,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.CLASS AS subClass,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.SUBJECT_TYPE AS subjectType,
+			      sub.ONLINE_TYPE AS onlineType,
+			      (
+			      SELECT COUNT(*) FROM LMS_LESSON LES
+			      	INNER JOIN COM_MEMBER MEM
+				      	ON LES.MEM_SEQ = MEM.MEM_SEQ
+				     	AND MEM.DELETE_YN = 'N' 
+				      	AND MEM.OUT_YN = 'N'
+			      	WHERE LES.DELETE_YN = 'N'
+			      	AND LES.LEC_STATUS = 'A'
+			      	AND LES.YYYY = SUB.YYYY
+			      	AND LES.TERM = SUB.TERM
+			      	AND LES.SUBJECT_CODE = SUB.SUBJECT_CODE
+			      	AND LES.CLASS = SUB.CLASS
+			      ) AS STU_CNT
+			  from lms_subject sub,
+			  lms_subj_tut_mapping tut
+			  where 1 = 1
+			  and sub.YYYY = tut.YYYY
+			  and sub.TERM = tut.TERM
+			  and sub.SUBJECT_CODE = tut.SUBJECT_CODE
+			  and sub.CLASS = tut.CLASS
+			  and sub.DELETE_YN = 'N'
+			  and tut.DELETE_YN = 'N'
+			  and tut.MEM_SEQ = #{sessionMemSeq}
+			  
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+
+	</select>
+	
+	<select id="getOffJtAunuriSubjectCdpMappingList" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="kr.co.sitglobal.ifx.vo.AunuriSubjectVO">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOffJtAunuriSubjectCdpMappingList	*/
+	    <![CDATA[
+			select
+			      sub.SUBJECT_TRANING_TYPE AS subjectTraningType,
+				  sub.YYYY AS year,
+			      sub.TERM AS term,
+			      sub.SUBJECT_CODE AS subjectCode,
+			      sub.CLASS AS subClass,
+			      sub.SUBJECT_NAME AS subjectName,
+			      sub.SUBJECT_TYPE AS subjectType,
+			      IF(sub.ONLINE_TYPE != 'NONE', 'ONLINE','NONE') AS onlineType,
+			       (
+			      SELECT COUNT(*) FROM LMS_LESSON LES
+			      	INNER JOIN COM_MEMBER MEM
+				      	ON LES.MEM_SEQ = MEM.MEM_SEQ
+				     	AND MEM.DELETE_YN = 'N' 
+				      	AND MEM.OUT_YN = 'N'
+			      	WHERE LES.DELETE_YN = 'N'
+			      	AND LES.LEC_STATUS = 'A'
+			      	AND LES.YYYY = SUB.YYYY
+			      	AND LES.TERM = SUB.TERM
+			      	AND LES.SUBJECT_CODE = SUB.SUBJECT_CODE
+			      	AND LES.CLASS = SUB.CLASS
+			      ) AS STU_CNT
+			  from lms_subject sub,
+			  lms_subj_cdp_mapping cdp
+			  where 1 = 1
+			  and sub.YYYY = cdp.YYYY
+			  and sub.TERM = cdp.TERM
+			  and sub.SUBJECT_CODE = cdp.SUBJECT_CODE
+			  and sub.CLASS = cdp.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OFF'
+			  and sub.DELETE_YN = 'N'
+			  and cdp.DELETE_YN = 'N'
+			  and cdp.MEM_SEQ = #{sessionMemSeq}
+			  
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		ORDER BY SUB.SUBJECT_NAME
+	    ]]>
+
+	</select>
+	
+	<select id="getOjtAunuriSubjectInsHSkillCnt" parameterType="kr.co.sitglobal.ifx.vo.AunuriMemberVO" resultType="Integer">
+		/**	kr.co.sitglobal.ifx.service.impl.IfxMapper.getOjtAunuriSubjectInsHSkillCnt	*/
+	    <![CDATA[
+			 select
+			     count(*)  
+			  from lms_subject sub,
+			  lms_subj_ins_mapping ins
+			  where 1 = 1
+			  and sub.YYYY = ins.YYYY
+			  and sub.TERM = ins.TERM
+			  and sub.SUBJECT_CODE = ins.SUBJECT_CODE
+			  and sub.CLASS = ins.CLASS
+			  and sub.SUBJECT_TRANING_TYPE = 'OJT'
+			  and sub.SUBJECT_TYPE = 'HSKILL'
+			  and sub.DELETE_YN = 'N'
+			  and ins.DELETE_YN = 'N'
+			  and ins.MEM_SEQ = #{sessionMemSeq}
+			   AND 
+		       (
+		         SUB.YYYY, 
+		         SUB.TERM
+		       ) 
+		       IN 
+		       (SELECT HAK.YYYY,
+		              HAK.TERM 
+		         FROM HAK_SCHEDULE HAK 
+		        WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y')  
+		              AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+		       ) 
+		ORDER BY SUB.SUBJECT_NAME	    			
+	    ]]>
+
+	</select>
+	
+
+</mapper>

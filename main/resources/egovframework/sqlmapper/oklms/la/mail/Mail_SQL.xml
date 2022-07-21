@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper">
+
+		
+	<resultMap id="mail-result" type="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+	</resultMap>
+
+	<select id="listMailHistory" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO" resultType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.listMailHistory	*/
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			SELECT A.HISTORY_ID, 
+	              A.SENDER_MEM_SEQ, 
+	              A.SENDER_EMAIL, 
+	              A.RECEIVER_MEM_SEQ, 
+	              A.RECEIVER_EMAIL, 
+	              A.DELETE_YN, 
+	              A.SEND_SUCCESS_YN, 
+	              A.MAIL_CLASS,
+	              A.MAIL_CLASS_NAME, 
+	              A.MAIL_TITLE, 
+	              A.INSERT_DATE,
+	              A.UPDATE_DATE, 
+	              A.SENDER_MEM_NAME, 
+	              A.RECEIVER_MEM_NAME, 
+	              A.RECEIVER_MEM_ID, 
+	              A.RECEIVER_LESSON_ID 
+	        FROM(      
+			SELECT HIS.HISTORY_ID, 
+	              HIS.SENDER_MEM_SEQ, 
+	              HIS.SENDER_EMAIL, 
+	              HIS.RECEIVER_MEM_SEQ, 
+	              HIS.RECEIVER_EMAIL, 
+	              HIS.DELETE_YN, 
+	              HIS.SEND_SUCCESS_YN, 
+	              HIS.MAIL_CLASS, 
+	              (SELECT CODE_NAME 
+	                FROM COM_COMCODE 
+	               WHERE CODE_CODE = HIS.MAIL_CLASS
+	              ) MAIL_CLASS_NAME, 
+	              HIS.MAIL_TITLE, 
+	              DATE_FORMAT (HIS.INSERT_DATE, '%Y.%m.%d %H:%i:%s') INSERT_DATE,
+	              DATE_FORMAT (HIS.UPDATE_DATE, '%Y.%m.%d %H:%i:%s') UPDATE_DATE, 
+	              (SELECT MEM_NAME 
+	                FROM COM_MEMBER MEM1 
+	               WHERE MEM1.MEM_SEQ = HIS.SENDER_MEM_SEQ 
+	              ) SENDER_MEM_NAME, 
+	              (SELECT MEM_NAME 
+	                FROM COM_MEMBER MEM2 
+	               WHERE MEM2.MEM_SEQ = HIS.RECEIVER_MEM_SEQ 
+	              ) RECEIVER_MEM_NAME, 
+	              (SELECT MEM_ID 
+	                FROM COM_MEMBER MEM3 
+	               WHERE MEM3.MEM_SEQ = HIS.RECEIVER_MEM_SEQ 
+	              ) RECEIVER_MEM_ID, 
+	              RECEIVER_LESSON_ID 
+	         FROM COM_MAIL_HISTORY HIS
+            )A
+            WHERE A.DELETE_YN = 'N'
+			
+			<if test="searchMailClass != null and searchMailClass != ''"> AND A.MAIL_CLASS =  #{searchMailClass} </if>
+			<if test="searchMailTitle != null and searchMailTitle != ''"> AND A.MAIL_TITLE LIKE CONCAT ('%', #{searchMailTitle},'%') </if>
+			<if test="searchSenderMemName != null and searchSenderMemName != ''"> AND A.SENDER_MEM_NAME LIKE CONCAT ('%', #{searchSenderMemName},'%') </if>
+			<if test="searchReceiverMemName != null and searchReceiverMemName != ''"> AND A.RECEIVER_MEM_NAME LIKE CONCAT ('%', #{searchReceiverMemName},'%') </if>
+			
+			ORDER BY INSERT_DATE DESC 
+
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="listMemberMail" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO" resultType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.listMemberMail	*/
+			SELECT MEM_SEQ, 
+			          MEM_ID, 
+			          MEM_NAME, 
+			          EMAIL  
+				  FROM COM_MEMBER
+				 WHERE DELETE_YN='N' 
+				 AND RECEIVE_MAIL_YN = 'Y'
+				 AND SCSN_YN = 'N'
+				 AND EMAIL IS NOT NULL
+			<if test="authGroupId != null and authGroupId != ''"> AND AUTH_GROUP_ID =  #{authGroupId} </if>
+	</select>
+	
+	<select id="listMail" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO" resultType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.listMail	*/
+			SELECT MEM_SEQ AS RECEIVE_USER, 
+			         EMAIL AS RECEIVE_EMAIL, 
+			         LESSON_ID AS RECEIVER_LESSON_ID  
+				  FROM V_LES_INFO
+				 WHERE PERIOD_ID=#{periodId}
+				 <if test="authGroupId != ''ALL"> AND CLASS_ID =  #{classId} </if>
+	</select>
+	
+	<select id="getMailHistory" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO" resultType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.getMailHistory	*/
+			SELECT HISTORY_ID, 
+				       (SELECT MEM_NAME 
+				         FROM COM_MEMBER 
+				        WHERE MEM_SEQ = SENDER_MEM_SEQ 
+				       ) SENDER_MEM_NAME, 
+				       SENDER_EMAIL, 
+				       (SELECT MEM_NAME 
+				         FROM COM_MEMBER 
+				        WHERE MEM_SEQ = RECEIVER_MEM_SEQ 
+				       ) RECEIVER_MEM_NAME, 
+				       RECEIVER_EMAIL, 
+				       DELETE_YN, 
+				       DATE_FORMAT (INSERT_DATE, '%Y.%m.%d') INSERT_DATE, 
+				       (SELECT MEM_NAME 
+				         FROM COM_MEMBER 
+				        WHERE MEM_SEQ = INSERT_USER 
+				       ) INSERT_NAME, 
+				       DATE_FORMAT (UPDATE_DATE, '%Y.%m.%d') UPDATE_DATE, 
+				       SEND_SUCCESS_YN, 
+				       MAIL_CLASS, 
+				       MAIL_TITLE, 
+				       (SELECT CODE_NAME 
+				         FROM COM_COMCODE 
+				        WHERE CODE_CODE = MAIL_CLASS 
+				              AND DELETE_YN = 'N'
+				       ) MAIL_CLASS_NAME,  
+				       MAIL_CONTENT 
+				  FROM COM_MAIL_HISTORY 
+				 WHERE DELETE_YN = 'N' 
+				       AND HISTORY_ID = #{historyId} 
+	</select>
+	
+	<insert id="insertMailHistory" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		<![CDATA[
+			/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.insertMailHistory	*/
+			INSERT INTO COM_MAIL_HISTORY ( 
+				      HISTORY_ID, 
+				      SENDER_MEM_SEQ, 
+		              SENDER_EMAIL, 
+		              RECEIVER_MEM_SEQ,
+		              RECEIVER_EMAIL, 
+		              DELETE_YN, 
+		              SEND_SUCCESS_YN, 
+		              MAIL_CLASS,
+		              MAIL_TITLE,
+		              RECEIVER_LESSON_ID, 
+		              MAIL_CONTENT,
+		              INSERT_USER, 
+		              INSERT_DATE
+					) 
+					VALUES 
+					( #{historyId}
+					, 	#{senderMemSeq}
+					, 	#{senderEmail }
+					, 	#{receiverMemSeq }
+					, 	#{receiverEmail }
+					, 	'N'
+					, 	#{sendSuccessYn }
+					,   #{mailClass}
+					,   #{mailTitle}
+					, 	#{receiverLessonId}
+					, 	#{mailContent}
+					, 	#{sessionMemSeq}
+					, 	NOW()
+				)
+		]]>
+	</insert> 
+	
+	<update id="updateMailHistory" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.updateMailHistory	*/
+			UPDATE COM_MAIL_HISTORY 		
+				  SET DELETE_YN = 'Y',		
+		   			UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001'),	
+		    		UPDATE_DATE = NOW()	
+				WHERE HISTORY_ID = #{historyId}			
+	</update>
+	
+	<select id="listSmsHistory" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO" resultType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.listSmsHistory	*/
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			SELECT TR_NUM, 
+	              DATE_FORMAT (TR_SENDDATE, '%Y.%m.%d %H:%i') TR_SENDDATE,
+	              TR_ID, 
+	              TR_SENDSTAT, 
+	              TR_RSLTSTAT, 
+	              TR_MSGTYPE, 
+	              TR_PHONE, 
+	              TR_CALLBACK, 
+	              TR_RSLTDATE, 
+	              TR_MODIFIED, 
+	              TR_MSG, 
+	              TR_NET, 
+	              TR_ETC1 AS TR_ETC_1, 
+	              TR_ETC2 AS TR_ETC_2, 
+	              TR_ETC3 AS TR_ETC_3, 
+	              TR_ETC4 AS TR_ETC_4, 
+	              TR_ETC5 AS TR_ETC_5, 
+	              TR_ETC6 AS TR_ETC_6, 
+	              (SELECT MEM_NAME 
+	                FROM COM_MEMBER 
+	               WHERE DELETE_YN = 'N' 
+	                     AND MEM_SEQ = TR_ETC1 
+	              ) AS SEND_NAME, 
+	              (SELECT MEM_NAME 
+	                FROM COM_MEMBER 
+	               WHERE DELETE_YN = 'N' 
+	                     AND MEM_SEQ = TR_ETC2 
+	              ) AS RECEIVE_NAME,
+                           '' LEC_ID, 
+                          '' PERIOD_ID, 
+                          '' CLASS_ID, 
+                          '' CATE_CODE, 
+                          '' LESSON_ID 
+	         FROM SC_TRAN
+	        WHERE 1=1 
+				 
+				 <if test="searchTrPhone != null and searchTrPhone != ''"> 
+    </if>
+				 <if test="searchCallback != null and searchCallback != ''"> AND TR_CALLBACK LIKE CONCAT ('%', #{searchCallback},'%')  </if>
+				 <if test="searchSendName != null and searchSendName != ''"> AND SEND_NAME LIKE CONCAT ('%', #{searchSendName},'%')  </if>
+				 <if test="searchReceiveName != null and searchReceiveName != ''"> AND RECEIVE_NAME LIKE CONCAT ('%', #{searchReceiveName},'%')  </if>
+	<!-- 	//발신일 검색
+		if (StringUtils.hasText(searchStartDate)
+				&& StringUtils.hasText(searchEndDate)) {
+			searchQuery += " AND TR_SENDDATE BETWEEN '"
+					+ searchStartDate + " 00:00:00' AND '"
+					+ searchEndDate + " 23:59:59'   ";
+		}	 -->
+				 
+				ORDER BY TR_SENDDATE DESC 
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+		
+	<select id="getSmsHistory" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO" resultType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.getSmsHistory	*/
+			SELECT TR_NUM, 
+				       DATE_FORMAT (TR_SENDDATE, '%Y.%m.%d') TR_SENDDATE,
+				       TR_ID, 
+				       TR_SENDSTAT, 
+				       TR_RSLTSTAT, 
+				       TR_MSGTYPE, 
+				       TR_PHONE, 
+				       TR_CALLBACK, 
+				       TR_RSLTDATE, 
+				       TR_MODIFIED, 
+				       TR_MSG, 
+				       TR_NET, 
+				       TR_ETC1 AS TR_ETC_1, 
+				       TR_ETC2 AS TR_ETC_2, 
+				       TR_ETC3 AS TR_ETC_3, 
+				       TR_ETC4 AS TR_ETC_4, 
+				       TR_ETC5 AS TR_ETC_5, 
+				       TR_ETC6 AS TR_ETC_6  
+				  FROM SC_TRAN
+				 WHERE TR_NUM = #{trNum} 
+	</select>
+	
+	<select id="getReceiveMailYn" parameterType="java.lang.String" resultType="java.lang.String">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.getReceiveMailYn	*/
+			SELECT RECEIVE_MAIL_YN
+		     FROM COM_MEMBER
+		    WHERE MEM_SEQ = #{memSeq} 
+	</select>
+	
+	<select id="getReceiveSmsYn" parameterType="java.lang.String" resultType="java.lang.String">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.getReceiveSmsYn	*/
+			SELECT RECEIVE_SMS_YN
+		     FROM COM_MEMBER
+		    WHERE MEM_SEQ = #{memSeq} 
+	</select>
+	
+	<insert id="insertSendSms" parameterType="kr.co.sitglobal.oklms.la.mail.vo.MailVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.insertSendSms	*/
+			INSERT 
+				  INTO SC_TRAN 
+				       ( 
+				           TR_NUM, 
+				           TR_SENDDATE, 
+				           TR_SENDSTAT, 
+				           TR_PHONE, 
+				           TR_CALLBACK, 
+				           TR_MSG, 
+				           TR_MSGTYPE, 
+				           TR_ETC1, 
+				           TR_ETC2, 
+				           TR_ETC3 
+				       ) 
+				       VALUES 
+				       (
+				           #{trNum}, 				           
+				           <if test="#tFlag  != '1' " >NOW(),  </if>
+				           <if test="#tFlag  == '1' " > DATE_FORMAT (#{trSenddate}, '%Y%m%d %H:%i:%s'),   </if>
+				           '0', 
+				           #{trPhone}, 
+				           #{trCallback}, 
+				           #{trMsg}, 
+				           #{trMsgtype}, 
+				           #{trEtc1}, 
+				           #{trEtc2}, 
+				           #{trEtc3} 
+				       )   
+	</insert>
+	
+	<insert id="insertSms" parameterType="kr.co.sitglobal.oklms.la.mail.vo.SmsVO">
+		/**	kr.co.sitglobal.oklms.la.mail.service.impl.MailMapper.insertSms	*/
+			INSERT 
+				  INTO SC_TRAN 
+				       ( 
+				           TR_NUM, 
+				           TR_SENDDATE, 
+				           TR_SENDSTAT, 
+				           TR_PHONE, 
+				           TR_CALLBACK, 
+				           TR_MSG, 
+				           TR_MSGTYPE, 
+				           TR_ETC1, 
+				           TR_ETC2, 
+				           TR_ETC3 
+				       ) 
+				       VALUES 
+				       (
+				           #{trNum}, 				           
+				           <if test="#tFlag  != '1' " >NOW(),  </if>
+				           <if test="#tFlag  == '1' " > DATE_FORMAT (#{trSenddate}, '%Y%m%d %H:%i:%s'),   </if>
+				           '0', 
+				           #{trPhone}, 
+				           #{trCallBack}, 
+				           #{trMsg}, 
+				           #{trMsgtype}, 
+				           #{trEtc1}, 
+				           #{trEtc2}, 
+				           #{trEtc3} 
+				       )   
+	</insert>
+</mapper>

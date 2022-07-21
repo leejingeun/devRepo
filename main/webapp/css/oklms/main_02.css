@@ -1,0 +1,464 @@
+@charset "utf-8";
+
+
+
+
+@media all and (max-width:1039px) {
+
+#search-log-main																{float:left; width:100%; height:65px;}
+#search-log-main .search-area											{width:37%; height:50px; text-align:right; padding:15px 3% 0;}
+#search-log-main .search-area label									{vertical-align:top; padding:5px 5px 0 0;}
+#search-log-main .search-area fieldset									{width:180px; padding:0;}
+#search-log-main .search-area input									{width:136px; padding-left:5px;}
+#search-log-main .search-area a											{line-height:100px;}
+
+
+
+#search-log-main .login-area												{float:right; width:51%; height:50px; text-align:right; padding:15px 3% 0;}
+#login-main h3																	{display:none;}
+#login-main ul																	{display:none;}
+#login-main span																{display:none;}
+#login-main a																		{font-size:15px; color:#FFF;}
+#login-main a.btn-login														{display:inline-block; background:url("/images/oklms/std/inc/line_login_01.png") right 10px no-repeat; padding-right:11px;}
+#login-main a.btn-join															{padding-left:10px;}
+
+
+
+#search-log-main .info-area												{float:right; width:51%; height:65px; background:url("/images/oklms/std/inc/login_bg.png") repeat; padding:0 3%;}
+#search-log-main .info-area p												{height:65px;}
+#search-log-main .info-area .info-text									{max-width:170px; height:45px; border-bottom:0; background:none; padding:20px 0 0 0;}
+#search-log-main .info-area .info-text span							{display:inline-block; max-width:80px; font-size:14px; vertical-align:top;}
+#search-log-main .info-area .info-btn-1									{float:right; width:172px; height:48px; border-top:0; padding:17px 0 0 0;}
+#search-log-main .info-area .info-btn-1 a								{display:inline-block; width:55px; height:25px; font:14px nsM; color:#FFF; line-height:20px; border-radius:0; text-shadow:1px 1px 1px #111; box-shadow:none; padding:6px 0 0 23px; margin-right:0;}
+#search-log-main .info-area .info-btn-1 a.btn-logout				{background:url("/images/oklms/std/inc/info_bullet_01.png") 0 6px no-repeat; margin-right:10px;}
+#search-log-main .info-area .info-btn-1 a.btn-modify				{background:url("/images/oklms/std/inc/info_bullet_02.png") 0 6px no-repeat;}
+#search-log-main .info-area .info-btn-2									{display:none;}
+
+
+
+#main-img																			{width:100%; margin-top:5px;}
+#main-img dt																		{background:none;}
+
+
+
+#ban-apply																		{background-position:0 190px;}
+#ban-apply dt																		{width:80%; height:40px; font-size:22px; line-height:35px; padding:32px 10% 0;}
+#ban-apply dd																	{width:80%; height:188px; font-size:14px; line-height:20px; background-size:130px 130px; padding:0 10%;}
+#ban-apply .more																{right:10%; top:37px;}
+#ban-apply:hover .more														{background-position:0 0;}
+
+
+
+#ban-modi																			{background-position:0 190px;}
+#ban-modi dt																		{width:80%; height:40px; font-size:22px; line-height:35px; padding:32px 10% 0;}
+#ban-modi dd																		{width:80%; height:188px; font-size:14px; line-height:20px; background-size:130px 130px; padding:0 10%;}
+#ban-modi .more																	{right:10%; top:37px;}
+#ban-modi:hover .more														{background-position:0 0;}
+
+
+
+#ban-print																			{background-position:0 190px;}
+#ban-print dt																		{width:80%; height:40px; font-size:22px; line-height:35px; padding:32px 10% 0;}
+#ban-print dd																		{width:80%; height:188px; font-size:14px; line-height:20px; background-size:130px 130px; padding:0 10%;}
+#ban-print .more																	{right:10%; top:37px;}
+#ban-print:hover .more														{background-position:0 0;}
+
+
+
+#ban-schedule dt																{width:86%; font-size:40px; line-height:60px; padding:13px 7% 0;}
+#ban-schedule dt span														{width:25px; height:25px;}
+#ban-schedule dd																{width:86%; margin:0 7%;}
+#ban-schedule .date															{font-size:16px;}
+#ban-schedule .name															{width:75%; height:68px; font-size:12px; line-height:19px; border-radius:6px 6px 0 0;}
+#ban-schedule .btn																{width:77%; border-radius:0 0 6px 6px; background-position:78% 2px;}
+#ban-schedule .more															{width:42%; font-size:14px; border-radius:25px 0 0 25px; padding:0 5%;}
+#ban-schedule .more a:hover												{background-position:0 0;}
+
+
+
+#notice dt																			{font-size:22px;}
+#notice dd																			{font-size:13px;}
+#notice dd a:hover																{color:#555;}
+#notice .more a:hover															{background-position:0 0;}
+
+
+
+#quick-btn li																		{height:127px; margin-bottom:6px;}
+#quick-btn a																		{font-size:14px;}
+#quick-btn li.btn-1 a															{font-size:18px;}
+#quick-btn li.btn-2 a															{font-size:18px;}
+#quick-btn li.btn-1 a:hover													{background:url("/images/oklms/std/main/btn_quick_01.png") center 15px no-repeat;}
+#quick-btn li.btn-2 a:hover													{background:url("/images/oklms/std/main/btn_quick_02.png") center 15px no-repeat;}
+#quick-btn li.btn-3 a:hover													{background:url("/images/oklms/std/main/btn_quick_03.png") center 15px no-repeat;}
+#quick-btn li.btn-4 a:hover													{background:url("/images/oklms/std/main/btn_quick_04.png") center 15px no-repeat;}
+
+
+
+#customer-area li.remote														{background-image:none;}
+#customer-area li.remote a													{width:76%; padding-right:12%; padding-left:12%;}
+#customer-area p																{width:100%; font-size:20px; border-bottom:1px solid #E6F4FD;}
+#customer-area span															{width:100%;}
+
+
+
+#customer-area li.customer .num											{font-size:22px;}
+#customer-area li.customer .etc											{width:91%; background-image:none; padding:10px 0 0 9%;}
+#customer-area li.customer span											{width:95%; padding:0 0 0 5%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:850px) {
+
+#ban-apply																		{width:50%; height:215px; background:url("/images/oklms/std/main/bg_ban_02.png") 0 140px repeat-x #2395DE;}
+#ban-apply dt																		{width:82%; height:35px; font-size:23px; color:#FFF; line-height:35px; text-shadow:1px 1px 1px #16567E; padding:22px 9% 0;}
+#ban-apply dd																	{width:82%; height:158px; font-size:14px; color:#BDDFF5; line-height:20px; background-size:160px 160px; padding:0 9%;}
+#ban-apply .more																{right:9%; top:27px; background:url("/images/oklms/std/main/more_ban_02.png") no-repeat;}
+
+
+
+#ban-modi																			{width:50%; height:215px; background:url("/images/oklms/std/main/bg_ban_01.png") 0 140px repeat-x #BDEDEF;}
+#ban-modi dt																		{width:82%; height:35px; font-size:23px; color:#333; line-height:35px; text-shadow:none; padding:22px 9% 0;}
+#ban-modi dd																		{width:82%; height:158px; font-size:14px; color:#3F575E; line-height:20px; background-size:160px 160px; padding:0 9%;}
+#ban-modi .more																	{right:9%; top:27px; background:url("/images/oklms/std/main/more_ban_01.png") no-repeat;}
+
+
+
+#ban-print																			{width:50%; height:215px; background-position:0 140px;}
+#ban-print dt																		{width:82%; height:35px; font-size:23px; line-height:35px; padding:22px 9% 0;}
+#ban-print dd																		{width:82%; height:158px; font-size:14px; line-height:20px; background-size:160px 160px; padding:0 9%;}
+#ban-print .more																	{right:9%; top:27px;}
+
+
+
+#ban-schedule																	{width:50%; height:215px; background-position:0 55px;}
+#ban-schedule dt																{width:86%; height:65px; font-size:40px; line-height:60px; padding:0 7% 0;}
+#ban-schedule dt span														{width:25px; height:25px;}
+#ban-schedule dd																{width:86%; margin:0 7%;}
+#ban-schedule .date															{height:26px;}
+#ban-schedule .name															{height:55px; line-height:18px;}
+#ban-schedule .btn																{background-position:82% 2px;}
+#ban-schedule .more															{right:0; top:19px; font-size:14px; border-radius:25px 0 0 25px; padding:0 5%;}
+
+
+
+#notice																				{width:42%; padding:20px 4% 0;}
+#notice dt																			{font-size:22px;}
+#notice dd																			{width:96%; font-size:13px; padding-left:4%;}
+#notice dd span																	{letter-spacing:-0.06em; margin-right:7px;}
+#notice .more																		{left:110px; top:33px;}
+
+
+
+#quick-btn																			{width:50%;}
+#quick-btn li																		{width:48.4%; height:126px; margin-bottom:8px; margin-right:3.2%; margin-left:0;}
+#quick-btn a																		{font-size:17px;}
+#quick-btn li.btn-1 a															{font-size:20px;}
+#quick-btn li.btn-2																{margin-right:0;}
+#quick-btn li.btn-2 a															{font-size:20px;}
+#quick-btn li.btn-4																{margin-right:0;}
+
+
+
+#customer-area																	{width:100%; height:130px; margin-top:10px;}
+#customer-area li																{width:50%;}
+#customer-area li.remote														{background:url("/images/oklms/std/main/img_remote.png") no-repeat #C0E3F9;}
+#customer-area li.remote a													{width:65%; padding-left:35%;}
+#customer-area p																{width:85%; font-size:22px; border-bottom:1px dotted #FFF;}
+#customer-area span															{width:85%;}
+
+#customer-area li.customer .num											{font-size:28px;}
+#customer-area li.customer .etc											{width:74%; background:url("/images/oklms/std/main/img_customer.png") 9% 11px no-repeat #004282; padding:10px 0 0 26%;}
+#customer-area li.customer span											{width:96%; padding:0 0 0 4%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:760px) {
+
+#search-log-main																{height:55px;}
+#search-log-main .search-area											{width:33%; height:42px;padding:13px 2% 0;}
+#search-log-main .search-area label									{font-size:16px; line-height:20px; padding-left:0; padding-right:5px;}
+#search-log-main .search-area label span							{display:none;}
+#search-log-main .search-area fieldset									{width:140px; height:29px;}
+#search-log-main .search-area input									{width:104px; height:29px; font-size:15px; line-height:20px;}
+#search-log-main .search-area a											{width:29px; height:29px; background-position:-3px -2px;}
+#search-log-main .search-area a:hover								{background-position:-3px -37px;}
+
+
+
+#search-log-main .login-area												{width:59%; height:45px; padding:10px 2% 0;}
+#login-main a																		{font-size:14px;}
+
+
+
+#search-log-main .info-area												{float:left; width:59%; height:45px; padding:10px 2% 0;}
+#search-log-main .info-area .info-text									{max-width:170px; height:39px; background:none; padding:6px 0 0 0;}
+#search-log-main .info-area .info-text span							{max-width:80px; font-size:14px; vertical-align:top;}
+#search-log-main .info-area .info-btn-1									{width:166px; height:43px; padding:2px 0 0 0;}
+
+
+
+#main-img																			{width:100%; height:200px; margin-top:5px;}
+#main-img dt img																	{width:400px; height:200px;}
+#main-img dd																		{height:200px; background-size:70%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:635px) {
+
+#search-log-main																{width:100%; height:45px;}
+#search-log-main .search-area											{width:0; height:0; background:none; padding:0;}
+#search-log-main .search-area label									{display:none;}
+#search-log-main .search-area fieldset									{width:0; height:0; background:none;}
+#search-log-main .search-area input									{display:none;}
+#search-log-main .search-area a											{position:absolute; width:35px; height:35px; right:10%; top:-48px; background:url("/images/oklms/std/inc/search_btn.png") 0 bottom no-repeat; z-index:1000;}
+#search-log-main .search-area a:hover								{background:url("/images/oklms/std/inc/search_btn.png") 0 bottom no-repeat;}
+
+
+
+#search-log-main .login-area												{width:94%; height:28px; text-align:center; padding:17px 3% 0;}
+#login-main a																		{font:12px Dotum;}
+#login-main a:last-child														{background-position:left 0;}
+#login-main a.btn-login														{background-position:right 0; padding-right:11px;}
+
+
+
+#search-log-main .info-area												{width:94%; height:35px; padding-top:10px; padding-left:3%; padding-right:3%;}
+#search-log-main .info-area .info-text									{max-width:240px; height:28px; font:12px Dotum; padding:7px 0 0 0;}
+#search-log-main .info-area .info-text span							{max-width:150px; font:bold 12px Dotum;}
+#search-log-main .info-area .info-btn-1									{float:right; width:170px; height:35px; padding:0 0 0 0;}
+#search-log-main .info-area .info-btn-1 a								{width:55px; height:17px; font:12px Dotum; padding:6px 0 0 25px;}
+#search-log-main .info-area .info-btn-1 a.btn-logout				{background:url("/images/oklms/std/inc/info_bullet_11.png") 0 1px no-repeat; margin-right:10px;}
+#search-log-main .info-area .info-btn-1 a.btn-modify				{background:url("/images/oklms/std/inc/info_bullet_12.png") 0 1px no-repeat;}
+
+
+
+#main-img																			{height:150px; margin-top:5px;}
+#main-img dt img																	{width:300px; height:150px;}
+#main-img dd																		{height:150px; background-size:70%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:580px) {
+
+#ban-apply dt																		{height:35px; font-size:20px; padding:17px 9% 0;}
+#ban-apply dd																	{height:163px; font-size:13px; background-size:130px 130px;}
+#ban-apply .more																{right:8%; top:21px;}
+
+
+
+#ban-modi dt																		{height:35px; font-size:20px; padding:17px 9% 0;}
+#ban-modi dd																		{height:163px; font-size:13px; background-size:130px 130px;}
+#ban-modi .more																	{right:8%; top:21px;}
+
+
+
+#ban-print dt																		{height:35px; font-size:20px; padding:17px 9% 0;}
+#ban-print dd																		{height:163px; font-size:13px; background-size:130px 130px;}
+#ban-print .more																	{right:8%; top:21px;}
+
+
+
+#ban-schedule																	{background-position:0 51px;}
+#ban-schedule dt																{height:60px; font-size:35px;}
+#ban-schedule dt span														{width:20px; background-size:20px 20px;}
+
+#ban-schedule .date															{font-size:15px;}
+#ban-schedule .date span													{height:13px; font-size:11px; padding-top:3px;}
+#ban-schedule .name															{height:65px; line-height:17px; padding-top:9px;}
+#ban-schedule .btn																{background-position:77% 2px;}
+#ban-schedule .more															{height:20px; top:23px; font-size:12px; line-height:20px; border-radius:25px 0 0 25px; padding:0 5%;}
+#ban-schedule .more a														{width:20px; height:20px; background:url("/images/oklms/std/main/more_ban_04.png") no-repeat; margin-top:1px;}
+
+
+
+#notice																				{width:90%; height:205px; padding:15px 5% 0;}
+#notice dt																			{font-size:20px; line-height:40px;}
+#notice dd																			{width:98%; font-size:13px; line-height:23px; background-position:0 8px; padding-left:2%;}
+#notice .more																		{width:18px; height:18px; left:105px; top:26px;}
+#notice .more a																	{width:18px; height:18px; background:url("/images/oklms/std/main/more_notice_02.png") no-repeat;}
+
+
+
+#quick-btn																			{width:100%; height:125px; margin-top:10px;}
+#quick-btn li																		{width:23.5%; height:125px; margin-bottom:0; margin-right:2%;}
+#quick-btn a																		{width:100%; height:125px; font-size:14px;}
+#quick-btn li.btn-1 a															{height:38px; font-size:17px; padding-top:87px;}
+#quick-btn li.btn-2																{margin-right:2%;}
+#quick-btn li.btn-2 a															{height:38px; font-size:17px; padding-top:87px;}
+#quick-btn li.btn-3 a															{height:33px; padding-top:92px;}
+#quick-btn li.btn-4 a															{height:33px; padding-top:92px;}
+
+
+
+#customer-area li.remote														{background-image:none;}
+#customer-area li.remote a													{width:80%; padding-right:10%; padding-left:10%;}
+#customer-area p																{width:100%; font-size:20px; border-bottom:1px solid #E6F4FD;}
+#customer-area span															{width:100%;}
+
+#customer-area li.customer .num											{font-size:20px;}
+#customer-area li.customer .etc											{width:91%; background-image:none; padding:10px 0 0 9%;}
+#customer-area li.customer span											{width:95%; padding:0 0 0 5%;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:500px) {
+
+#search-log-main																{width:100%; height:39px;}
+#search-log-main .search-area a											{right:10%; top:-43px;}
+#search-log-main .login-area												{height:25px; text-align:center; padding-top:14px;}
+
+
+#search-log-main .info-area												{width:93%; height:32px; padding-top:7px; padding-left:4%; padding-right:3%;}
+#search-log-main .info-area .info-text									{max-width:170px; height:28px; padding:7px 0 0 0;}
+#search-log-main .info-area .info-text span							{max-width:80px;}
+#search-log-main .info-area .info-btn-1									{width:161px; height:32px;}
+#search-log-main .info-area .info-btn-1 a								{width:52px; height:18px; padding:7px 0 0 25px;}
+#search-log-main .info-area .info-btn-1 a.btn-logout				{margin-right:7px;}
+
+
+#main-img																			{display:none;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:400px) {
+
+#search-log-main .search-area a											{right:13%; top:-43px;}
+
+
+#login-main a.btn-login														{padding-right:6px;}
+#login-main a.btn-join															{padding-right:6px; padding-left:7px;}
+#login-main a.btn-find															{padding-left:7px;}
+
+
+#search-log-main .info-area												{width:92%; padding-left:4%; padding-right:4%;}
+#search-log-main .info-area .info-text									{max-width:210px; height:25px; vertical-align:top;}
+#search-log-main .info-area .info-text span							{max-width:100px;}
+#search-log-main .info-area .info-btn-1									{width:45px; height:32px;}
+#search-log-main .info-area .info-btn-1 a								{width:22px; height:22px; text-indent:-9999px; padding:0;}
+#search-log-main .info-area .info-btn-1 a.btn-logout				{margin-right:1px;}
+
+
+
+#ban-apply																		{width:100%; height:135px; background:url("/images/oklms/std/main/bg_ban_01.png") 0 90px repeat-x #BDEDEF;}
+#ban-apply dt																		{height:35px; font-size:18px; color:#333; text-shadow:none; padding-top:12px;}
+#ban-apply dd																	{width:52%; height:88px; font-size:12px; color:#3F575E; line-height:18px; background-size:110px 110px; padding:0 39% 0 9%;}
+#ban-apply dd br																{display:none;}
+#ban-apply .more																{right:5%; top:15px; background:url("/images/oklms/std/main/more_ban_01.png") no-repeat;}
+
+
+
+#ban-modi																			{width:100%; height:135px; background:url("/images/oklms/std/main/bg_ban_02.png") 0 90px repeat-x #2395DE;}
+#ban-modi dt																		{height:35px; font-size:18px; color:#FFF; text-shadow:1px 1px 1px #16567E; padding-top:12px;}
+#ban-modi dd																		{width:52%; height:88px; font-size:12px; color:#BDDFF5; line-height:18px; background-size:110px 110px; padding:0 39% 0 9%;}
+#ban-modi dd br																	{display:none;}
+#ban-modi .more																	{right:5%; top:15px; background:url("/images/oklms/std/main/more_ban_02.png") no-repeat;}
+
+
+
+#ban-print																			{width:100%; height:135px; background-position:0 90px;}
+#ban-print dt																		{height:35px; font-size:18px; padding-top:12px;}
+#ban-print dd																		{width:52%; height:88px; font-size:12px; line-height:18px; background-size:110px 110px; padding:0 39% 0 9%;}
+#ban-print dd br																	{display:none;}
+#ban-print .more																	{right:5%; top:15px;}
+
+
+
+#ban-schedule																	{width:100%;}
+
+
+
+#notice																				{width:86%; height:175px; padding:10px 7% 0;}
+#notice dt																			{font-size:18px; line-height:35px;}
+#notice dd																			{width:96%; font-size:12px; line-height:20px; background-position:0 6px; padding-left:4%;}
+#notice .more																		{left:95px; top:19px;}
+
+
+
+#quick-btn																			{width:100%; height:240px;}
+#quick-btn li																		{width:49%; height:117px; margin-bottom:6px;}
+#quick-btn a																		{width:100%; height:117px; font-size:16px;}
+
+#quick-btn li.btn-1 a															{height:37px; font-size:18px; background-position:center 10px; padding-top:80px;}
+#quick-btn li.btn-1 a:hover													{background-position:center 10px;}
+#quick-btn li.btn-2																{margin-right:0;}
+#quick-btn li.btn-2 a															{height:37px; font-size:18px; background-position:center 10px; padding-top:80px;}
+#quick-btn li.btn-2 a:hover													{background-position:center 10px;}
+#quick-btn li.btn-3 a															{height:32px; background-position:center 10px; padding-top:85px;}
+#quick-btn li.btn-3 a:hover													{background-position:center 10px;}
+#quick-btn li.btn-4																{margin-right:0;}
+#quick-btn li.btn-4 a															{height:32px; background-position:center 10px; padding-top:85px;}
+#quick-btn li.btn-4 a:hover													{background-position:center 10px;}
+
+
+
+#customer-area																	{width:100%; height:240px;}
+#customer-area li																{width:100%; height:110px;}
+#customer-area li.remote														{background:url("/images/oklms/std/main/img_remote.png") no-repeat #C0E3F9;}
+#customer-area li.remote a													{width:62%; height:115px; padding-right:10%; padding-left:31%;}
+#customer-area p																{width:100%; padding:15px 0 4px;}
+
+#customer-area li.customer dt												{width:88%; padding:17px 0 0 12%;}
+#customer-area li.customer .num											{width:88%; height:41px; font-size:28px; padding-left:12%;}
+#customer-area li.customer .etc											{width:74%; background:url("/images/oklms/std/main/img_customer.png") 12% 11px no-repeat #004282; padding:10px 0 0 26%;}
+#customer-area li.customer span											{width:96%; padding:0 0 0 4%;}
+
+}
+
+
+
+
+

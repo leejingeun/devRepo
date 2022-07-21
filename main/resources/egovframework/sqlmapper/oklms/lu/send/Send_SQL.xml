@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 01. 09          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.send.service.impl.SendMapper">
+
+	
+	
+	<sql id="list-where">
+     	<if test="deptCode != null and deptCode != ''">	AND TBL.DEPT_CODE = #{deptCode} 	 </if>
+	 	<if test="subjectGrade != null and subjectGrade != ''">	AND TBL.TERM = #{subjectGrade}  	 </if>
+	 	<if test="subjectName != null and subjectName != ''">	AND TBL.SUBJECT_NAME LIKE CONCAT('%',#{subjectName},'%')  	 </if>   
+		<if test="companyName != null and companyName != ''">	 AND TBL.COMPANY_NAME LIKE CONCAT('%',#{companyName},'%') 	 </if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND (TBL.MEM_NAME LIKE CONCAT ('%', #{searchKeyword},'%') OR TBL.MEM_ID LIKE CONCAT ('%', #{searchKeyword},'%') )
+	    </if>
+	 	<if test="adYear != null and adYear != ''">	AND TBL.AD_YEAR = #{adYear}  	 </if>
+		
+	</sql>
+	
+
+	<select id="listSendCdp" parameterType="kr.co.sitglobal.oklms.lu.send.vo.SendVO" resultType="kr.co.sitglobal.oklms.lu.send.vo.SendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.send.service.impl.SubjectMapper.listSendCdp ====== */
+	       	<include refid="kr.co.sitglobal.include.paging-start"/>
+	        SELECT * 
+				  FROM 
+				       (SELECT LES.MEM_SEQ, 
+				              MEM.MEM_ID, 
+				              MEM.MEM_NAME, 
+				              MEM.COMPANY_ID, 
+				              FN_GETCOMPAYNAME(MEM.COMPANY_ID) AS COMPANY_NAME, 
+				              MEM.DEPT_NM AS DEPT_NAME, 
+				              MEM.DEPT_NO AS DEPT_CODE, 
+				              CASE WHEN SUBSTRING(MEM.MEM_ID,1,2) != '20' 
+				              	THEN SUBSTRING(CONCAT('20',MEM.MEM_ID),1,4) 
+				              	ELSE SUBSTRING(MEM.MEM_ID,1,4)  
+				              END AD_YEAR, 
+				              CASE WHEN SUBSTRING(FN_GETUSERID(MEM.MEM_SEQ),1,2) != '20' 
+				              	THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(MEM.MEM_SEQ)),1,4) 
+				              	ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(MEM.MEM_SEQ),1,4) 
+				              END SUBJECT_GRADE , 
+				              LES.YYYY , 
+				              LES.TERM , 
+				              LES.SUBJECT_CODE , 
+				              LES.CLASS , 
+				              FN_GETSUBJECT_NAME(LES.YYYY ,LES.TERM ,LES.SUBJECT_CODE ,LES.CLASS ) AS SUBJECT_NAME 
+				         FROM LMS_LESSON LES 
+				            INNER JOIN COM_MEMBER MEM 
+				                ON MEM.MEM_SEQ = LES.MEM_SEQ 
+				              AND MEM.DELETE_YN = 'N' 
+				              AND MEM.MEM_TYPE = 'STD' 
+				        WHERE LES.DELETE_YN = 'N' 
+				              AND LES.LEC_STATUS = 'A' 
+				       ) TBL 
+				 WHERE 1=1    
+				  <include refid="list-where"/>	
+			ORDER BY TBL.YYYY DESC, TBL.TERM DESC
+			<include refid="kr.co.sitglobal.include.paging-end"/>	
+	</select>
+	
+
+</mapper>

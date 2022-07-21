@@ -1,0 +1,1852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2016. 12. 01 오전 11:00         First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.member.service.impl.MemberStdMapper">
+
+	<!-- <resultMap id="member-result" type="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+		<result column="MEM_SEQ" 			property="memSeq" />
+		<result column="MEM_ID" 			property="memId" />
+		<result column="MEM_TYPE" 			property="memType" />
+		<result column="MEM_NAME" 			property="memName" />
+		<result column="PWD_QUEST" 			property="pwdQuest" />
+		<result column="SEX" 			property="sex" />
+		<result column="MEM_NAME_ENG" 			property="memNameEng" />
+		<result column="MEM_BIRTH" 			property="memBirth" />
+		<result column="PWD_QUEST_ANS" 			property="pwdQuestAns" />
+		<result column="MEM_PASSWORD" 			property="memPassword" />
+		<result column="EMAIL" 			property="email" />
+		<result column="MEM_REGI_NO" 			property="memRegiNo" />
+		<result column="ZIP_CODE" 			property="zipCode" />
+		<result column="ADDRESS" 			property="address" />
+		<result column="ADDRESS_DTL" 			property="addressDtl" />
+		<result column="TEL_NO1" 			property="telNo1" />
+		<result column="TEL_NO2" 			property="telNo2" />
+		<result column="TEL_NO3" 			property="telNo3" />
+		<result column="HP_NO1" 			property="hpNo1" />
+		<result column="HP_NO2" 			property="hpNo2" />
+		<result column="HP_NO3" 			property="hpNo3" />
+		<result column="NEWSLETTER_YN" 			property="newsletterYn" />
+		<result column="PHOTO_FILE_PATH" 			property="photoFilePath" />
+		<result column="WORKING_PLACE" 			property="workingPlace" />
+		<result column="SCHOLARSHIP" 			property="scholarship" />
+		<result column="SECEDE_REASON" 			property="secedeReason" />
+		<result column="RELATION_FIELD" 			property="relationField" />
+		<result column="CAREER" 			property="career" />
+		<result column="TITLE" 			property="title" />
+		<result column="AUTH_GROUP_ID" 			property="authGroupId" />
+		<result column="BNDL_REG_YN" 			property="bndlRegYn" />
+		<result column="LOGIN_CNT" 			property="loginCnt" />
+		<result column="SCSN_YN" 			property="scsnYn" />
+		<result column="MAJR" 			property="majr" />
+		<result column="RECEIVE_MAIL_YN" 			property="receiveMailYn" />
+		<result column="RECEIVE_SMS_YN" 			property="receiveSmsYn" />
+		<result column="FOREIGN_YN" 			property="foreignYn" />
+		<result column="NAMECHECK_YN" 			property="namecheckYn" />
+		<result column="NATION_CODE" 			property="nationCode" />
+		<result column="COMPANY_ID" 			property="companyId" />
+		<result column="G_PIN_YN" 			property="gPinYn" />
+		<result column="G_PIN_KEY1" 			property="gPinKey1" />
+		<result column="G_PIN_KEY2" 			property="gPinKey2" />
+		<result column="MEM_DIV" 			property="memDiv" />
+		<result column="SCHOOL_SEQ" 			property="schoolSeq" />
+		<result column="TUTOR_CLAUSE_AGREE_YN" 			property="tutorClauseAgreeYn" />
+		<result column="ASP_ID" 			property="aspId" />
+		<result column="AGREE_YN" 			property="agreeYn" />
+		<result column="NONAGE_YN" 			property="nonageYn" />
+		<result column="DELETE_YN" 			property="deleteYn" />
+		<result column="INSERT_DATE" 			property="insertDate" />
+		<result column="INSERT_USER" 			property="insertUser" />
+		<result column="UPDATE_DATE" 			property="updateDate" />
+		<result column="UPDATE_USER" 			property="updateUser" />
+		<result column="CERTI_NO" 			property="certiNo" />
+		<result column="CERTI_CHARACTER" 			property="certiCharacter" />
+		<result column="CERTI_YN" 			property="certiYn" />
+		<result column="CERTI_ATTEMPT_CNT" 			property="certiAttemptCnt" />
+		<result column="COMP_NM" 			property="compNm" />
+		<result column="DEPT_NM" 			property="deptNm" />
+		<result column="DUTY_NM" 			property="dutyNm" />
+		<result column="REMK" 			property="remk" />
+		<result column="WRONG_REGI_NO" 			property="wrongRegiNo" />
+		<result column="ORG_PW_NULL" 			property="orgPwNull" />
+		<result column="ORG_MEM_ID" 			property="orgMemId" />
+		<result column="LAST_LOGIN_YMD" 			property="lastLoginYmd" />
+		<result column="LAST_PW_UPDT_YMD" 			property="lastPwUpdtYmd" />
+		<result column="PW_ERR_NUMBER_TIMES" 			property="pwErrNumberTimes" />
+		<result column="USE_EXPIRE_YMD" 			property="useExpireYmd" />
+
+	</resultMap>
+	 -->
+
+	<sql id="listMember-where">
+	     <choose>
+            <when test="searchName != null and searchName != ''">
+                	<if test="searchName eq 'NAME'">
+                		<if test="searchWord != null and searchWord != ''">
+                			AND CM.MEM_NAME LIKE '%' ||  #{searchWord  } || '%'
+                		</if>
+                	</if>
+                	<if test="searchName eq 'ID'">
+                		<if test="searchWord != null and searchWord != ''">
+                			AND CM.MEM_ID LIKE '%' ||  #{searchWord  } || '%'
+                		</if>
+                	</if>
+            </when>
+        </choose>
+
+		<!-- 조회 조건값 -->
+		        <!--<if test="searchName != null and searchName != ''">AND CM.MEM_NAME LIKE '%' ||  #{searchName} || '%'</if>-->
+				<!-- <if test="memSeq != null and memSeq != ''">	AND CM.MEM_SEQ 	= #{memSeq}		 </if> -->
+				<if test="memId != null and memId != ''">	AND CM.MEM_ID 	= #{memId}		 </if>
+				<!-- <if test="memType != null and memType != ''">	AND CM.MEM_TYPE 	= #{memType}		 </if> -->
+				<!-- <if test="memName != null and memName != ''">	AND CM.MEM_NAME 	= #{memName}		 </if> -->
+				<!-- <if test="pwdQuest != null and pwdQuest != ''">	AND CM.PWD_QUEST 	= #{pwdQuest}		 </if> -->
+				<!-- <if test="sex != null and sex != ''">	AND CM.SEX 	= #{sex}		 </if> -->
+				<!-- <if test="memNameEng != null and memNameEng != ''">	AND CM.MEM_NAME_ENG 	= #{memNameEng}		 </if> -->
+				<!-- <if test="memBirth != null and memBirth != ''">	AND CM.MEM_BIRTH 	= #{memBirth}		 </if> -->
+				<!-- <if test="pwdQuestAns != null and pwdQuestAns != ''">	AND CM.PWD_QUEST_ANS 	= #{pwdQuestAns}		 </if> -->
+				<!-- <if test="memPassword != null and memPassword != ''">	AND CM.MEM_PASSWORD 	= #{memPassword}		 </if> -->
+				<!-- <if test="email != null and email != ''">	AND CM.EMAIL 	= #{email}		 </if> -->
+				<!-- <if test="memRegiNo != null and memRegiNo != ''">	AND CM.MEM_REGI_NO 	= #{memRegiNo}		 </if> -->
+				<!-- <if test="zipCode != null and zipCode != ''">	AND CM.ZIP_CODE 	= #{zipCode}		 </if> -->
+				<!-- <if test="address != null and address != ''">	AND CM.ADDRESS 	= #{address}		 </if> -->
+				<!-- <if test="addressDtl != null and addressDtl != ''">	AND CM.ADDRESS_DTL 	= #{addressDtl}		 </if> -->
+				<!-- <if test="telNo1 != null and telNo1 != ''">	AND CM.TEL_NO1 	= #{telNo1}		 </if> -->
+				<!-- <if test="telNo2 != null and telNo2 != ''">	AND CM.TEL_NO2 	= #{telNo2}		 </if> -->
+				<!-- <if test="telNo3 != null and telNo3 != ''">	AND CM.TEL_NO3 	= #{telNo3}		 </if> -->
+				<!-- <if test="hpNo1 != null and hpNo1 != ''">	AND CM.HP_NO1 	= #{hpNo1}		 </if> -->
+				<!-- <if test="hpNo2 != null and hpNo2 != ''">	AND CM.HP_NO2 	= #{hpNo2}		 </if> -->
+				<!-- <if test="hpNo3 != null and hpNo3 != ''">	AND CM.HP_NO3 	= #{hpNo3}		 </if> -->
+				<!-- <if test="newsletterYn != null and newsletterYn != ''">	AND CM.NEWSLETTER_YN 	= #{newsletterYn}		 </if> -->
+				<!-- <if test="photoFilePath != null and photoFilePath != ''">	AND CM.PHOTO_FILE_PATH 	= #{photoFilePath}		 </if> -->
+				<!-- <if test="workingPlace != null and workingPlace != ''">	AND CM.WORKING_PLACE 	= #{workingPlace}		 </if> -->
+				<!-- <if test="scholarship != null and scholarship != ''">	AND CM.SCHOLARSHIP 	= #{scholarship}		 </if> -->
+				<!-- <if test="secedeReason != null and secedeReason != ''">	AND CM.SECEDE_REASON 	= #{secedeReason}		 </if> -->
+				<!-- <if test="relationField != null and relationField != ''">	AND CM.RELATION_FIELD 	= #{relationField}		 </if> -->
+				<!-- <if test="career != null and career != ''">	AND CM.CAREER 	= #{career}		 </if> -->
+				<!-- <if test="title != null and title != ''">	AND CM.TITLE 	= #{title}		 </if> -->
+				<!-- <if test="authGroupId != null and authGroupId != ''">	AND CM.AUTH_GROUP_ID 	= #{authGroupId}		 </if> -->
+				<!-- <if test="bndlRegYn != null and bndlRegYn != ''">	AND CM.BNDL_REG_YN 	= #{bndlRegYn}		 </if> -->
+				<!-- <if test="loginCnt != null and loginCnt != ''">	AND CM.LOGIN_CNT 	= #{loginCnt}		 </if> -->
+				<!--<if test="scsnYn != null and scsnYn != ''">	AND CM.SCSN_YN 	= #{scsnYn}		 </if>-->
+				<!-- <if test="majr != null and majr != ''">	AND CM.MAJR 	= #{majr}		 </if> -->
+				<!-- <if test="receiveMailYn != null and receiveMailYn != ''">	AND CM.RECEIVE_MAIL_YN 	= #{receiveMailYn}		 </if> -->
+				<!-- <if test="receiveSmsYn != null and receiveSmsYn != ''">	AND CM.RECEIVE_SMS_YN 	= #{receiveSmsYn}		 </if> -->
+				<!-- <if test="foreignYn != null and foreignYn != ''">	AND CM.FOREIGN_YN 	= #{foreignYn}		 </if> -->
+				<!-- <if test="namecheckYn != null and namecheckYn != ''">	AND CM.NAMECHECK_YN 	= #{namecheckYn}		 </if> -->
+				<!-- <if test="nationCode != null and nationCode != ''">	AND CM.NATION_CODE 	= #{nationCode}		 </if> -->
+				<!-- <if test="companyId != null and companyId != ''">	AND CM.COMPANY_ID 	= #{companyId}		 </if> -->
+				<!-- <if test="gPinYn != null and gPinYn != ''">	AND CM.G_PIN_YN 	= #{gPinYn}		 </if> -->
+				<!-- <if test="gPinKey1 != null and gPinKey1 != ''">	AND CM.G_PIN_KEY1 	= #{gPinKey1}		 </if> -->
+				<!-- <if test="gPinKey2 != null and gPinKey2 != ''">	AND CM.G_PIN_KEY2 	= #{gPinKey2}		 </if> -->
+				<!-- <if test="memDiv != null and memDiv != ''">	AND CM.MEM_DIV 	= #{memDiv}		 </if> -->
+				<!-- <if test="schoolSeq != null and schoolSeq != ''">	AND CM.SCHOOL_SEQ 	= #{schoolSeq}		 </if> -->
+				<!-- <if test="tutorClauseAgreeYn != null and tutorClauseAgreeYn != ''">	AND CM.TUTOR_CLAUSE_AGREE_YN 	= #{tutorClauseAgreeYn}		 </if> -->
+				<!-- <if test="aspId != null and aspId != ''">	AND CM.ASP_ID 	= #{aspId}		 </if> -->
+				<!-- <if test="agreeYn != null and agreeYn != ''">	AND CM.AGREE_YN 	= #{agreeYn}		 </if> -->
+				<!-- <if test="nonageYn != null and nonageYn != ''">	AND CM.NONAGE_YN 	= #{nonageYn}		 </if> -->
+				<if test="deleteYn != null and deleteYn != ''">	AND CM.DELETE_YN 	= #{deleteYn}		 </if>
+				AND CM.DELETE_YN = 'N'
+				<!-- <if test="insertDate != null and insertDate != ''">	AND CM.INSERT_DATE 	= #{insertDate}		 </if> -->
+				<!-- <if test="insertUser != null and insertUser != ''">	AND CM.INSERT_USER 	= #{insertUser}		 </if> -->
+				<!-- <if test="updateDate != null and updateDate != ''">	AND CM.UPDATE_DATE 	= #{updateDate}		 </if> -->
+				<!-- <if test="updateUser != null and updateUser != ''">	AND CM.UPDATE_USER 	= #{updateUser}		 </if> -->
+				<!-- <if test="certiNo != null and certiNo != ''">	AND CM.CERTI_NO 	= #{certiNo}		 </if> -->
+				<!-- <if test="certiCharacter != null and certiCharacter != ''">	AND CM.CERTI_CHARACTER 	= #{certiCharacter}		 </if> -->
+				<!-- <if test="certiYn != null and certiYn != ''">	AND CM.CERTI_YN 	= #{certiYn}		 </if> -->
+				<!-- <if test="certiAttemptCnt != null and certiAttemptCnt != ''">	AND CM.CERTI_ATTEMPT_CNT 	= #{certiAttemptCnt}		 </if> -->
+				<!-- <if test="compNm != null and compNm != ''">	AND CM.COMP_NM 	= #{compNm}		 </if> -->
+				<!-- <if test="deptNm != null and deptNm != ''">	AND CM.DEPT_NM 	= #{deptNm}		 </if> -->
+				<!-- <if test="dutyNm != null and dutyNm != ''">	AND CM.DUTY_NM 	= #{dutyNm}		 </if> -->
+				<!-- <if test="remk != null and remk != ''">	AND CM.REMK 	= #{remk}		 </if> -->
+				<!-- <if test="wrongRegiNo != null and wrongRegiNo != ''">	AND CM.WRONG_REGI_NO 	= #{wrongRegiNo}		 </if> -->
+				<!-- <if test="orgPwNull != null and orgPwNull != ''">	AND CM.ORG_PW_NULL 	= #{orgPwNull}		 </if> -->
+				<!-- <if test="orgMemId != null and orgMemId != ''">	AND CM.ORG_MEM_ID 	= #{orgMemId}		 </if> -->
+				<!-- <if test="lastLoginYmd != null and lastLoginYmd != ''">	AND CM.LAST_LOGIN_YMD 	= #{lastLoginYmd}		 </if> -->
+				<!-- <if test="lastPwUpdtYmd != null and lastPwUpdtYmd != ''">	AND CM.LAST_PW_UPDT_YMD 	= #{lastPwUpdtYmd}		 </if> -->
+				<!-- <if test="pwErrNumberTimes != null and pwErrNumberTimes != ''">	AND CM.PW_ERR_NUMBER_TIMES 	= #{pwErrNumberTimes}		 </if> -->
+				<!-- <if test="useExpireYmd != null and useExpireYmd != ''">	AND CM.USE_EXPIRE_YMD 	= #{useExpireYmd}		 </if> -->
+
+		<!-- 검색 영역에서의 조건값 -->
+				<!-- <if test="searchMemSeq != null and searchMemSeq != ''">	AND CM.MEM_SEQ 	= #{searchMemSeq}		 </if> -->
+				<!-- <if test="searchMemId != null and searchMemId != ''">	AND CM.MEM_ID 	= #{searchMemId}		 </if> -->
+				<!-- <if test="searchMemType != null and searchMemType != ''">	AND CM.MEM_TYPE 	= #{searchMemType}		 </if> -->
+				<if test="searchName != null and searchName != ''">	AND CM.MEM_NAME  LIKE '%' ||  #{searchName} || '%'	 </if>
+				<if test="searchMemName != null and searchMemName != ''">	AND CM.MEM_NAME  LIKE '%' ||  #{searchMemName} || '%'	 </if>
+				<!-- <if test="searchPwdQuest != null and searchPwdQuest != ''">	AND CM.PWD_QUEST 	= #{searchPwdQuest}		 </if> -->
+				<!-- <if test="searchSex != null and searchSex != ''">	AND CM.SEX 	= #{searchSex}		 </if> -->
+				<!-- <if test="searchMemNameEng != null and searchMemNameEng != ''">	AND CM.MEM_NAME_ENG 	= #{searchMemNameEng}		 </if> -->
+				<!-- <if test="searchMemBirth != null and searchMemBirth != ''">	AND CM.MEM_BIRTH 	= #{searchMemBirth}		 </if> -->
+				<!-- <if test="searchPwdQuestAns != null and searchPwdQuestAns != ''">	AND CM.PWD_QUEST_ANS 	= #{searchPwdQuestAns}		 </if> -->
+				<!-- <if test="searchMemPassword != null and searchMemPassword != ''">	AND CM.MEM_PASSWORD 	= #{searchMemPassword}		 </if> -->
+				<!-- <if test="searchEmail != null and searchEmail != ''">	AND CM.EMAIL 	= #{searchEmail}		 </if> -->
+				<!-- <if test="searchMemRegiNo != null and searchMemRegiNo != ''">	AND CM.MEM_REGI_NO 	= #{searchMemRegiNo}		 </if> -->
+				<!-- <if test="searchZipCode != null and searchZipCode != ''">	AND CM.ZIP_CODE 	= #{searchZipCode}		 </if> -->
+				<!-- <if test="searchAddress != null and searchAddress != ''">	AND CM.ADDRESS 	= #{searchAddress}		 </if> -->
+				<!-- <if test="searchAddressDtl != null and searchAddressDtl != ''">	AND CM.ADDRESS_DTL 	= #{searchAddressDtl}		 </if> -->
+				<!-- <if test="searchTelNo1 != null and searchTelNo1 != ''">	AND CM.TEL_NO1 	= #{searchTelNo1}		 </if> -->
+				<!-- <if test="searchTelNo2 != null and searchTelNo2 != ''">	AND CM.TEL_NO2 	= #{searchTelNo2}		 </if> -->
+				<!-- <if test="searchTelNo3 != null and searchTelNo3 != ''">	AND CM.TEL_NO3 	= #{searchTelNo3}		 </if> -->
+				<!-- <if test="searchHpNo1 != null and searchHpNo1 != ''">	AND CM.HP_NO1 	= #{searchHpNo1}		 </if> -->
+				<!-- <if test="searchHpNo2 != null and searchHpNo2 != ''">	AND CM.HP_NO2 	= #{searchHpNo2}		 </if> -->
+				<!-- <if test="searchHpNo3 != null and searchHpNo3 != ''">	AND CM.HP_NO3 	= #{searchHpNo3}		 </if> -->
+				<!-- <if test="searchNewsletterYn != null and searchNewsletterYn != ''">	AND CM.NEWSLETTER_YN 	= #{searchNewsletterYn}		 </if> -->
+				<!-- <if test="searchPhotoFilePath != null and searchPhotoFilePath != ''">	AND CM.PHOTO_FILE_PATH 	= #{searchPhotoFilePath}		 </if> -->
+				<!-- <if test="searchWorkingPlace != null and searchWorkingPlace != ''">	AND CM.WORKING_PLACE 	= #{searchWorkingPlace}		 </if> -->
+				<!-- <if test="searchScholarship != null and searchScholarship != ''">	AND CM.SCHOLARSHIP 	= #{searchScholarship}		 </if> -->
+				<!-- <if test="searchSecedeReason != null and searchSecedeReason != ''">	AND CM.SECEDE_REASON 	= #{searchSecedeReason}		 </if> -->
+				<!-- <if test="searchRelationField != null and searchRelationField != ''">	AND CM.RELATION_FIELD 	= #{searchRelationField}		 </if> -->
+				<!-- <if test="searchCareer != null and searchCareer != ''">	AND CM.CAREER 	= #{searchCareer}		 </if> -->
+				<!-- <if test="searchTitle != null and searchTitle != ''">	AND CM.TITLE 	= #{searchTitle}		 </if> -->
+				<if test="searchAuthGroupId != null and searchAuthGroupId != ''">	AND CM.AUTH_GROUP_ID 	= #{searchAuthGroupId}		 </if>
+				<!-- <if test="searchBndlRegYn != null and searchBndlRegYn != ''">	AND CM.BNDL_REG_YN 	= #{searchBndlRegYn}		 </if> -->
+				<!-- <if test="searchLoginCnt != null and searchLoginCnt != ''">	AND CM.LOGIN_CNT 	= #{searchLoginCnt}		 </if> -->
+				<if test="searchScsnYn != null and searchScsnYn != ''">	AND CM.SCSN_YN 	= #{searchScsnYn}		 </if>
+				<!-- <if test="searchMajr != null and searchMajr != ''">	AND CM.MAJR 	= #{searchMajr}		 </if> -->
+				<!-- <if test="searchReceiveMailYn != null and searchReceiveMailYn != ''">	AND CM.RECEIVE_MAIL_YN 	= #{searchReceiveMailYn}		 </if> -->
+				<!-- <if test="searchReceiveSmsYn != null and searchReceiveSmsYn != ''">	AND CM.RECEIVE_SMS_YN 	= #{searchReceiveSmsYn}		 </if> -->
+				<!-- <if test="searchForeignYn != null and searchForeignYn != ''">	AND CM.FOREIGN_YN 	= #{searchForeignYn}		 </if> -->
+				<!-- <if test="searchNamecheckYn != null and searchNamecheckYn != ''">	AND CM.NAMECHECK_YN 	= #{searchNamecheckYn}		 </if> -->
+				<!-- <if test="searchNationCode != null and searchNationCode != ''">	AND CM.NATION_CODE 	= #{searchNationCode}		 </if> -->
+				<!-- <if test="searchCompanyId != null and searchCompanyId != ''">	AND CM.COMPANY_ID 	= #{searchCompanyId}		 </if> -->
+				<!-- <if test="searchGPinYn != null and searchGPinYn != ''">	AND CM.G_PIN_YN 	= #{searchGPinYn}		 </if> -->
+				<!-- <if test="searchGPinKey1 != null and searchGPinKey1 != ''">	AND CM.G_PIN_KEY1 	= #{searchGPinKey1}		 </if> -->
+				<!-- <if test="searchGPinKey2 != null and searchGPinKey2 != ''">	AND CM.G_PIN_KEY2 	= #{searchGPinKey2}		 </if> -->
+				<!-- <if test="searchMemDiv != null and searchMemDiv != ''">	AND CM.MEM_DIV 	= #{searchMemDiv}		 </if> -->
+				<!-- <if test="searchSchoolSeq != null and searchSchoolSeq != ''">	AND CM.SCHOOL_SEQ 	= #{searchSchoolSeq}		 </if> -->
+				<!-- <if test="searchTutorClauseAgreeYn != null and searchTutorClauseAgreeYn != ''">	AND CM.TUTOR_CLAUSE_AGREE_YN 	= #{searchTutorClauseAgreeYn}		 </if> -->
+				<!-- <if test="searchAspId != null and searchAspId != ''">	AND CM.ASP_ID 	= #{searchAspId}		 </if> -->
+				<!-- <if test="searchAgreeYn != null and searchAgreeYn != ''">	AND CM.AGREE_YN 	= #{searchAgreeYn}		 </if> -->
+				<!-- <if test="searchNonageYn != null and searchNonageYn != ''">	AND CM.NONAGE_YN 	= #{searchNonageYn}		 </if> -->
+				<!-- <if test="searchDeleteYn != null and searchDeleteYn != ''">	AND CM.DELETE_YN 	= #{searchDeleteYn}		 </if> -->
+				<!-- <if test="searchInsertDate != null and searchInsertDate != ''">	AND CM.INSERT_DATE 	= #{searchInsertDate}		 </if> -->
+				<!-- <if test="searchInsertUser != null and searchInsertUser != ''">	AND CM.INSERT_USER 	= #{searchInsertUser}		 </if> -->
+				<!-- <if test="searchUpdateDate != null and searchUpdateDate != ''">	AND CM.UPDATE_DATE 	= #{searchUpdateDate}		 </if> -->
+				<!-- <if test="searchUpdateUser != null and searchUpdateUser != ''">	AND CM.UPDATE_USER 	= #{searchUpdateUser}		 </if> -->
+				<!-- <if test="searchCertiNo != null and searchCertiNo != ''">	AND CM.CERTI_NO 	= #{searchCertiNo}		 </if> -->
+				<!-- <if test="searchCertiCharacter != null and searchCertiCharacter != ''">	AND CM.CERTI_CHARACTER 	= #{searchCertiCharacter}		 </if> -->
+				<!-- <if test="searchCertiYn != null and searchCertiYn != ''">	AND CM.CERTI_YN 	= #{searchCertiYn}		 </if> -->
+				<!-- <if test="searchCertiAttemptCnt != null and searchCertiAttemptCnt != ''">	AND CM.CERTI_ATTEMPT_CNT 	= #{searchCertiAttemptCnt}		 </if> -->
+				<!-- <if test="searchCompNm != null and searchCompNm != ''">	AND CM.COMP_NM 	= #{searchCompNm}		 </if> -->
+				<!-- <if test="searchDeptNm != null and searchDeptNm != ''">	AND CM.DEPT_NM 	= #{searchDeptNm}		 </if> -->
+				<!-- <if test="searchDutyNm != null and searchDutyNm != ''">	AND CM.DUTY_NM 	= #{searchDutyNm}		 </if> -->
+				<!-- <if test="searchRemk != null and searchRemk != ''">	AND CM.REMK 	= #{searchRemk}		 </if> -->
+				<!-- <if test="searchWrongRegiNo != null and searchWrongRegiNo != ''">	AND CM.WRONG_REGI_NO 	= #{searchWrongRegiNo}		 </if> -->
+				<!-- <if test="searchOrgPwNull != null and searchOrgPwNull != ''">	AND CM.ORG_PW_NULL 	= #{searchOrgPwNull}		 </if> -->
+				<!-- <if test="searchOrgMemId != null and searchOrgMemId != ''">	AND CM.ORG_MEM_ID 	= #{searchOrgMemId}		 </if> -->
+				<!-- <if test="searchLastLoginYmd != null and searchLastLoginYmd != ''">	AND CM.LAST_LOGIN_YMD 	= #{searchLastLoginYmd}		 </if> -->
+				<!-- <if test="searchLastPwUpdtYmd != null and searchLastPwUpdtYmd != ''">	AND CM.LAST_PW_UPDT_YMD 	= #{searchLastPwUpdtYmd}		 </if> -->
+				<!-- <if test="searchPwErrNumberTimes != null and searchPwErrNumberTimes != ''">	AND CM.PW_ERR_NUMBER_TIMES 	= #{searchPwErrNumberTimes}		 </if> -->
+				<!-- <if test="searchUseExpireYmd != null and searchUseExpireYmd != ''">	AND CM.USE_EXPIRE_YMD 	= #{searchUseExpireYmd}		 </if> -->
+	</sql>
+
+	<select id="getSearchEmail" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getSearchEmail ====== */
+		<![CDATA[
+	        SELECT
+	                EMAIL
+	          FROM COM_MEMBER
+	          WHERE 1=1
+	             AND SCSN_YN = 'N'
+	             AND DELETE_YN = 'N'
+	             AND EMAIL = #{email}
+	    ]]>
+
+	    <if test="memSeq != null and memSeq != ''">	AND MEM_SEQ <![CDATA[<>]]> #{memSeq}		 </if>
+	</select>
+
+	<select id="getSearchHpNo" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getSearchHpNo ====== */
+		<![CDATA[
+	        SELECT
+	                HP_NO1 || HP_NO2 || HP_NO3 AS HP_NO
+	          FROM COM_MEMBER
+	          WHERE 1=1
+	             AND SCSN_YN = 'N'
+	             AND DELETE_YN = 'N'
+	             AND HP_NO1 = #{hpNo1}
+	             AND HP_NO2 = #{hpNo2}
+	             AND HP_NO3 = #{hpNo3}
+	    ]]>
+
+	    <if test="memSeq != null and memSeq != ''">	AND MEM_SEQ <![CDATA[<>]]> #{memSeq}		 </if>
+	</select>
+
+	<select id="getMemberName" parameterType="java.lang.String" resultType="java.lang.String">
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMemberName ====== */
+			SELECT MEM_NAME
+		     FROM COM_MEMBER
+		    WHERE MEM_SEQ = #{memSeq}
+	</select>
+
+	<select id="getMember" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMember ====== */
+			   SELECT CM.MEM_SEQ
+					, CM.MEM_ID
+					, CM.MEM_TYPE
+					, CM.MEM_NAME
+					, CM.PWD_QUEST
+					, CM.SEX
+					, CM.MEM_NAME_ENG
+					, CM.MEM_BIRTH
+					, SUBSTR(CM.MEM_BIRTH, 1,4) YEAR
+                    , SUBSTR(CM.MEM_BIRTH, 5,2) MONTH
+                    , SUBSTR(CM.MEM_BIRTH, 7,2) DAY
+					, CM.PWD_QUEST_ANS
+					, CM.MEM_PASSWORD
+					, CM.EMAIL
+					, SUBSTR(CM.EMAIL,(INSTR(CM.EMAIL, '@')+0)) EMAIL3 /* @부터 나머지 이메일 주소 까지 표시 */
+					, CM.MEM_REGI_NO
+					, CM.ZIP_CODE
+					, CM.ADDRESS
+					, CM.ADDRESS_DTL
+					, CM.TEL_NO1
+					, CM.TEL_NO2
+					, CM.TEL_NO3
+					, CM.HP_NO1
+					, CM.HP_NO2
+					, CM.HP_NO3
+					, CM.NEWSLETTER_YN
+					, CM.PHOTO_FILE_PATH
+					, CM.WORKING_PLACE
+					, CM.SCHOLARSHIP
+					, CM.SECEDE_REASON
+					, CM.RELATION_FIELD
+					, CM.CAREER
+					, CM.TITLE
+					, CM.TITLE TITLE_PATH
+					, CM.AUTH_GROUP_ID
+					, CM.BNDL_REG_YN
+					, CM.LOGIN_CNT
+					, CM.SCSN_YN
+					, CM.MAJR
+					, CM.RECEIVE_MAIL_YN
+					, CM.RECEIVE_SMS_YN
+					, CM.FOREIGN_YN
+					, CM.NAMECHECK_YN
+					, CM.NATION_CODE
+					, CM.COMPANY_ID
+					, CM.G_PIN_YN
+					, CM.G_PIN_KEY1
+					, CM.G_PIN_KEY2
+					, CM.MEM_DIV
+					, CM.SCHOOL_SEQ
+					, CM.TUTOR_CLAUSE_AGREE_YN
+					, CM.ASP_ID
+					, CM.AGREE_YN
+					, CM.NONAGE_YN
+					, CM.DELETE_YN
+					, CM.INSERT_DATE
+					, CM.INSERT_USER
+					, CM.UPDATE_DATE
+					, CM.UPDATE_USER
+					, CM.CERTI_NO
+					, CM.CERTI_CHARACTER
+					, CM.CERTI_YN
+					, CM.CERTI_ATTEMPT_CNT
+					, CM.COMP_NM
+					, CM.DEPT_NM
+					, CM.DUTY_NM
+					, CM.REMK
+					, CM.WRONG_REGI_NO
+					, CM.ORG_PW_NULL
+					, CM.ORG_MEM_ID
+					, CM.LAST_LOGIN_YMD
+					, CM.LAST_PW_UPDT_YMD
+					, CM.PW_ERR_NUMBER_TIMES
+					, CM.USE_EXPIRE_YMD
+					, (SELECT AUTH_GROUP_NAME
+         			   FROM COM_AUTH_GROUP
+				      WHERE DELETE_YN = 'N'
+				         AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID
+				       ) AUTH_GROUP_NAME
+				 FROM COM_MEMBER CM
+			 	WHERE CM.MEM_SEQ 	= #{memSeq}
+	</select>
+
+	<select id="listMemberAllExcelList" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberAllExcelList ====== */
+	        SELECT
+	                CM.MEM_SEQ
+					, CM.MEM_ID
+					, CM.MEM_TYPE
+					, CM.MEM_NAME
+					, CM.PWD_QUEST
+					, CM.SEX
+					, CM.MEM_NAME_ENG
+					, CM.MEM_BIRTH
+					, CM.PWD_QUEST_ANS
+					, CM.MEM_PASSWORD
+					, CM.EMAIL
+					, CM.MEM_REGI_NO
+					, CM.ZIP_CODE
+					, CM.ADDRESS
+					, CM.ADDRESS_DTL
+					, CM.TEL_NO1
+					, CM.TEL_NO2
+					, CM.TEL_NO3
+					, CM.HP_NO1
+					, CM.HP_NO2
+					, CM.HP_NO3
+					, CM.NEWSLETTER_YN
+					, CM.PHOTO_FILE_PATH
+					, CM.WORKING_PLACE
+					, CM.SCHOLARSHIP
+					, CM.SECEDE_REASON
+					, CM.RELATION_FIELD
+					, CM.CAREER
+					, CM.TITLE
+					, CM.AUTH_GROUP_ID
+					, CM.BNDL_REG_YN
+					, CM.SCSN_YN
+					, CM.MAJR
+					, CM.RECEIVE_MAIL_YN
+					, CM.RECEIVE_SMS_YN
+					, CM.FOREIGN_YN
+					, CM.NAMECHECK_YN
+					, CM.NATION_CODE
+					, CM.COMPANY_ID
+					, CM.G_PIN_YN
+					, CM.G_PIN_KEY1
+					, CM.G_PIN_KEY2
+					, CM.MEM_DIV
+					, CM.SCHOOL_SEQ
+					, CM.TUTOR_CLAUSE_AGREE_YN
+					, CM.ASP_ID
+					, CM.AGREE_YN
+					, CM.NONAGE_YN
+					, CM.DELETE_YN
+					, CM.INSERT_USER
+					, CM.UPDATE_DATE
+					, CM.UPDATE_USER
+					, CM.CERTI_NO
+					, CM.CERTI_CHARACTER
+					, CM.CERTI_YN
+					, CM.CERTI_ATTEMPT_CNT
+					, CM.COMP_NM
+					, CM.DEPT_NM
+					, CM.DUTY_NM
+					, CM.REMK
+					, CM.WRONG_REGI_NO
+					, CM.ORG_PW_NULL
+					, CM.ORG_MEM_ID
+					, CM.LAST_LOGIN_YMD
+					, CM.LAST_PW_UPDT_YMD
+					, CM.PW_ERR_NUMBER_TIMES
+					, CM.USE_EXPIRE_YMD
+					, DATE_FORMAT (CM.INSERT_DATE, '%Y.%m.%d') INSERT_DATE
+					, (SELECT	 COMPANY_NAME
+						FROM	 lms_company
+					  WHERE	 COMPANY_ID = CM.COMPANY_ID AND DELETE_YN = 'N')
+						COMPANY_NAME
+					, (SELECT	 COUNT (MEM_SEQ)
+						FROM	 COM_LOGIN_LOG
+					  WHERE	 MEM_SEQ = CM.MEM_SEQ)
+						LOGIN_CNT
+					, (SELECT	 AUTH_GROUP_NAME
+						FROM	 COM_AUTH_GROUP
+					  WHERE	 DELETE_YN = 'N' AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID)
+						AUTH_GROUP_NAME
+					, '' SCHOOL_NAME
+					, '' INSTITUTE_NAME
+					, '' POSITION
+					, '' CERTIFICATION_DIV
+	          FROM COM_MEMBER CM
+	          WHERE 1=1
+	             AND CM.DELETE_YN = 'N'
+	             ORDER BY CM.INSERT_DATE DESC, CM.MEM_ID ASC
+	</select>
+
+	<select id="listMemberMail" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberMail ====== */
+			SELECT  MEM_SEQ,
+                        MEM_ID,
+                        MEM_TYPE,
+                        MEM_NAME,
+                        EMAIL,
+                        CONCAT(HP_NO1,HP_NO2,HP_NO3) TR_PHONE
+                  FROM  COM_MEMBER M
+		]]>
+			 WHERE 1 = 1
+			 AND DELETE_YN = 'N'
+			 AND MEM_SEQ IN
+		<foreach collection="memSeqs" item="memSeqIds" index="index" open="(" close=")" separator=",">
+			 '${memSeqIds}'
+		</foreach>
+	</select>
+
+<!-- 	<select id="listMember" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listMember" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO"> -->
+<!-- 	<select id="listMember" parameterType="hashmap" resultMap="member-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listMember" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMember ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			   SELECT CM.MEM_SEQ
+					, CM.MEM_ID
+					, CM.MEM_TYPE
+					, CM.MEM_NAME
+					, CM.PWD_QUEST
+					, CM.SEX
+					, CM.MEM_NAME_ENG
+					, CM.MEM_BIRTH
+					, CM.PWD_QUEST_ANS
+					, CM.MEM_PASSWORD
+				<if test="memPasswordEncript == null and memPasswordEncript == ''">  '' AS MEM_PASSWORD_ENCRIPTED,		 </if>
+       		    <if test="memPasswordEncript != null and memPasswordEncript != ''"> HEX(AES_ENCRYPT(#{memPasswordEncript},#{memPasswordEncript})) MEM_PASSWORD_ENCRIPTED, </if> /* 비밀번호( 사용자가 화면에서 입력한 암호화 된 비밀번호 ) */
+		        	, CM.EMAIL
+					, CM.MEM_REGI_NO
+					, CM.ZIP_CODE
+					, CM.ADDRESS
+					, CM.ADDRESS_DTL
+					, CM.TEL_NO1
+					, CM.TEL_NO2
+					, CM.TEL_NO3
+					, CM.HP_NO1
+					, CM.HP_NO2
+					, CM.HP_NO3
+					, CM.NEWSLETTER_YN
+					, CM.PHOTO_FILE_PATH
+					, CM.WORKING_PLACE
+					, CM.SCHOLARSHIP
+					, CM.SECEDE_REASON
+					, CM.RELATION_FIELD
+					, CM.CAREER
+					, CM.TITLE
+					, CM.AUTH_GROUP_ID
+					, CM.BNDL_REG_YN
+<!-- 					, CM.LOGIN_CNT -->
+					, CM.SCSN_YN
+					, CM.MAJR
+					, CM.RECEIVE_MAIL_YN
+					, CM.RECEIVE_SMS_YN
+					, CM.FOREIGN_YN
+					, CM.NAMECHECK_YN
+					, CM.NATION_CODE
+					, CM.COMPANY_ID
+					, CM.G_PIN_YN
+					, CM.G_PIN_KEY1
+					, CM.G_PIN_KEY2
+					, CM.MEM_DIV
+					, CM.SCHOOL_SEQ
+					, CM.TUTOR_CLAUSE_AGREE_YN
+					, CM.ASP_ID
+					, CM.AGREE_YN
+					, CM.NONAGE_YN
+					, CM.DELETE_YN
+<!-- 					, CM.INSERT_DATE -->
+					, CM.INSERT_USER
+					, CM.UPDATE_DATE
+					, CM.UPDATE_USER
+					, CM.CERTI_NO
+					, CM.CERTI_CHARACTER
+					, CM.CERTI_YN
+					, CM.CERTI_ATTEMPT_CNT
+					, CM.COMP_NM
+					, CM.DEPT_NM
+					, CM.DUTY_NM
+					, CM.REMK
+					, CM.WRONG_REGI_NO
+					, CM.ORG_PW_NULL
+					, CM.ORG_MEM_ID
+					, CM.LAST_LOGIN_YMD
+					, CM.LAST_PW_UPDT_YMD
+					, CM.PW_ERR_NUMBER_TIMES
+					, CM.USE_EXPIRE_YMD
+					, DATE_FORMAT(CM.INSERT_DATE, '%Y.%m.%d') INSERT_DATE
+					, (SELECT	 COMPANY_NAME
+						FROM	 lms_company
+					  WHERE	 COMPANY_ID = CM.COMPANY_ID AND DELETE_YN = 'N')
+						COMPANY_NAME
+					, (SELECT COUNT(1) CNT
+						FROM COM_LOGIN_LOG
+					  WHERE	MEM_SEQ = CM.MEM_SEQ)
+						LOGIN_CNT
+					, (SELECT	 AUTH_GROUP_NAME
+						FROM	 COM_AUTH_GROUP
+					  WHERE	 DELETE_YN = 'N' AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID)
+						AUTH_GROUP_NAME
+					, '' SCHOOL_NAME
+					, '' INSTITUTE_NAME
+					, '' POSITION
+					, '' CERTIFICATION_DIV
+				 FROM COM_MEMBER CM
+			 	WHERE 1=1
+
+		<include refid="listMember-where"/>
+			ORDER BY CM.AUTH_GROUP_ID ASC, CM.MEM_ID ASC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+	<select id="listMemberCot" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberCot ====== */
+	       select
+			     mem.mem_seq as memSeq,
+			     mem.mem_id as memId,
+			     mem.mem_name memName,
+			     mem.mem_type as memType,
+			     SUBSTR(mem.mem_birth,3,7) as memBirth,
+			     mem.sex as sex,
+                 mem.hp_no1 as hpNo1,
+                 mem.hp_no3 as hpNo3,
+                 mem.email,
+                 SUBSTR(mem.email,1,1) as email1,
+                 SUBSTR(mem.email,(INSTR(mem.email, '@')+0)) email2,
+                 mem.company_id as companyId,
+                 pa.company_name as companyName,
+                 pa.ADDRESS
+			from com_member mem
+                left outer join lms_company pa
+                on mem.company_id = pa.company_id
+			where mem.mem_type = 'COT'
+			  and mem.delete_yn = 'N'
+              and mem.company_id = #{companyId}
+	]]>
+	</select>
+
+	<select id="listChangeSubjectMemberCot" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listChangeSubjectMemberCot ====== */
+	       SELECT distinct mem.mem_seq as memSeq,
+			       mem.mem_id as memId,
+			       mem.mem_name memName,
+			       mem.mem_type as memType,
+			       SUBSTR(mem.mem_birth,3,7) as memBirth,
+			       mem.sex as sex,
+			       mem.hp_no1 as hpNo1,
+			       mem.hp_no3 as hpNo3,
+			       mem.email,
+			       SUBSTR(mem.email,1,1) as email1,
+			       SUBSTR(mem.email,(INSTR(mem.email, '@')+0)) email2,
+			       mem.company_id as companyId,
+			       B.TRANING_PROCESS_ID,
+			       FN_GETCOMPAYNAME(mem.company_id) as company_name,
+			       FN_GETTRANING_PROCESS_NAME(B.TRANING_PROCESS_ID) as HRD_TRANING_NAME,
+			       FN_GETTRANING_PROCESS_NO(B.TRANING_PROCESS_ID) as HRD_TRANING_NO
+			  FROM com_member mem
+			     inner JOIN lms_subj_tut_mapping tut
+			     ON mem.MEM_SEQ = tut.MEM_SEQ
+			     and tut.delete_yn = 'N'
+			     LEFT OUTER JOIN lms_traning_process_mapping B
+				 ON B.YYYY = tut.YYYY
+				 AND B.TERM = tut.TERM
+				 AND B.SUBJECT_CODE = tut.SUBJECT_CODE
+				 AND B.CLASS = tut.CLASS
+	             AND B.company_id = #{companyId}
+	             AND B.TRANING_PROCESS_ID = #{traningProcessId}
+				 AND B.DELETE_YN = 'N'
+			 WHERE mem.mem_type = 'COT'
+			   AND mem.delete_yn = 'N'
+	]]>
+	</select>
+
+	<select id="listMemberSubjectCodeMapping" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberSubjectCodeMapping ====== */
+	      select a.COMPANY_ID,
+			     a.TRANING_PROCESS_ID,
+			     a.YYYY,
+			     a.TERM,
+			     a.SUBJECT_CODE,
+			     a.CLASS as subClass,
+			     a.DELETE_YN,
+			     FN_GETSUBJECT_NAME(a.YYYY,a.TERM,a.SUBJECT_CODE,a.CLASS) AS SUBJECT_NAME,
+			     FN_GETTRANING_PROCESS_NAME(a.TRANING_PROCESS_ID) AS HRD_TRANING_NAME,
+			     FN_GETUSERNAME(#{memSeq}) as memName,
+			     FN_GETUSERID(#{memSeq}) as memId,
+			     #{memSeq} as memSeq
+			from lms_traning_process_mapping a
+			where 1 = 1
+			and a.DELETE_YN = 'N'
+	]]>
+		and a.TRANING_PROCESS_MAPPING_ID IN
+		<foreach collection="traningProcessMappingIdArr" item="traningProcessMappingIds" index="index" open="(" close=")" separator=",">
+			 '${traningProcessMappingIds}'
+		</foreach>
+	</select>
+
+	<select id="listMemberCcm" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberCcm ====== */
+		       SELECT mem.mem_seq as memSeq,
+				       mem.mem_id as memId,
+				       mem.mem_name memName,
+				       mem.mem_type as memType,
+				       SUBSTR(mem.mem_birth,3,7) as memBirth,
+				       mem.sex as sex,
+				       mem.hp_no1 as hpNo1,
+				       mem.hp_no3 as hpNo3,
+				       mem.email,
+				       SUBSTR(mem.email,1,1) as email1,
+				       SUBSTR(mem.email,(INSTR(mem.email, '@')+0)) email2,
+				       mem.company_id as companyId,
+				       trp.TRANING_PROCESS_ID,
+				       trp.HRD_TRANING_NAME,
+				       (select count(1) cnt from LMS_SUBJ_CCM_MAPPING where SUBJ_CCM_MAPPING_ID = ccm.SUBJ_CCM_MAPPING_ID) memIdCount,
+				       FN_GETCOMPAYNAME(mem.company_id) as company_name
+				  FROM com_member mem
+				  LEFT OUTER JOIN LMS_SUBJ_CCM_MAPPING ccm
+				    ON ccm.mem_seq = mem.mem_seq
+				   AND ccm.company_id = #{companyId}
+				   AND ccm.DELETE_YN = 'N'
+				  LEFT OUTER JOIN lms_traning_process trp
+				    ON trp.COMPANY_ID = ccm.COMPANY_ID
+				   AND trp.TRANING_PROCESS_ID = ccm.TRANING_PROCESS_ID
+				   AND trp.DELETE_YN = 'N'
+				 WHERE mem.mem_type = 'CCM'
+				   AND mem.delete_yn = 'N'
+				   AND mem.company_id = #{companyId}
+	]]>
+	</select>
+
+	<select id="listChangeMemberCcm" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listChangeMemberCcm ====== */
+		       SELECT mem.mem_seq as memSeq,
+				       mem.mem_id as memId,
+				       mem.mem_name memName,
+				       mem.mem_type as memType,
+				       SUBSTR(mem.mem_birth,3,7) as memBirth,
+				       mem.sex as sex,
+				       mem.hp_no1 as hpNo1,
+				       mem.hp_no3 as hpNo3,
+				       mem.email,
+				       SUBSTR(mem.email,1,1) as email1,
+				       SUBSTR(mem.email,(INSTR(mem.email, '@')+0)) email2,
+				       mem.company_id as companyId,
+				       ccm.TRANING_PROCESS_ID,
+				       FN_GETCOMPAYNAME(mem.company_id) as company_name,
+				       FN_GETTRANING_PROCESS_NAME(ccm.TRANING_PROCESS_ID) as HRD_TRANING_NAME,
+				       FN_GETTRANING_PROCESS_NO(ccm.TRANING_PROCESS_ID) as HRD_TRANING_NO
+				  FROM com_member mem
+				     inner JOIN LMS_SUBJ_CCM_MAPPING ccm
+				       ON ccm.mem_seq = mem.mem_seq
+				       AND ccm.company_id = #{companyId}
+				       AND ccm.TRANING_PROCESS_ID = #{traningProcessId}
+				       AND ccm.DELETE_YN = 'N'
+				 WHERE mem.mem_type = 'CCM'
+				   AND mem.delete_yn = 'N'
+	]]>
+	</select>
+
+	<select id="listMemberStd" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+	/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberStd ====== */
+	select a.YYYY,
+           a.TERM,
+           a.SUBJECT_CODE,
+           a.CLASS as subClass,
+           d.HRD_TRANING_NAME,
+           e.MEM_SEQ,
+           e.MEM_ID,
+           e.mem_name,
+           e.hp_no1,
+           e.hp_no3,
+           e.email,
+           SUBSTR(e.email,1,1) as email1,
+           SUBSTR(e.email,(INSTR(e.email, '@')+0)) email2,
+           f.SUBJECT_TRANING_TYPE,
+           f.DEPARTMENT_NAME,
+           f.SUBJECT_NAME,
+           if(a.DELETE_YN = 'N', '재학', '제적') as deleteName,
+           case when a.DELETE_YN = 'Y' then DATE_FORMAT (a.UPDATE_DATE, '%Y.%m.%d')
+           end deleteDt,
+           e.DELETE_YN
+		   from LMS_LESSON a,
+		   (
+		   select
+		             b.YYYY,
+		             b.TERM,
+		             b.SUBJECT_CODE,
+		             b.CLASS,
+		             c.HRD_TRANING_NAME
+		      from lms_traning_process c
+		      , lms_traning_process_mapping b
+		      where 1 = 1
+		      and c.COMPANY_ID = b.COMPANY_ID
+		      and c.TRANING_PROCESS_ID = b.TRANING_PROCESS_ID
+		      and c.COMPANY_ID = #{companyId}
+		      and c.DELETE_YN = 'N'
+		      and b.DELETE_YN = 'N'
+		      )d,
+		 com_member e,
+		 lms_subject f
+		where 1 = 1
+		and a.YYYY = d.YYYY
+		and a.TERM = d.TERM
+		and a.SUBJECT_CODE = d.SUBJECT_CODE
+		and a.CLASS = d.CLASS
+		and a.MEM_SEQ = e.MEM_SEQ
+		and a.YYYY = f.YYYY
+		and a.TERM = f.TERM
+		and a.SUBJECT_CODE = f.SUBJECT_CODE
+		and a.CLASS = f.CLASS
+		and f.SUBJECT_TRANING_TYPE = 'OJT'
+	]]>
+	</select>
+
+	<select id="listPlanResultMemberStd" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+	/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listPlanResultMemberStd ====== */
+	select a.YYYY,
+           a.TERM,
+           a.SUBJECT_CODE,
+           a.CLASS as subClass,
+           FN_GETSUBJECT_NAME(a.YYYY, a.TERM, a.SUBJECT_CODE, a.CLASS) as subjectName,
+           d.HRD_TRANING_NAME,
+           f.SUBJECT_TRANING_TYPE,
+           e.MEM_SEQ,
+           e.MEM_ID,
+           e.mem_name,
+           e.hp_no1,
+           e.hp_no3,
+           e.email,
+           SUBSTR(e.email,1,1) as email1,
+           SUBSTR(e.email,(INSTR(e.email, '@')+0)) email2,
+           f.SUBJECT_TRANING_TYPE,
+           f.DEPARTMENT_NAME,
+           f.SUBJECT_NAME,
+           if(a.DELETE_YN = 'N', '재학', '제적') as deleteName,
+           case when a.DELETE_YN = 'Y' then DATE_FORMAT (a.UPDATE_DATE, '%Y.%m.%d')
+           end deleteDt,
+           e.DELETE_YN,
+           FN_GETCOMPAYNAME(#{companyId}) as companyName,
+           CASE
+              WHEN SUBSTRING(FN_GETUSERID(a.MEM_SEQ),1,2) != '20'
+              THEN DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(CONCAT('20',FN_GETUSERID(a.MEM_SEQ)),1,4)
+              ELSE DATE_FORMAT(NOW(),'%Y')+1-SUBSTRING(FN_GETUSERID(a.MEM_SEQ),1,4)
+           END SUBJECT_GRADE
+		   from LMS_LESSON a,
+		   (
+		   select
+		             b.YYYY,
+		             b.TERM,
+		             b.SUBJECT_CODE,
+		             b.CLASS,
+		             c.HRD_TRANING_NAME
+		      from lms_traning_process c
+		      , lms_traning_process_mapping b
+		      where 1 = 1
+		      and c.COMPANY_ID = b.COMPANY_ID
+		      and c.TRANING_PROCESS_ID = b.TRANING_PROCESS_ID
+		      and c.COMPANY_ID = #{companyId}
+		      and c.DELETE_YN = 'N'
+		      and b.DELETE_YN = 'N'
+		      )d,
+		 com_member e,
+		 lms_subject f
+		where 1 = 1
+		and a.YYYY = d.YYYY
+		and a.TERM = d.TERM
+		and a.SUBJECT_CODE = d.SUBJECT_CODE
+		and a.CLASS = d.CLASS
+		and a.MEM_SEQ = e.MEM_SEQ
+		and a.YYYY = f.YYYY
+		and a.TERM = f.TERM
+		and a.SUBJECT_CODE = f.SUBJECT_CODE
+		and a.CLASS = f.CLASS
+	]]>
+
+	<if test="searchYyyy != null and searchYyyy != ''">
+		and a.YYYY = #{searchYyyy}
+	</if>
+	<if test="searchTerm != null and searchTerm != ''">
+		and a.TERM = #{searchTerm}
+	</if>
+	<if test="searchSubjectCode != null and searchSubjectCode != ''">
+		and a.SUBJECT_CODE = #{searchSubjectCode}
+	</if>
+	<if test="searchSubClass != null and searchSubClass != ''">
+		and a.CLASS = #{searchSubClass}
+	</if>
+	<if test="searchSubjectTraningType != null and searchSubjectTraningType != ''">
+		and f.SUBJECT_TRANING_TYPE = #{searchSubjectTraningType}
+	</if>
+	<if test="searchKeyword != null and searchKeyword != ''">
+	 	AND FN_GETUSERNAME(a.MEM_SEQ) LIKE CONCAT ('%', #{searchKeyword},'%')
+	</if>
+
+	</select>
+
+	<select id="listMemberPrt" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberPrt ====== */
+	       select a.YYYY,
+           a.TERM,
+           a.SUBJECT_CODE,
+           a.CLASS as subClass,
+           d.HRD_TRANING_NAME,
+           e.MEM_SEQ,
+           e.mem_name,
+           e.hp_no1,
+           e.hp_no3,
+           e.email,
+           SUBSTR(e.email,1,1) as email1,
+           SUBSTR(e.email,(INSTR(e.email, '@')+0)) email2,
+           f.SUBJECT_TRANING_TYPE,
+           f.DEPARTMENT_NAME,
+           f.SUBJECT_NAME
+		   from lms_subj_ins_mapping a,
+		   (
+		   select
+		             b.YYYY,
+		             b.TERM,
+		             b.SUBJECT_CODE,
+		             b.CLASS,
+		             c.HRD_TRANING_NAME
+		      from lms_traning_process c
+		      , lms_traning_process_mapping b
+		      where 1 = 1
+		      and c.COMPANY_ID = b.COMPANY_ID
+		      and c.TRANING_PROCESS_ID = b.TRANING_PROCESS_ID
+		      and c.COMPANY_ID = #{companyId}
+		      and c.DELETE_YN = 'N'
+		      and b.DELETE_YN = 'N'
+		      )d,
+		 com_member e,
+		 lms_subject f
+		where 1 = 1
+		and a.YYYY = d.YYYY
+		and a.TERM = d.TERM
+		and a.SUBJECT_CODE = d.SUBJECT_CODE
+		and a.CLASS = d.CLASS
+		and a.MEM_SEQ = e.MEM_SEQ
+		and a.YYYY = f.YYYY
+		and a.TERM = f.TERM
+		and a.SUBJECT_CODE = f.SUBJECT_CODE
+		and a.CLASS = f.CLASS
+		and a.DELETE_YN = 'N'
+	]]>
+	</select>
+
+<!-- 	<select id="listMemberCotSubjectMapping" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberCotSubjectMapping ====== */
+	]]>
+
+	</select> -->
+
+	<select id="listMemberChangeApplicationNew" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberChangeApplicationNew ====== */
+	       select a.mem_seq,
+			       a.mem_id,
+			       a.mem_name,
+			       a.mem_type,
+			       a.mem_birth,
+			       a.sex, /* F:여자, M:남자 */
+			       if(a.mem_type = 'COT','기업현장교사','HRD전담자') as mem_type_name,
+			       a.company_id,
+			       (select company_name from lms_company where company_id = a.company_id) as company_name,
+			       a.delete_yn,
+			       a.updt_application_status,
+			       case when a.updt_application_status = '1' then '신규등록'
+			            when a.updt_application_status = '2' then '정보변경'
+			            when a.updt_application_status = '3' then '삭제'
+			       end updt_application_name
+			  from com_member a
+			where 1 = 1
+			and a.mem_type in ('COT','CCM')
+			and a.participate_start_date is not null
+			and a.status = '1'
+	]]>
+
+	<if test="sessionMemSeq != null and sessionMemSeq != ''">
+		<if test="sessionMemSeq == 'CCM'">
+			and a.insert_user = #{sessionMemSeq}
+		</if>
+	</if>
+
+	order by a.insert_date desc
+
+	</select>
+
+	<select id="listMemberChangeApplication" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+	<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.listMemberChangeApplication ====== */
+	       select a.mem_seq,
+			       a.mem_id,
+			       a.mem_name,
+			       a.mem_type,
+			       a.mem_birth,
+			       a.sex, /* F:여자, M:남자 */
+			       if(a.mem_type = 'COT','기업현장교사','HRD전담자') as mem_type_name,
+			       a.company_id,
+			       (select company_name from lms_company where company_id = a.company_id) as company_name,
+			       a.delete_yn,
+			       a.updt_application_status,
+			       a.status,
+			       case when a.status = '2' then '승인'
+			            when a.status = '3' then '반려'
+			       end updt_application_name,
+			       DATE_FORMAT (a.update_date, '%Y.%m.%d') update_date
+			  from com_member a
+			where 1 = 1
+			and a.participate_start_date is not null
+			and a.status in ('2','3')
+	]]>
+
+	<if test="sessionMemSeq != null and sessionMemSeq != ''">
+		<if test="sessionMemType == 'CCM'">
+
+			<if test="participateStartDate != null and participateStartDate != '' and participateEndDate != null and participateEndDate != ''">
+				AND DATE_FORMAT(a.update_date,'%Y.%m.%d') BETWEEN #{participateStartDate} AND #{participateEndDate}
+			</if>
+
+			<if test="authGroupId != null and authGroupId != ''">
+				AND a.mem_type = #{authGroupId}
+			</if>
+
+			<if test="authGroupId == null and authGroupId == ''">
+				and a.mem_type in ('COT','CCM')
+			</if>
+		</if>
+	</if>
+
+	order by a.update_date desc
+
+	</select>
+
+	<select id="getMemberChangeApplicationCcn" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMemberChangeApplicationCcn ====== */
+	        SELECT a.mem_seq,
+			       a.mem_id,
+			       a.mem_name,
+			       a.mem_type,
+			       a.status,
+			       a.mem_birth,
+			       a.mem_regi_no,
+			       substr(a.mem_regi_no, 1,6) mem_regi_no1,
+			       a.sex,
+			       a.company_id,
+			       (
+			       	SELECT TRANING_PROCESS_ID FROM lms_traning_process_mapping
+			        WHERE 1 = 1
+			        and yyyy = b.yyyy
+			        and term = b.term
+			        and subject_code = b.subject_code
+			        and class = b.class
+			        and delete_yn = 'N'
+			        and company_id = #{companyId}
+			       ) as traning_process_id,
+			       a.email,
+			       a.title,
+			       a.scholarship,
+			       FN_GETCODENAME('JOB_POSITION',a.title) title_name,
+			       FN_GETCODENAME('QFE_ABILITY',a.scholarship) scholarship_name,
+			       a.hp_no1,
+			       a.hp_no2,
+			       a.hp_no3,
+			       substr(a.mem_birth, 1,4) year,
+			       substr(a.mem_birth, 5,2) month,
+			       substr(a.mem_birth, 7,2) day,
+			       a.working_place,
+			       a.related_research_organization_name,
+			       a.related_research_year,
+			       a.same_site_work_year,
+			       a.same_site_work_cd,
+			       a.participate_start_date,
+			       a.participate_end_date,
+			       a.delete_yn,
+			       a.updt_application_status,
+			       CASE WHEN a.status = '1' THEN '승인대기' WHEN a.status = '2' THEN '승인' WHEN a.status = '3' THEN '반려' END top_status_name,
+			       a.retun_reason,
+			       FN_GETSUBJECT_NAME(b.yyyy, b.term, b.subject_code, b.class) as subject_name,
+			       (SELECT company_name FROM lms_company WHERE company_id = a.company_id) as top_company_name,
+			       (SELECT ADDRESS FROM lms_company WHERE company_id = a.company_id) as top_address,
+			       FN_GETTRANING_PROCESS_NAME((SELECT traning_process_id
+			        FROM lms_traning_process_mapping
+			       WHERE 1 = 1
+			        and yyyy = b.yyyy
+			        and term = b.term
+			        and subject_code = b.subject_code
+			        and class = b.class
+			        and delete_yn = 'N'
+			        and company_id = #{companyId})) as topHrdTraningName,
+			       FN_GETTRANING_PROCESS_NO((SELECT traning_process_id
+			        FROM lms_traning_process_mapping
+			       WHERE 1 = 1
+			        and yyyy = b.yyyy
+			        and term = b.term
+			        and subject_code = b.subject_code
+			        and class = b.class
+			        and delete_yn = 'N'
+			        and company_id = #{companyId})) as topHrdTraningNo,
+			       b.yyyy,
+			       b.term,
+			       b.subject_code,
+			       b.class as subClass
+			  FROM com_member a
+			     INNER JOIN lms_subj_tut_mapping b
+			         ON b.MEM_SEQ = a.mem_seq
+			       AND b.DELETE_YN = 'N'
+			 WHERE 1 = 1
+			       AND a.mem_seq = #{memSeq}
+			       AND a.delete_yn = 'N'
+	    ]]>
+
+	</select>
+
+	<select id="getMemberChangeApplicationCcm" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMemberChangeApplicationCcm ====== */
+	        select a.mem_seq,
+			       a.mem_id,
+			       a.mem_name,
+			       a.mem_type,
+			       a.mem_birth,
+			       a.mem_regi_no,
+                   substr(a.mem_regi_no, 1,6) mem_regi_no1,
+			       a.sex, /* F:여자, M:남자 */
+			       a.company_id,
+			       a.email,
+			       a.title,
+			       a.scholarship,
+			       FN_GETCODENAME('JOB_POSITION',a.title) title_name, /* 직위 */
+                   FN_GETCODENAME('QFE_ABILITY',a.scholarship) scholarship_name, /* 학력 */
+			       a.hp_no1,
+				   a.hp_no2,
+				   a.hp_no3,
+			       substr(a.mem_birth, 1,4) year,
+                   substr(a.mem_birth, 5,2) month,
+                   substr(a.mem_birth, 7,2) day,
+			       a.working_place, /* 근무형태 */
+			       a.related_research_organization_name, /* 관련연구 기관명 */
+			       a.related_research_year, /* 관련연구 기간 */
+			       a.same_site_work_year, /* 동일현장 경력년도 */
+			       a.same_site_work_cd, /* 동일현장 경력코드 */
+			       a.participate_start_date, /* 참여일자 시작일 */
+			       a.participate_end_date, /* 참여일자 종료일 */
+			       a.delete_yn, /* 삭제여부 */			       
+			       a.updt_application_status, /* 담당자변경 진행상태 */
+			       (select company_name from lms_company where company_id = a.company_id) as topCompanyName, /* 기업명 */
+			       (select ADDRESS from lms_company where company_id = a.company_id) as topAddress, /* 소재지 */
+				   LSC.TRANING_PROCESS_ID, /* 훈련과정아이디 */			       
+			       LSC.HRD_TRANING_NAME as topHrdTraningName, /* 훈련과정명 */
+			       LSC.HRD_TRANING_NO as topHrdTraningNo, /* 훈련과정번호 */
+			       case when a.status = '1' then '승인대기'
+			            when a.status = '2' then '승인'
+			            when a.status = '3' then '반려'
+			       end topStatusName, /* 진행상태명 */
+                   a.status,
+			       a.retun_reason /* 반려사유 */
+			  from com_member a
+ 			  LEFT OUTER JOIN  (SELECT DISTINCT C.TRANING_PROCESS_ID,C.HRD_TRANING_NAME,C.HRD_TRANING_NO,B.MEM_SEQ,B.COMPANY_ID
+						  FROM lms_subj_ccm_mapping B
+						  left outer join lms_traning_process C  on C.COMPANY_ID = B.COMPANY_ID and C.TRANING_PROCESS_ID = B.TRANING_PROCESS_ID
+						  LIMIT 0,1
+						  ) LSC ON LSC.MEM_SEQ = a.mem_seq	  and LSC.COMPANY_ID = a.COMPANY_ID
+			where 1 = 1
+			and a.mem_seq = #{memSeq}
+	    ]]>
+
+	</select>
+
+	<select id="getMemberCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMemberCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_MEMBER CM
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listMember-where"/>
+	</select>
+
+	<select id="getChangeTrangeMemberCnt" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="java.lang.Integer">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getChangeTrangeMemberCnt ====== */
+	        SELECT count(1) as cnt
+			FROM lms_subj_ccm_mapping
+	        WHERE 1=1
+	        AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+			AND MEM_SEQ = #{memSeq}
+			AND DELETE_YN = 'N'
+	    ]]>
+
+	</select>
+
+	<select id="getChangeSubjectMemberCnt" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="java.lang.Integer">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getChangeSubjectMemberCnt ====== */
+	        SELECT count(A.MEM_SEQ) as cnt
+			FROM lms_subj_tut_mapping A, lms_traning_process_mapping B
+	        WHERE 1=1
+	        AND A.YYYY = B.YYYY
+			AND A.TERM = B.TERM
+			AND A.SUBJECT_CODE = B.SUBJECT_CODE
+			AND A.CLASS = B.CLASS
+			AND A.DELETE_YN = 'N'
+			AND B.DELETE_YN = 'N'
+	        AND B.COMPANY_ID = #{companyId}
+			AND B.TRANING_PROCESS_ID = #{traningProcessId}
+			AND A.MEM_SEQ = #{memSeq}
+			AND A.YYYY = #{yyyy}
+			AND A.TERM = #{term}
+			AND A.SUBJECT_CODE = #{subjectCode}
+			AND A.CLASS = #{subClass}
+	    ]]>
+
+	</select>
+
+	<select id="getCcmMappingCnt" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="java.lang.Integer">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getCcmMappingCnt ====== */
+	        SELECT count(1) as ccmMappingCnt
+			FROM lms_subj_ccm_mapping
+	        WHERE 1=1
+	        AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+	    ]]>
+
+	</select>
+
+	<select id="getCcmMemberCnt" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="java.lang.Integer">
+
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getCcmMemberCnt ====== */
+	        SELECT count(1) as ccmMappingCnt
+			FROM lms_subj_ccm_mapping
+	        WHERE 1=1
+	        AND COMPANY_ID = #{companyId}
+			AND TRANING_PROCESS_ID = #{traningProcessId}
+			AND MEM_SEQ = #{memSeq}
+	    ]]>
+
+	</select>
+
+	<insert id="insertMember" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.insertMember ====== */
+		]]>
+			INSERT INTO COM_MEMBER (
+								MEM_SEQ
+								, MEM_ID
+								, MEM_TYPE
+								, MEM_NAME
+								, SEX
+								, MEM_NAME_ENG
+								, MEM_BIRTH
+                                , MEM_PASSWORD
+                                , PWD_QUEST
+							    , PWD_QUEST_ANS
+								, EMAIL
+								, ZIP_CODE
+								, ADDRESS
+								, ADDRESS_DTL
+								, TEL_NO1
+								, TEL_NO2
+								, TEL_NO3
+								, HP_NO1
+								, HP_NO2
+								, HP_NO3
+								, NEWSLETTER_YN
+								, PHOTO_FILE_PATH
+								, WORKING_PLACE
+								, SCHOLARSHIP
+								, SECEDE_REASON
+								, RELATION_FIELD
+								, CAREER
+								, TITLE
+								, AUTH_GROUP_ID
+								, BNDL_REG_YN
+								, LOGIN_CNT
+								, SCSN_YN
+								, MAJR
+								, RECEIVE_MAIL_YN
+								, RECEIVE_SMS_YN
+								, FOREIGN_YN
+								, NAMECHECK_YN
+								, NATION_CODE
+								, COMPANY_ID
+								, MEM_DIV
+								, SCHOOL_SEQ
+								, TUTOR_CLAUSE_AGREE_YN
+								, AGREE_YN
+								, NONAGE_YN
+								, DELETE_YN
+								, INSERT_DATE
+								, INSERT_USER
+								, UPDATE_DATE
+								, UPDATE_USER
+								, CERTI_NO
+								, CERTI_CHARACTER
+								, CERTI_YN
+								, CERTI_ATTEMPT_CNT
+								, COMP_NM
+								, LAST_PW_UPDT_YMD
+								, USE_EXPIRE_YMD
+									)
+					VALUES
+					(
+								#{memSeq}
+								, #{memId}
+								, #{memType}
+								, #{memName}
+								, #{sex}
+								, #{memNameEng}
+								, #{memBirth}
+								<!-- , rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3)) -->
+								, HEX(AES_ENCRYPT(#{memPasswordEncript},#{memPasswordEncript}))
+								, #{pwdQuest}
+								, #{memPassword}
+								, #{email}
+								, #{zipCode}
+								, #{address}
+								, #{addressDtl}
+								, #{telNo1}
+								, #{telNo2}
+								, #{telNo3}
+								, #{hpNo1}
+								, #{hpNo2}
+								, #{hpNo3}
+								, #{newsletterYn}
+								, #{photoFilePath}
+								, #{workingPlace}
+								, #{scholarship}
+								, #{secedeReason}
+								, #{relationField}
+								, #{career}
+								, #{titlePath}
+								, #{authGroupId}
+								, 'N'
+								, 0
+								, 'N'
+								, #{majr}
+								, #{receiveMailYn}
+								, #{receiveSmsYn}
+								, #{foreignYn}
+								, #{namecheckYn}
+								, #{nationCode}
+								, #{companyId}
+								, 'G'
+								, #{schoolSeq}
+								, 'N'
+								, 'Y'
+								, 'N'
+								, 'N'
+								, NOW()
+								, #{sessionMemSeq}
+								, NOW()
+								, #{sessionMemSeq}
+								, #{certiNo}
+								, #{certiCharacter}
+								, 'N'
+								, 0
+								, #{compNm}
+								, NOW()
+								, DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY)
+								)
+	</insert>
+
+	<insert id="insertMemberExcel" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.insertMemberExcel ====== */
+		]]>
+			INSERT INTO COM_MEMBER (
+								 MEM_SEQ
+								, MEM_ID
+								, MEM_TYPE
+								, MEM_NAME
+								, SEX
+								, MEM_NAME_ENG
+								, MEM_BIRTH
+                                , MEM_PASSWORD
+                                , PWD_QUEST
+							    , PWD_QUEST_ANS
+								, EMAIL
+								, ZIP_CODE
+								, ADDRESS
+								, ADDRESS_DTL
+								, TEL_NO1
+								, TEL_NO2
+								, TEL_NO3
+								, HP_NO1
+								, HP_NO2
+								, HP_NO3
+								, NEWSLETTER_YN
+								, PHOTO_FILE_PATH
+								, WORKING_PLACE
+								, SCHOLARSHIP
+								, SECEDE_REASON
+								, RELATION_FIELD
+								, CAREER
+								, TITLE
+								, AUTH_GROUP_ID
+								, BNDL_REG_YN
+								, LOGIN_CNT
+								, SCSN_YN
+								, MAJR
+								, RECEIVE_MAIL_YN
+								, RECEIVE_SMS_YN
+								, FOREIGN_YN
+								, NAMECHECK_YN
+								, NATION_CODE
+								, COMPANY_ID
+								, MEM_DIV
+								, SCHOOL_SEQ
+								, TUTOR_CLAUSE_AGREE_YN
+								, AGREE_YN
+								, NONAGE_YN
+								, DELETE_YN
+								, INSERT_DATE
+								, INSERT_USER
+								, UPDATE_DATE
+								, UPDATE_USER
+								, CERTI_NO
+								, CERTI_CHARACTER
+								, CERTI_YN
+								, CERTI_ATTEMPT_CNT
+								, COMP_NM
+								, LAST_PW_UPDT_YMD
+								, USE_EXPIRE_YMD
+									)
+					VALUES
+					(
+								#{memSeq}
+								, #{memId}
+								, #{memType}
+								, #{memName}
+								, #{sex}
+								, #{memNameEng}
+								, #{memBirth}
+								<!-- , rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPassword})),3)) -->
+								, HEX(AES_ENCRYPT(#{memPassword},#{memPassword}))
+								, #{insertResult}
+								, #{memPassword}
+								, #{email}
+								, #{zipCode}
+								, #{address}
+								, #{addressDtl}
+								, #{telNo1}
+								, #{telNo2}
+								, #{telNo3}
+								, #{hpNo1}
+								, #{hpNo2}
+								, #{hpNo3}
+								, #{newsletterYn}
+								, #{photoFilePath}
+								, #{workingPlace}
+								, #{scholarship}
+								, #{secedeReason}
+								, #{relationField}
+								, #{career}
+								, #{titlePath}
+								, #{authGroupId}
+								, #{bndlRegYn}
+								, 0
+								, 'N'
+								, #{majr}
+								, #{receiveMailYn}
+								, #{receiveSmsYn}
+								, #{foreignYn}
+								, #{namecheckYn}
+								, #{nationCode}
+								, #{companyId}
+								, 'G'
+								, #{schoolSeq}
+								, 'N'
+								, 'Y'
+								, 'N'
+								, 'N'
+								, NOW()
+								, #{sessionMemSeq}
+								, NOW()
+								, #{sessionMemSeq}
+								, #{certiNo}
+								, #{certiCharacter}
+								, 'N'
+								, 0
+								, #{compNm}
+								, NOW()
+								, DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY)
+								)
+	</insert>
+
+	<insert id="insertMemberChangeApplication" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.insertMemberChangeApplication ====== */
+		]]>
+			INSERT INTO COM_MEMBER (
+								 MEM_SEQ
+								, MEM_ID
+								, MEM_TYPE
+								, MEM_NAME
+								, SEX
+								, MEM_BIRTH
+								, MEM_REGI_NO
+                                , MEM_PASSWORD
+							    , PWD_QUEST_ANS
+								, EMAIL
+								, HP_NO1
+								, HP_NO2
+								, HP_NO3
+								, AUTH_GROUP_ID
+								, COMPANY_ID
+								, COMP_NM
+								, INSERT_DATE
+								, INSERT_USER
+								, LAST_PW_UPDT_YMD
+								, USE_EXPIRE_YMD
+								, TITLE
+								, SCHOLARSHIP
+								, RELATED_RESEARCH_ORGANIZATION_NAME
+								<if test="relatedResearchYear != null and relatedResearchYear != ''"> , RELATED_RESEARCH_YEAR </if>
+								<if test="sameSiteWorkCd != null and sameSiteWorkCd != ''"> , SAME_SITE_WORK_YEAR </if>
+								, SAME_SITE_WORK_CD
+								, PARTICIPATE_START_DATE
+								, PARTICIPATE_END_DATE
+								, UPDT_APPLICATION_STATUS
+								, WORKING_PLACE
+								)
+					VALUES
+					(
+								#{memSeq}
+								, #{memId}
+								, #{memType}
+								, #{memName}
+								, #{sex}
+								, #{memBirth}
+								, #{memRegiNo}
+								, HEX(AES_ENCRYPT('1111','1111'))
+								, '1111'
+								, #{email}
+								, #{hpNo1}
+								, #{hpNo2}
+								, #{hpNo3}
+								, #{authGroupId}
+								, #{companyId}
+								, #{compNm}
+								, NOW()
+								, #{sessionMemSeq}
+								, NOW()
+								, DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY)
+								, #{title}
+								, #{scholarship}
+								, #{relatedResearchOrganizationName}
+								<if test="relatedResearchYear != null and relatedResearchYear != ''">, #{relatedResearchYear} </if>
+								<if test="sameSiteWorkCd != null and sameSiteWorkCd != ''"> , #{sameSiteWorkYear} </if>
+								, #{sameSiteWorkCd}
+								, #{participateStartDate}
+								, #{participateEndDate}
+								, #{updtApplicationStatus}
+								, #{workingPlace}
+								)
+	</insert>
+
+	<insert id="insertMemberTutMapping" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.insertMemberCotSubjectMappingExcel ====== */
+			INSERT INTO LMS_SUBJ_TUT_MAPPING (
+								  SUBJ_TUT_MAPPING_ID
+								, YYYY
+								, TERM
+								, SUBJECT_CODE
+								, CLASS
+                                , MEM_SEQ
+								, INSERT_DATE
+								, INSERT_USER
+									)
+					VALUES
+					(
+								  #{subjTutMappingId}
+								, #{yyyy}
+								, #{term}
+								, #{subjectCode}
+								, #{subClass}
+								, #{memSeq}
+								, NOW()
+								, #{sessionMemSeq}
+								)
+	</insert>
+
+	<select id="getMemberTutMappingGgoupName" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO" resultType="String">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMemberTutMappingGgoupName ====== */
+			SELECT GROUP_CONCAT(FN_GETUSERNAME(MEM_SEQ))
+			  FROM LMS_SUBJ_TUT_MAPPING
+			 WHERE YYYY = 	#{yyyy}
+			   AND TERM=	#{term}
+			   AND SUBJECT_CODE = #{subjectCode}
+			   AND CLASS = #{subClass}
+	</select>
+
+	<insert id="insertSubjCcmMapping" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.insertSubjCcmMapping ====== */
+			INSERT INTO LMS_SUBJ_CCM_MAPPING (
+								  SUBJ_CCM_MAPPING_ID
+								, COMPANY_ID
+								, TRANING_PROCESS_ID
+                                , MEM_SEQ
+								, INSERT_DATE
+								, INSERT_USER
+									)
+					VALUES
+					(
+								  #{subjCcmMappingId}
+								, #{companyId}
+								, #{traningProcessId}
+								, #{memSeq}
+								, NOW()
+								, #{sessionMemSeq}
+								)
+	</insert>
+
+
+	<update id="updateMember" parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.updateMember ====== */
+	        UPDATE COM_MEMBER
+	        SET UPDATE_DATE 	= NOW()
+				<if test="memId != null and memId != ''">	, MEM_ID 	= #{memId}		 </if>
+				<if test="memType != null and memType != ''">	, MEM_TYPE 	= #{memType}		 </if>
+				<if test="memName != null and memName != ''">	, MEM_NAME 	= #{memName}		 </if>
+				<!-- <if test="pwdQuest != null and pwdQuest != ''">	, PWD_QUEST 	= #{pwdQuest}		 </if> -->
+				<if test="sex != null and sex != ''">	, SEX 	= #{sex}		 </if>
+				<if test="memNameEng != null and memNameEng != ''">	, MEM_NAME_ENG 	= #{memNameEng}		 </if>
+				<if test="memBirth != null and memBirth != ''">	, MEM_BIRTH 	= #{memBirth}		 </if>
+				<!-- <if test="pwdQuestAns != null and pwdQuestAns != ''">	, PWD_QUEST_ANS 	= #{pwdQuestAns}		 </if>
+
+				<if test="memPasswordEncript != null and memPasswordEncript != ''">	, MEM_PASSWORD 	= rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3))		 </if> -->
+
+				<if test="email != null and email != ''">	, EMAIL 	= #{email}		 </if>
+				<if test="memRegiNo != null and memRegiNo != ''">	, MEM_REGI_NO 	= #{memRegiNo}		 </if>
+				<if test="zipCode != null and zipCode != ''">	, ZIP_CODE 	= #{zipCode}		 </if>
+				<if test="address != null and address != ''">	, ADDRESS 	= #{address}		 </if>
+				<if test="addressDtl != null and addressDtl != ''">	, ADDRESS_DTL 	= #{addressDtl}		 </if>
+				<if test="telNo1 != null and telNo1 != ''">	, TEL_NO1 	= #{telNo1}		 </if>
+				<if test="telNo2 != null and telNo2 != ''">	, TEL_NO2 	= #{telNo2}		 </if>
+				<if test="telNo3 != null and telNo3 != ''">	, TEL_NO3 	= #{telNo3}		 </if>
+				<if test="hpNo1 != null and hpNo1 != ''">	, HP_NO1 	= #{hpNo1}		 </if>
+				<if test="hpNo2 != null and hpNo2 != ''">	, HP_NO2 	= #{hpNo2}		 </if>
+				<if test="hpNo3 != null and hpNo3 != ''">	, HP_NO3 	= #{hpNo3}		 </if>
+				<if test="newsletterYn != null and newsletterYn != ''">	, NEWSLETTER_YN 	= #{newsletterYn}		 </if>
+				<if test="photoFilePath != null and photoFilePath != ''">	, PHOTO_FILE_PATH 	= #{photoFilePath}		 </if>
+				<if test="workingPlace != null and workingPlace != ''">	, WORKING_PLACE 	= #{workingPlace}		 </if>
+				<if test="scholarship != null and scholarship != ''">	, SCHOLARSHIP 	= #{scholarship}		 </if>
+				<if test="secedeReason != null and secedeReason != ''">	, SECEDE_REASON 	= #{secedeReason}		 </if>
+				<if test="relationField != null and relationField != ''">	, RELATION_FIELD 	= #{relationField}		 </if>
+				<if test="career != null and career != ''">	, CAREER 	= #{career}		 </if>
+				<if test="title != null and title != ''">	, TITLE 	= #{title}		 </if>
+				<if test="titlePath != null and titlePath != ''">	, TITLE 	= #{titlePath}		 </if>
+				<if test="authGroupId != null and authGroupId != ''">	, AUTH_GROUP_ID 	= #{authGroupId}		 </if>
+				<if test="bndlRegYn != null and bndlRegYn != ''">	, BNDL_REG_YN 	= #{bndlRegYn}		 </if>
+				<if test="loginCnt != null and loginCnt != ''">	, LOGIN_CNT 	= #{loginCnt}		 </if>
+				<if test="scsnYn != null and scsnYn != ''">	, SCSN_YN 	= #{scsnYn}		 </if>
+				<if test="majr != null and majr != ''">	, MAJR 	= #{majr}		 </if>
+				<if test="receiveMailYn != null and receiveMailYn != ''">	, RECEIVE_MAIL_YN 	= #{receiveMailYn}		 </if>
+				<if test="receiveSmsYn != null and receiveSmsYn != ''">	, RECEIVE_SMS_YN 	= #{receiveSmsYn}		 </if>
+				<if test="foreignYn != null and foreignYn != ''">	, FOREIGN_YN 	= #{foreignYn}		 </if>
+				<if test="namecheckYn != null and namecheckYn != ''">	, NAMECHECK_YN 	= #{namecheckYn}		 </if>
+				<if test="nationCode != null and nationCode != ''">	, NATION_CODE 	= #{nationCode}		 </if>
+				<if test="companyId != null and companyId != ''">	, COMPANY_ID 	= #{companyId}		 </if>
+				<!-- <if test="gPinYn != null and gPinYn != ''">	, G_PIN_YN 	= #{gPinYn}		 </if>
+				<if test="gPinKey1 != null and gPinKey1 != ''">	, G_PIN_KEY1 	= #{gPinKey1}		 </if>
+				<if test="gPinKey2 != null and gPinKey2 != ''">	, G_PIN_KEY2 	= #{gPinKey2}		 </if> -->
+				<if test="memDiv != null and memDiv != ''">	, MEM_DIV 	= #{memDiv}		 </if>
+				<if test="schoolSeq != null and schoolSeq != ''">	, SCHOOL_SEQ 	= #{schoolSeq}		 </if>
+				<if test="tutorClauseAgreeYn != null and tutorClauseAgreeYn != ''">	, TUTOR_CLAUSE_AGREE_YN 	= #{tutorClauseAgreeYn}		 </if>
+				<if test="aspId != null and aspId != ''">	, ASP_ID 	= #{aspId}		 </if>
+				<if test="agreeYn != null and agreeYn != ''">	, AGREE_YN 	= #{agreeYn}		 </if>
+				<!-- <if test="nonageYn != null and nonageYn != ''">	, NONAGE_YN 	= #{nonageYn}		 </if> -->
+				<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+				<if test="sessionMemSeq != null and sessionMemSeq != ''">	, UPDATE_USER 	= #{sessionMemSeq}		 </if>
+				<!-- <if test="certiNo != null and certiNo != ''">	, CERTI_NO 	= #{certiNo}		 </if> -->
+				<!-- <if test="certiCharacter != null and certiCharacter != ''">	, CERTI_CHARACTER 	= #{certiCharacter}		 </if> -->
+				<!-- <if test="certiYn != null and certiYn != ''">	, CERTI_YN 	= #{certiYn}		 </if> -->
+				<!-- <if test="certiAttemptCnt != null and certiAttemptCnt != ''">	, CERTI_ATTEMPT_CNT 	= #{certiAttemptCnt}		 </if> -->
+				<if test="compNm != null and compNm != ''">	, COMP_NM 	= #{compNm}		 </if>
+				<!-- <if test="deptNm != null and deptNm != ''">	, DEPT_NM 	= #{deptNm}		 </if> -->
+				<!-- <if test="dutyNm != null and dutyNm != ''">	, DUTY_NM 	= #{dutyNm}		 </if> -->
+				<!-- <if test="remk != null and remk != ''">	, REMK 	= #{remk}		 </if> -->
+				<!-- <if test="wrongRegiNo != null and wrongRegiNo != ''">	, WRONG_REGI_NO 	= #{wrongRegiNo}		 </if>
+				<if test="orgPwNull != null and orgPwNull != ''">	, ORG_PW_NULL 	= #{orgPwNull}		 </if>
+				<if test="orgMemId != null and orgMemId != ''">	, ORG_MEM_ID 	= #{orgMemId}		 </if>
+				<if test="lastLoginYmd != null and lastLoginYmd != ''">	, LAST_LOGIN_YMD 	= #{lastLoginYmd}		 </if>
+				<if test="lastPwUpdtYmd != null and lastPwUpdtYmd != ''">	, LAST_PW_UPDT_YMD 	= #{lastPwUpdtYmd}		 </if>
+				<if test="pwErrNumberTimes != null and pwErrNumberTimes != ''">	, PW_ERR_NUMBER_TIMES 	= #{pwErrNumberTimes}		 </if>
+				<if test="useExpireYmd != null and useExpireYmd != ''">	, USE_EXPIRE_YMD 	= #{useExpireYmd}		 </if> -->
+		     WHERE MEM_SEQ 	= #{memSeq}
+	</update>
+
+	<update id="updateMemberChangeApplication" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.updateMemberChangeApplication ====== */
+			UPDATE COM_MEMBER
+	        SET UPDATE_DATE 	= NOW(),
+	        UPDATE_USER 	= #{sessionMemSeq},
+	        <if test="sex != null and sex != ''"> SEX 	= #{sex}, </if>
+	        <if test="memRegiNo != null and memRegiNo != ''"> MEM_REGI_NO = #{memRegiNo},		 </if>
+	        <if test="memBirth != null and memBirth != ''">	MEM_BIRTH 	= #{memBirth},		 </if>
+	        <if test="hpNo1 != null and hpNo1 != ''">	HP_NO1 	= #{hpNo1},		 </if>
+			<if test="hpNo2 != null and hpNo2 != ''">	HP_NO2 	= #{hpNo2},		 </if>
+			<if test="hpNo3 != null and hpNo3 != ''">	HP_NO3 	= #{hpNo3},		 </if>
+	        <if test="email != null and email != ''"> EMAIL 	= #{email}, </if>
+	        <if test="workingPlace != null and workingPlace != ''"> WORKING_PLACE = #{workingPlace}, </if>
+			<if test="relatedResearchOrganizationName != null and relatedResearchOrganizationName != ''"> RELATED_RESEARCH_ORGANIZATION_NAME = #{relatedResearchOrganizationName}, </if>
+			<if test="relatedResearchYear != null and relatedResearchYear != ''"> RELATED_RESEARCH_YEAR = #{relatedResearchYear}, </if>
+			SAME_SITE_WORK_YEAR = #{sameSiteWorkYear},
+			<if test="sameSiteWorkCd != null and sameSiteWorkCd != ''"> SAME_SITE_WORK_CD = #{sameSiteWorkCd}, </if>
+			<if test="participateStartDate != null and participateStartDate != ''"> PARTICIPATE_START_DATE = #{participateStartDate}, </if>
+			<if test="participateEndDate != null and participateEndDate != ''"> PARTICIPATE_END_DATE = #{participateEndDate}, </if>
+			<if test="updtApplicationStatus != null and updtApplicationStatus != ''"> UPDT_APPLICATION_STATUS = #{updtApplicationStatus}, </if>
+			<if test="scholarship != null and scholarship != ''"> SCHOLARSHIP = #{scholarship}, </if>
+			<if test="title != null and title != ''"> TITLE = #{title} </if>
+			WHERE MEM_SEQ 	= #{memSeq}
+	</update>
+
+	<update id="updateMemberChangeApplicationTut" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.updateMemberChangeApplicationTut ====== */
+			UPDATE LMS_SUBJ_TUT_MAPPING
+	        SET UPDATE_DATE 	= NOW(),
+	        UPDATE_USER 	= #{sessionMemSeq},
+	        YYYY 	= #{yyyy},
+	        TERM 	= #{term},
+	        SUBJECT_CODE 	= #{subjectCode},
+	        CLASS 	= #{subClass}
+			WHERE MEM_SEQ 	= #{memSeq}
+			AND YYYY 	= #{oldYyyy}
+	        AND TERM 	= #{oldTerm}
+	        AND SUBJECT_CODE = #{oldSubjectCode}
+	        AND CLASS 	= #{oldSubClass}
+	</update>
+
+	<update id="updateMemberChangeApplicationApproval" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.updateMemberChangeApplicationApproval ====== */
+			UPDATE COM_MEMBER
+	        SET UPDATE_DATE 	= NOW(),
+	        UPDATE_USER 	= #{sessionMemSeq},
+	        <if test="retunReason != null and retunReason != ''"> RETUN_REASON = #{retunReason}, </if>
+	        STATUS 	= #{status}
+			WHERE MEM_SEQ 	= #{memSeq}
+	</update>
+
+ 	<update id="updateSubjCcmMapping"  parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO"  >
+	/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.UserActMapper.updateSubjCcmMapping ========= */
+		UPDATE LMS_SUBJ_CCM_MAPPING
+		SET
+			  UPDATE_DATE = NOW()
+			  , UPDATE_USER = #{sessionMemSeq}
+			  , TRANING_PROCESS_ID = #{traningProcessId}
+		WHERE 1 = 1
+		AND COMPANY_ID = #{companyId}
+		AND MEM_SEQ = #{memSeq}
+ 	</update>
+
+ 	<select id="getMemberSeq" parameterType="String" resultType="String">
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.getMemberSeq ====== */
+	        SELECT
+	               MEM_SEQ
+	          FROM COM_MEMBER
+	          WHERE MEM_ID = #{memId}
+	</select>
+
+	<delete id="deleteMemberTutMapping"  parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.deleteMember ========= */
+		UPDATE LMS_SUBJ_TUT_MAPPING
+		SET
+		   UPDATE_DATE = NOW()
+		  ,UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001')
+		  ,DELETE_YN = 'Y'
+		WHERE 1 = 1
+		  AND YYYY = #{yyyy}
+	      AND TERM = #{term}
+	      AND SUBJECT_CODE = #{subjectCode}
+	      AND CLASS = #{subClass}
+	      AND MEM_SEQ = #{memSeq}
+ 	</delete>
+
+	<delete id="deleteMember"  parameterType="kr.co.sitglobal.oklms.lu.member.vo.MemberStdVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.UserActMapper.deleteMember ========= */
+		UPDATE COM_MEMBER
+		SET
+			  UPDATE_DATE = NOW()
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001')
+			  , DELETE_YN = 'Y'
+			  , SCSN_YN = 'Y'
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</delete>
+
+	<delete id="deleteMemberList" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.deleteMemberList ====== */
+			UPDATE LMS_SUBJ_TUT_MAPPING
+			SET
+			   UPDATE_DATE = NOW()
+			  ,UPDATE_USER = #{sessionMemSeq}
+			  ,DELETE_YN = 'Y'
+		]]>
+			 WHERE MEM_SEQ IN
+		<foreach collection="memSeqs" item="delMemSeqIds" index="index" open="(" close=")" separator=",">
+			 '${delMemSeqIds}'
+		</foreach>
+	</delete>
+
+	<delete id="deleteMemberCcmList" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.deleteMemberList ====== */
+			UPDATE LMS_SUBJ_CCM_MAPPING
+			SET
+			   UPDATE_DATE = NOW()
+			  ,UPDATE_USER = #{sessionMemSeq}
+			  ,DELETE_YN = 'Y'
+		]]>
+			 WHERE 1 = 1
+			 AND COMPANY_ID = #{companyId}
+			 AND TRANING_PROCESS_ID = #{traningProcessId}
+			 AND MEM_SEQ = #{memSeq}
+	</delete>
+
+	<delete id="deleteChangeMemberCot" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.deleteMemberCot ====== */
+			UPDATE LMS_SUBJ_TUT_MAPPING
+			SET
+			   UPDATE_DATE = NOW()
+			  ,UPDATE_USER = #{sessionMemSeq}
+			  ,DELETE_YN = 'Y'
+		]]>
+			 WHERE 1 = 1
+			 AND YYYY = #{yyyy}
+			 AND TERM = #{term}
+			 AND SUBJECT_CODE = #{subjectCode}
+			 AND CLASS = #{subClass}
+			 AND MEM_SEQ = #{memSeq}
+	</delete>
+
+	<delete id="deleteChangeMember" parameterType="kr.co.sitglobal.oklms.lu.member.vo.ExcelMemberStdVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.lu.member.service.impl.MemberMapper.deleteChangeMember ====== */
+			UPDATE COM_MEMBER
+			SET
+			   UPDATE_DATE = NOW(),
+			   UPDATE_USER = #{sessionMemSeq},
+			   UPDT_APPLICATION_STATUS = NULL,
+			   PARTICIPATE_START_DATE = NULL,
+			   STATUS = NULL
+		]]>
+			 WHERE 1 = 1
+			 AND MEM_SEQ = #{memSeq}
+	</delete>
+
+
+</mapper>

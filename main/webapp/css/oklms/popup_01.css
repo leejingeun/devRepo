@@ -1,0 +1,199 @@
+@charset "utf-8";
+
+
+
+/* 레이어 팝업 속성 */
+
+#popup-main-wrarp													{display:block;}
+#popup-main-wrarp .popup-notice-box							{position:fixed; border:5px solid #4084F6; background:#FFF;  transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease; z-index:1000000;}
+
+#popup-main-wrarp .title												{float:left; width:95%; height:32px; font:18px nbgM; color:#FFF; background:#4084F6; padding:10px 2.5% 0;}
+#popup-main-wrarp .close											{position:absolute; width:15px; height:15px; right:2%; top:12px; text-indent:-9999px; background:url("/images/oklms/std/inc/gnb_btn_03.png") no-repeat;}
+#popup-main-wrarp .perfect-close								{float:left; width:95%; height:25px; font:13px nbgM; text-align:right; background:#333; padding:10px 2.5% 0;}
+#popup-main-wrarp .perfect-close a								{color:#FFF;}
+#popup-main-wrarp .text-img-group								{float:left; width:95%; padding:15px 2.5%;}
+
+.popup-main-bg															{display:none; position:fixed; width:100%; height:100%; top:0; left:0; background:#000; opacity:0.7; z-index:14000;}
+.popup-main-bg.open													{display:block;}
+
+
+
+
+
+#popup-wrarp-1															{display:block;}
+#popup-wrarp-1 .popup-join-box									{position:fixed; width:750px; height:550px; left:50%; top:-560px; border:5px solid #4084F6; background:#FFF; margin-left:-380px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease; z-index:1000000;}
+#popup-wrarp-1 .popup-join-box.open							{display:block; top:100px;}
+#popup-wrarp-1 .popup-join-direct								{position:fixed; width:750px; height:550px; left:50%; top:-560px; border:5px solid #4084F6; background:#FFF; margin-left:-380px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease; z-index:1000000;}
+#popup-wrarp-1 .popup-join-direct.open						{display:block; top:100px;}
+#popup-wrarp-1 .popup-pass-box								{position:fixed; width:400px; height:220px; left:50%; top:-230px; border:5px solid #4084F6; background:#FFF; margin-left:-205px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease; z-index:1000000;}
+#popup-wrarp-1 .popup-pass-box.open						{display:block; top:305px;}
+#popup-wrarp-1 .popup-progress-box							{position:fixed; width:300px; left:50%; top:-400px; border:5px solid #4084F6; background:#FFF; margin-left:-155px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease; z-index:1000000;}
+#popup-wrarp-1 .popup-progress-box.open					{display:block; top:305px;}
+#popup-wrarp-1 .popup-exam-box								{position:fixed; width:450px; height:195px; left:50%; top:-230px; border:5px solid #4084F6; background:#FFF; margin-left:-230px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease; z-index:1000000;}
+#popup-wrarp-1 .popup-exam-box.open						{display:block; top:305px;}
+
+
+#popup-wrarp-1 .title													{float:left; width:95%; height:32px; font:18px nbgM; color:#FFF; background:#4084F6; padding:10px 2.5% 0;}
+#popup-wrarp-1 .close												{position:absolute; width:15px; height:15px; right:2%; top:12px; text-indent:-9999px; background:url("/images/oklms/std/inc/gnb_btn_03.png") no-repeat;}
+
+
+#popup-wrarp-1 .text-area											{float:left; width:70%; text-align:center; border-bottom:1px dotted #999; padding-bottom:20px; margin:40px 15% 20px;}
+#popup-wrarp-1 .text-area p										{font:26px nbgM; color:#333; line-height:40px;}
+#popup-wrarp-1 .text-area span									{font:16px nsM; color:#666; line-height:23px;}
+
+
+#popup-wrarp-1 .search												{float:left; width:95%; margin:20px 2.5% 10px;}
+#popup-wrarp-1 .search select									{display:inline-block; height:27px; font:13px nsM; color:#555; line-height:18px; border:1px solid #CCC; margin-right:3px;}
+#popup-wrarp-1 .search input										{display:inline-block; width:150px; height:25px; font:13px nsM; color:#555; line-height:18px; border:1px solid #CCC; background:#FFF; padding:0 5px;}
+#popup-wrarp-1 .search br											{display:none;}
+#popup-wrarp-1 .search a											{display:inline-block; overflow:hidden; vertical-align:top;}
+#popup-wrarp-1 .search a.btn-search							{width:27px; height:27px; line-height:150px; text-indent:99999px; background:url("/images/oklms/std/board/search_btn_11.png") 3px 4px no-repeat #90B7CA; margin-left:2px;}
+#popup-wrarp-1 .search a.btn-input								{float:right; width:70px; height:22px; font:12px Dotum; color:#FFF; line-height:20px; text-align:center; background:#90B7CA; padding-top:5px;}
+
+
+#popup-wrarp-1 .search-area										{float:left; width:70%; text-align:center; border-bottom:1px dotted #999; padding-bottom:30px; margin:10px 15% 20px;}
+#popup-wrarp-1 .search-area input								{display:inline-block; width:300px; height:27px; font:13px nsM; color:#555; line-height:18px; border:1px solid #CCC; background:#FFF; padding:0 5px; margin-right:2px;}
+#popup-wrarp-1 .search-area a									{display:inline-block; overflow:hidden; width:70px; height:29px; font:16px nbgM; color:#FFF; line-height:29px; text-align:center; vertical-align:top; background:#90B7CA;}
+
+
+#popup-wrarp-1 table													{clear:both; width:95%; border-top:2px solid #51AFEB; border-spacing:0; padding:0; border-collapse:collapse; margin:0 auto;}
+#popup-wrarp-1 table tr th											{font:14px nbgM; line-height:20px; color:#222; text-align:center; border-bottom:1px solid #51AFEB; background:#EDF4FA; padding:9px 0;}
+#popup-wrarp-1 table tr td											{font:13px nbgM; line-height:18px; color:#555; text-align:center; border-bottom:1px solid #CCDDEE; padding:8px 0 7px;}
+#popup-wrarp-1 table tr td a											{color:#555;}
+#popup-wrarp-1 table tr td a:hover								{color:#0062A4;}
+
+#popup-wrarp-1 table .col-1										{width:8%;}
+#popup-wrarp-1 table .col-2										{width:15%;}
+#popup-wrarp-1 table .col-3										{width:30%;}
+#popup-wrarp-1 table .col-4										{width:17%;}
+#popup-wrarp-1 table .col-5										{width:15%;}
+#popup-wrarp-1 table .col-6										{width:15%;}
+
+
+#popup-wrarp-1 .page-num											{clear:both; width:100%; height:21px; text-align:center; margin-top:15px;}
+#popup-wrarp-1 .page-num a										{display:inline-block; overflow:hidden; font:12px Dotum; color:#666; line-height:17px; border:1px solid #E5E5E5; background:#FBFBFB;}
+#popup-wrarp-1 .page-num a.num								{width:20px; height:17px; text-align:center; padding-top:2px;}
+#popup-wrarp-1 .page-num a.ing									{width:20px; height:17px; font-weight:bold; color:#FFF; background:#4084F6; border-color:#4084F6; padding-top:2px;}
+#popup-wrarp-1 .page-num a.page-btn1						{width:22px; height:21px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_02.png") 0 0 no-repeat;}
+#popup-wrarp-1 .page-num a.page-btn1:hover				{background-position:0 0;}
+#popup-wrarp-1 .page-num a.page-btn2						{width:22px; height:21px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_02.png") -22px 0 no-repeat; margin:0 15px 0 0;}
+#popup-wrarp-1 .page-num a.page-btn2:hover				{background-position:-22px 0;}
+#popup-wrarp-1 .page-num a.page-btn3						{width:22px; height:21px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_02.png") -44px 0 no-repeat; margin:0 0 0 15px;}
+#popup-wrarp-1 .page-num a.page-btn3:hover				{background-position:-44px 0;}
+#popup-wrarp-1 .page-num a.page-btn4						{width:22px; height:21px; text-indent:-9999px; vertical-align:top; border:none; background:url("/images/oklms/std/board/page_btn_02.png") -66px 0 no-repeat;}
+#popup-wrarp-1 .page-num a.page-btn4:hover				{background-position:-66px 0;}
+
+
+#popup-wrarp-1 .btn-area											{float:left; width:70%; text-align:center; margin:0 15%;}
+#popup-wrarp-1 .btn-area a											{display:inline-block; width:132px; font-size:18px; color:#FFF; text-align:center; border-radius:5px; background:#4084F6; padding:13px 0; margin:0 3px;}
+
+
+#popup-wrarp-1 .pass-group										{float:left; width:52%; height:125px; background:url("/images/oklms/std/img/pass_img.png") 15% 0 no-repeat; padding:5px 0 0 48%; margin-top:20px;}
+#popup-wrarp-1 .pass-group label								{font:14px nbgM; color:#666; line-height:20px;}
+#popup-wrarp-1 .pass-group span								{display:block; font-size:20px; color:#0062A4; line-height:26px;}
+#popup-wrarp-1 .pass-group input								{display:block; width:140px; height:26px; font:14px nbgM; color:#666; line-height:20px; border:3px solid #D2D8DD; padding:0 5px; margin-top:5px;}
+#popup-wrarp-1 .pass-group a									{display:block; overflow:hidden; width:60px; height:24px; font:14px nbgM; color:#FFF; line-height:24px; text-align:center; border-radius:3px; background:url("/images/oklms/std/board/btn_line_01.png") repeat #333; padding-top:2px; margin-top:5px;}
+
+
+#popup-wrarp-1 .progress-group									{float:left; width:90%; padding:0 5%; margin:12px 0 9px;}
+#popup-wrarp-1 .progress-group table							{clear:both; width:100%; border-top:none; border-spacing:0; padding:0; border-collapse:collapse; margin:0}
+#popup-wrarp-1 .progress-group tr th							{width:13%; font:bold 12px Dotum; line-height:18px; color:#666; text-align:center; border-bottom:1px solid #DDD; background:none; padding:6px 0 3px;}
+#popup-wrarp-1 .progress-group tr:last-child th				{border-bottom:none;}
+#popup-wrarp-1 .progress-group tr td							{width:87%; font:12px Dotum; line-height:18px; color:#666; text-align:center; border-bottom:1px solid #DDD; padding:6px 0 3px;}
+#popup-wrarp-1 .progress-group tr:last-child td				{border-bottom:none;}
+
+
+#popup-wrarp-1 .exam-group										{float:left; width:64%; height:120px; background:url("/images/oklms/std/img/pop_guide_exam.png") no-repeat; padding-left:28%; margin:20px 4% 0;}
+#popup-wrarp-1 .exam-group li									{float:left; width:100%; font:13px nbgM; line-height:18px; color:#666;}
+#popup-wrarp-1 .exam-group li span							{color:#ED174F;}
+#popup-wrarp-1 .exam-group li.name							{font:18px nbgM; line-height:20px; color:#333; padding:3px 0 3px;}
+#popup-wrarp-1 .exam-group li.btn								{padding-top:5px;}
+#popup-wrarp-1 .exam-group li.btn a							{display:inline-block; overflow:hidden; font:13px nbgM; color:#FFF; text-align:center; background:url("/images/oklms/std/btn/btn_bg_01.png") repeat; padding:3px 8px 2px;}
+
+
+.popup-bg																	{display:none; position:fixed; width:100%; height:100%; top:0; left:0; background:#000; opacity:0.7; z-index:14000;}
+.popup-bg.open															{display:block;}
+
+
+
+
+
+/* 일반 팝업 속성 */
+
+.popup-body																{background:url("/images/oklms/std/inc/borderBg_03.gif") repeat-y;}
+#popup-wrapper															{position:relative; width:100%; height:100%;}
+#popup-header															{position:absolute; left:0; top:0; width:100%; height:80px; background:url("/images/oklms/std/inc/borderBg_02.gif") right 0 no-repeat;}
+
+#popup-header h1														{float:left; height:66px; font:17px nbgM; color:#FFF; background:url("/images/oklms/std/inc/borderBg_01.gif") no-repeat; padding:14px 0 0 18px;}
+#popup-header div														{position:absolute; width:100%; background:url("/images/oklms/std/inc/borderBg.png") left top repeat-x;}
+
+#popup-content-area													{min-height:100%; margin:0 0 -30px; background:url("/images/oklms/std/inc/borderBg_04.gif") right 0 repeat-y ;}
+* html #popup-content-area											{height:100%;} /* IE6 핵 */
+#popup-container														{padding:80px 35px 30px; }
+#popup-container1														{padding:0 35px 30px; }
+
+#popup-close																{position:absolute; width:37px; height:27px; right:0; top:9px;}
+#popup-close a															{display:block; overflow:hidden; width:27px; height:27px; text-indent:-9999px; background:url("/images/oklms/std/inc/btnClose.png");}
+#popup-close a:hover, #popup-close a:focus				{background-position:0 bottom;}
+
+#popup-footer																{float:left; width:100%; height:30px; background:url("/images/oklms/std/inc/borderBg_06.gif") no-repeat right 0;}
+#popup-foot-bady														{width:100%; height:30px; background:url("/images/oklms/std/inc/borderBg_05.gif") no-repeat;}
+
+
+
+
+
+.poll-text																	{clear:both; float:left; width:97%; font:15px nbgM; color:#555; line-height:20px; background:url("/images/oklms/std/img/point_01.png") 0 3px no-repeat; padding:0 0 10px 3%;}
+.poll-text span															{color:#ED174F;}
+.poll-box-area															{clear:both; float:left; width:93%; border:5px solid #E9E9E9; padding:25px 2.5% 25px 3.5%;}
+.poll-box																	{position:relative; clear:both; float:left; overflow:auto; width:97%; height:400px; padding-right:3%;}
+
+.poll-box ul																{position:relative; float:left; width:100%;}
+.poll-box ul li.title														{float:left; width:100%; font:14px nbgM; color:#555; line-height:20px; padding-bottom:12px;}
+.poll-box ul li.title span												{color:#0062A4;}
+.poll-box ul li.title b														{font-weight:normal; color:#ED174F;}
+
+.poll-box ul li.choice													{clear:both; float:left; width:4%; padding-left:1%;}
+.poll-box ul li.choice input											{width:13px; height:13px; vertical-align:middle; border:none; margin-top:1px;}
+.poll-box ul li.text														{float:left; width:95%; font:12px nbgM; color:#777; line-height:18px;}
+.poll-box ul li.text input												{width:13px; height:13px; vertical-align:middle; border:none; margin-bottom:3px;}
+
+.poll-box ul li.text1														{float:left; width:100%; font:12px nbgM; color:#777; line-height:18px;}
+.poll-box ul li.text1 input												{width:97%; height:20px; font:12px nbgM; color:#777; line-height:16px; border:3px solid #D9D9D9; padding:3px 5px;}
+.poll-box ul li.text1 textarea											{width:96%; height:50px; font:12px nbgM; color:#777; line-height:16px; border:5px solid #D9D9D9; padding:3px 5px;}
+
+.poll-box ul li.poll-ex													{float:left; width:100%; font:12px nbgM; color:#888; line-height:14px;}
+.poll-box ul li.poll-bar													{float:left; width:81%; background:url("/images/oklms/std/img/line_08.gif") top repeat-x; margin-bottom:16px;}
+.poll-box ul li.poll-txt													{float:left; width:19%; font:12px nbgM; color:#ED174F; line-height:16px; text-align:right;}
+.poll-box ul li.poll-txt span											{color:#777;}
+.poll-box ul li.line1														{float:left; width:100%; border-bottom:1px dotted #555; padding-bottom:12px; margin-bottom:20px;}
+.poll-box ul li.line2														{float:left; width:100%; border-bottom:1px dotted #555; padding-bottom:19px; margin-bottom:27px;}
+
+.poll-box ul li.check													{position:absolute; width:40px; height:40px;}
+
+
+
+
+
+.pop-exam-info															{clear:both; float:left; width:100%;}
+.pop-exam-info dt														{float:left; width:100%; font:17px nbgM; color:#0062A4; line-height:25px; border-bottom:1px solid #BAC4CC; padding-bottom:8px;}
+.pop-exam-info dd														{float:left; width:100%;}
+.pop-exam-info dd.title-1												{width:11%; font:13px nbgM; line-height:20px; color:#333; border-top:2px solid #EFEFEF; background:url("/images/oklms/std/img/point_01.png") 0 18px no-repeat; padding:15px 0 0 3%;}
+.pop-exam-info dd.text-1												{width:86%; line-height:20px; font-size:13px; color:#777; border-top:2px solid #EFEFEF; padding-top:15px;}
+.pop-exam-info dd.text-1 span										{color:#0062A4;}
+.pop-exam-info dd.text-2												{font:13px nbgM; line-height:20px; color:#777; padding-bottom:20px;}
+.pop-exam-info dd.text-2 span										{font:13px nbgM; line-height:20px; color:#333; background:url("/images/oklms/std/img/point_01.png") 0 1px no-repeat; padding-left:17px;}
+
+.pop-exam-info dd.time												{width:67%; font:13px nbgM; line-height:20px; color:#333; background:url("/images/oklms/std/img/point_01.png") 0 3px no-repeat; padding-left:3%;}
+.pop-exam-info dd.time span										{font-size:16px; color:#ED174F;}
+
+.pop-exam-info dd.btn													{width:30%; text-align:right; padding-bottom:15px;}
+.pop-exam-info dd.btn input											{cursor:pointer; overflow:hidden; font:13px nbgM; color:#FFF; text-align:center; vertical-align:top; background:url("/images/oklms/std/btn/btn_bg_04.png") repeat; padding:3px 8px 2px; margin-left:3px; border:0;}
+.pop-exam-info dd.btn	a												{display:inline-block; overflow:hidden; font:13px nbgM; color:#FFF; text-align:center; background:url("/images/oklms/std/btn/btn_bg_01.png") repeat; padding:3px 8px 2px; margin-left:3px;}
+
+
+
+
+
+
+

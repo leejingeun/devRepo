@@ -1,0 +1,174 @@
+@charset "utf-8";
+
+
+
+#main-top-wrap																	{position:relative; float:left; width:100%; padding-bottom:15px;}
+#main-middle-wrap																{position:relative; float:left; width:100%; padding-bottom:15px;}
+#main-bottom-wrap																{position:relative; float:left; width:100%;}
+
+
+
+
+
+#search-log-main																{float:right; width:25%; height:260px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+
+#search-log-main .search-area											{float:left; width:80%; height:110px; background:url("/images/oklms/std/inc/search_bg.png") repeat; padding:0px 10%;}
+#search-log-main .search-area label									{display:inline-block; font:18px nsM; color:#FFF; line-height:26px; text-shadow:1px 1px 1px #111; padding:20px 13px 6px 0;}
+#search-log-main .search-area fieldset									{display:inline-block; width:94%; height:35px; background:#FFF; padding:0 3%;}
+#search-log-main .search-area input									{float:left; width:80%; height:35px; font:15px nsM; color:#333; line-height:20px; border:none;}
+#search-log-main .search-area a											{display:block; overflow:hidden; width:35px; height:35px; text-indent:-9999px; background:url("/images/oklms/std/inc/search_btn.png") no-repeat;}
+#search-log-main .search-area a:hover								{background:url("/images/oklms/std/inc/search_btn.png") 0 bottom no-repeat;}
+
+
+
+
+
+#search-log-main .login-area												{float:left; width:80%; height:128px; background:url("/images/oklms/std/inc/login_bg.png") repeat; padding:22px 10% 0;}
+#login-main h3																	{display:none;}
+#login-main ul											 						{float:left; width:130px;}
+#login-main ul li.item															{float:left; position:relative; display:inline-block; width:130px; height:35px; margin-bottom:5px;}
+#login-main ul li .iLabel														{position:absolute; width:75px; height:17px; left:6px; top:8px; font:15px nsM; color:#999; line-height:20px;}
+#login-main ul li .iText															{width:115px; height:35px; font:15px nsM; color:#333; border:0; background:#FFF; padding:0 5px;}
+
+#login-main span																{display:inline-block; font:15px nsM; color:#FFF; line-height:20px; vertical-align:top; margin-bottom:5px;}
+#login-main span input														{width:78px; height:75px; font:700 20px play; color:#FFF; line-height:25px; cursor:pointer; text-shadow:1px 1px 1px #940E31; border:0; background:#ED174F; margin:0;}
+
+#login-main a																		{display:inline-block; overflow:hidden; font:14px nsM; color:#BBB; line-height:36px; text-shadow:1px 1px 1px #333; vertical-align:top; padding-right:12px;}
+#login-main a:last-child														{background:url("/images/oklms/std/inc/line_login_01.png") 0 10px no-repeat; padding:0 0 0 11px;}
+#login-main a:hover															{color:#FFF; text-shadow:1px 1px 1px #111;}
+#login-main a.btn-login														{display:none;}
+
+
+
+
+
+#search-log-main .info-area												{float:left; width:80%; height:150px; background:url("/images/oklms/std/inc/login_bg.png") repeat; padding:0px 10%;}
+#search-log-main .info-area p												{float:left; display:inline-block;}
+
+#search-log-main .info-area .info-text									{width:73%; font:14px nsM; color:#FFF; line-height:25px; text-shadow:1px 1px 1px #222; border-bottom:1px solid #777; background:url("/images/oklms/std/main/info_img_01.png") 0 16px no-repeat; padding:20px 0 9px 27%;}
+#search-log-main .info-area .info-text span							{display:block; overflow:hidden; max-width:100%; font-size:18px; vertical-align:middle; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined;}
+#search-log-main .info-area .info-btn-1									{width:65%; border-top:1px solid #333; padding-top:12px;}
+#search-log-main .info-area .info-btn-1 a								{display:inline-block; font:12px Dotum; color:#FFF; line-height:33px; border-radius:4px; background:#ED174F; box-shadow:0 0 5px #333; padding:2px 6px 0; margin-right:4px;}
+
+#search-log-main .info-area .info-btn-2									{width:35%; border-top:1px solid #333; padding:11px 0 0 0;}
+#search-log-main .info-area .info-btn-2 a								{display:block; font:11px Dotum; color:#BBB; line-height:17px; padding:2px 0 0 17px;}
+#search-log-main .info-area .info-btn-2 a.btn-mail					{background:url("/images/oklms/std/main/info_bullet_03.png") 0 4px no-repeat;}
+#search-log-main .info-area .info-btn-2 a.btn-memo				{background:url("/images/oklms/std/main/info_bullet_04.png") 0 3px no-repeat;}
+#search-log-main .info-area .info-btn-2 a.btn-memo span		{display:inline-block; font-weight:bold; color:#FFAE00;}
+
+
+
+
+
+#main-img																			{position:relative; float:left; width:75%; height:260px; background:url("/images/oklms/std/main/bg_img_01.png") repeat #31575C; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#main-img dt																		{position:absolute; width:100%; height:260px; text-align:right; background:url("/images/oklms/std/main/bg_img_02.png") right no-repeat; z-index:2;}
+#main-img dd																		{position:absolute; width:100%; height:260px; text-indent:-9999px; background:url("/images/oklms/std/main/img_main_01.png") no-repeat; z-index:1;}
+
+
+
+
+
+#ban-apply																		{position:relative; float:left; width:25%; height:260px; background:url("/images/oklms/std/main/bg_ban_01.png") 0 bottom repeat-x #BDEDEF; cursor:pointer; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#ban-apply dt																		{float:left; width:74%; height:40px; font:25px nsM; color:#333; line-height:35px; padding:32px 13% 0;}
+#ban-apply dd																	{float:left; width:74%; height:188px; font:15px nsM; color:#3F575E; line-height:22px; background:url("/images/oklms/std/main/img_apply_01.png") right bottom no-repeat; padding:0 13%;}
+#ban-apply .more																{position:absolute; width:24px; height:24px; right:13%; top:37px; text-indent:-9999px; background:url("/images/oklms/std/main/more_ban_01.png") no-repeat; padding:0;}
+#ban-apply:hover .more														{background-position:0 bottom;}
+
+
+
+
+
+#ban-modi																			{position:relative; float:left; width:25%; height:260px; background:url("/images/oklms/std/main/bg_ban_02.png") 0 bottom repeat-x #2395DE; cursor:pointer; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#ban-modi dt																		{float:left; width:74%; height:40px; font:25px nsM; color:#FFF; line-height:35px; text-shadow:1px 1px 1px #16567E; padding:32px 13% 0;}
+#ban-modi dd																		{float:left; width:74%; height:188px; font:15px nsM; color:#BDDFF5; line-height:22px; background:url("/images/oklms/std/main/img_modi_01.png") right bottom no-repeat; padding:0 13%;}
+#ban-modi .more																	{position:absolute; width:24px; height:24px; right:13%; top:37px; text-indent:-9999px; background:url("/images/oklms/std/main/more_ban_02.png") no-repeat; padding:0;}
+#ban-modi:hover .more														{background-position:0 bottom;}
+
+
+
+
+
+#ban-print																			{position:relative; float:left; width:25%; height:260px; background:url("/images/oklms/std/main/bg_ban_01.png") 0 bottom repeat-x #BDEDEF; cursor:pointer; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#ban-print dt																		{float:left; width:74%; height:40px; font:25px nsM; color:#333; line-height:35px; padding:32px 13% 0;}
+#ban-print dd																		{float:left; width:74%; height:188px; font:15px nsM; color:#3F575E; line-height:22px; background:url("/images/oklms/std/main/img_print_01.png") right bottom no-repeat; padding:0 13%;}
+#ban-print .more																	{position:absolute; width:24px; height:24px; right:13%; top:37px; text-indent:-9999px; background:url("/images/oklms/std/main/more_ban_01.png") no-repeat; padding:0;}
+#ban-print:hover .more														{background-position:0 bottom;}
+
+
+
+
+
+#ban-schedule																	{position:relative; float:left; width:25%; height:260px; background:url("/images/oklms/std/main/bg_ban_03.png") 0 bottom repeat-x #2395DE; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#ban-schedule dt																{float:left; width:80%; height:81px; font:700 50px play; color:#FFE463; line-height:60px; text-shadow:1px 1px 1px #165D8A; padding:13px 10% 0;}
+#ban-schedule dt span														{display:inline-block; width:25px; height:25px; font-size:0; text-indent:-9999px; vertical-align:middle; background:url("/images/oklms/std/main/img_schedule_01.png") right no-repeat;}
+#ban-schedule dd																{float:left; width:80%; margin:0 10%;}
+
+#ban-schedule .date															{height:28px; font:18px nsM; color:#FFF; line-height:25px; text-shadow:1px 1px 1px #095E94;}
+#ban-schedule .date span													{display:inline-block; width:21px; height:13px; font:bold 12px Dotum; line-height:12px; text-align:center; vertical-align:middle; background:#004282; padding-top:4px; margin:0 3px 1px 0;}
+#ban-schedule .name															{width:70%; height:63px; font:13px nbgM; line-height:21px; border:2px solid #0C2740; border-radius:8px 8px 0 0; background:#FFF; padding:11px 5%;}
+#ban-schedule .name a														{display:inline-block; color:#0F273E;}
+#ban-schedule .btn																{width:72%; height:21px; font:12px Dotum; line-height:17px; text-align:right; border:2px solid #0C2740; border-radius:0 0 8px 8px; background:url("/images/oklms/std/main/img_schedule_02.png") 80% 2px no-repeat #0C2740; padding:3px 4% 0;}
+#ban-schedule .btn a															{color:#FFF;}
+#ban-schedule .more															{position:absolute; width:38%; height:26px; right:0; top:35px; font:16px nsM; color:#FFF; line-height:26px; text-shadow:1px 1px 1px #00436D; border-radius:25px 0 0 25px; background:#005992; padding:0 6%; margin:0;}
+#ban-schedule .more a														{float:right; display:inline-block; overflow:hidden; width:26px; height:26px; text-indent:-9999px; vertical-align:middle; background:url("/images/oklms/std/main/more_ban_03.png") no-repeat;}
+#ban-schedule .more a:hover												{background-position:0 bottom;}
+
+
+
+
+
+#notice																				{position:relative; float:left; width:43.6%; height:240px; background:#ECECEC; padding:20px 3.2% 0; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#notice dt																			{float:left; width:100%; font:24px nsM; color:#000; line-height:50px;}
+#notice dd																			{float:left; width:98%; font:14px nbgM; line-height:27px; background:url("/images/oklms/std/main/bullet_notice.png") 0 10px no-repeat; padding-left:2%;}
+#notice dd a																		{display:block; overflow:hidden; color:#555;  white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined;}
+#notice dd a:hover																{color:#075698;}
+#notice dd span																	{display:inline-block; color:#777; margin-right:10px;}
+#notice .more																		{position:absolute; width:24px; height:24px; left:130px; top:33px; background:none; padding-left:0;}
+#notice .more a																	{display:block; overflow:hidden; width:24px; height:24px; text-indent:-9999px; background:url("/images/oklms/std/main/more_notice_01.png") no-repeat;}
+#notice .more a:hover															{background-position:0 bottom;}
+
+
+
+
+
+#quick-btn																			{float:left; width:25%; height:260px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#quick-btn li																		{float:left; width:45.2%; height:126px; background:url("/images/oklms/std/main/bg_quick.png") repeat #444; margin-bottom:8px; margin-left:3.2%;}
+#quick-btn a																		{display:block; overflow:hidden; width:100%; height:126px; font:17px nsM; color:#FFF; text-align:center; text-shadow:1px 1px 1px #111;}
+
+#quick-btn li.btn-1 a															{height:38px; font:20px play; background:url("/images/oklms/std/main/btn_quick_01.png") center 15px no-repeat; padding-top:88px;}
+#quick-btn li.btn-1 a:hover													{background:url("/images/oklms/std/main/btn_quick_11.png") center 15px no-repeat;}
+#quick-btn li.btn-2																{margin-right:3.2%;}
+#quick-btn li.btn-2 a															{height:38px; font:20px play; background:url("/images/oklms/std/main/btn_quick_02.png") center 15px no-repeat; padding-top:88px;}
+#quick-btn li.btn-2 a:hover													{background:url("/images/oklms/std/main/btn_quick_12.png") center 15px no-repeat;}
+#quick-btn li.btn-3																{margin-bottom:0;}
+#quick-btn li.btn-3 a															{height:33px; background:url("/images/oklms/std/main/btn_quick_03.png") center 15px no-repeat; padding-top:93px;}
+#quick-btn li.btn-3 a:hover													{background:url("/images/oklms/std/main/btn_quick_13.png") center 15px no-repeat;}
+#quick-btn li.btn-4																{margin-bottom:0; margin-right:3.2%;}
+#quick-btn li.btn-4 a															{height:33px; background:url("/images/oklms/std/main/btn_quick_04.png") center 15px no-repeat; padding-top:93px;}
+#quick-btn li.btn-4 a:hover													{background:url("/images/oklms/std/main/btn_quick_14.png") center 15px no-repeat;}
+
+
+
+
+
+#customer-area																	{float:left; width:25%; height:260px; transition: All 0.4s ease; -webkit-transition: All 0.4s ease; -moz-transition: All 0.4s ease; -o-transition: All 0.4s ease;}
+#customer-area li																{float:left; width:100%; height:130px;}
+#customer-area li.remote														{background:url("/images/oklms/std/main/img_remote.png") no-repeat #C0E3F9;}
+#customer-area li.remote a													{display:block; overflow:hidden; width:65%; height:130px; padding-left:35%;}
+#customer-area p																{display:block; width:85%; font:22px nsM; color:#002B55; line-height:30px; border-bottom:1px dotted #FFF; padding:19px 0 4px;}
+#customer-area span															{display:block; width:85%; font:12px Dotum; color:#5F7886; line-height:16px; padding-top:10px;}
+
+#customer-area li.customer													{background:#1B77DE;}
+#customer-area li.customer dl												{float:left; width:100%; height:130px;}
+#customer-area li.customer dt												{float:left; width:91%; height:17px; font:14px nsM; color:#FFF; line-height:20px; padding:17px 0 0 9%;}
+#customer-area li.customer dd												{float:left;}
+#customer-area li.customer .num											{width:91%; height:41px; font:28px play; color:#FFF; line-height:35px; text-shadow:1px 1px 1px #14375E; padding-left:9%;}
+#customer-area li.customer .etc											{width:74%; height:45px; background:url("/images/oklms/std/main/img_customer.png") 9% 11px no-repeat #004282; padding:10px 0 0 26%;}
+#customer-area li.customer span											{width:96%; font:12px Dotum; color:#80A1C1; line-height:18px; background:url("/images/oklms/std/main/bullet_customer.png") 0 5px no-repeat; padding:0 0 0 4%;}
+
+
+
+
+
+
+

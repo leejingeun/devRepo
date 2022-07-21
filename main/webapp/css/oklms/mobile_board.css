@@ -1,0 +1,114 @@
+@charset "utf-8";
+
+
+
+table.today-type													{ float:left; width:100%; }
+table.today-type th												{ font:normal 12px nbgM; letter-spacing:-1px; color:#FFF; line-height:15px; text-align:center; border:1px solid #DDD; background:#173B7D; padding:11px 0; }
+table.today-type td												{ font:13px nbgM; color:#666; line-height:20px; text-align:center; border:1px solid #DDD; padding:9px 0 11px; }
+table.today-type td span										{ font:20px play; color:#F76000; vertical-align:bottom; }
+
+
+
+table.type-1														{ float:left; width:100%; border-top:2px solid #2468C6; }
+table.type-1 th													{ font:normal 12px nbgM; color:#111; line-height:20px; text-align:center; border-left:1px solid #DDD; border-bottom:1px solid #DDD; background:#F6F9FD; padding:7px; }
+table.type-1 th:first-child										{ border-left:none; }
+table.type-1 td													{ font:12px nbgM; color:#666; line-height:20px; text-align:left; border-left:1px solid #DDD; border-bottom:1px solid #DDD; padding:7px 10px; }
+table.type-1 td a													{ color:#666; }
+
+
+
+table.type-2														{ position:relative; float:left; width:100%; border-top:2px solid #555; }
+table.type-2 th													{ font:normal 12px nbgM; color:#111; line-height:15px; text-align:center; border-left:1px solid #DDD; border-bottom:1px solid #DDD; background:#F6F6F6; padding:7px 0; }
+table.type-2 th:first-child										{ border-left:none; }
+table.type-2 th.border-left										{ border-left:1px solid #DDD; }
+
+table.type-2 td													{ font:12px nbgM; color:#666; line-height:16px; text-align:center; border-left:1px solid #DDD; border-bottom:1px solid #DDD; padding:6px 0; }
+table.type-2 td:first-child										{ border-left:none; }
+table.type-2 td.border-left										{ border-left:1px solid #DDD; }
+table.type-2 td.left												{ text-align:left; padding:6px 7px 6px 12px; }
+table.type-2 td a													{ color:#666; }
+table.type-2 td a.more											{ background:url("/images/oklms/mobile/common/more_btn.png") right no-repeat; padding-right:40px; }
+table.type-2 td input												{ font:12px nbgM; color:#666; vertical-align:middle; border:1px solid #CCC; padding:4px 5px 3px; }
+table.type-2 td input.choice									{ width:13px; height:13px; vertical-align:middle; }
+
+
+
+.board-list															{ position:relative; float:left; width:100%; }
+.board-list li														{ float:left; width:100%; font:12px nbgM; color:#666; line-height:20px; }
+.board-list li a														{ float:left; display:block; overflow:hidden; width:100%; color:#666; text-indent:14px; background:url("/images/oklms/mobile/main/bullet.png") 7px 9px no-repeat; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; }
+.board-list li span												{ display:inline-block; color:#3285BA; text-indent:0; }
+
+.board-list li.more												{ position:absolute; width:15px; height:15px; right:0; top:-24px; }
+.board-list li.more a												{ display:block; overflow:hidden; width:15px; height:15px; text-indent:-9999px; background:url("/images/oklms/mobile/main/more_btn.png") no-repeat; }
+
+
+
+.reply-list															{ position:relative; float:left; width:100%; }
+.reply-list dt														{ float:left; width:100%; color:#F76000; padding:5px 0 3px; }
+.reply-list dd														{ float:left; width:100%; border-top:1px solid #E5E5E5; padding:5px 0 3px; }
+.reply-list dd span												{ display:inline-block; color:#335896; text-indent:12px; background:url("/images/oklms/mobile/common/reply_bullet.png") 2px 3px no-repeat; }
+
+
+
+.bbs-total															{ float:left; width:100%; color:#444; text-indent:10px; background:url("/images/oklms/mobile/common/learn_bullet_02.png") 1px 5px no-repeat; }
+.bbs-total b														{ color:#F76000; }
+
+.bbs-list																{ float:left; width:100%; border-top:2px solid #555; }
+.bbs-list dt															{ float:left; width:100%; font:13px nbgM; color:#666; line-height:16px; border-bottom:1px solid #DDD; padding:7px 0; }
+.bbs-list dt a														{ display:block; overflow:hidden; color:#335896; padding-left:2px; }
+.bbs-list dt p														{ font-size:12px; color:#F76000; padding-bottom:2px; }
+.bbs-list dt span													{ display:block; overflow:hidden; width:100%; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; }
+.bbs-list dd														{ float:left; width:100%; font:12px nbgM; color:#666; line-height:16px; border-bottom:1px solid #DDD; padding:5px 0 4px; }
+.bbs-list dd span												{ display:inline-block; margin-left:10px; }
+.bbs-list dd span:before										{ content:'- '; color:#AAA; }
+.bbs-list dd span:first-child									{ margin-left:0; }
+.bbs-list dd.file													{ border-bottom:1px solid #AAA; padding-bottom:9px; margin-bottom:3px; }
+.bbs-list dd.file:last-child										{ margin-bottom:0; }
+.bbs-list dd.file a												{ display:inline-block; color:#444; text-indent:17px; background:url("/images/oklms/mobile/common/file_bullet_01.png") 0 1px no-repeat; }
+.bbs-list dd.file b												{ display:inline-block; font-weight:normal; color:#AAA; text-indent:17px; background:url("/images/oklms/mobile/common/file_bullet_02.png") 0 1px no-repeat; }
+
+.bbs-more															{ float:left; width:100%; height:25px; }
+.bbs-more a														{ position:relative; display:inline-block; width:110px; height:21px; left:50%; font-size:15px; color:#FFF; text-align:center; background:url("/images/oklms/mobile/common/more_bg.png") no-repeat; padding:4px 20px 0 0; margin-left:-65px; }
+
+
+
+.bbs-view															{ float:left; width:100%; }
+.bbs-view dt														{ float:left; width:100%; font:13px nbgM; color:#335896; line-height:16px; border-bottom:2px solid #555; padding:7px 0; }
+.bbs-view dt p													{ font-size:12px; color:#F76000; padding-bottom:2px; }
+.bbs-view dt span												{ display:block; overflow:hidden; width:100%; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined; }
+.bbs-view dd														{ float:left; width:100%; font:12px nbgM; color:#666; line-height:16px; border-bottom:1px solid #DDD; padding:5px 0 4px; }
+.bbs-view dd span												{ display:inline-block; margin-left:10px; }
+.bbs-view dd span:before									{ content:'- '; color:#AAA; }
+.bbs-view dd span:first-child								{ margin-left:0; }
+.bbs-view dd p													{ padding:5px 0 5px 10px; }
+
+.bbs-view dd.file													{ padding-bottom:9px; }
+.bbs-view dd.file a												{ display:inline-block; color:#444; text-indent:17px; background:url("/images/oklms/mobile/common/file_bullet_01.png") 0 1px no-repeat; }
+.bbs-view dd.file b												{ display:inline-block; font-weight:normal; color:#AAA; text-indent:17px; background:url("/images/oklms/mobile/common/file_bullet_02.png") 0 1px no-repeat; }
+
+
+
+.bbs-reply															{ position:relative; float:left; width:100%; }
+.bbs-reply dt														{ float:left; width:100%; color:#666; border-top:1px solid #E5E5E5; padding-top:7px; }
+.bbs-reply dt:first-child										{ border-top:none; }
+.bbs-reply dt span												{ display:inline-block; color:#F76000; text-indent:12px; background:url("/images/oklms/mobile/common/reply_bullet.png") 2px 4px no-repeat; }
+.bbs-reply dd														{ float:left; width:100%;color:#888; text-indent:12px; padding-bottom:5px; }
+.bbs-reply dd														{ display:inline-block; }
+
+
+
+
+
+.btn-area															{ position:relative; float:left; width:100%; }
+.btn-area:after													{ content:""; display:block; clear:both; }
+.btn-area a															{ display:inline-block; overflow:hidden; font:700 13px nbgM; color:#FFF; line-height:20px; vertical-align:middle; border-radius:3px; padding:6px 12px 4px; margin-left:3px; }
+.btn-area a:first-child											{ margin-left:0; }
+.btn-area a.orange												{ background:#F76000; }
+.btn-area a.yellow												{ background:#F78B00; }
+.btn-area a.gray-1												{ background:#A7A7A7; }
+.btn-area a.gray-2												{ background:#777; }
+.btn-area a.gray-3												{ background:#333; }
+
+
+
+

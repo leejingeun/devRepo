@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+ 
+	<!-- body만 있는 페이지  -->
+	<definition name="oklms.body.definition" template="/WEB-INF/jsp/layout/oklms/cmm/bodyLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="body" value="" />
+	</definition>
+ 
+	<!-- excel download 페이지 -->
+	<definition name="oklms.excel.definition" template="/WEB-INF/jsp/layout/oklms/cmm/excelLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- 빈페이지 -->
+	<definition name="oklms.blank.definition" template="/WEB-INF/jsp/layout/oklms/cmm/blankLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	<!-- import 페이지 -->
+	<definition name="oklms.import.definition" template="/WEB-INF/jsp/layout/oklms/cmm/importLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="oklms.error.definition" template="/WEB-INF/jsp/layout/oklms/cmm/errorLayout.jsp">
+		<put-attribute name="title" value="OK-LMS" />
+		<put-attribute name="body" value="" />
+	</definition>
+
+	
+	 
+	
+	<definition name="cmm/error/*" extends="oklms.body.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/cmm/error/{1}.jsp" />
+	</definition>
+	 
+
+	<definition name="oklms_blank/commbiz/viewer/template/*" extends="oklms.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/commbiz/viewer/template/{1}.jsp" />
+	</definition>
+
+
+	<definition name="oklms_blank/*" extends="oklms.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}.jsp" />
+	</definition>	
+	<definition name="oklms_blank/*/*" extends="oklms.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}.jsp" />
+	</definition>	
+	<definition name="oklms_blank/*/*/*" extends="oklms.blank.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	
+	<definition name="oklms_import/*" extends="oklms.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}.jsp" />
+	</definition>	
+	<definition name="oklms_import/*/*" extends="oklms.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}.jsp" />
+	</definition>	
+	<definition name="oklms_import/*/*/*" extends="oklms.import.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}/{3}.jsp" />
+	</definition>
+
+
+	<definition name="oklms_excel/*/*" extends="oklms.excel.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}.jsp" />
+	</definition>
+
+	<definition name="oklms_excel/*/*/*" extends="oklms.excel.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<definition name="oklms_excel/*/*/*/*" extends="oklms.excel.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/oklms/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+
+</tiles-definitions>    

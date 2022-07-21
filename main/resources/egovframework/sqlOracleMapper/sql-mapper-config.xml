@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+  		<setting name="mapUnderscoreToCamelCase" value="true"/>
+  		<setting name="callSettersOnNulls" value="true"/>
+  		<setting name="jdbcTypeForNull" value="VARCHAR"/>
+	</settings>
+	
+    <typeHandlers>
+        <!--<typeHandler handler="kr.co.sitglobal.oklms.comm.hndlr.MyBatisUs7AsciiHndlr" javaType="String" jdbcType="VARCHAR"/>-->
+        <!--<typeHandler handler="kr.co.sitglobal.oklms.comm.hndlr.MyBatisUs7AsciiNvarcharHndlr" javaType="String" jdbcType="NVARCHAR"/>-->
+        <typeHandler handler="kr.co.sitglobal.oklms.comm.hndlr.MyBatisClobHndlr" javaType="String" jdbcType="CLOB"/>
+    </typeHandlers>
+</configuration>

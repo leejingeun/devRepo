@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper">
+
+	<select id="listAunuriMember" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriMember ====== */
+	    SELECT DISTINCT B.STUDNO AS MEM_ID,
+			       CASE
+			           WHEN B.STUDNO IN ('20150005','20150003','20160024','20150234','20170014')
+			               AND B.MEM_TYPE = '교수'
+			           THEN 'CDP'
+			           WHEN B.STUDNO IN ('530026','​530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND B.MEM_TYPE = '교수'
+			           THEN 'CCN'
+			           WHEN B.STUDNO NOT IN ('20150005','20150003','20160024','20150234','20170014','530026','530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND B.MEM_TYPE = '교수'
+			           THEN 'PRT'
+			           ELSE 'STD'
+			       END MEM_TYPE,
+			       CASE
+			           WHEN B.STUDNO IN ('20150005','20150003','20160024','20150234','20170014')
+			               AND MEM_TYPE = '교수'
+			           THEN '2016AUTH0000006'
+			           WHEN B.STUDNO IN ('530026','530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND MEM_TYPE = '교수'
+			           THEN '2016AUTH0000005'
+			           WHEN B.STUDNO NOT IN ('20150005','20150003','20160024','20150234','20170014','530026','530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND MEM_TYPE = '교수'
+			           THEN '2016AUTH0000003'
+			           ELSE '2016AUTH0000002'
+			       END AUTH_GROUP_ID,
+			       B.NAME AS MEM_NAME,
+			       DECODE(B.SEX,'102','F','M') AS SEX ,
+			       B.BRTHJDAY AS MEM_BIRTH,
+			       B.MAIL AS EMAIL,
+			       B.TEL AS TEL_NO,
+			       B.HP AS HP_NO,
+			       B.DEPT_NO AS DEPT_NO,
+			       B.DEPT_NM AS DEPT_NM
+			  FROM
+			       (SELECT STUDNO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M MST
+					 WHERE DEPT_NO IN ('1887','1891','1916','1917','1931','1932','1953','1965')
+					    UNION
+					SELECT INS_M.EMPL_NO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_STUDY_LCTRE_M LCT ,
+					       KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE TIM,
+					       KUT_HAK.VH_OKLMS_TH_STUDY_ESTBL_PROFSR INS_M
+					 WHERE LCT.ESTBL_YY = TIM.ESTBL_YY
+					       AND LCT.ESTBL_SEMSTR_CD = TIM.ESTBL_SEMSTR_CD
+					       AND LCT.COURSE_NO = TIM.COURSE_NO
+					       AND LCT.PARTITN_CLAS_SE_CD = TIM.PARTITN_CLAS_SE_CD
+					       AND LCT.ESTBL_YY = INS_M.ESTBL_YY
+					       AND LCT.ESTBL_SEMSTR_CD = INS_M.ESTBL_SEMSTR_CD
+					       AND LCT.COURSE_NO = INS_M.COURSE_NO
+					       AND LCT.PARTITN_CLAS_SE_CD = INS_M.PARTITN_CLAS_SE_CD
+					       AND LCT.ESTBL_DEPT_NO IN ('1891','1916','1917','1931','1932','1953')
+					       AND TIM.EMPL_NO IS NOT NULL
+					 GROUP BY INS_M.EMPL_NO
+					    UNION
+					SELECT INS_M.EMPL_NO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_STUDY_ESTBL_PROFSR INS_M
+					 WHERE INS_M.EMPL_NO IS NOT NULL
+					       AND ESTBL_YY >= '2015'
+					    UNION
+					SELECT INS.EMPL_NO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE INS
+					 WHERE INS.EMPL_NO IS NOT NULL
+					       AND ESTBL_YY >= '2015'
+			       ) A ,
+			       (SELECT *
+			         FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M
+			       ) B
+			 WHERE A.STUDNO = B.STUDNO
+
+			<!--
+			기계설계공학과				1931
+			기전융합공학과				1891
+			강소기업경영학과			1932
+			기계설비제어공학과			1917
+			IT융합소프트웨어공학과	1916
+			일학습사업팀					1887
+			일학습병행대학 교학팀		1965
+		 	 -->
+	</select>
+
+
+	<select id="listAunuriSubject" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriSubject ====== */
+	    SELECT LEC.ESTBL_YY AS YYYY,
+				       DECODE(LEC.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+				       LEC.COURSE_NO AS SUBJECT_CODE,
+				       LEC.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+				       LEC.UNIV_GDHL_SE_CD AS UNIV_GDHL_SE_CD,
+				       MST.COURSE_K AS SUBJECT_NAME,
+				       LEC.ESTBL_DEPT_NO AS DEPARTMENT_NO,
+				       LEC.ESTBL_DEPT_NM AS DEPARTMENT_NAME,
+				       CASE
+				           WHEN LEC.ESTBL_DEPT_NO IN('1891','1931','1932')
+				           THEN 'NORMAL'
+				           ELSE 'HSKILL'
+				       END SUBJECT_TYPE,
+				       CASE
+				           WHEN NVL(MST.PNT,0) > 0
+				           THEN 'Y'
+				           ELSE 'N'
+				       END POINT_USE_YN,
+				       MST.PNT AS POINT,
+				       MST.LCTRE_TIME AS TRANING_HOUR,
+				       DECODE(MST.OJT_AT,'Y','OJT','OFF') AS SUBJECT_TRANING_TYPE,
+				       DECODE(LEC.E_LEARN_LECTURE_CD,NULL,'NONE',LEC.E_LEARN_LECTURE_CD) AS ONLINE_TYPE,
+				       LEC.WEEK_SE_CD,
+				       TIM.LCTRUM_NM AS LCTRUM_CD,
+				       TIM.LCTRUM_CD AS LCTRUM_NM,
+				       NVL
+				       (
+				              (SELECT SUM(DOC.MIDDLE_TEST+DOC.TRMEND_TEST+DOC.ATEND_SCRE+DOC.TASK+DOC.QUSTNR)
+				                FROM KUT_HAK.VH_OKLMS_TH_STUDY_LRN_PLAN_DOC DOC
+				               WHERE DOC.ESTBL_YY = LEC.ESTBL_YY
+				                     AND DOC.ESTBL_SEMSTR_CD = LEC.ESTBL_SEMSTR_CD
+				                     AND DOC.COURSE_NO = LEC.COURSE_NO
+				                     AND DOC.PARTITN_CLAS_SE_CD = LEC.PARTITN_CLAS_SE_CD
+				                     AND DOC.UNIV_GDHL_SE_CD = LEC.UNIV_GDHL_SE_CD
+				               GROUP BY DOC.ESTBL_YY,
+				                     DOC.ESTBL_SEMSTR_CD,
+				                     DOC.COURSE_NO,
+				                     DOC.PARTITN_CLAS_SE_CD,
+				                     DOC.UNIV_GDHL_SE_CD
+				              ),0
+				          ) AS GRADE_RATIO
+				     FROM KUT_HAK.VH_OKLMS_TH_COURSE_M MST ,
+				          KUT_HAK.VH_OKLMS_TH_STUDY_LCTRE_M LEC
+				      LEFT OUTER JOIN
+				          (SELECT ESTBL_YY,
+				                 ESTBL_SEMSTR_CD ,
+				                 COURSE_NO,
+				                 PARTITN_CLAS_SE_CD,
+				                 MAX(LCTRUM_CD) AS LCTRUM_CD,
+				                 MAX(LCTRUM_NM) AS LCTRUM_NM
+				            FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE
+				           GROUP BY ESTBL_YY,
+				                 ESTBL_SEMSTR_CD,
+				                 COURSE_NO,
+				                 PARTITN_CLAS_SE_CD
+				          ) TIM
+				          ON LEC.ESTBL_YY = TIM.ESTBL_YY
+				          AND LEC.ESTBL_SEMSTR_CD = TIM.ESTBL_SEMSTR_CD
+				          AND LEC.COURSE_NO = TIM.COURSE_NO
+				          AND LEC.PARTITN_CLAS_SE_CD = TIM.PARTITN_CLAS_SE_CD
+				    WHERE MST.COURSE_NO = LEC.COURSE_NO
+				          AND LEC.ESTBL_YY IN ( '2015','2016','2017')
+				          AND LEC.ESTBL_DEPT_NO IN('1891','1931','1932','1917','1916')
+				 ORDER BY LEC.ESTBL_YY DESC
+	</select>
+
+	<select id="listAunuriLesson" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkLessonVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkLessonVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriLesson ====== */
+	    SELECT LES.ESTBL_YY AS YYYY,
+			       DECODE(LES.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+			       LES.COURSE_NO AS SUBJECT_CODE,
+			       LES.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+			       LES.STUDNO AS MEM_ID
+			  FROM KUT_HAK.VH_OKLMS_TH_ATNLC_ATNLC_REQST LES
+	</select>
+
+	<select id="listAunuriIns" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriIns ====== */
+		   SELECT INS_M.ESTBL_YY AS YYYY,
+		       DECODE(INS_M.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+		       INS_M.COURSE_NO AS SUBJECT_CODE,
+		       INS_M.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+		       INS_M.EMPL_NO AS MEM_ID
+		  FROM KUT_HAK.VH_OKLMS_TH_STUDY_ESTBL_PROFSR INS_M
+		 WHERE INS_M.EMPL_NO IS NOT NULL
+		       AND ESTBL_YY >= '2015'
+		    UNION
+		SELECT INS.ESTBL_YY AS YYYY,
+		       DECODE(INS.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+		       INS.COURSE_NO AS SUBJECT_CODE,
+		       INS.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+		       INS.EMPL_NO AS MEM_ID
+		  FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE INS
+		 WHERE INS.EMPL_NO IS NOT NULL
+		       AND ESTBL_YY >= '2015'
+	</select>
+
+	<select id="listAunuriHaksaSchedule" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkScheduleVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkScheduleVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriHaksaSchedule ====== */
+		   SELECT SCH.YY AS YYYY,
+		       DECODE(SCH.SEMESTER,'101','1','102','2','103','3','4') AS TERM,
+		       SCH.CHANGE_BGNDE AS START_DATE,
+		       SCH.CHANGE_ENDDE AS END_DATE
+		  FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_SCHDUL SCH
+	</select>
+
+	<select id="getAunuriWeekTime" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriWeekTime ====== */
+		   SELECT
+		   		   LRN.YYYY,
+		   		   LRN.TERM,
+		   		   LRN.SUBJECT_CODE,
+		   		   LRN.SUBJECT_CLASS,
+		   		   LRN.WEEK_CNT,
+		   		   LRN.LESSON_CN,
+			       LRN.TRANING_DATE,
+			       WET.TRANING_ST_HOUR,
+			       WET.TRANING_ST_MIN,
+			       WET.TRANING_ED_HOUR,
+			       WET.TRANING_ED_MIN
+			  FROM
+			       (SELECT TBL.ESTBL_YY AS YYYY,
+			              DECODE(TBL.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+			              TBL.COURSE_NO AS SUBJECT_CODE,
+			              TBL.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+			              TBL.WEEK_NUM AS WEEK_CNT,
+			              TBL.LESSON_CN AS LESSON_CN,
+			              TO_CHAR(TO_DATE(MAIN_BEGIN_DE,'YYYY.MM.DD'),'YYYY.MM.DD') AS TRANING_DATE
+			         FROM KUT_HAK.VH_OKLMS_TH_STUDY_LRN_CN TBL
+			       ) LRN ,
+			       (SELECT TBL.ESTBL_YY AS YYYY,
+			              DECODE(TBL.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+			              TBL.COURSE_NO AS SUBJECT_CODE,
+			              TBL.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+			              SUBSTR(MIN(TBL.EDC_TIME_CD_NM),1,2) AS TRANING_ST_HOUR,
+			              SUBSTR(MIN(TBL.EDC_TIME_CD_NM),4,2) AS TRANING_ST_MIN,
+			              SUBSTR(MAX(TBL.EDC_TIME_CD_NM),9,2) AS TRANING_ED_HOUR,
+			              SUBSTR(MAX(TBL.EDC_TIME_CD_NM),12,2) AS TRANING_ED_MIN
+			         FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE TBL
+			        WHERE TBL.EDC_TIME_CD_NM IS NOT NULL
+			        GROUP BY TBL.ESTBL_YY,
+			              TBL.ESTBL_SEMSTR_CD,
+			              TBL.COURSE_NO,
+			              TBL.PARTITN_CLAS_SE_CD
+			       ) WET
+			 WHERE LRN.YYYY = WET.YYYY(+)
+			       AND LRN.TERM = WET.TERM(+)
+			       AND LRN.SUBJECT_CODE = WET.SUBJECT_CODE(+)
+			       AND LRN.SUBJECT_CLASS = WET.SUBJECT_CLASS(+)
+			       AND LRN.YYYY = #{yyyy}
+			       AND LRN.TERM = #{term}
+			       AND LRN.SUBJECT_CODE = #{subjectCode}
+			       AND LRN.SUBJECT_CLASS = #{subjectClass}
+			       AND LRN.WEEK_CNT = #{weekCnt}
+	</select>
+
+	<select id="getAunuriWeekLessonInfo" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriWeekLessonInfo ====== */
+		   SELECT
+		   		   LRN.LESSON_CN,
+		   		   LRN.LESSON_MTHD
+			  FROM
+			       (SELECT TBL.ESTBL_YY AS YYYY,
+			              DECODE(TBL.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+			              TBL.COURSE_NO AS SUBJECT_CODE,
+			              TBL.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+			              TBL.WEEK_NUM AS WEEK_CNT,
+			              TBL.LESSON_CN AS LESSON_CN,
+			              TBL.LESSON_MTHD AS LESSON_MTHD
+			         FROM KUT_HAK.VH_OKLMS_TH_STUDY_LRN_CN TBL
+			       ) LRN
+			 WHERE LRN.YYYY = #{yyyy}
+			       AND LRN.TERM = #{term}
+			       AND LRN.SUBJECT_CODE = #{subjectCode}
+			       AND LRN.SUBJECT_CLASS = #{subjectClass}
+			       AND LRN.WEEK_CNT = #{weekCnt}
+	</select>
+
+	<select id="getAunuriWeekNcsUnit" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriWeekNcsUnit ====== */
+		   SELECT YYYY,
+				       TERM,
+				       SUBJECT_CODE,
+				       SUBJECT_CLASS,
+				       WEEK_CNT,
+				       NCS_UNIT_ID,
+				       NCS_UNIT_NAME
+				  FROM
+				       (SELECT TBL.ESTBL_YY AS YYYY,
+				              DECODE(TBL.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+				              TBL.COURSE_NO AS SUBJECT_CODE,
+				              TBL.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+				              TBL.WEEK_NUM AS WEEK_CNT,
+				              TBL.CAPA_FID AS NCS_UNIT_ID,
+				              TBL.CAPA_NM AS NCS_UNIT_NAME
+				         FROM KUT_NCS.VH_OKLMS_TH_PLAN_NCS_LRN TBL
+				        WHERE TBL.CAPA_FID IS NOT NULL
+				        <![CDATA[
+				        AND TBL.CAPA_FID <> 'Z'
+				        AND TBL.ELEM_ID <> 'Z'
+				        ]]>
+				        GROUP BY TBL.ESTBL_YY,
+				              TBL.ESTBL_SEMSTR_CD,
+				              TBL.COURSE_NO,
+				              TBL.PARTITN_CLAS_SE_CD,
+				              TBL.WEEK_NUM,
+				              TBL.WEEK_NUM_NM,
+				              TBL.CAPA_FID,
+				              TBL.CAPA_NM
+				     ORDER BY TBL.ESTBL_YY,
+				              TBL.ESTBL_SEMSTR_CD,
+				              TBL.COURSE_NO,
+				              TBL.PARTITN_CLAS_SE_CD,
+				              TO_NUMBER(TBL.WEEK_NUM),
+				              TBL.CAPA_FID,
+				              TBL.CAPA_NM
+				       ) UNIT
+				 WHERE UNIT.YYYY = #{yyyy}
+				       AND UNIT.TERM = #{term}
+				       AND UNIT.SUBJECT_CODE = #{subjectCode}
+				       AND UNIT.SUBJECT_CLASS = #{subjectClass}
+				       AND UNIT.WEEK_CNT = #{weekCnt}
+	</select>
+
+	<select id="listAunuriWeekNcsElem" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriWeekNcsElem ====== */
+		   SELECT YYYY,
+				       TERM,
+				       SUBJECT_CODE,
+				       SUBJECT_CLASS,
+				       WEEK_CNT,
+				       NCS_UNIT_ID,
+				       NCS_ELEM_ID,
+				       NCS_ELEM_NAME
+				  FROM
+				       (SELECT TBL.ESTBL_YY AS YYYY,
+				              DECODE(TBL.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+				              TBL.COURSE_NO AS SUBJECT_CODE,
+				              TBL.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+				              TBL.WEEK_NUM AS WEEK_CNT,
+				              TBL.CAPA_FID AS NCS_UNIT_ID,
+				              TBL.ELEM_ID AS NCS_ELEM_ID,
+				              TBL.ELEM_NM AS NCS_ELEM_NAME
+				         FROM KUT_NCS.VH_OKLMS_TH_PLAN_NCS_LRN TBL
+				        WHERE TBL.CAPA_FID IS NOT NULL
+				        AND TBL.ELEM_ID IS NOT NULL
+				        <![CDATA[
+				        AND TBL.CAPA_FID <> 'Z'
+				        AND TBL.ELEM_ID <> 'Z'
+				        ]]>
+				       ) ELEM
+				 WHERE ELEM.YYYY = #{yyyy}
+				       AND ELEM.TERM = #{term}
+				       AND ELEM.SUBJECT_CODE = #{subjectCode}
+				       AND ELEM.SUBJECT_CLASS = #{subjectClass}
+				       AND ELEM.WEEK_CNT = #{weekCnt}
+				       AND ELEM.NCS_UNIT_ID = #{ncsUnitId}
+
+				       GROUP BY YYYY,TERM,SUBJECT_CODE,SUBJECT_CLASS,WEEK_CNT,NCS_UNIT_ID,NCS_ELEM_ID,NCS_ELEM_NAME
+	</select>
+
+
+	<select id="getAunuriUserImage" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriUserImage ====== */
+		   SELECT PHOTO FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M WHERE STUDNO = #{memId}
+	</select>
+
+	<!-- 직무수행능력평가 > 성적평가기준 목록 -->
+	<select id="listAunuriWeekNcsEvalPlanCode" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriWeekNcsEvalPlanCode ====== */
+		   SELECT EV_STD_DIV AS code_id,
+       			  EV_STD_DIV_NM AS code_name
+			FROM KUT_NCS.VH_OKLMS_TH_PLAN_EV_STD
+			WHERE ESTBL_YY = #{yyyy}
+			AND ESTBL_SEMSTR_CD = #{term}
+			AND COURSE_NO = #{subjectCode}
+			AND PARTITN_CLAS_SE_CD = #{subClass}
+			AND EV_STD_DIV NOT IN('10','40') /* 출석과제 삭제 */
+			<!-- AND EV_RT IS NOT NULL /* 평가가중치 */ -->
+			
+			<!-- 가중치가 null 이라도 기말고사 중간고사는 가져오도록 변경 -->
+			AND (EV_RT IS NOT NULL OR EV_STD_DIV IN('20','30'))
+			<!-- 지지균차장님 협의후에 주석처리함. 20170608 -->
+			<!-- <![CDATA[
+	        	AND EV_RT <> 0
+	        ]]> -->
+			ORDER BY EV_STD_DIV
+	</select>
+
+	<!-- 직무수행능력평가 > 평가계획내용 목록 -->
+	<select id="listAunuriWeekNcsEvalPlanNote" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriWeekNcsEvalPlanNote ====== */
+		   SELECT
+			  LRN.ESTBL_YY as yyyy,
+			  LRN.ESTBL_SEMSTR_CD AS term,
+			  LRN.COURSE_NO AS subject_code,
+			  LRN.PARTITN_CLAS_SE_CD AS sub_class,
+			  (SELECT ELEM_CD
+			          FROM KUT_NCS.VH_OKLMS_TH_NCS_LCTRE_ELEM
+			         WHERE ESTBL_YY = LRN.ESTBL_YY
+			           AND ESTBL_SEMSTR_CD = LRN.ESTBL_SEMSTR_CD
+			           AND COURSE_NO = LRN.COURSE_NO
+			           AND PARTITN_CLAS_SE_CD = LRN.PARTITN_CLAS_SE_CD
+			           AND ELEM_ID = LRN.ELEM_ID
+			           ) AS ELEM_CD,
+			   (SELECT ELEM_VW
+			          FROM KUT_NCS.VH_OKLMS_TH_NCS_LCTRE_ELEM
+			         WHERE ESTBL_YY = LRN.ESTBL_YY
+			           AND ESTBL_SEMSTR_CD = LRN.ESTBL_SEMSTR_CD
+			           AND COURSE_NO = LRN.COURSE_NO
+			           AND PARTITN_CLAS_SE_CD = LRN.PARTITN_CLAS_SE_CD
+			           AND ELEM_ID = LRN.ELEM_ID
+			           ) AS ELEM_VW,
+			       LRN.ELEM_ID AS ncsElemId,
+			       LRN.ELEM_NM AS ncsElemName,
+			       LRN.LESSON_CN,
+			       LRN.DTL_SEQ,
+			       ROW_NUMBER() OVER (PARTITION BY LRN.ELEM_ID ORDER BY LRN.ELEM_ID , LRN.DTL_SEQ ASC) rn,
+			       COUNT(*) OVER(PARTITION BY LRN.ELEM_ID ORDER BY LRN.ELEM_ID ASC) rowspan
+			  FROM KUT_NCS.VH_OKLMS_TH_PLAN_NCS_LRN LRN
+			 WHERE LRN.ESTBL_YY = #{yyyy}
+			       AND LRN.ESTBL_SEMSTR_CD = #{term}
+			       AND LRN.COURSE_NO = #{subjectCode}
+			       AND LRN.PARTITN_CLAS_SE_CD = #{subClass}
+			       <![CDATA[
+			        AND UPPER(LRN.ELEM_ID) <> 'Z'
+			        ]]>
+			       AND LRN.ELEM_ID IS NOT NULL
+			       AND LRN.ELEM_NM IS NOT NULL
+			       <if test="ncsElemId != null and ncsElemId != ''">
+						AND ELEM_ID = #{ncsElemId}
+			 	   </if>
+			ORDER BY LRN.ELEM_ID , LRN.DTL_SEQ ASC
+	</select>
+
+	<!-- 직무수행능력평가 > 평가방법 목록 -->
+	<select id="listAunuriWeekNcsEvalWay" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriWeekNcsEvalWay ====== */
+		   SELECT
+				ESTBL_YY as yyyy,
+			  	ESTBL_SEMSTR_CD AS term,
+			  	COURSE_NO AS subject_code,
+			  	PARTITN_CLAS_SE_CD AS sub_class,
+			  	SET_SEQ AS seq,
+			    CD_DIV,
+			    DTL_CD,
+			    DTL_CD_NM AS DTL_CD_NAME,
+			    ENT_DATA AS ENT_DATA_NAME
+			FROM KUT_NCS.VH_OKLMS_TH_LCTRE_CTRL_SET
+			WHERE ESTBL_YY = #{yyyy}
+			AND ESTBL_SEMSTR_CD = #{term}
+			AND COURSE_NO = #{subjectCode}
+			AND PARTITN_CLAS_SE_CD = #{subClass}
+			AND CTRL_DIV = 'C180'
+			ORDER BY SET_SEQ ASC
+	</select>
+
+	<!-- 직무수행능력평가 > 평가계획 등록을 위한 성적평가기준 조회 -->
+	<select id="getAunuriWeekNcsEvalPlan" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriWeekNcsEvalPlan ====== */
+		   SELECT EV_STD_DIV as evDivCd,
+			       EV_STD_DIV_NM as evDivName,
+			       ETC_NM as etcName,
+			       EV_RT as evRt
+			FROM KUT_NCS.VH_OKLMS_TH_PLAN_EV_STD
+			WHERE ESTBL_YY = #{yyyy}
+			AND ESTBL_SEMSTR_CD = #{term}
+			AND COURSE_NO = #{subjectCode}
+			AND PARTITN_CLAS_SE_CD = #{subClass}
+			AND EV_STD_DIV NOT IN('10','40') /* 출석과제 삭제 */
+			<!-- AND EV_RT IS NOT NULL /* 평가가중치 */ -->
+			<!-- 가중치가 null 이라도 기말고사 중간고사는 가져오도록 변경 -->
+			AND (EV_RT IS NOT NULL OR EV_STD_DIV IN('20','30'))
+			
+			AND EV_STD_DIV = #{evDivCd}
+			<!-- 지지균차장님 협의후에 주석처리함. 20170608 -->
+			<!-- <![CDATA[
+	        	AND EV_RT <> 0
+	        ]]> -->
+	</select>
+
+	<!-- 직무수행능력평가 > NCS개설과목능력요소 조회 -->
+	<select id="getAunuriWeekNcsEvalPlanElem" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriWeekNcsEvalPlanElem ====== */
+		   SELECT
+			  ELEM_ID AS NCS_ELEM_ID,
+		      ELEM_NM AS NCS_ELEM_NAME,
+		      ELEM_CD AS elemNumCd,
+		      ELEM_VW
+		 FROM KUT_NCS.VH_OKLMS_TH_NCS_LCTRE_ELEM
+		 WHERE ESTBL_YY = #{yyyy}
+			AND ESTBL_SEMSTR_CD = #{term}
+			AND COURSE_NO = #{subjectCode}
+			AND PARTITN_CLAS_SE_CD = #{subClass}
+		    AND ELEM_ID = #{ncsElemId}
+	</select>
+
+
+	<select id="listGrade" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriWeekNcsEvalPlanElem ====== */
+		   SELECT GRD.STUDNO,
+				        CASE
+				           WHEN SUBSTR(GRD.STUDNO,1,2) != '20'
+				           THEN TO_CHAR(SYSDATE,'YYYY')+1-TO_NUMBER('20'||SUBSTR(GRD.STUDNO,1,2))
+				           ELSE TO_CHAR(SYSDATE,'YYYY')+1-SUBSTR(GRD.STUDNO,1,4)
+				       END SUBJECT_GRADE,
+				       (SELECT NAME
+				         FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M THM
+				        WHERE THM.STUDNO = GRD.STUDNO
+				        AND ROWNUM = 1
+				       ) MEM_NAME,
+				       (SELECT NAME
+				         FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M THM
+				        WHERE THM.STUDNO = GRD.STUDNO
+				        AND ROWNUM = 1
+				       ) SUBJECT_NAME,
+				       MAX(DECODE(GRD.RN,1,GRD.YY,NULL)) YY,
+				       MAX(DECODE(GRD.RN,1,GRD.SEMSTR_CD,NULL)) SEMSTR_CD,
+				       MAX(DECODE(GRD.RN,1,GRD.COURSE_NO,NULL)) COURSE_NO1,
+				       MAX(DECODE(GRD.RN,1,GRD.PNT,NULL)) PNT1,
+				       MAX(DECODE(GRD.RN,1,GRD.THEORY_LCTRE_TIME,NULL)) THEORY_LCTRE_TIME1,
+				       MAX(DECODE(GRD.RN,1,GRD.REQST_PNT,NULL)) REQST_PNT1,
+				       MAX(DECODE(GRD.RN,1,GRD.DSGN_PNT,NULL)) DSGN_PNT1,
+				       MAX(DECODE(GRD.RN,1,GRD.GRAD_NM,NULL)) GRAD_NM1,
+				       MAX(DECODE(GRD.RN,1,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT1,
+				       MAX(DECODE(GRD.RN,1,GRD.MARK_AVRG,NULL)) MARK_AVRG1,
+				       MAX(DECODE(GRD.RN,2,GRD.COURSE_NO,NULL)) COURSE_NO2,
+				       MAX(DECODE(GRD.RN,2,GRD.PNT,NULL)) PNT2,
+				       MAX(DECODE(GRD.RN,2,GRD.THEORY_LCTRE_TIME,NULL)) THEORY_LCTRE_TIME2,
+				       MAX(DECODE(GRD.RN,2,GRD.REQST_PNT,NULL)) REQST_PNT2,
+				       MAX(DECODE(GRD.RN,2,GRD.DSGN_PNT,NULL)) DSGN_PNT2,
+				       MAX(DECODE(GRD.RN,2,GRD.GRAD_NM,NULL)) GRAD_NM2,
+				       MAX(DECODE(GRD.RN,2,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT2,
+				       MAX(DECODE(GRD.RN,2,GRD.MARK_AVRG,NULL)) MARK_AVRG2,
+				       MAX(DECODE(GRD.RN,3,GRD.COURSE_NO,NULL)) COURSE_NO3,
+				       MAX(DECODE(GRD.RN,3,GRD.PNT,NULL)) PNT3,
+				       MAX(DECODE(GRD.RN,3,GRD.THEORY_LCTRE_TIME,NULL)) THEORY_LCTRE_TIME3,
+				       MAX(DECODE(GRD.RN,3,GRD.REQST_PNT,NULL)) REQST_PNT3,
+				       MAX(DECODE(GRD.RN,3,GRD.DSGN_PNT,NULL)) DSGN_PNT3,
+				       MAX(DECODE(GRD.RN,3,GRD.GRAD_NM,NULL)) GRAD_NM3,
+				       MAX(DECODE(GRD.RN,3,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT3,
+				       MAX(DECODE(GRD.RN,3,GRD.MARK_AVRG,NULL)) MARK_AVRG3,
+				       MAX(DECODE(GRD.RN,4,GRD.COURSE_NO,NULL)) COURSE_NO4,
+				       MAX(DECODE(GRD.RN,4,GRD.PNT,NULL)) PNT4,
+				       MAX(DECODE(GRD.RN,4,GRD.THEORY_LCTRE_TIME,NULL)) THEORY_LCTRE_TIME4,
+				       MAX(DECODE(GRD.RN,4,GRD.REQST_PNT,NULL)) REQST_PNT4,
+				       MAX(DECODE(GRD.RN,4,GRD.DSGN_PNT,NULL)) DSGN_PNT4,
+				       MAX(DECODE(GRD.RN,4,GRD.GRAD_NM,NULL)) GRAD_NM4,
+				       MAX(DECODE(GRD.RN,4,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT4,
+				       MAX(DECODE(GRD.RN,4,GRD.MARK_AVRG,NULL)) MARK_AVRG4,
+				       MAX(DECODE(GRD.RN,5,GRD.COURSE_NO,NULL)) COURSE_NO5,
+				       MAX(DECODE(GRD.RN,5,GRD.PNT,NULL)) PNT5,
+				       MAX(DECODE(GRD.RN,5,GRD.THEORY_LCTRE_TIME,NULL)) THEORY_LCTRE_TIME5,
+				       MAX(DECODE(GRD.RN,5,GRD.REQST_PNT,NULL)) REQST_PNT5,
+				       MAX(DECODE(GRD.RN,5,GRD.DSGN_PNT,NULL)) DSGN_PNT5,
+				       MAX(DECODE(GRD.RN,5,GRD.GRAD_NM,NULL)) GRAD_NM5,
+				       MAX(DECODE(GRD.RN,5,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT5,
+				       MAX(DECODE(GRD.RN,5,GRD.MARK_AVRG,NULL)) MARK_AVRG5
+				  FROM
+				       (SELECT ROW_NUMBER() OVER (PARTITION BY STUDNO,YY,SEMSTR_CD ORDER BY STUDNO) RN,
+				              STUDNO,
+				              YY,
+				              SEMSTR_CD,
+				              COURSE_NO,
+				              PNT,
+				              THEORY_LCTRE_TIME,
+				              REQST_PNT,
+				              DSGN_PNT,
+				              GRAD_NM,
+				              SCRE_RCOGN_AT,
+				              MARK_AVRG
+				         FROM KUT_HAK.VH_OKLMS_TH_SCRE_CSTDY_SCRE
+				        WHERE yy = '2016'
+				              AND SEMSTR_CD = '101' --  AND STUDNO = '2015191012'
+				     ORDER BY STUDNO,
+				              YY,
+				              SEMSTR_CD,
+				              COURSE_NO
+				       ) GRD
+				 GROUP BY GRD.STUDNO
+	</select>
+
+	<select id="getAunuriMemberCnt" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="java.lang.Integer">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriMemberCnt ====== */
+		   SELECT
+			  count(1) as cnt
+		 FROM  OKLMS_CLASS_INFO
+		 WHERE ESTBL_YY = #{yyyy}
+		   AND ESTBL_SEMSTR_CD = #{term}
+		   AND COURSE_NO = #{subjectCode}
+		   AND PARTITN_CLAS_SE_CD = #{subClass}
+	</select>
+
+	<select id="getAunuriMemberTutCnt" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="java.lang.Integer">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriMemberTutCnt ====== */
+		   SELECT
+			  count(1) as cnt
+		 FROM  OKLMS_CLASS_INFO
+		 WHERE 1 = 1
+		   AND COMPANY_NAME LIKE '%' || #{companyName} || '%'
+		   AND TUTOR_NAME LIKE '%' || #{tutorName} || '%'
+	</select>
+
+	<select id="getAunuriMemberTutSize" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO" resultType="java.lang.Integer">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriMemberTutCnt ====== */
+		   SELECT
+			  length(TUTOR_NAME) as tutor_name_size
+		 FROM  OKLMS_CLASS_INFO
+		 WHERE 1 = 1
+		   AND COMPANY_NAME LIKE '%' || #{companyName} || '%'
+		   AND TUTOR_NAME LIKE '%' || #{tutorName} || '%'
+	</select>
+
+	<insert id="insertAunuriSubjectInfoTutMapping" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+		/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.insertAunuriSubjectInfoTutMapping ====== */
+			INSERT INTO OKLMS_CLASS_INFO (
+						ESTBL_YY,
+						ESTBL_SEMSTR_CD,
+						COURSE_NO,
+						PARTITN_CLAS_SE_CD,
+						COMPANY_NAME,
+						TUTOR_NAME
+					)
+					VALUES
+					(
+						#{yyyy},
+						#{term},
+						#{subjectCode},
+						#{subClass},
+						#{companyName},
+						#{codeName}
+					)
+
+	</insert>
+
+	<update id="updateAunuriSubjectInfoTutMapping" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+		/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.updateAunuriSubjectInfoTutMapping ====== */
+			UPDATE OKLMS_CLASS_INFO
+			SET UPDATE_DATE = SYSDATE,
+		    TUTOR_NAME = #{codeName}
+			WHERE ESTBL_YY = #{yyyy}
+			AND ESTBL_SEMSTR_CD = #{term}
+			AND COURSE_NO = #{subjectCode}
+			AND PARTITN_CLAS_SE_CD = #{subClass}
+	</update>
+
+	<update id="deleteAunuriTutMappingNull" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+		/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.deleteAunuriTutMappingNull ====== */
+			UPDATE OKLMS_CLASS_INFO
+			SET UPDATE_DATE = SYSDATE,
+		    TUTOR_NAME = null
+			WHERE 1 = 1
+		   	AND COMPANY_NAME LIKE '%' || #{companyName} || '%'
+		   	AND TUTOR_NAME LIKE '%' || #{tutorName} || '%'
+	</update>
+
+	<update id="deleteAunuriTutMapping" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkEvalPlanNcsVO">
+		/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.deleteAunuriTutMapping ====== */
+			UPDATE OKLMS_CLASS_INFO
+			SET UPDATE_DATE = SYSDATE,
+		    TUTOR_NAME = SUBSTR(REPLACE(TUTOR_NAME,#{tutorName},''),2,length(TUTOR_NAME))
+			WHERE 1 = 1
+		   	AND COMPANY_NAME LIKE '%' || #{companyName} || '%'
+		   	AND TUTOR_NAME LIKE '%' || #{tutorName} || '%'
+	</update>
+	
+	
+	<select id="getSubectGradeCnt" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectGradeVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectGradeVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getSubectGradeCnt ====== */
+			 	SELECT 
+                    COUNT(1) AS GRADE_CNT
+               FROM KUT_HAK.VH_OKLMS_TH_SCRE_CSTDY_SCRE 
+              WHERE YY = #{yy}
+                    AND SEMSTR_CD = #{semstrCd}
+                    AND STUDNO IN (
+                        ${memIds}
+                    ) 
+	</select>
+	
+	<select id="listSubectGrade" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectGradeVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectGradeVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listSubectGrade ====== */
+		   SELECT A.STUDNO AS MEM_ID, 
+				       CASE 
+				           WHEN SUBSTR(A.STUDNO,1,2) != '20' 
+				           THEN TO_CHAR(SYSDATE,'YYYY')+1-TO_NUMBER('20'||SUBSTR(A.STUDNO,1,2)) 
+				           ELSE TO_CHAR(SYSDATE,'YYYY')+1-SUBSTR(A.STUDNO,1,4) 
+				       END SUBJECT_GRADE, 
+				       (SELECT NAME 
+				         FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M THM 
+				        WHERE THM.STUDNO = A.STUDNO 
+				              AND ROWNUM = 1 
+				       ) MEM_NAME , 
+				        <![CDATA[
+				       CASE 
+				           WHEN COURSE_NO1 IS NOT NULL 
+				           THEN  
+				               (SELECT COURSE_K 
+				                 FROM KUT_HAK.VH_OKLMS_TH_COURSE_M THM 
+				                WHERE THM.COURSE_NO = A.COURSE_NO1 
+				                      AND ROWNUM = 1 
+				               )||'<BR>:'||GRAD_NM1||'('||PNT1||')' 
+				           ELSE NULL 
+				       END SUBJECT_1,  
+				       CASE 
+				           WHEN COURSE_NO2 IS NOT NULL 
+				           THEN 
+				               (SELECT COURSE_K 
+				                 FROM KUT_HAK.VH_OKLMS_TH_COURSE_M THM 
+				                WHERE THM.COURSE_NO = A.COURSE_NO2 
+				                      AND ROWNUM = 1 
+				               )||'<BR>:'||GRAD_NM2||'('||PNT2||')' 
+				           ELSE NULL 
+				       END SUBJECT_2,    
+				       CASE 
+				           WHEN COURSE_NO3 IS NOT NULL 
+				           THEN 
+				               (SELECT COURSE_K 
+				                 FROM KUT_HAK.VH_OKLMS_TH_COURSE_M THM 
+				                WHERE THM.COURSE_NO = A.COURSE_NO3 
+				                      AND ROWNUM = 1 
+				               )||'<BR>:'||GRAD_NM3||'('||PNT3||')' 
+				           ELSE NULL 
+				       END SUBJECT_3,   
+				       CASE 
+				           WHEN COURSE_NO4 IS NOT NULL 
+				           THEN 
+				               (SELECT COURSE_K 
+				                 FROM KUT_HAK.VH_OKLMS_TH_COURSE_M THM 
+				                WHERE THM.COURSE_NO = A.COURSE_NO4 
+				                      AND ROWNUM = 1 
+				               )||'<BR>:'||GRAD_NM4||'('||PNT4||')' 
+				           ELSE NULL 
+				       END SUBJECT_4,    
+				       CASE 
+				           WHEN COURSE_NO5 IS NOT NULL 
+				           THEN 
+				               (SELECT COURSE_K 
+				                 FROM KUT_HAK.VH_OKLMS_TH_COURSE_M THM 
+				                WHERE THM.COURSE_NO = A.COURSE_NO5 
+				                      AND ROWNUM = 1 
+				               )||'<BR>:'||GRAD_NM5||'('||PNT5||')' 
+				           ELSE NULL 
+				       END SUBJECT_5,
+				       	]]>	
+				       PNT1+PNT2+PNT3+PNT4+PNT5 AS TOT_PNT, 
+				       THEORY_LCTRE_TIME1+THEORY_LCTRE_TIME2+THEORY_LCTRE_TIME3+THEORY_LCTRE_TIME4+THEORY_LCTRE_TIME5 AS TOT_LCTRE_PNT, 
+				       REQST_PNT1+REQST_PNT2+REQST_PNT3+REQST_PNT4+REQST_PNT5 AS TOT_REQST_PNT,  
+				       DECODE(GRAD_NM1,'F',0,'U',0,PNT1)+DECODE(GRAD_NM2,'F',0,'U',0,PNT2)+DECODE(GRAD_NM3,'F',0,'U',0,PNT3)+DECODE(GRAD_NM4,'F',0,'U',0,PNT4)+DECODE(GRAD_NM5,'F',0,'U',0,PNT5) AS TOT_GET_PNT,
+				       REQST_PNT1+REQST_PNT2+REQST_PNT3+REQST_PNT4+REQST_PNT5 AS TOT_REQST_PNT,  
+				       ROUND((MARK_AVRG1+MARK_AVRG2+MARK_AVRG3+MARK_AVRG4+MARK_AVRG5) / (DECODE(GRAD_NM1,'S',0,PNT1)+DECODE(GRAD_NM2,'S',0,PNT2)+DECODE(GRAD_NM3,'S',0,PNT3)+DECODE(GRAD_NM4,'S',0,PNT4)+DECODE(GRAD_NM5,'S',0,PNT5)),2) AS TOT_MARK_AVRG 
+				  FROM 
+				       (SELECT GRD.STUDNO, 
+				              MAX(DECODE(GRD.RN,1,GRD.YY,NULL)) YY, 
+				              MAX(DECODE(GRD.RN,1,GRD.SEMSTR_CD,NULL)) SEMSTR_CD, 
+				              MAX(DECODE(GRD.RN,1,GRD.COURSE_CNT,0)) COURSE_CNT, 
+				              MAX(DECODE(GRD.RN,1,GRD.COURSE_NO,NULL)) COURSE_NO1, 
+				              MAX(DECODE(GRD.RN,1,GRD.PNT,0)) PNT1, 
+				              MAX(DECODE(GRD.RN,1,GRD.THEORY_LCTRE_TIME,0)) THEORY_LCTRE_TIME1, 
+				              MAX(DECODE(GRD.RN,1,GRD.REQST_PNT,0)) REQST_PNT1, 
+				              MAX(DECODE(GRD.RN,1,GRD.DSGN_PNT,0)) DSGN_PNT1, 
+				              MAX(DECODE(GRD.RN,1,GRD.GRAD_NM,NULL)) GRAD_NM1, 
+				              MAX(DECODE(GRD.RN,1,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT1, 
+				              MAX(DECODE(GRD.RN,1,GRD.MARK_AVRG,0)) MARK_AVRG1, 
+				              MAX(DECODE(GRD.RN,2,GRD.COURSE_NO,NULL)) COURSE_NO2, 
+				              MAX(DECODE(GRD.RN,2,GRD.PNT,0)) PNT2, 
+				              MAX(DECODE(GRD.RN,2,GRD.THEORY_LCTRE_TIME,0)) THEORY_LCTRE_TIME2, 
+				              MAX(DECODE(GRD.RN,2,GRD.REQST_PNT,0)) REQST_PNT2, 
+				              MAX(DECODE(GRD.RN,2,GRD.DSGN_PNT,0)) DSGN_PNT2, 
+				              MAX(DECODE(GRD.RN,2,GRD.GRAD_NM,NULL)) GRAD_NM2, 
+				              MAX(DECODE(GRD.RN,2,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT2, 
+				              MAX(DECODE(GRD.RN,2,GRD.MARK_AVRG,0)) MARK_AVRG2, 
+				              MAX(DECODE(GRD.RN,3,GRD.COURSE_NO,NULL)) COURSE_NO3, 
+				              MAX(DECODE(GRD.RN,3,GRD.PNT,0)) PNT3, 
+				              MAX(DECODE(GRD.RN,3,GRD.THEORY_LCTRE_TIME,0)) THEORY_LCTRE_TIME3, 
+				              MAX(DECODE(GRD.RN,3,GRD.REQST_PNT,0)) REQST_PNT3, 
+				              MAX(DECODE(GRD.RN,3,GRD.DSGN_PNT,0)) DSGN_PNT3, 
+				              MAX(DECODE(GRD.RN,3,GRD.GRAD_NM,NULL)) GRAD_NM3, 
+				              MAX(DECODE(GRD.RN,3,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT3, 
+				              MAX(DECODE(GRD.RN,3,GRD.MARK_AVRG,0)) MARK_AVRG3, 
+				              MAX(DECODE(GRD.RN,4,GRD.COURSE_NO,NULL)) COURSE_NO4, 
+				              MAX(DECODE(GRD.RN,4,GRD.PNT,0)) PNT4, 
+				              MAX(DECODE(GRD.RN,4,GRD.THEORY_LCTRE_TIME,0)) THEORY_LCTRE_TIME4, 
+				              MAX(DECODE(GRD.RN,4,GRD.REQST_PNT,0)) REQST_PNT4, 
+				              MAX(DECODE(GRD.RN,4,GRD.DSGN_PNT,0)) DSGN_PNT4, 
+				              MAX(DECODE(GRD.RN,4,GRD.GRAD_NM,NULL)) GRAD_NM4, 
+				              MAX(DECODE(GRD.RN,4,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT4, 
+				              MAX(DECODE(GRD.RN,4,GRD.MARK_AVRG,0)) MARK_AVRG4, 
+				              MAX(DECODE(GRD.RN,5,GRD.COURSE_NO,NULL)) COURSE_NO5, 
+				              MAX(DECODE(GRD.RN,5,GRD.PNT,0)) PNT5, 
+				              MAX(DECODE(GRD.RN,5,GRD.THEORY_LCTRE_TIME,0)) THEORY_LCTRE_TIME5, 
+				              MAX(DECODE(GRD.RN,5,GRD.REQST_PNT,0)) REQST_PNT5, 
+				              MAX(DECODE(GRD.RN,5,GRD.DSGN_PNT,0)) DSGN_PNT5, 
+				              MAX(DECODE(GRD.RN,5,GRD.GRAD_NM,NULL)) GRAD_NM5, 
+				              MAX(DECODE(GRD.RN,5,GRD.SCRE_RCOGN_AT,NULL)) SCRE_RCOGN_AT5, 
+				              MAX(DECODE(GRD.RN,5,GRD.MARK_AVRG,0)) MARK_AVRG5 
+				         FROM 
+				              (SELECT ROW_NUMBER() OVER (PARTITION BY STUDNO,YY,SEMSTR_CD ORDER BY STUDNO) RN,  
+				                     COUNT(*) OVER(PARTITION BY STUDNO,YY,SEMSTR_CD ORDER BY STUDNO) COURSE_CNT , 
+				                     STUDNO, 
+				                     YY, 
+				                     SEMSTR_CD, 
+				                     COURSE_NO, 
+				                     PNT, 
+				                     THEORY_LCTRE_TIME, 
+				                     REQST_PNT, 
+				                     DSGN_PNT, 
+				                     GRAD_NM, 
+				                     SCRE_RCOGN_AT, 
+				                     MARK_AVRG 
+				                FROM KUT_HAK.VH_OKLMS_TH_SCRE_CSTDY_SCRE 
+				               WHERE YY = #{yy}
+				                     AND SEMSTR_CD = #{semstrCd}
+				                     AND STUDNO IN (
+				                         ${memIds}
+				                     ) 
+				              ) GRD 
+				        GROUP BY GRD.STUDNO 
+				       ) A      
+	</select>
+	
+	
+	
+	
+	<update id="updateAunuriOutMemberInfoEtc" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO">
+		/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.updateAunuriOutMemberInfoEtc ====== */
+			UPDATE OKLMS_OUT_MEMBER_INFO
+			SET UPD_DT = TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS'),
+		    UPD_IP = #{sessionIp}
+			WHERE EMPL_NO = #{sessionMemId}
+	</update>
+	
+	<update id="insertAunuriSms" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO">
+		/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.updateAunuriOutMemberInfoEtc ====== */
+			UPDATE OKLMS_OUT_MEMBER_INFO
+			SET UPD_DT = TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS'),
+		    UPD_IP = #{sessionIp}
+			WHERE EMPL_NO = #{sessionMemId}
+	</update>
+	
+	
+	
+	
+	
+	
+	<select id="getAunuriWeekStartDate" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO" resultType="String">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriTermSubjectCnt ====== */
+	    SELECT WEEK_START_DATE 
+		  FROM 
+		       (SELECT YY AS YYYY, 
+		              DECODE(SEMESTER,'101','1','102','2','103','3','4') AS TERM, 
+		              TO_CHAR((TRUNC(TO_DATE(CHANGE_BGNDE,'YYYY.MM.DD'), 'dy') - 1)+7,'YYYY.MM.DD') AS HAK_START_DATE 
+		         FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_SCHDUL 
+		        WHERE CHANGE_BGNDE IS NOT NULL 
+		       ) 
+		 WHERE YYYY = #{yyyy}
+		       AND TERM = #{term}
+	</select>
+	
+	
+	<select id="listAunuriTermSubject" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriTermSubject ====== */
+	    SELECT * 
+			  FROM 
+			       (SELECT LEC.ESTBL_YY AS YYYY, 
+			              DECODE(LEC.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM, 
+			              LEC.COURSE_NO AS SUBJECT_CODE, 
+			              LEC.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS, 
+			              LEC.UNIV_GDHL_SE_CD AS UNIV_GDHL_SE_CD, 
+			              MST.COURSE_K AS SUBJECT_NAME, 
+			              LEC.ESTBL_DEPT_NO AS DEPARTMENT_NO, 
+			              LEC.ESTBL_DEPT_NM AS DEPARTMENT_NAME, 
+			              CASE 
+			                  WHEN LEC.ESTBL_DEPT_NO IN('1891','1931','1932') 
+			                  THEN 'NORMAL' 
+			                  ELSE 'HSKILL' 
+			              END SUBJECT_TYPE, 
+			              CASE 
+			                  WHEN NVL(MST.PNT,0) > 0 
+			                  THEN 'Y' 
+			                  ELSE 'N' 
+			              END POINT_USE_YN, 
+			              MST.PNT AS POINT, 
+			              MST.LCTRE_TIME AS TRANING_HOUR, 
+			              DECODE(MST.OJT_AT,'Y','OJT','OFF') AS SUBJECT_TRANING_TYPE, 
+			              DECODE(LEC.E_LEARN_LECTURE_CD,NULL,'NONE',LEC.E_LEARN_LECTURE_CD) AS ONLINE_TYPE, 
+			              LEC.WEEK_SE_CD, 
+			              TIM.LCTRUM_NM AS LCTRUM_CD, 
+			              TIM.LCTRUM_CD AS LCTRUM_NM, 
+			              DECODE
+			              (
+			                     (SELECT DOC.PR_COURSE_NO 
+			                       FROM KUT_HAK.VH_OKLMS_TH_STUDY_LRN_PLAN_DOC DOC 
+			                      WHERE DOC.ESTBL_YY = LEC.ESTBL_YY 
+			                            AND DOC.ESTBL_SEMSTR_CD = LEC.ESTBL_SEMSTR_CD 
+			                            AND DOC.COURSE_NO = LEC.COURSE_NO 
+			                            AND DOC.PARTITN_CLAS_SE_CD = LEC.PARTITN_CLAS_SE_CD 
+			                            AND DOC.UNIV_GDHL_SE_CD = LEC.UNIV_GDHL_SE_CD 
+			                     ),NULL,'N','Y'
+			                 ) AS FIRST_STUDY_YN, 
+			                 NVL 
+			                 ( 
+			                        (SELECT SUM(DOC.MIDDLE_TEST+DOC.TRMEND_TEST+DOC.ATEND_SCRE+DOC.TASK+DOC.QUSTNR) 
+			                          FROM KUT_HAK.VH_OKLMS_TH_STUDY_LRN_PLAN_DOC DOC 
+			                         WHERE DOC.ESTBL_YY = LEC.ESTBL_YY 
+			                               AND DOC.ESTBL_SEMSTR_CD = LEC.ESTBL_SEMSTR_CD 
+			                               AND DOC.COURSE_NO = LEC.COURSE_NO 
+			                               AND DOC.PARTITN_CLAS_SE_CD = LEC.PARTITN_CLAS_SE_CD 
+			                               AND DOC.UNIV_GDHL_SE_CD = LEC.UNIV_GDHL_SE_CD 
+			                         GROUP BY DOC.ESTBL_YY, 
+			                               DOC.ESTBL_SEMSTR_CD, 
+			                               DOC.COURSE_NO, 
+			                               DOC.PARTITN_CLAS_SE_CD, 
+			                               DOC.UNIV_GDHL_SE_CD 
+			                        ),0 
+			                    ) AS GRADE_RATIO 
+			               FROM KUT_HAK.VH_OKLMS_TH_COURSE_M MST , 
+			                    KUT_HAK.VH_OKLMS_TH_STUDY_LCTRE_M LEC 
+			                LEFT OUTER JOIN 
+			                    (SELECT ESTBL_YY, 
+			                           ESTBL_SEMSTR_CD , 
+			                           COURSE_NO, 
+			                           PARTITN_CLAS_SE_CD, 
+			                           MAX(LCTRUM_CD) AS LCTRUM_CD, 
+			                           MAX(LCTRUM_NM) AS LCTRUM_NM 
+			                      FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE 
+			                     GROUP BY ESTBL_YY, 
+			                           ESTBL_SEMSTR_CD, 
+			                           COURSE_NO, 
+			                           PARTITN_CLAS_SE_CD 
+			                    ) TIM 
+			                    ON LEC.ESTBL_YY = TIM.ESTBL_YY 
+			                    AND LEC.ESTBL_SEMSTR_CD = TIM.ESTBL_SEMSTR_CD 
+			                    AND LEC.COURSE_NO = TIM.COURSE_NO 
+			                    AND LEC.PARTITN_CLAS_SE_CD = TIM.PARTITN_CLAS_SE_CD 
+			              WHERE MST.COURSE_NO = LEC.COURSE_NO 
+			                    AND LEC.ESTBL_DEPT_NO IN('1891','1931','1932','1917','1916') 
+			           ORDER BY LEC.ESTBL_YY DESC 
+			             ) 
+			       WHERE YYYY = #{yyyy} 
+			             AND TERM = #{term}
+	</select>
+	
+	
+	<select id="listAunuriLessonTerm" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkLessonVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkLessonVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriLessonTerm ====== */
+	    SELECT * 
+		  FROM 
+		       (SELECT LES.ESTBL_YY AS YYYY, 
+		              DECODE(LES.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM, 
+		              LES.COURSE_NO AS SUBJECT_CODE, 
+		              LES.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS, 
+		              LES.STUDNO AS MEM_ID 
+		         FROM KUT_HAK.VH_OKLMS_TH_ATNLC_ATNLC_REQST LES 
+		       )  
+		       WHERE YYYY = #{YYYY}
+		       AND TERM = #{TERM}
+		       AND SUBJECT_CODE = #{subjectCode}
+		       AND SUBJECT_CLASS = #{subjectClass}
+	</select>
+	
+	
+	<select id="getAunuriMember" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.getAunuriMember ====== */
+	    SELECT DISTINCT B.STUDNO AS MEM_ID,
+			       CASE
+			           WHEN B.STUDNO IN ('20150005','20150003','20160024','20150234','20170014')
+			               AND B.MEM_TYPE = '교수'
+			           THEN 'CDP'
+			           WHEN B.STUDNO IN ('530026','​530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND B.MEM_TYPE = '교수'
+			           THEN 'CCN'
+			           WHEN B.STUDNO NOT IN ('20150005','20150003','20160024','20150234','20170014','530026','530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND B.MEM_TYPE = '교수'
+			           THEN 'PRT'
+			           ELSE 'STD'
+			       END MEM_TYPE,
+			       CASE
+			           WHEN B.STUDNO IN ('20150005','20150003','20160024','20150234','20170014')
+			               AND MEM_TYPE = '교수'
+			           THEN '2016AUTH0000006'
+			           WHEN B.STUDNO IN ('530026','530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND MEM_TYPE = '교수'
+			           THEN '2016AUTH0000005'
+			           WHEN B.STUDNO NOT IN ('20150005','20150003','20160024','20150234','20170014','530026','530068','20120050','20140086','20160032','20160064','20160246','20160280')
+			               AND MEM_TYPE = '교수'
+			           THEN '2016AUTH0000003'
+			           ELSE '2016AUTH0000002'
+			       END AUTH_GROUP_ID,
+			       B.NAME AS MEM_NAME,
+			       DECODE(B.SEX,'102','F','M') AS SEX ,
+			       B.BRTHJDAY AS MEM_BIRTH,
+			       B.MAIL AS EMAIL,
+			       B.TEL AS TEL_NO,
+			       B.HP AS HP_NO,
+			       B.DEPT_NO AS DEPT_NO,
+			       B.DEPT_NM AS DEPT_NM
+			  FROM
+			       (SELECT STUDNO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M MST
+					 WHERE DEPT_NO IN ('1887','1891','1916','1917','1931','1932','1953','1965')
+					    UNION
+					SELECT INS_M.EMPL_NO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_STUDY_LCTRE_M LCT ,
+					       KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE TIM,
+					       KUT_HAK.VH_OKLMS_TH_STUDY_ESTBL_PROFSR INS_M
+					 WHERE LCT.ESTBL_YY = TIM.ESTBL_YY
+					       AND LCT.ESTBL_SEMSTR_CD = TIM.ESTBL_SEMSTR_CD
+					       AND LCT.COURSE_NO = TIM.COURSE_NO
+					       AND LCT.PARTITN_CLAS_SE_CD = TIM.PARTITN_CLAS_SE_CD
+					       AND LCT.ESTBL_YY = INS_M.ESTBL_YY
+					       AND LCT.ESTBL_SEMSTR_CD = INS_M.ESTBL_SEMSTR_CD
+					       AND LCT.COURSE_NO = INS_M.COURSE_NO
+					       AND LCT.PARTITN_CLAS_SE_CD = INS_M.PARTITN_CLAS_SE_CD
+					       AND LCT.ESTBL_DEPT_NO IN ('1891','1916','1917','1931','1932','1953')
+					       AND TIM.EMPL_NO IS NOT NULL
+					 GROUP BY INS_M.EMPL_NO
+					    UNION
+					SELECT INS_M.EMPL_NO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_STUDY_ESTBL_PROFSR INS_M
+					 WHERE INS_M.EMPL_NO IS NOT NULL
+					       AND ESTBL_YY >= '2015'
+					    UNION
+					SELECT INS.EMPL_NO AS STUDNO
+					  FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE INS
+					 WHERE INS.EMPL_NO IS NOT NULL
+					       AND ESTBL_YY >= '2015'
+			       ) A ,
+			       (SELECT *
+			         FROM KUT_HAK.VH_OKLMS_TH_SKNRGS_M
+			       ) B
+			 WHERE A.STUDNO = B.STUDNO
+			 AND A.STUNO = #{memId}
+
+			<!--
+			기계설계공학과				1931
+			기전융합공학과				1891
+			강소기업경영학과			1932
+			기계설비제어공학과			1917
+			IT융합소프트웨어공학과	1916
+			일학습사업팀					1887
+			일학습병행대학 교학팀		1965
+		 	 -->
+	</select>
+	
+	<select id="listAunuriInsTerm" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO">
+	/* ====== kr.co.sitglobal.aunuri.service.impl.AunuriLinkMapper.listAunuriInsTerm ====== */
+		   SELECT * FROM (
+		   		SELECT INS_M.ESTBL_YY AS YYYY,
+				       DECODE(INS_M.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+				       INS_M.COURSE_NO AS SUBJECT_CODE,
+				       INS_M.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+				       INS_M.EMPL_NO AS MEM_ID
+				  FROM KUT_HAK.VH_OKLMS_TH_STUDY_ESTBL_PROFSR INS_M
+				 WHERE INS_M.EMPL_NO IS NOT NULL
+				    UNION
+				SELECT INS.ESTBL_YY AS YYYY,
+				       DECODE(INS.ESTBL_SEMSTR_CD,'101','1','102','2','103','3','4') AS TERM,
+				       INS.COURSE_NO AS SUBJECT_CODE,
+				       INS.PARTITN_CLAS_SE_CD AS SUBJECT_CLASS,
+				       INS.EMPL_NO AS MEM_ID
+				  FROM KUT_HAK.VH_OKLMS_TH_STUDY_TIME_TABLE INS
+				 WHERE INS.EMPL_NO IS NOT NULL
+		   ) 
+		   WHERE YYYY = #{yyyy}
+		   AND TERM = #{term}
+		   AND SUBJECT_CODE = #{subjectCode}
+		   AND SUBJECT_CLASS = #{subjectClass}
+		   AND MEM_ID = #{memId}
+	</select>
+	
+	
+
+</mapper>

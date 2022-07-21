@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+
+
+/* body																				{background:url("/images/oklms/adm/inc/pop_border_01.png") left repeat-y;} */
+#popup-wrarpr																{position:relative; width:100%; height:100%;}
+#popup-header																{position:absolute; left:0; top:0; width:100%; height:65px; background:#2A91D4;}
+
+#popup-header h1															{float:left; width:100%; height:37px; font:20px nbgM; color:#FFF; line-height:25px; border-top:5px solid black; border-bottom:10px solid #E5E5E5; padding-top:13px;}
+#popup-header h1 img														{vertical-align:middle; margin:0 7px 2px 17px;}
+
+#popup-header p															{position:absolute; width:25px; height:25px; right:15px; top:18px;}
+/* #popup-header p a															{display:block; overflow:hidden; width:25px; height:25px; text-indent:-9999px; background:url("/images/oklms/adm/inc/pop_border_03.png") no-repeat;} */
+#popup-header p a:hover, #popup-header p a:focus			{background-position:0 bottom;}
+
+/* #popup-content-area														{min-height:100%; margin:0 0 -30px; background:url("/images/oklms/adm/inc/pop_border_01.png") right 0 repeat-y ;} */
+* html #popup-content-area												{height:100%;} /* IE6 �� */
+#popup-container															{padding:85px 35px 30px;}
+
+#popup-footer																	{float:left; width:100%; height:10px; background:#E5E5E5; margin-top:20px;}
+
+
+
+
+.name-area																	{float:left; width:98.7%; font:13px nbgM; color:#777; line-height:20px; border:4px solid #e0e6eb; padding:11px 0; margin-top:7px;}
+/* .name-area span															{display:inline-block; color:#444; background:url("/images/oklms/adm/inc/bullet_03_01.png") 0 8px no-repeat; padding-left:8px; margin-left:25px;} */
+
+
+
+.box-scroll																		{float:left; overflow-y:scroll; width:97%; height:97px; padding-right:3%;}
+
+

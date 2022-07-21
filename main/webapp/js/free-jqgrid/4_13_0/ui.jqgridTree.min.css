@@ -1,0 +1,4 @@
+/* jqgrid Tree */
+.ui-jqgrid table td{padding:0;border-style:none !important;}
+.ui-jqgrid tr.jqgroup,.ui-jqgrid tr.jqgrow{outline-style:none; height:30px !important;}
+.ui-jqgrid>.ui-jqgrid-view>.ui-jqgrid-hdiv{height:0px !important;}

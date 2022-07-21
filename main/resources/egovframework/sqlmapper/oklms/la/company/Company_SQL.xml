@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper">
+	<sql id="listMember-where">
+		<if test="companyId != null  and companyId != ''">
+			AND COM.COMPANY_ID = #{companyId}
+		</if>
+		<if test="traningProcessId != null  and traningProcessId != ''">
+			AND TP.TRANING_PROCESS_ID = #{traningProcessId}
+		</if>
+		<if test="searchCompanyName != null and searchCompanyName != ''">
+			AND COM.COMPANY_NAME LIKE '%${searchCompanyName}%'
+	    </if>
+	    <if test="searchEmployInsManageNo != null and searchEmployInsManageNo != ''">
+			AND COM.COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO LIKE '%${searchEmployInsManageNo}%'
+	    </if>
+	</sql>
+
+	<select id="getCompany" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO" resultType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+	/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.getCompany ====== */
+
+			   	 SELECT COM.COMPANY_ID AS companyId
+					,COM.COMPANY_NAME AS companyName
+					,COM.COMPANY_NO AS companyNo
+					,COM.COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO AS employInsManageNo
+					,COM.BIG_BUSINESS_TYPE AS bigBusinessType
+					,COM.MIDDLE_BUSINESS_TYPE AS middleBusinessType
+					,COM.SMAIL_BUSINESS_TYPE AS smailBusinessType
+					,COM.COMPANY_DIV_CD AS companyDivCd
+					,COM.REGULAR_EMPLOYMENT_CNT AS regularEmploymentCnt
+					,COM.CHOICE_DAY AS choiceDay
+					,COM.CEO AS ceo
+                    ,COM.NAME AS name
+                    ,COM.EMAIL AS email
+					,COM.ZIP_CODE AS zipCode
+					,COM.ADDRESS AS address
+					,COM.ADDRESS_DTL AS addressDtl
+					,COM.TEL_NO1 AS telNo1
+					,COM.TEL_NO2 AS telNo2
+					,COM.TEL_NO3 AS telNo3
+					,COM.POSITION AS position
+					,COM.DELETE_YN AS deleteYn
+					,COM.INSERT_DATE AS insertDate
+					,COM.INSERT_USER AS insertUser
+					,COM.UPDATE_DATE AS updateDate
+					,COM.UPDATE_USER AS updateUser
+				 FROM LMS_COMPANY COM
+			 	WHERE COM.COMPANY_ID 	= #{companyId}
+	</select>
+
+	<select id="listCompany" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO" resultType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+		/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.listCompany ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			   SELECT COM.COMPANY_ID AS companyId
+					,COM.COMPANY_NAME AS companyName
+					,COM.COMPANY_NO AS companyNo
+					,COM.COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO AS employInsManageNo
+					,COM.BIG_BUSINESS_TYPE AS bigBusinessType
+					,COM.MIDDLE_BUSINESS_TYPE AS middleBusinessType
+					,COM.SMAIL_BUSINESS_TYPE AS smailBusinessType
+					,COM.COMPANY_DIV_CD AS companyDivCd
+					,COM.REGULAR_EMPLOYMENT_CNT AS regularEmploymentCnt
+					,COM.CHOICE_DAY AS choiceDay
+					,COM.CEO AS ceo
+                    ,COM.NAME AS name
+					,COM.ZIP_CODE AS zipCode
+					,COM.ADDRESS AS address
+					,COM.ADDRESS_DTL AS addressDtl
+					,COM.TEL_NO1 AS telNo1
+					,COM.TEL_NO2 AS telNo2
+					,COM.TEL_NO3 AS telNo3
+					,COM.POSITION AS position
+					,COM.DELETE_YN AS deleteYn
+					,COM.INSERT_DATE AS insertDate
+					,COM.INSERT_USER AS insertUser
+					,COM.UPDATE_DATE AS updateDate
+					,COM.UPDATE_USER AS updateUser
+				 FROM LMS_COMPANY COM
+			 	WHERE 1=1
+			 	AND COM.DELETE_YN = 'N'
+			<include refid="listMember-where"/>
+			ORDER BY COM.COMPANY_NAME ASC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+	<select id="listCompanySearch" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO" resultType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+		/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.listCompanySearch ====== */
+			   SELECT COM.COMPANY_ID AS companyId
+					,COM.COMPANY_NAME AS companyName
+					,COM.COMPANY_NO AS companyNo
+					,COM.COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO AS employInsManageNo
+					,COM.BIG_BUSINESS_TYPE AS bigBusinessType
+					,COM.MIDDLE_BUSINESS_TYPE AS middleBusinessType
+					,COM.SMAIL_BUSINESS_TYPE AS smailBusinessType
+					,COM.COMPANY_DIV_CD AS companyDivCd
+					,COM.REGULAR_EMPLOYMENT_CNT AS regularEmploymentCnt
+					,COM.CHOICE_DAY AS choiceDay
+					,COM.CEO AS ceo
+                    ,COM.NAME AS name
+					,COM.ZIP_CODE AS zipCode
+					,COM.ADDRESS AS address
+					,COM.ADDRESS_DTL AS addressDtl
+					,COM.TEL_NO1 AS telNo1
+					,COM.TEL_NO2 AS telNo2
+					,COM.TEL_NO3 AS telNo3
+					,COM.POSITION AS position
+					,COM.DELETE_YN AS deleteYn
+					,COM.INSERT_DATE AS insertDate
+					,COM.INSERT_USER AS insertUser
+					,COM.UPDATE_DATE AS updateDate
+					,COM.UPDATE_USER AS updateUser
+				 FROM LMS_COMPANY COM
+			 	WHERE 1=1
+			 	AND COM.DELETE_YN = 'N'
+			<include refid="listMember-where"/>
+			ORDER BY COM.COMPANY_NAME ASC
+	</select>
+
+	<select id="listCompanyTraningProcessSearch" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO" resultType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+		/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.listCompanyTraningProcessSearch ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			   SELECT COM.COMPANY_ID AS companyId
+					 ,COM.COMPANY_NAME AS companyName
+					 ,COM.COMPANY_NO AS companyNo
+					 ,COM.COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO AS employInsManageNo
+					 ,COM.BIG_BUSINESS_TYPE AS bigBusinessType
+					 ,COM.MIDDLE_BUSINESS_TYPE AS middleBusinessType
+					 ,COM.SMAIL_BUSINESS_TYPE AS smailBusinessType
+					 ,COM.COMPANY_DIV_CD AS companyDivCd
+					 ,COM.REGULAR_EMPLOYMENT_CNT AS regularEmploymentCnt
+					 ,COM.CHOICE_DAY AS choiceDay
+					 ,COM.CEO AS ceo
+                     ,COM.NAME AS name
+					 ,COM.ZIP_CODE AS zipCode
+					 ,COM.ADDRESS AS address
+					 ,COM.ADDRESS_DTL AS addressDtl
+					 ,COM.TEL_NO1 AS telNo1
+					 ,COM.TEL_NO2 AS telNo2
+					 ,COM.TEL_NO3 AS telNo3
+					 ,COM.POSITION AS position
+					 ,COM.DELETE_YN AS deleteYn
+					 ,TP.TRANING_PROCESS_ID AS traningProcessId
+					 ,TP.HRD_TRANING_NAME AS hrdTraningName
+                     ,TP.HRD_TRANING_NO AS hrdTraningNo
+				 FROM LMS_COMPANY COM
+				     ,LMS_TRANING_PROCESS TP
+			 	WHERE 1=1
+			 	AND COM.COMPANY_ID = TP.COMPANY_ID
+			 	AND COM.DELETE_YN = 'N'
+			 	AND TP.DELETE_YN = 'N'
+			 	<include refid="listMember-where"/>
+				ORDER BY COM.COMPANY_NAME ASC
+				<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+	<select id="listCompanyTraningProcess" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO" resultType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+		/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.listCompanyTraningProcess ====== */
+			   SELECT COM.COMPANY_ID AS companyId
+					 ,COM.COMPANY_NAME AS companyName
+					 ,COM.COMPANY_NO AS companyNo
+					 ,COM.COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO AS employInsManageNo
+					 ,COM.BIG_BUSINESS_TYPE AS bigBusinessType
+					 ,COM.MIDDLE_BUSINESS_TYPE AS middleBusinessType
+					 ,COM.SMAIL_BUSINESS_TYPE AS smailBusinessType
+					 ,COM.COMPANY_DIV_CD AS companyDivCd
+					 ,COM.REGULAR_EMPLOYMENT_CNT AS regularEmploymentCnt
+					 ,COM.CHOICE_DAY AS choiceDay
+					 ,COM.CEO AS ceo
+                     ,COM.NAME AS name
+					 ,COM.ZIP_CODE AS zipCode
+					 ,COM.ADDRESS AS address
+					 ,COM.ADDRESS_DTL AS addressDtl
+					 ,COM.TEL_NO1 AS telNo1
+					 ,COM.TEL_NO2 AS telNo2
+					 ,COM.TEL_NO3 AS telNo3
+					 ,COM.POSITION AS position
+					 ,COM.DELETE_YN AS deleteYn
+					 ,TP.TRANING_PROCESS_ID AS traningProcessId
+					 ,TP.HRD_TRANING_NAME AS hrdTraningName
+                     ,TP.HRD_TRANING_NO AS hrdTraningNo
+				 FROM LMS_COMPANY COM
+				     ,LMS_TRANING_PROCESS TP
+			 	WHERE 1=1
+			 	AND COM.COMPANY_ID = TP.COMPANY_ID
+			 	AND COM.DELETE_YN = 'N'
+			 	AND TP.DELETE_YN = 'N'
+			 	<include refid="listMember-where"/>
+				ORDER BY COM.COMPANY_NAME ASC
+	</select>
+
+	<insert id="insertCompany" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+		/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.insertCompany ====== */
+			INSERT INTO LMS_COMPANY (
+						COMPANY_ID
+						,COMPANY_NAME
+						,COMPANY_NO
+						,CEO
+						,NAME
+						,ZIP_CODE
+						,ADDRESS
+						,ADDRESS_DTL
+						,TEL_NO1
+						,TEL_NO2
+						,TEL_NO3
+						,COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO
+						,BIG_BUSINESS_TYPE
+						,MIDDLE_BUSINESS_TYPE
+						,SMAIL_BUSINESS_TYPE
+						,COMPANY_DIV_CD
+						,EMAIL
+						,REGULAR_EMPLOYMENT_CNT
+						,CHOICE_DAY
+						,POSITION
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{companyId}
+						,#{companyName}
+						,#{companyNo}
+						,#{ceo}
+						,#{name}
+						,#{zipCode}
+						,#{address}
+						,#{addressDtl}
+						,#{telNo1}
+						,#{telNo2}
+						,#{telNo3}
+						,#{employInsManageNo}
+						,#{bigBusinessType}
+						,#{middleBusinessType}
+						,#{smailBusinessType}
+						,#{companyDivCd}
+						,#{email}
+						,#{regularEmploymentCnt}
+						,#{choiceDay}
+						,#{position}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<update id="updateCompany" parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO">
+			/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.updateCompany ====== */
+	        UPDATE LMS_COMPANY
+	        SET UPDATE_DATE 	= NOW()
+	            ,UPDATE_USER=#{sessionMemSeq}
+				<if test="companyId != null and companyId !='' ">,COMPANY_ID=#{companyId}</if>
+				<if test="companyName != null and companyName !='' ">,COMPANY_NAME=#{companyName}</if>
+				<if test="companyNo != null and companyNo !='' ">,COMPANY_NO=#{companyNo}</if>
+				<if test="ceo != null and ceo !='' ">,CEO=#{ceo}</if>
+				<if test="name != null and name !='' ">,NAME=#{name}</if>
+				<if test="zoneCode != null and zoneCode !='' ">,ZONE_CODE=#{zoneCode}</if>
+				<if test="zipCode != null and zipCode !='' ">,ZIP_CODE=#{zipCode}</if>
+				<if test="address != null and address !='' ">,ADDRESS=#{address}</if>
+				<if test="addressDtl != null and addressDtl !='' ">,ADDRESS_DTL=#{addressDtl}</if>
+				<if test="telNo1 != null and telNo1 !='' ">,TEL_NO1=#{telNo1}</if>
+				<if test="telNo2 != null and telNo2 !='' ">,TEL_NO2=#{telNo2}</if>
+				<if test="telNo3 != null and telNo3 !='' ">,TEL_NO3=#{telNo3}</if>
+				<if test="deleteYn != null and deleteYn !='' ">,DELETE_YN=#{deleteYn}</if>
+				<if test="employInsManageNo != null and employInsManageNo !='' ">,COMPANY_EMPLOYMENT_INSURANCE_MANAGE_NO=#{employInsManageNo}</if>
+				<if test="bigBusinessType != null and bigBusinessType !='' ">,BIG_BUSINESS_TYPE=#{bigBusinessType}</if>
+				<if test="middleBusinessType != null and middleBusinessType !='' ">,MIDDLE_BUSINESS_TYPE=#{middleBusinessType}</if>
+				<if test="smailBusinessType != null and smailBusinessType !='' ">,SMAIL_BUSINESS_TYPE=#{smailBusinessType}</if>
+				<if test="companyDivCd != null and companyDivCd !='' ">,COMPANY_DIV_CD=#{companyDivCd}</if>
+				<if test="email != null and email !='' ">,EMAIL=#{email}</if>
+				<if test="regularEmploymentCnt != null and regularEmploymentCnt !='' ">,REGULAR_EMPLOYMENT_CNT=#{regularEmploymentCnt}</if>
+				<if test="companyDivCd != null and companyDivCd !='' ">,COMPANY_DIV_CD=#{companyDivCd}</if>
+				<if test="choiceDay != null and choiceDay !='' ">,CHOICE_DAY=#{choiceDay}</if>
+				<if test="position != null and position !='' ">,POSITION=#{position}</if>
+
+		     WHERE COMPANY_ID 	= #{companyId}
+	</update>
+
+	 <delete id="deleteCompany"  parameterType="kr.co.sitglobal.oklms.la.company.vo.CompanyVO"  >
+	 	/* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.deleteCompany ====== */
+		UPDATE LMS_COMPANY
+		SET
+			  UPDATE_DATE = NOW()
+			  , UPDATE_USER=#{sessionMemSeq}
+			  , DELETE_YN = 'Y'
+		WHERE COMPANY_ID 	= #{companyId}
+ 	</delete>
+
+ 	<select id="getCompanyNoCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.la.company.service.impl.CompanyMapper.getCompanyNoCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM LMS_COMPANY
+	          WHERE 1=1
+	          AND COMPANY_NO=#{companyNo}
+
+	</select>
+
+
+</mapper>

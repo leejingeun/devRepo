@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 02. 17          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper">
+	
+	<!-- <sql id="listMember-where">
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND (TPS.TRANING_PROCESS_NAME LIKE '%${searchKeyword}'OR TPS.TRANING_PROCESS_NO LIKE '%${searchKeyword}%')
+	    </if>
+	</sql> -->
+
+	<select id="getProgressId" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getProgressId ====== */
+		SELECT DISTINCT PROGRESS_ATTEND_ID
+			      FROM LMS_PROGRESS_ATTEND
+		 WHERE LESSON_ID = #{stdLessonId}
+           AND WEEK_ID  = #{weekId} 
+           AND SUBJ_SCH_ID = #{subjSchId}
+	</select>
+	
+	<select id="getCmsProgressId" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getCmsProgressId ====== */
+		SELECT DISTINCT PROGRESS_ATTEND_ID
+			      FROM LMS_PROGRESS_ATTEND
+		 WHERE LESSON_ID = #{stdLessonId}
+           AND WEEK_ID  = #{weekId} 
+           AND SUBJ_SCH_ID = #{subjSchId}
+           AND CMS_LESSON_ID = #{cmsLessonId}
+           AND CMS_LESSON_ITEM_ID = #{cmsLessonItemId}
+           AND CMS_LESSON_SUB_ITEM = #{cmsLessonSubItem}
+	</select>
+	
+	<insert id="insertProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.insertProgress ====== */
+		INSERT 
+		  INTO LMS_PROGRESS_ATTEND 
+		       ( 
+		         PROGRESS_ATTEND_ID, 
+		         LESSON_ID, 
+		         WEEK_ID, 
+		         SUBJ_SCH_ID,
+		         TIME_PROGRESS_RATIO, 
+		         PAGE_PROGRESS_RATIO, 
+		         ATTEND_YN , 
+		         PROGRESS_YN, 
+		         LINK_CONTENT_YN,
+		         INSERT_USER,
+		         INSERT_DATE   
+		       ) 
+		       VALUES 
+		       ( 
+		         #{progressAttendId}, 
+		         #{stdLessonId}, 
+		         #{weekId}, 
+		         #{subjSchId}, 
+		         #{timeProgressRatio}, 
+		         #{pageProgressRatio}, 
+		         'Y', 
+		         'Y' ,
+		         #{linkContentYn},
+		         #{insertUser},
+		         NOW()
+		       )  
+
+	</insert>
+	
+	<insert id="insertCmsProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.insertCmsProgress ====== */
+		INSERT 
+		  INTO LMS_PROGRESS_ATTEND 
+		       ( 
+		         PROGRESS_ATTEND_ID, 
+		         LESSON_ID, 
+		         WEEK_ID, 
+		         SUBJ_SCH_ID,
+		         TIME_PROGRESS_RATIO, 
+		         PAGE_PROGRESS_RATIO, 
+		         ATTEND_YN , 
+		         PROGRESS_YN, 
+		         LINK_CONTENT_YN,
+		         CMS_LESSON_ID,
+		         CMS_LESSON_ITEM_ID,
+		         CMS_LESSON_SUB_ITEM,
+		         INSERT_USER,
+		         INSERT_DATE      
+		       ) 
+		       VALUES 
+		       ( 
+		         #{progressAttendId}, 
+		         #{stdLessonId}, 
+		         #{weekId}, 
+		         #{subjSchId}, 
+		         #{timeProgressRatio}, 
+		         #{pageProgressRatio}, 
+		         'Y', 
+		         'Y' ,
+		          #{linkContentYn},
+		          #{cmsLessonId},
+		          #{cmsLessonItemId},
+		          #{cmsLessonSubItem},
+		          #{insertUser},
+		          NOW()
+		       )  
+	</insert>
+	
+	<select id="getTimeCount" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getTimeCount ====== */
+		SELECT COUNT(1)
+			     FROM LMS_LESSON_TIME
+		  WHERE LESSON_TIME_ID = #{progressTimeId}
+	</select>
+	
+	<insert id="insertTime" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.insertTime ====== */
+		INSERT 
+			  INTO LMS_LESSON_TIME 
+			       ( 
+			         LESSON_TIME_ID, 
+			         PROGRESS_ATTEND_ID, 
+			         LESSON_START_TIME, 
+			         LESSON_END_TIME,
+			         INSERT_USER,
+		         	 INSERT_DATE
+			       ) 
+			       VALUES 
+			       ( 
+			         #{progressTimeId}, 
+			         #{progressAttendId}, 
+			         #{vDateTime}, 
+			         #{vDateTime},
+			         #{insertUser},
+		          	 NOW()
+			       )  
+	</insert>
+	
+	<update id="updateTime" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.updateTime ====== */
+		UPDATE LMS_LESSON_TIME 
+		       SET LESSON_END_TIME = #{vDateTime},
+		       UPDATE_USER = #{updateUser},
+		       UPDATE_DATE = NOW() 
+		 WHERE LESSON_TIME_ID = #{progressTimeId}
+	</update>
+	
+	<select id="getTimeMaxCount" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getTimeMaxCount ====== */
+		SELECT COUNT(1)
+			     FROM LMS_LESSON_TIME_MAX
+		  WHERE PROGRESS_ATTEND_ID = #{progressAttendId}
+	</select>
+	
+	<insert id="insertTimeMax" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.insertTime ====== */
+		INSERT 
+			  INTO LMS_LESSON_TIME_MAX 
+			       ( 
+			       	 PROGRESS_ATTEND_ID,
+			         LESSON_START_TIME, 
+			         LESSON_END_TIME,
+			         LESSON_TIME
+			       ) 
+			       VALUES 
+			       ( 
+			         #{progressAttendId}, 
+			         #{vDateTime}, 
+			         #{vDateTime}, 
+			         0
+			       )  
+	</insert>
+	
+	<update id="updateTimeMax" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.updateTimeMax ====== */
+		  UPDATE LMS_LESSON_TIME_MAX AS TMAX 
+			   INNER JOIN 
+			       (SELECT PROGRESS_ATTEND_ID, 
+			              MIN(LESSON_START_TIME) AS LESSON_START_TIME, 
+			              MAX(LESSON_END_TIME) AS LESSON_END_TIME, 
+			              TIMESTAMPDIFF(SECOND, MIN(LESSON_START_TIME), MAX(LESSON_END_TIME)) AS LESSON_TIME 
+			         FROM LMS_LESSON_TIME 
+			        WHERE PROGRESS_ATTEND_ID = #{progressAttendId} 
+			        GROUP BY PROGRESS_ATTEND_ID 
+			       ) AS TIME 
+			       ON TMAX.PROGRESS_ATTEND_ID = TIME.PROGRESS_ATTEND_ID 
+			       SET TMAX.LESSON_START_TIME = TIME.LESSON_START_TIME , 
+			       TMAX.LESSON_END_TIME = TIME.LESSON_END_TIME , 
+			       TMAX.LESSON_TIME = TIME.LESSON_TIME 
+			 WHERE TMAX.PROGRESS_ATTEND_ID = #{progressAttendId}
+	</update>
+	
+	<select id="getPageProgressCount" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getPageProgressCount ====== */
+		SELECT COUNT(1)
+			     FROM LMS_NON_PROGRESS_ATTEND
+		  WHERE PROGRESS_ATTEND_ID = #{progressAttendId}
+		     AND PAGE_INFO = #{pageInfo}
+	</select>
+	
+	
+	<insert id="insertPageProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.insertPageProgress ====== */
+		INSERT 
+		  INTO LMS_NON_PROGRESS_ATTEND 
+		       ( 
+		         PAGE_PROGRESS_ATTEND_ID, 
+		         PAGE_INFO, 
+		         PROGRESS_YN,
+		         PROGRESS_ATTEND_ID, 
+		         INSERT_USER, 
+		         INSERT_DATE    
+		       ) 
+		       VALUES 
+		       ( 
+		         #{pageProgressAttendId}, 
+		         #{pageInfo}, 
+		         'Y', 
+		         #{progressAttendId}, 
+		         #{insertUser}, 
+		         NOW()
+		       )  
+	</insert>
+	
+	<select id="getPageProgressSumCount" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getPageProgressSumCount ====== */
+		SELECT COUNT(1)
+			     FROM LMS_NON_PROGRESS_ATTEND_SUM
+		  WHERE PROGRESS_ATTEND_ID = #{progressAttendId}
+	</select>
+	
+	<select id="getPageProgressInfo" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getPageProgressInfo ====== */
+		 SELECT SUM('100') AS PROGRESS_SUM,
+		 		COUNT(PAGE_INFO) AS PROGRESS_COUNT
+        FROM (
+              SELECT PROGRESS_ATTEND_ID, PAGE_INFO
+                FROM LMS_NON_PROGRESS_ATTEND
+               WHERE PROGRESS_YN = 'Y'
+                 AND PROGRESS_ATTEND_ID = #{progressAttendId}
+             ) ATT
+       GROUP BY PROGRESS_ATTEND_ID
+	</select>
+	
+	<insert id="insertPageProgressSum" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.insertPageProgressSum ====== */
+		INSERT 
+		  INTO LMS_NON_PROGRESS_ATTEND_SUM 
+		       ( 
+		         PROGRESS_ATTEND_ID, 
+		         PROGRESS_SUM, 
+		         PROGRESS_COUNT
+		       ) 
+		       VALUES 
+		       ( 
+		         #{progressAttendId}, 
+		         #{progressSum}, 
+		         #{progressCount}
+		       )  
+	</insert>
+	
+	<update id="updatePageProgressSum" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.updatePageProgressSum ====== */
+		UPDATE LMS_NON_PROGRESS_ATTEND_SUM
+		   SET PROGRESS_SUM = #{progressSum},
+                PROGRESS_COUNT= #{progressCount}
+          WHERE PROGRESS_ATTEND_ID = #{progressAttendId}
+	</update>
+	
+	<select id="getCmsTimeProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getCmsTimeProgress ====== */
+		  SELECT 
+		       CASE    
+		           WHEN IFNULL(C.REQUIRED_LEARNING_TIME_IN_SECONDS,0) > 0 
+		           THEN FLOOR(B.LESSON_TIME / C.REQUIRED_LEARNING_TIME_IN_SECONDS * 100) 
+		           ELSE 100 
+		       END TIME_PROGRESS_RATIO 
+		  FROM LMS_PROGRESS_ATTEND A 
+		   INNER JOIN LMS_LESSON_TIME_MAX B 
+		       ON A.PROGRESS_ATTEND_ID = B.PROGRESS_ATTEND_ID 
+		   INNER JOIN LMS_SUBJ_WEEK_SCH_ELEM C 
+		       ON A.WEEK_ID = C.WEEK_ID 
+		       AND A.SUBJ_SCH_ID = C.SUBJ_SCH_ID 
+		       AND A.CMS_LESSON_ID = C.LESSSON_ID 
+		       AND A.CMS_LESSON_ITEM_ID = C.LESSON_ITEM_ID 
+		       AND A.CMS_LESSON_SUB_ITEM = C.LESSON_SUB_ITEM_ID 
+		       AND C.DELETE_YN = 'N' 
+		 WHERE A.PROGRESS_ATTEND_ID = #{progressAttendId} 
+		       AND A.LESSON_ID = #{stdLessonId}
+	</select>
+	
+	<select id="getTimeProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="Integer">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getTimeProgress ====== */
+		 SELECT 
+		       CASE 
+		           WHEN IFNULL(C.STUDY_TIME,0) > 0 
+		           THEN FLOOR(B.LESSON_TIME / (C.STUDY_TIME * 60 ) * 100) 
+		           ELSE 100  
+		       END TIME_PROGRESS_RATIO  
+		  FROM LMS_PROGRESS_ATTEND A 
+		   INNER JOIN LMS_LESSON_TIME_MAX B 
+		       ON A.PROGRESS_ATTEND_ID = B.PROGRESS_ATTEND_ID 
+		   INNER JOIN LMS_SUBJ_WEEK_SCH C 
+		       ON A.WEEK_ID = C.WEEK_ID 
+		       AND A.SUBJ_SCH_ID = C.SUBJ_SCH_ID 
+		       AND C.DELETE_YN = 'N' 
+		 WHERE A.PROGRESS_ATTEND_ID = #{progressAttendId}
+		       AND A.LESSON_ID = #{stdLessonId}
+	</select>
+	
+	<update id="updateTimeProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.updateTimeProgress ====== */
+		UPDATE LMS_PROGRESS_ATTEND
+			SET TIME_PROGRESS_RATIO = #{timeProgressRatio},
+				UPDATE_USER = #{updateUser},
+		    	UPDATE_DATE  = NOW()  
+			WHERE PROGRESS_ATTEND_ID = #{progressAttendId}
+	</update>
+	
+	<select id="getCmsLessonItemProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getTimeProgress ====== */
+		 SELECT 
+		 <if test="progressAttendTypeCode != null  and progressAttendTypeCode != ''">
+	 		<choose>
+	            <when test='progressAttendTypeCode eq "P"'>
+	                	FLOOR(PAGE_PROGRESS_RATIO / (100 * ATTE.ELEM_CNT) * 100)
+	            </when>
+	            <when test='progressAttendTypeCode eq "T"'>
+	                	FLOOR(TIME_PROGRESS_RATIO / (100 * ATTE.ELEM_CNT) * 100)
+	            </when>
+	            <otherwise>
+	            		FLOOR((TIME_PROGRESS_RATIO+ATTE.PAGE_PROGRESS_RATIO) / (200 * ATTE.ELEM_CNT) * 100)  
+	            </otherwise>
+	        </choose>
+	 	</if>	
+			  FROM 
+			       (SELECT SUM(TIME_PROGRESS_RATIO) AS TIME_PROGRESS_RATIO, 
+			              SUM(PAGE_PROGRESS_RATIO) AS PAGE_PROGRESS_RATIO, 
+			              (SELECT COUNT(*) 
+			                FROM LMS_SUBJ_WEEK_SCH_ELEM 
+			               WHERE DELETE_YN = 'N' 
+			                     AND WEEK_ID = ATT.WEEK_ID 
+			                     AND SUBJ_SCH_ID = ATT.SUBJ_SCH_ID 
+			                     AND LESSSON_ID = ATT.CMS_LESSON_ID 
+			                     AND LESSON_ITEM_ID = ATT.CMS_LESSON_ITEM_ID 
+			              ) AS ELEM_CNT 
+			         FROM LMS_PROGRESS_ATTEND ATT 
+			        WHERE ATT.LESSON_ID = #{stdLessonId} 
+			              AND ATT.WEEK_ID = #{weekId} 
+			              AND ATT.SUBJ_SCH_ID = #{subjSchId} 
+			              AND ATT.CMS_LESSON_ID = #{cmsLessonId}
+			              AND ATT.CMS_LESSON_ITEM_ID = #{cmsLessonItemId}
+			        GROUP BY ATT.LESSON_ID, 
+			              ATT.WEEK_ID, 
+			              ATT.SUBJ_SCH_ID, 
+			              ATT.CMS_LESSON_ID, 
+			              ATT.CMS_LESSON_ITEM_ID  
+			       ) ATTE  
+	</select> 
+	
+	<select id="getLessonProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getLessonProgress ====== */
+		  SELECT 
+		 <if test="progressAttendTypeCode != null  and progressAttendTypeCode != ''">
+	 		<choose>
+	            <when test='progressAttendTypeCode eq "P"'>
+	                	FLOOR(PAGE_PROGRESS_RATIO / (100 * 1) * 100)
+	            </when>
+	            <when test='progressAttendTypeCode eq "T"'>
+	                	FLOOR(TIME_PROGRESS_RATIO / (100 * 1) * 100)
+	            </when>
+	            <otherwise>
+	            		FLOOR((TIME_PROGRESS_RATIO+ATTE.PAGE_PROGRESS_RATIO) / (200 * 1) * 100)  
+	            </otherwise>
+	        </choose>
+	 	</if>	
+			  FROM 
+			       (SELECT SUM(TIME_PROGRESS_RATIO) AS TIME_PROGRESS_RATIO, 
+			              SUM(PAGE_PROGRESS_RATIO) AS PAGE_PROGRESS_RATIO 
+			         FROM LMS_PROGRESS_ATTEND ATT 
+			        WHERE ATT.LESSON_ID = #{stdLessonId} 
+			              AND ATT.WEEK_ID = #{weekId} 
+			              AND ATT.SUBJ_SCH_ID = #{subjSchId} 
+			        GROUP BY ATT.LESSON_ID, 
+			              ATT.WEEK_ID, 
+			              ATT.SUBJ_SCH_ID
+			       ) ATTE  
+	</select>    	
+	
+	
+	<select id="getLessonScheduleProgress" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getLessonScheduleProgress ====== */
+		  SELECT 
+		 <if test="progressAttendTypeCode != null  and progressAttendTypeCode != ''">
+	 		<choose>
+	            <when test='progressAttendTypeCode eq "P"'>
+	                	FLOOR(PAGE_PROGRESS_RATIO / (100 * SCH_CNT) * 100)
+	            </when>
+	            <when test='progressAttendTypeCode eq "T"'>
+	                	FLOOR(TIME_PROGRESS_RATIO / (100 * SCH_CNT) * 100)
+	            </when>
+	            <otherwise>
+	            		FLOOR((TIME_PROGRESS_RATIO+ATTE.PAGE_PROGRESS_RATIO) / (200 * SCH_CNT) * 100)  
+	            </otherwise>
+	        </choose>
+	 	</if>	
+			  FROM 
+			       (SELECT SUM(TIME_PROGRESS_RATIO) AS TIME_PROGRESS_RATIO, 
+			              SUM(PAGE_PROGRESS_RATIO) AS PAGE_PROGRESS_RATIO,
+			              COUNT(SUBJ_SCH_ID) AS SCH_CNT
+			         FROM LMS_PROGRESS_ATTEND ATT 
+			        WHERE ATT.LESSON_ID = #{stdLessonId} 
+			              AND ATT.WEEK_ID = #{weekId} 
+			              AND ATT.SUBJ_SCH_ID = #{subjSchId} 
+			        GROUP BY ATT.LESSON_ID, 
+			              ATT.WEEK_ID, 
+			              ATT.SUBJ_SCH_ID
+			       ) ATTE  
+	</select>  
+	
+	
+	<select id="getWeekProgressRate" parameterType="kr.co.sitglobal.oklms.lu.attend.vo.AttendVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.attend.service.impl.AttendMapper.getWeekProgressRate ====== */
+		  SELECT FN_WEEK_PROGRESS_RATE(WEE.YYYY,WEE.TERM,WEE.SUBJECT_CODE,WEE.CLASS,WEE.WEEK_ID,LES.LESSON_ID) AS WEEK_PROGRESS_RATE 
+				  FROM LMS_SUBJ_WEEK WEE 
+				  	INNER JOIN LMS_LESSON LES 
+				       ON WEE.YYYY = LES.YYYY 
+				       AND WEE.TERM = LES.TERM 
+				       AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE 
+				       AND WEE.CLASS = LES.CLASS 
+				       AND LES.DELETE_YN = 'N' 
+				       AND LES.LESSON_ID = #{stdLessonId} 
+				 WHERE WEE.DELETE_YN = 'N' 
+				       AND WEE.WEEK_ID = #{weekId} 
+	</select>
+	
+		         
+</mapper>

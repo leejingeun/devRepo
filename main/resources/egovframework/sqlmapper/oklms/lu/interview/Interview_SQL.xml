@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 김현민    2017. 03. 15          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper">
+
+	<select id="listInterview" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.InterviewMapper.listInterview ====== */
+		
+		SELECT * FROM 
+		(
+		SELECT  D.MEM_NAME AS INTERVIEW_MEMBER_NAMES
+				,A.INTERVIEW_NOTE_ID
+				,A.INTERVIEW_NOTE_DATE
+				,A.COMPANY_ID
+				,(SELECT X.COMPANY_NAME FROM LMS_COMPANY X WHERE X.COMPANY_ID=A.COMPANY_ID) AS COMPANY_NAME
+				,A.TRANING_PROCESS_ID
+				,(SELECT X.HRD_TRANING_NAME FROM LMS_TRANING_PROCESS X WHERE X.COMPANY_ID=A.COMPANY_ID AND X.TRANING_PROCESS_ID = A.TRANING_PROCESS_ID )  AS TRANING_PROCESS_NAME
+				,A.INTERVIEW_MEM_SEQ
+				,A.TRAINING_TALK
+				,A.WORK_TALK
+				,A.TEMP_TALK
+				,A.TOTAL_TALK
+				,A.SEND_YN
+				,A.SEND_DATE
+				,A.ATCH_FILE_IMG_ID
+				,A.ATCH_FILE_ID
+				,A.temp_sj1
+				,A.temp_cn1
+				,A.temp_sj2
+				,A.temp_cn2
+				,A.temp_sj3
+				,A.temp_cn3
+				,A.DELETE_YN
+				,A.INSERT_USER
+				,A.INSERT_DATE
+				,A.UPDATE_USER
+				,A.UPDATE_DATE
+			  FROM LMS_INTERVIEW_NOTE A, (SELECT B.INTERVIEW_NOTE_ID,
+												 group_concat(C.MEM_NAME) MEM_NAME 
+										    FROM LMS_INTERVIEW_MEMBER B,COM_MEMBER C 
+										   WHERE B.MEM_SEQ=C.MEM_SEQ  
+										     AND B.DELETE_YN = 'N' 
+										   GROUP BY B.INTERVIEW_NOTE_ID ) D
+			 WHERE A.INTERVIEW_MEM_SEQ = #{interviewMemSeq}
+			       AND A.DELETE_YN = 'N' 
+			       AND A.INTERVIEW_NOTE_ID=D.INTERVIEW_NOTE_ID 
+		) D  WHERE D.INTERVIEW_MEMBER_NAMES IS NOT NULL    
+			ORDER BY D.INSERT_DATE DESC 
+	</select>
+	<select id="getInterview" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.InterviewMapper.getInterview ====== */
+		SELECT  A.INTERVIEW_NOTE_ID
+				,A.INTERVIEW_NOTE_DATE
+				,D.MEM_NAME AS INTERVIEW_MEMBER_NAMES
+				,D.MEM_SEQ AS INTERVIEW_MEMBER_SEQS
+				,A.COMPANY_ID
+				,A.TRANING_PROCESS_ID
+				,(SELECT X.HRD_TRANING_NAME FROM LMS_TRANING_PROCESS X WHERE X.COMPANY_ID=A.COMPANY_ID AND X.TRANING_PROCESS_ID = A.TRANING_PROCESS_ID )  AS TRANING_PROCESS_NAME
+				,A.INTERVIEW_MEM_SEQ
+				,A.TRAINING_TALK
+				,A.WORK_TALK
+				,A.TEMP_TALK
+				,A.TOTAL_TALK
+				,A.SEND_YN
+				,A.SEND_DATE
+				,A.ATCH_FILE_IMG_ID
+				,A.ATCH_FILE_ID
+				,A.temp_sj1
+				,A.temp_cn1
+				,A.temp_sj2
+				,A.temp_cn2
+				,A.temp_sj3
+				,A.temp_cn3
+				,A.DELETE_YN
+				,A.INSERT_USER
+				,A.INSERT_DATE
+				,A.UPDATE_USER
+				,A.UPDATE_DATE
+			  FROM LMS_INTERVIEW_NOTE A, (SELECT B.INTERVIEW_NOTE_ID,group_concat(C.MEM_SEQ) MEM_SEQ,group_concat(C.MEM_NAME)  MEM_NAME
+			  								FROM LMS_INTERVIEW_MEMBER B,COM_MEMBER C 
+			  								WHERE B.MEM_SEQ=C.MEM_SEQ AND B.DELETE_YN = 'N' 
+			  								GROUP BY B.INTERVIEW_NOTE_ID) D
+			 WHERE A.INTERVIEW_MEM_SEQ = #{interviewMemSeq}
+			   AND A.INTERVIEW_NOTE_ID = #{interviewNoteId}
+			   AND A.DELETE_YN = 'N'
+			   AND A.INTERVIEW_NOTE_ID=D.INTERVIEW_NOTE_ID  
+			ORDER BY A.INSERT_DATE DESC 
+	</select>
+	<insert id="insertInterview" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.insertInterview ====== */
+		INSERT INTO LMS_INTERVIEW_NOTE(INTERVIEW_NOTE_ID
+										,INTERVIEW_NOTE_DATE
+										,COMPANY_ID
+										,TRANING_PROCESS_ID
+										,INTERVIEW_MEM_SEQ
+										,TRAINING_TALK
+										,WORK_TALK
+										,TEMP_TALK
+										,TOTAL_TALK
+										,SEND_YN
+										,SEND_DATE
+										,ATCH_FILE_IMG_ID
+										,ATCH_FILE_ID
+										,TEMP_SJ1
+										,TEMP_CN1
+										,TEMP_SJ2
+										,TEMP_CN2
+										,TEMP_SJ3
+										,TEMP_CN3
+										,DELETE_YN
+										,INSERT_USER
+										,INSERT_DATE)
+								VALUES(
+										#{interviewNoteId}
+										,#{interviewNoteDate}
+										,#{companyId}
+										,#{traningProcessId}
+										,#{interviewMemSeq}
+										,#{trainingTalk}
+										,#{workTalk}
+										,#{tempTalk}
+										,#{totalTalk}
+										,#{sendYn}
+										,#{sendDate}
+										,#{atchFileImgId}
+										,#{atchFileId}
+										,#{tempSj1}
+										,#{tempCn1}
+										,#{tempSj2}
+										,#{tempCn2}
+										,#{tempSj3}
+										,#{tempCn3}
+										,'N'
+										,#{sessionMemSeq}
+										,now()
+										)
+	</insert>
+	<insert id="insertInterviewMember" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.insertInterviewMember ====== */
+		INSERT INTO LMS_INTERVIEW_MEMBER(INTERVIEW_MEMBER_ID
+										,INTERVIEW_NOTE_ID
+										,MEM_SEQ
+										,DELETE_YN
+										,INSERT_USER
+										,INSERT_DATE)
+								VALUES(
+										#{interviewMemberId}
+										,#{interviewNoteId}
+										,#{interviewMemberSeq}
+										,'N'
+										,#{sessionMemSeq}
+										,now()
+										)
+	</insert>	
+	<update id="updateInterview" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.updateInterview ====== */
+		UPDATE LMS_INTERVIEW_NOTE 
+		SET
+			TRAINING_TALK = #{trainingTalk},
+			WORK_TALK = #{workTalk}, 
+			TEMP_TALK = #{tempTalk},
+			TOTAL_TALK = #{totalTalk},
+			TEMP_SJ1 = #{tempSj1}, 
+			TEMP_CN1 = #{tempCn1},
+			TEMP_SJ2 = #{tempSj2},
+			TEMP_CN2 = #{tempCn2},
+			TEMP_SJ3 = #{tempSj3},
+			TEMP_CN3 = #{tempCn3},
+			<if test="atchFileImgId != null and atchFileImgId != ''">
+			ATCH_FILE_IMG_ID = #{atchFileImgId},
+			</if>
+			<if test="atchFileId != null and atchFileId != ''">
+			ATCH_FILE_ID =#{atchFileId},
+			</if>
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE INTERVIEW_NOTE_ID = #{interviewNoteId}
+	</update>
+	<update id="deleteInterview" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.deleteInterview ====== */
+		UPDATE LMS_INTERVIEW_NOTE 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE INTERVIEW_NOTE_ID = #{interviewNoteId}
+	</update>	
+	<!--select id="InterviewMembers" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewMemberVO">
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.InterviewMember ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	  	SELECT CM.MEM_SEQ,
+			   CM.MEM_ID,
+			   CM.MEM_TYPE,
+			   CM.MEM_NAME 
+	   FROM COM_MEMBER CM 
+		WHERE CM.COMPANY_ID = #{companyId} 
+	 	  AND CM.MEM_TYPE = 'STD'
+		  AND CM.DELETE_YN = 'N'
+		  ORDER by CM.MEM_NAME 
+		  <include refid="kr.co.sitglobal.include.paging-end"/>
+	</select -->
+	<select id="InterviewMembers" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewMemberVO">
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.InterviewMember ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+		
+		<choose>
+            <when test='sessionMemType eq "PRT"'>
+                	SELECT CM.MEM_SEQ, 
+						       CM.MEM_ID, 
+						       CM.MEM_TYPE, 
+						       CM.MEM_NAME 
+						  FROM COM_MEMBER CM , 
+						       LMS_LESSON LL , 
+						       (SELECT AA.YYYY,
+						              AA.TERM,
+						              AA.SUBJECT_CODE,
+						              AA.CLASS 
+						         FROM 
+						              (
+						              SELECT sub.YYYY , 
+						                     sub.TERM , 
+						                     sub.SUBJECT_CODE , 
+						                     sub.CLASS 
+						                FROM lms_subject sub, 
+						                     lms_subj_ins_mapping ins 
+						               WHERE sub.YYYY = ins.YYYY 
+						                     AND sub.TERM = ins.TERM 
+						                     AND sub.SUBJECT_CODE = ins.SUBJECT_CODE 
+						                     AND sub.CLASS = ins.CLASS 
+						                     AND sub.SUBJECT_TRANING_TYPE = 'OJT' 
+						                     AND sub.SUBJECT_TYPE = 'HSKILL' 
+						                     AND sub.DELETE_YN = 'N' 
+						                     AND ins.DELETE_YN = 'N' 
+						                     AND ins.MEM_SEQ = #{sessionMemSeq} 
+						                     AND 
+						                     ( 
+						                       SUB.YYYY, 
+						                       SUB.TERM 
+						                     ) 
+						                     IN 
+						                     (SELECT HAK.YYYY, 
+						                            HAK.TERM 
+						                       FROM HAK_SCHEDULE HAK 
+						                      WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y') 
+						                            AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+						                     ) 
+						              ) AA
+						       ) A 
+						 WHERE CM.MEM_TYPE = 'STD' 
+						       AND CM.DELETE_YN = 'N' 
+						       AND LL.DELETE_YN = 'N' 
+						       AND LL.MEM_SEQ= CM.MEM_SEQ 
+						       AND LL.SUBJECT_CODE = A.SUBJECT_CODE 
+						       AND LL.YYYY = A.YYYY 
+						       AND LL.TERM = A.TERM 
+						       AND LL.CLASS = A.CLASS  
+						   GROUP BY CM.MEM_SEQ, 
+						       CM.MEM_ID, 
+						       CM.MEM_TYPE, 
+						       CM.MEM_NAME 
+						ORDER BY CM.MEM_NAME 
+            </when>
+            <otherwise>
+            		SELECT CM.MEM_SEQ, 
+						       CM.MEM_ID, 
+						       CM.MEM_TYPE, 
+						       CM.MEM_NAME 
+						  FROM COM_MEMBER CM , 
+						       LMS_LESSON LL , 
+						       (SELECT AA.YYYY,
+						              AA.TERM,
+						              AA.SUBJECT_CODE,
+						              AA.CLASS 
+						         FROM 
+						              (
+						              SELECT sub.YYYY , 
+						                     sub.TERM , 
+						                     sub.SUBJECT_CODE , 
+						                     sub.CLASS 
+						                FROM lms_subject sub, 
+						                     lms_subj_tut_mapping tut 
+						               WHERE sub.YYYY = tut.YYYY 
+						                     AND sub.TERM = tut.TERM 
+						                     AND sub.SUBJECT_CODE = tut.SUBJECT_CODE 
+						                     AND sub.CLASS = tut.CLASS 
+						                     AND sub.SUBJECT_TRANING_TYPE = 'OJT' 
+						                     AND sub.DELETE_YN = 'N' 
+						                     AND tut.DELETE_YN = 'N' 
+						                     AND tut.MEM_SEQ = #{sessionMemSeq} 
+						                     AND 
+						                     ( 
+						                       SUB.YYYY, 
+						                       SUB.TERM 
+						                     ) 
+						                     IN 
+						                     (SELECT HAK.YYYY, 
+						                            HAK.TERM 
+						                       FROM HAK_SCHEDULE HAK 
+						                      WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y') 
+						                            AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE 
+						                     ) 
+						              ) AA
+						       ) A 
+						 WHERE CM.MEM_TYPE = 'STD' 
+						       AND CM.DELETE_YN = 'N' 
+						       AND LL.DELETE_YN = 'N' 
+						       AND LL.MEM_SEQ= CM.MEM_SEQ 
+						       AND LL.SUBJECT_CODE = A.SUBJECT_CODE 
+						       AND LL.YYYY = A.YYYY 
+						       AND LL.TERM = A.TERM 
+						       AND LL.CLASS = A.CLASS  
+						   GROUP BY CM.MEM_SEQ, 
+						       CM.MEM_ID, 
+						       CM.MEM_TYPE, 
+						       CM.MEM_NAME 
+						ORDER BY CM.MEM_NAME
+            </otherwise>
+        </choose>
+		
+		
+		
+		<!-- 
+			SELECT 
+			CM.MEM_SEQ, 
+			CM.MEM_ID, 
+			CM.MEM_TYPE, 
+			CM.MEM_NAME 
+			FROM COM_MEMBER CM , LMS_LESSON LL ,
+			(SELECT AA.YYYY,AA.TERM,AA.SUBJECT_CODE,AA.CLASS
+			FROM (
+			select 
+			sub.YYYY  , sub.TERM  , sub.SUBJECT_CODE , sub.CLASS  from lms_subject sub, lms_subj_ins_mapping ins 
+			where sub.YYYY = ins.YYYY and sub.TERM = ins.TERM and sub.SUBJECT_CODE = ins.SUBJECT_CODE 
+			and sub.CLASS = ins.CLASS and sub.SUBJECT_TRANING_TYPE = 'OFF' and sub.DELETE_YN = 'N' and 
+			ins.DELETE_YN = 'N' and ins.MEM_SEQ =  #{sessionMemSeq} AND ( SUB.YYYY, SUB.TERM ) IN (SELECT 
+			HAK.YYYY, HAK.TERM FROM HAK_SCHEDULE HAK WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y') AND DATE_FORMAT(NOW(),'%Y%m%d') 
+			BETWEEN HAK.START_DATE AND HAK.END_DATE )
+			union all
+			select 
+			sub.YYYY , sub.TERM , sub.SUBJECT_CODE , sub.CLASS from lms_subject sub, lms_subj_ins_mapping ins 
+			where sub.YYYY = ins.YYYY and sub.TERM = ins.TERM and sub.SUBJECT_CODE = ins.SUBJECT_CODE and 
+			sub.CLASS = ins.CLASS and sub.SUBJECT_TRANING_TYPE = 'OJT' and sub.DELETE_YN = 'N' and ins.DELETE_YN = 'N' 
+			and ins.MEM_SEQ =  #{sessionMemSeq} 
+			AND ( SUB.YYYY, SUB.TERM ) IN 
+			(SELECT HAK.YYYY, HAK.TERM FROM HAK_SCHEDULE HAK WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y') AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE )
+			) AA) A
+			WHERE  CM.MEM_TYPE = 'STD' 
+			AND CM.DELETE_YN = 'N' 
+			AND LL.DELETE_YN = 'N'
+			AND LL.MEM_SEQ= CM.MEM_SEQ
+			AND LL.SUBJECT_CODE = A.SUBJECT_CODE
+			AND LL.YYYY =  A.YYYY
+			AND LL.TERM =  A.TERM 
+			AND LL.CLASS =  A.CLASS
+			 
+			GROUP BY CM.MEM_SEQ, CM.MEM_ID, CM.MEM_TYPE, CM.MEM_NAME 
+			ORDER by CM.MEM_NAME 
+		    -->		
+		  <include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>	
+	  
+	<update id="deleteInterviewMember" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.deleteInterview ====== */
+		UPDATE LMS_INTERVIEW_MEMBER 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE  INTERVIEW_NOTE_ID = #{interviewNoteId}
+		<if test="interviewMemberId != null and interviewMemberId != ''">
+		  AND  INTERVIEW_MEMBER_ID = #{interviewMemberId}
+		</if>
+	</update>
+
+
+ 
+
+
+	<select id="InterviewCompanys" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO">
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.InterviewCompanys ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	  	 SELECT 
+	 			B.COMPANY_NAME,
+				A.HRD_TRANING_NAME,
+				B.COMPANY_ID,
+				A.TRANING_PROCESS_ID
+			
+		 FROM LMS_TRANING_PROCESS A,LMS_COMPANY B 
+		 WHERE A.COMPANY_ID=B.COMPANY_ID 
+		   AND B.DELETE_YN='N'
+		   AND A.DELETE_YN='N'
+		   <if test="searchCompanyName != null and searchCompanyName != ''">		   
+		   AND B.COMPANY_NAME   LIKE CONCAT('%',#{searchCompanyName},'%') 
+		   </if>
+		   <if test="searchHrdTraningName != null and searchHrdTraningName != ''">		   
+		   AND A.TRANING_PROCESS_ID  LIKE CONCAT('%',#{searchHrdTraningName},'%')
+		   </if> 		   
+		  <include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	<select id="InterviewCompany" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO">
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.InterviewCompany ====== */
+	 	SELECT
+		B.COMPANY_ID
+		,B.COMPANY_NAME
+		,A.HRD_TRANING_NAME
+		,A.TRANING_PROCESS_ID
+		,B.ADDRESS
+		,B.INSERT_DATE
+		FROM LMS_COMPANY B,LMS_TRANING_PROCESS A
+		WHERE  A.COMPANY_ID=B.COMPANY_ID
+		AND A.DELETE_YN='N' 
+		AND B.DELETE_YN='N'
+		AND B.COMPANY_ID= #{companyId}
+		AND A.TRANING_PROCESS_ID = #{traningProcessId}
+	</select>
+	<select id="InterviewCompanyMember" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO">
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.InterviewCompanyMember ====== */
+		SELECT
+		 LC.COMPANY_ID
+		,LC.COMPANY_NAME
+		,LTP.HRD_TRANING_NAME
+		,LTP.TRANING_PROCESS_ID
+		,LC.ADDRESS
+		,LC.INSERT_DATE
+		FROM  LMS_LESSON LL 
+		INNER JOIN COM_MEMBER CM ON CM.DELETE_YN='N' AND CM.MEM_SEQ=LL.MEM_SEQ
+		LEFT OUTER JOIN LMS_COMPANY LC ON LC.DELETE_YN='N' AND LC.COMPANY_ID =CM.COMPANY_ID
+		LEFT OUTER JOIN  LMS_TRANING_PROCESS_MAPPING LTPM ON LTPM.DELETE_YN='N' 
+																			AND LL.YYYY=LTPM.YYYY 
+																			AND LL.TERM=LTPM.TERM 
+																			AND LL.SUBJECT_CODE = LTPM.SUBJECT_CODE 
+																			AND LL.CLASS = LTPM.CLASS 
+																			AND CM.COMPANY_ID = LTPM.COMPANY_ID
+		LEFT OUTER JOIN  LMS_TRANING_PROCESS LTP ON LTP.COMPANY_ID = LTPM.COMPANY_ID AND LTP.TRANING_PROCESS_ID = LTPM.TRANING_PROCESS_ID
+		WHERE  LL.DELETE_YN='N' AND LL.MEM_SEQ=CM.MEM_SEQ  AND LL.YYYY=#{yyyy} AND LL.TERM=#{term} AND LL.MEM_SEQ= #{memSeq}
+		LIMIT 0,1
+	</select>	
+	<select id="listInterviewCenter" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.InterviewMapper.listInterviewCenter ====== */
+		SELECT A.* FROM 		
+				(SELECT  substring(A.INTERVIEW_NOTE_DATE,1,7) AS  INTERVIEW_NOTE_DATE_MM_PARAM 
+						, A.COMPANY_ID
+						,(SELECT X.COMPANY_NAME FROM LMS_COMPANY X WHERE X.COMPANY_ID=A.COMPANY_ID AND X.DELETE_YN='N') AS COMPANY_NAME
+						,A.INTERVIEW_MEM_SEQ
+						,(SELECT X.MEM_NAME FROM COM_MEMBER X WHERE X.MEM_SEQ=A.INTERVIEW_MEM_SEQ AND X.DELETE_YN='N') AS INTERVIEW_MEM_NAME				 
+						,A.SEND_YN
+						,A.SEND_DATE   
+					  FROM LMS_INTERVIEW_NOTE A
+					 WHERE A.COMPANY_ID = #{companyId}
+					 	AND A.TRANING_PROCESS_ID = #{traningProcessId}
+					 	AND substring(A.INTERVIEW_NOTE_DATE,1,4) = #{yyyy}
+					 	 <if test="mm != null and mm != ''">	
+					 	AND substring(A.INTERVIEW_NOTE_DATE,6,2) = #{mm}
+					 	</if>
+					       AND A.DELETE_YN = 'N' ) A
+		 GROUP BY INTERVIEW_NOTE_DATE_MM_PARAM,COMPANY_ID,COMPANY_NAME,INTERVIEW_MEM_SEQ,INTERVIEW_MEM_NAME,SEND_YN,SEND_DATE
+		 ORDER BY INTERVIEW_NOTE_DATE_MM_PARAM DESC
+	</select>	
+	<select id="getInterviewCenter" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.InterviewMapper.getInterviewCenter ====== */
+		
+		SELECT * FROM 
+		(
+		SELECT  D.MEM_NAME AS INTERVIEW_MEMBER_NAMES
+				,D.MEM_SEQ AS INTERVIEW_MEMBER_SEQS
+				,A.INTERVIEW_NOTE_ID
+				,A.INTERVIEW_NOTE_DATE
+				,A.COMPANY_ID
+				,(SELECT X.COMPANY_NAME FROM LMS_COMPANY X WHERE X.COMPANY_ID=A.COMPANY_ID) AS COMPANY_NAME
+				,A.INTERVIEW_MEM_SEQ
+				,(SELECT X.HRD_TRANING_NAME FROM LMS_TRANING_PROCESS X WHERE X.COMPANY_ID=A.COMPANY_ID AND X.TRANING_PROCESS_ID = A.TRANING_PROCESS_ID )  AS TRANING_PROCESS_NAME
+				,(SELECT X.MEM_NAME FROM COM_MEMBER X WHERE X.MEM_SEQ=A.INTERVIEW_MEM_SEQ) AS INTERVIEW_MEM_NAME
+				,A.TRAINING_TALK
+				,A.WORK_TALK
+				,A.TEMP_TALK
+				,A.TOTAL_TALK
+				,A.SEND_YN
+				,A.SEND_DATE
+				,A.ATCH_FILE_IMG_ID
+				,A.ATCH_FILE_ID
+				,A.temp_sj1
+				,A.temp_cn1
+				,A.temp_sj2
+				,A.temp_cn2
+				,A.temp_sj3
+				,A.temp_cn3
+				,A.DELETE_YN
+				,A.INSERT_USER
+				,A.INSERT_DATE
+				,A.UPDATE_USER
+				,A.UPDATE_DATE
+			  FROM LMS_INTERVIEW_NOTE A, (SELECT B.INTERVIEW_NOTE_ID,
+			  									  group_concat(C.MEM_SEQ) MEM_SEQ,
+			  									  group_concat(C.MEM_NAME) MEM_NAME 
+			  								FROM LMS_INTERVIEW_MEMBER B,COM_MEMBER C 
+			  							WHERE B.MEM_SEQ=C.MEM_SEQ  
+			  							  AND B.DELETE_YN = 'N' 
+			  							  GROUP BY B.INTERVIEW_NOTE_ID
+			  							  ) D
+			 WHERE A.COMPANY_ID = #{companyId}
+			 AND A.TRANING_PROCESS_ID = #{traningProcessId}
+				   <if test="interviewNoteDateMmParam != null and interviewNoteDateMmParam != ''">
+				   AND substring(A.INTERVIEW_NOTE_DATE,1,7)  = #{interviewNoteDateMmParam}
+				   </if>
+			       AND A.DELETE_YN = 'N' 
+			       AND A.INTERVIEW_NOTE_ID=D.INTERVIEW_NOTE_ID 
+		) D  WHERE D.INTERVIEW_MEMBER_NAMES IS NOT NULL    
+			ORDER BY D.INSERT_DATE DESC 
+	</select>
+	
+	<update id="updateInterviewCenterSend" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.interview.service.impl.InterviewMapper.updateInterviewCenterSend ====== */
+		UPDATE LMS_INTERVIEW_NOTE 
+		SET
+			SEND_YN = 'Y',
+			SEND_DATE = now(),
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE  substring(INTERVIEW_NOTE_DATE,1,7) = #{interviewNoteDateMmParam} 
+		  AND  COMPANY_ID = #{companyId}
+		   AND TRANING_PROCESS_ID = #{traningProcessId}
+	</update>
+
+	
+	<select id="listCompanyini" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.InterviewMapper.listCompanyini ====== */
+		SELECT DISTINCT TP.HRD_TRANING_NAME,FN_GETCOMPAYNAME(TP.COMPANY_ID) as COMPANY_NAME,TP.COMPANY_ID,TP.TRANING_PROCESS_ID
+		FROM LMS_TRANING_PROCESS TP,
+		LMS_TRANING_PROCESS_MAPPING TPM 
+		WHERE TP.COMPANY_ID = TPM.COMPANY_ID
+		AND TP.DELETE_YN='N'
+		AND TPM.DELETE_YN='N'
+		AND TP.TRANING_PROCESS_ID =TPM.TRANING_PROCESS_ID
+		AND (TPM.YYYY,TPM.TERM,TPM.SUBJECT_CODE,TPM.CLASS) in
+		 (SELECT AA.YYYY,AA.TERM,AA.SUBJECT_CODE,AA.CLASS
+					FROM (
+						SELECT 
+						SUB.YYYY  , SUB.TERM  , SUB.SUBJECT_CODE , SUB.CLASS  FROM LMS_SUBJECT sub, 
+						<if test="sessionMemType == 'PRT'">
+						LMS_SUBJ_INS_MAPPING INS
+						</if>
+						<if test="sessionMemType == 'COT'">
+						LMS_SUBJ_TUT_MAPPING INS
+						</if>
+						WHERE SUB.YYYY = INS.YYYY 
+						AND SUB.TERM = INS.TERM 
+						AND SUB.SUBJECT_CODE = INS.SUBJECT_CODE 
+						AND SUB.CLASS = INS.CLASS 
+						AND SUB.SUBJECT_TRANING_TYPE = 'OFF' 
+						AND SUB.DELETE_YN = 'N' 
+						AND	INS.DELETE_YN = 'N' 
+						AND INS.MEM_SEQ = #{sessionMemSeq} 
+						AND ( SUB.YYYY, SUB.TERM ) IN (SELECT 
+																HAK.YYYY, HAK.TERM FROM HAK_SCHEDULE HAK 
+																WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y') AND DATE_FORMAT(NOW(),'%Y%m%d') 
+																BETWEEN HAK.START_DATE AND HAK.END_DATE )
+						union all
+						SELECT 
+						SUB.YYYY , SUB.TERM , SUB.SUBJECT_CODE , SUB.CLASS FROM LMS_SUBJECT sub,
+						 
+						<if test="sessionMemType != null and sessionMemType == 'PRT'">
+						LMS_SUBJ_INS_MAPPING INS
+						</if>
+						<if test="sessionMemType != null and sessionMemType == 'COT'">
+						LMS_SUBJ_TUT_MAPPING INS
+						</if>
+						 
+						WHERE SUB.YYYY = INS.YYYY AND SUB.TERM = INS.TERM 
+						 AND SUB.SUBJECT_CODE = INS.SUBJECT_CODE 
+						 AND SUB.CLASS = INS.CLASS 
+						 AND SUB.SUBJECT_TRANING_TYPE = 'OJT' 
+						 AND SUB.DELETE_YN = 'N' 
+						 AND INS.DELETE_YN = 'N' 
+						 AND INS.MEM_SEQ = #{sessionMemSeq}
+						 AND ( SUB.YYYY, SUB.TERM ) IN (SELECT HAK.YYYY, HAK.TERM FROM HAK_SCHEDULE HAK WHERE HAK.YYYY = DATE_FORMAT(NOW(),'%Y') 
+						 AND DATE_FORMAT(NOW(),'%Y%m%d') BETWEEN HAK.START_DATE AND HAK.END_DATE )
+						) AA
+				)
+	</select>
+	<select id="listCompanyCcn" parameterType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO"  resultType="kr.co.sitglobal.oklms.lu.interview.vo.InterviewCompanyVO">
+		/* ======  kr.co.sitglobal.oklms.lu.report.service.impl.InterviewMapper.listCompanyCcn ====== */
+		SELECT DISTINCT TP.HRD_TRANING_NAME,FN_GETCOMPAYNAME(TP.COMPANY_ID) as COMPANY_NAME,TP.COMPANY_ID,TP.TRANING_PROCESS_ID
+		FROM LMS_TRANING_PROCESS TP,
+		LMS_TRANING_PROCESS_MAPPING TPM 
+		WHERE TP.COMPANY_ID = TPM.COMPANY_ID
+		AND TP.DELETE_YN='N'
+		AND TPM.DELETE_YN='N'
+		AND TP.TRANING_PROCESS_ID =TPM.TRANING_PROCESS_ID
+ 		
+	</select>	
+</mapper>

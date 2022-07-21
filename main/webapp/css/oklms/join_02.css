@@ -1,0 +1,409 @@
+@charset "utf-8";
+
+
+
+@media all and (min-width:770px) and (max-width:1039px) {
+
+.body-login																			{margin:20px auto 0;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:810px) {
+
+.member-step																			{display:none;}
+
+}
+
+
+
+
+
+
+
+
+
+@media all and (max-width:770px) {
+
+.body-login																			{width:455px; background-image:none; padding-left:0; margin:20px auto 0;}
+.body-login dt																			{font-size:40px; text-align:center;}
+.body-login dd.text																	{text-align:center;}
+.body-login dd.text p																{font-size:14px; padding-top:3px;}
+.body-login dd.info																	{padding-left:35px;}
+
+
+
+.member-wrap h4																	{width:97%; font-size:18px; line-height:25px; padding-left:3%; margin-bottom:7px;}
+.member-wrap h4 span															{font-size:16px;}
+
+.member-wrap .textarea-1														{padding:25px 2% 25px 3%; margin-bottom:12px;}
+.member-wrap .textarea-1 div													{padding-right:25px;}
+.member-wrap .textarea-1 h5													{font-size:18px; margin-top:25px; margin-bottom:12px;}
+.member-wrap .textarea-1 h6													{font-size:15px; margin-bottom:5px;}
+.member-wrap .textarea-1 p														{font-size:13px; line-height:18px; padding-bottom:5px;}
+.member-wrap .textarea-1 span												{font-size:12px; line-height:17px; padding-bottom:15px;}
+
+.member-wrap .textarea-2														{padding:25px 2% 25px 3%; margin-bottom:12px;}
+.member-wrap .textarea-2 div													{padding-right:25px;}
+.member-wrap .textarea-2 h5													{font-size:18px; margin-top:25px; margin-bottom:12px;}
+.member-wrap .textarea-2 h6													{font-size:15px; margin-bottom:5px;}
+.member-wrap .textarea-2 p														{font-size:13px; line-height:18px; padding-bottom:5px;}
+.member-wrap .textarea-2 p.title												{font-size:14px; line-height:20px; padding-bottom:3px;}
+.member-wrap .textarea-2 span												{font-size:12px; line-height:17px; padding-bottom:15px;}
+
+
+.member-wrap table																{margin-bottom:25px;}
+.member-wrap table th																{width:20%; font-size:14px; line-height:11px; padding-left:3%;}
+.member-wrap table td																{width:97%; font-size:13px; line-height:20px; padding:6px 0 6px 3%;}
+.member-wrap table td input														{width:70px; height:24px;}
+.member-wrap table td input.choice											{margin-right:4px;}
+.member-wrap table td input.type-1											{width:150px;}
+.member-wrap table td input.type-2											{width:100px;}
+.member-wrap table td input.type-3											{width:97%;}
+.member-wrap table td select													{width:72px; height:26px;}
+.member-wrap table td select.type-1											{width:152px;}
+.member-wrap table td select.type-2											{width:102px;}
+.member-wrap table td a.checkid												{line-height:24px; font-size:14px; padding:0 10px 0 30px;}
+
+
+.member-wrap .text-area															{width:94%; padding:250px 0 30px; margin-bottom:30px;}
+.member-wrap .text-area .type-1												{font-size:18px; line-height:35px;}
+.member-wrap .text-area .type-2												{font-size:28px; line-height:35px;}
+
+
+
+.mail-wrap																				{width:90%; margin:15px auto 0;}
+.mail-wrap .title																		{padding:240px 0 15px;}
+.mail-wrap .title span																{display:none;}
+.mail-wrap .inner																	{width:90%; font-size:15px; line-height:22px; padding:20px 5% 0;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:635px) {
+
+.body-login																			{width:410px; margin-top:0;}
+.body-login dt																			{width:100%;}
+.body-login dd.text																	{width:100%; font-size:15px; line-height:20px;}
+.body-login dd.text p																{font-size:13px; padding-top:2px;}
+.body-login dd.info																	{width:130px;}
+.body-login dd.info input															{width:113px;}
+
+
+
+.member-wrap h4																	{width:97%; font-size:17px; line-height:25px; padding-left:3%;}
+.member-wrap h4 span															{font-size:15px;}
+.member-wrap .agree-check label											{font-size:14px;}
+.member-wrap .total-check														{border:2px solid #A0B4C0; border-radius:8px; padding:15px 0; margin:15px 0 25px;}
+.member-wrap .total-check label												{font-size:15px;}
+.member-wrap .btn-wrap a														{width:102px; font-size:16px; padding:10px 0 8px; margin:0 2px; border-radius:5px;}
+
+
+.member-wrap table																{margin-bottom:20px;}
+.member-wrap table th																{width:20%; font-size:13px; line-height:11px; padding-left:2%;}
+.member-wrap table td																{width:97%; font-size:12px; line-height:20px; padding:6px 0 6px 3%;}
+.member-wrap table td input														{width:60px; height:24px; font-size:12px;}
+.member-wrap table td input.choice											{margin-right:4px;}
+.member-wrap table td input.type-1											{width:130px;}
+.member-wrap table td input.type-2											{width:90px;}
+.member-wrap table td input.type-3											{width:97%;}
+.member-wrap table td select													{width:62px; height:26px; font-size:12px;}
+.member-wrap table td select.type-1											{width:132px;}
+.member-wrap table td select.type-2											{width:92px;}
+.member-wrap table td a.checkid												{line-height:24px; font-size:13px; padding:0 10px 0 30px;}
+
+
+.member-wrap .text-area															{width:92%; padding:260px 0 25px; margin-bottom:25px;}
+.member-wrap .text-area .type-1												{font-size:16px; line-height:30px;}
+.member-wrap .text-area .type-2												{font-size:25px; line-height:30px;}
+
+
+
+.find-id																					{width:46%; padding:100px  4% 0 0; margin-top:30px;}
+.find-id h4																				{font-size:18px; line-height:25px; margin-bottom:5px;}
+.find-id label																			{width:40px; font-size:13px; padding-right:5px;}
+.find-id input																			{width:150px; height:24px; font-size:14px; margin:2px 0;}
+.find-id .enter-txt																		{width:90%; font-size:12px; line-height:16px; border-radius:6px;}
+.find-id .find-txt																		{width:86%; height:154px; font-size:13px; line-height:20px; border-radius:6px; border:4px solid #0092BC; padding:15px 5% 14px; margin-top:7px;}
+.find-id .find-txt span																{margin:20px auto 20px;}
+.find-id .find-txt span b															{font-size:18px;}
+.find-id .find-txt p																	{font-size:28px; line-height:30px;}
+.find-id a																				{width:120px; font-size:16px; padding:10px 0; border-radius:5px;}
+
+
+
+.find-pass																				{width:45%; padding:100px 0 0 4%; margin-top:30px;}
+.find-pass h4																			{font-size:18px; line-height:25px; margin-bottom:5px;}
+.find-pass label																		{width:40px; font-size:13px; padding-right:5px;}
+.find-pass input																		{width:150px; height:24px; font-size:14px; margin:2px 0;}
+.find-pass .enter-txt																{width:90%; font-size:12px; line-height:16px; border-radius:6px;}
+.find-pass .pass-txt																{width:86%; height:154px; font-size:18px; line-height:20px; border-radius:8px; border:4px solid #4084F6; padding:15px 5% 14px; margin-top:7px;}
+.find-pass .pass-txt p																{width:90%; margin:10px auto 15px;}
+.find-pass .pass-txt span														{width:90%; font-size:13px; line-height:18px; margin:0 auto;}
+.find-pass .pass-txt span b														{font-size:20px; line-height:22px; padding-bottom:3px;}
+.find-pass a																			{width:120px; font-size:16px; padding:10px 0; border-radius:5px;}
+
+
+
+.join-text-area h5																	{width:98%; background:none; padding-left:2%; margin:30px 0 10px;}
+.join-text-area h6																	{width:98%; padding-left:2%; margin-bottom:5px;}
+.join-text-area p																		{width:98%; padding-left:2%;}
+.join-text-area span																{width:98%; padding-left:2%;}
+.join-text-area table																	{width:98%; margin-bottom:25px; margin-left:2%;}
+.join-text-area table tr th															{font-size:13px; line-height:19px;}
+.join-text-area table tr td															{font-size:12px; line-height:17px; padding:8px 10px 6px;}
+
+
+
+.mail-wrap .title																		{font-size:23px; padding:240px 0 10px;}
+.mail-wrap .inner																	{width:90%; font-size:14px; line-height:22px; padding:15px 5% 0;}
+
+}
+
+
+
+
+
+
+
+
+
+@media all and (max-width:560px) {
+
+.body-login																			{width:350px;}
+.body-login dt																			{width:100%; font-size:30px; letter-spacing:-0.05em;}
+.body-login dd.text																	{width:100%; font:13px nbgM; line-height:20px;}
+.body-login dd.text p																{font:12px nbgM; padding-top:2px;}
+.body-login dd.info																	{width:190px; height:60px; padding-left:45px;}
+.body-login dd.info input															{width:173px;}
+.body-login dd.btn-2																{width:140px; height:23px; padding-top:2px; margin-left:75px;}
+.body-login dd.btn-3																{width:120px; height:23px; padding-top:2px;}
+
+
+
+.member-step .text																	{font-size:14px; padding-bottom:5px;}
+
+
+
+.member-wrap h4																	{width:96%; font-size:15px; line-height:22px; background-position:0 4px; padding-left:4%; margin-top:20px; margin-bottom:4px;}
+.member-wrap h4 span															{font-size:13px;}
+
+.member-wrap .textarea-1														{width:94%; height:195px; border-radius:8px; padding:20px 2% 20px 4%;}
+.member-wrap .textarea-1 div													{height:195px; padding-right:20px;}
+.member-wrap .textarea-1 h5													{font-size:16px; margin-top:20px; margin-bottom:10px;}
+.member-wrap .textarea-1 h6													{font-size:14px; margin-bottom:5px;}
+.member-wrap .textarea-1 p														{font-size:12px; line-height:17px; padding-bottom:3px;}
+.member-wrap .textarea-1 span												{font-size:11px; line-height:16px; padding-bottom:12px;}
+
+.member-wrap .textarea-2														{width:94%; height:195px; border-radius:8px; padding:20px 2% 20px 4%;}
+.member-wrap .textarea-2 div													{height:195px; padding-right:20px;}
+.member-wrap .textarea-2 h5													{font-size:16px; margin-top:20px; margin-bottom:10px;}
+.member-wrap .textarea-2 h6													{font-size:14px; margin-bottom:5px;}
+.member-wrap .textarea-2 p														{font-size:12px; line-height:17px; padding-bottom:3px;}
+.member-wrap .textarea-2 p.title												{font-size:13px; line-height:18px; padding-bottom:3px;}
+.member-wrap .textarea-2 span												{font-size:11px; line-height:16px; padding-bottom:12px;}
+
+.member-wrap .agree-check label											{font-size:13px;}
+.member-wrap .total-check														{border-radius:8px; padding:10px 0; margin:15px 0 20px;}
+.member-wrap .total-check label												{font-size:14px;}
+.member-wrap .btn-wrap a														{width:92px; font-size:15px; padding:9px 0 7px; border-radius:4px;}
+
+
+
+.member-wrap table																{margin-bottom:20px;}
+.member-wrap table th																{width:25%; font-size:12px; line-height:11px; padding-left:2%;}
+.member-wrap table td																{width:97%; font-size:12px; line-height:16px; padding:6px 0 6px 3%;}
+.member-wrap table td input														{width:60px; height:22px; font-size:12px;}
+.member-wrap table td input.choice											{margin-right:4px;}
+.member-wrap table td input.type-1											{width:110px;}
+.member-wrap table td input.type-2											{width:80px;}
+.member-wrap table td input.type-3											{width:97%;}
+.member-wrap table td select													{width:62px; height:24px; font-size:12px;}
+.member-wrap table td select.type-1											{width:112px;}
+.member-wrap table td select.type-2											{width:82px;}
+.member-wrap table td a.checkid												{line-height:22px; font-size:12px; padding:0 10px 0 30px;}
+
+
+
+.member-wrap .text-area															{width:92%; background-position:center 40px; padding:250px 0 20px; margin-bottom:25px;}
+.member-wrap .text-area .type-1												{font-size:16px; line-height:28px;}
+.member-wrap .text-area .type-1 span										{display:block; font-size:24px;}
+.member-wrap .text-area .type-2												{font-size:16px; line-height:22px;}
+
+
+
+.find-id																					{width:100%; background-size:110px 110px; background-position:0 3px; padding:0 0 0 0; margin-top:20px;}
+.find-id h4																				{font-size:16px; line-height:22px; margin-bottom:5px;}
+.find-id .enter																			{width:65%; text-align:left; padding-left:35%;}
+.find-id label																			{width:40px; font-size:13px; padding-right:5px;}
+.find-id input																			{width:150px; height:22px; font-size:13px; margin:2px 0;}
+.find-id .enter-txt																		{width:90%; font-size:12px; line-height:16px; border-radius:6px; margin-top:5px;}
+.find-id .find-txt																		{width:60%; height:67px; font-size:13px; line-height:20px; border-radius:0; border:none; border-top:1px dotted #666; border-bottom:1px dotted #666; padding:10px 0 14px 0; margin:10px 0 0 35%;}
+.find-id .find-txt span																{width:90%; text-align:left; border:none; padding-bottom:0; margin:0 0 0 7%;}
+.find-id .find-txt span b															{font-size:13px; padding-top:0;}
+.find-id .find-txt p																	{width:93%; font-size:25px; line-height:30px; text-align:left; padding-left:7%;}
+.find-id a																				{width:110px; font-size:14px; padding:8px 0; border-radius:5px; margin-top:10px;}
+
+
+
+.find-pass																				{width:100%; border-top:1px solid #E0E0E0; border-left:none; background-size:110px 110px; background-position:0 58px; padding:30px 0 0 0; margin-top:30px;}
+.find-pass h4																			{font-size:16px; line-height:22px; margin-bottom:5px;}
+.find-pass .enter																		{width:65%; text-align:left; padding-left:35%;}
+.find-pass label																		{width:40px; font-size:13px; padding-right:5px;}
+.find-pass input																		{width:150px; height:24px; font-size:13px; margin:2px 0;}
+.find-pass .enter-txt																{width:90%; font-size:12px; line-height:16px; border-radius:6px;}
+.find-pass .pass-txt																{width:65%; height:72px; text-align:left; border:none; padding:0 0 14px 35%; margin-top:10px;}
+.find-pass .pass-txt p																{display:none;}
+.find-pass .pass-txt span														{float:left; width:85%; font-size:13px; line-height:18px; text-align:left; border-top:1px dotted #666; border-bottom:1px dotted #666; padding:10px 0 10px 5%; margin:0 auto;}
+.find-pass .pass-txt span b														{font-size:18px; line-height:22px; padding-bottom:3px;}
+.find-pass a																			{width:110px; font-size:14px; padding:8px 0; border-radius:5px; margin-top:10px;}
+
+
+
+.join-text-area h5																	{font-size:18px; line-height:25px; margin:20px 0 5px;}
+.join-text-area h6																	{font-size:15px; line-height:18px; margin-bottom:3px;}
+.join-text-area p																		{font-size:13px; line-height:18px; padding-bottom:5px;}
+.join-text-area span																{font-size:12px; line-height:16px; padding-bottom:12px;}
+.join-text-area table .col-hidden												{display:none;}
+
+
+
+.mail-wrap .title																		{font-size:20px; background-size:150px 150px; background-position:center 20px; padding:190px 0 10px;}
+.mail-wrap .inner																	{width:100%; font-size:13px; line-height:20px; padding:15px 0 0;}
+
+}
+
+
+
+
+
+
+
+
+
+
+@media all and (max-width:400px) {
+
+.body-login																			{width:280px;}
+.body-login dt																			{font-size:27px; line-height:30px;}
+.body-login dd																		{font-size:12px; line-height:18px;}
+.body-login dd.text																	{font-size:13px; line-height:17px;}
+.body-login dd.text b																{display:none;}
+.body-login dd.info																	{width:160px; height:60px; padding-left:25px;}
+.body-login dd.info input															{width:143px;}
+.body-login dd.btn-2																{width:145px; height:23px; margin-left:40px;}
+.body-login dd.btn-3																{width:70px; height:23px; }
+
+
+
+.member-wrap h4																	{width:95%; font-size:14px; line-height:20px; background-position:0 3px; padding-left:5%; margin-top:15px;}
+.member-wrap h4 span															{font-size:12px;}
+
+.member-wrap .textarea-1														{width:93%; height:195px; border-radius:7px; padding:20px 2% 20px 5%; margin-bottom:12px;}
+.member-wrap .textarea-1 div													{height:195px; padding-right:20px;}
+.member-wrap .textarea-1 h5													{font-size:16px; margin-top:15px; margin-bottom:10px;}
+.member-wrap .textarea-1 h6													{font-size:14px; margin-bottom:5px;}
+.member-wrap .textarea-1 p														{font-size:12px; line-height:17px; padding-bottom:3px;}
+.member-wrap .textarea-1 span												{font-size:11px; line-height:16px; padding-bottom:12px;}
+
+.member-wrap .textarea-2														{width:93%; height:195px; border-radius:7px; padding:20px 2% 20px 5%; margin-bottom:12px;}
+.member-wrap .textarea-2 div													{height:195px; padding-right:20px;}
+.member-wrap .textarea-2 h5													{font-size:16px; margin-top:15px; margin-bottom:10px;}
+.member-wrap .textarea-2 h6													{font-size:14px; margin-bottom:5px;}
+.member-wrap .textarea-2 p														{font-size:12px; line-height:17px; padding-bottom:3px;}
+.member-wrap .textarea-2 span												{font-size:11px; line-height:16px; padding-bottom:12px;}
+
+.member-wrap .agree-check label											{font-size:12px;}
+.member-wrap .total-check														{border-radius:6px; padding:9px 0 7px;}
+.member-wrap .total-check label												{font-size:13px;}
+.member-wrap .btn-wrap a														{width:82px; font-size:14px; padding:7px 0 5px; border-radius:3px;}
+
+
+
+.member-wrap table th																{width:29%; font-size:11px; line-height:11px; padding-left:3%;}
+.member-wrap table td																{width:97%; font-size:11px; line-height:16px; padding:6px 0 6px 3%;}
+.member-wrap table td br															{display:block;}
+.member-wrap table td input														{width:50px; height:22px; font-size:11px;}
+.member-wrap table td input.choice											{margin-right:4px;}
+.member-wrap table td input.type-1											{width:100px;}
+.member-wrap table td input.type-2											{width:75px;}
+.member-wrap table td input.type-3											{width:97%;}
+.member-wrap table td select													{width:52px; height:24px; font-size:11px;}
+.member-wrap table td select.type-1											{width:102px;}
+.member-wrap table td select.type-2											{width:77px;}
+.member-wrap table td a.checkid												{line-height:22px; font-size:11px; padding:0 8px 0 30px;}
+
+
+
+.member-wrap .text-area															{width:92%; background-size:150px 150px; background-position:center 40px; padding:210px 0 15px; margin-bottom:25px;}
+.member-wrap .text-area .type-1												{font-size:14px; line-height:24px;}
+.member-wrap .text-area .type-1 span										{display:block; font-size:20px;}
+.member-wrap .text-area .type-2												{font-size:14px; line-height:28px;}
+
+
+
+.find-id																					{width:100%; background:none; padding:0 0 0 0; margin-top:20px;}
+.find-id h4																				{font-size:16px; line-height:20px; margin-bottom:5px;}
+.find-id .enter																			{width:100%; text-align:center; padding-left:0;}
+.find-id label																			{width:40px; font-size:12px; padding-right:5px;}
+.find-id input																			{width:160px; height:20px; font-size:12px; margin:2px 0;}
+.find-id .enter-txt																		{width:90%; font-size:11px; line-height:16px; border-radius:6px; margin-top:5px;}
+.find-id .find-txt																		{width:80%; height:79px; font-size:13px; line-height:20px; border-radius:6px; border:4px solid #0092BC; padding:10px 5% 14px; margin:7px auto 0;}
+.find-id .find-txt span																{text-align:center; border-bottom:1px dotted #666; padding-bottom:10px; margin:5px auto 10px;}
+.find-id .find-txt span b															{display:inline-block; font-size:13px; margin-left:5px;}
+.find-id .find-txt p																	{font-size:23px; line-height:30px; text-align:center; padding:0;}
+.find-id a																				{width:100px; font-size:13px; padding:7px 0; border-radius:5px; margin-top:10px;}
+
+
+
+.find-pass																				{width:100%; background:none; padding:30px 0 0 0; margin-top:30px;}
+.find-pass h4																			{font-size:16px; line-height:20px; margin-bottom:5px;}
+.find-pass .enter																		{width:100%; text-align:center; padding-left:0;}
+.find-pass label																		{width:40px; font-size:12px; padding-right:5px;}
+.find-pass input																		{width:160px; height:20px; font-size:12px; margin:2px 0;}
+.find-pass .enter-txt																{width:90%; font-size:11px; line-height:16px; border-radius:6px;}
+.find-pass .pass-txt																{width:80%; height:124px; font-size:15px; line-height:20px; text-align:center; border-radius:8px; border:4px solid #4084F6; padding:10px 5% 14px; margin:7px auto 0;}
+.find-pass .pass-txt p																{display:block; width:90%; text-align:center; padding-bottom:10px; margin:10px auto 10px;}
+.find-pass .pass-txt span														{width:90%; font-size:12px; line-height:16px; text-align:center; border:none; padding:0 5%; margin:0 auto;}
+.find-pass .pass-txt span b														{font-size:18px; line-height:20px; padding-bottom:5px;}
+.find-pass a																			{width:100px; font-size:13px; padding:7px 0; border-radius:5px; margin-top:10px;}
+
+
+
+.join-text-area h5																	{width:95%; font-size:16px; line-height:22px; padding-left:4%; margin:20px 0 5px;}
+.join-text-area h6																	{width:95%; font-size:14px; line-height:17px; padding-left:4%; margin-bottom:3px;}
+.join-text-area p																		{width:95%; font-size:12px; line-height:17px; padding-bottom:5px; padding-left:4%;}
+.join-text-area span																{width:95%; font-size:11px; padding-bottom:10px; padding-left:4%;}
+
+.join-text-area table																	{width:95%; margin-bottom:15px; margin-left:4%;}
+.join-text-area table tr th															{font-size:12px; line-height:16px;}
+.join-text-area table tr td															{font-size:11px; line-height:15px; padding:6px 8px 4px;}
+
+
+
+.mail-wrap .title																		{font-size:16px; letter-spacing:-0.02em; background-size:120px 120px; background-position:center 10px; padding:145px 0 5px;}
+.mail-wrap .inner																	{font-size:12px; line-height:18px; padding:10px 0 0;}
+
+}
+
+
+
+
+
+

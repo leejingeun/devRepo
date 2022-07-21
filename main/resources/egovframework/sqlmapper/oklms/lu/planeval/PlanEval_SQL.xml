@@ -1,0 +1,1352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 04. 17.         First Draft
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper">
+
+<select id="listNcsEvalPlanSubjectRebort" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanSubjectRebort ====== */
+		<![CDATA[
+			select a.COMPANY_ID,
+			       a.TRANING_PROCESS_ID,
+			       FN_GETCOMPAYNAME(a.COMPANY_ID) company_name,
+			       a.YYYY,
+			       a.TERM,
+			       a.SUBJECT_CODE,
+			       a.CLASS as subClass,
+			       c.SUBJECT_NAME,
+			       c.SUBJECT_TRANING_TYPE,
+			       b.mem_seq,
+                   FN_GETUSERID(b.MEM_SEQ) as mem_id,
+                   FN_GETUSERNAME(b.MEM_SEQ) as mem_name
+			  from lms_traning_process_mapping a
+			  inner join lms_subj_ccm_mapping b
+              on b.COMPANY_ID = a.COMPANY_ID
+              and b.TRANING_PROCESS_ID = a.TRANING_PROCESS_ID
+              and b.MEM_SEQ = #{sessionMemSeq}
+              and b.DELETE_YN = 'N'
+			  inner join lms_subject c
+			  on c.YYYY = a.YYYY
+			  and c.TERM = a.TERM
+			  and c.SUBJECT_CODE = a.SUBJECT_CODE
+			  and c.CLASS = a.CLASS
+			  ]]>
+
+			  <if test="searchSubjectTraningType != null and searchSubjectTraningType != ''">
+		 		and c.SUBJECT_TRANING_TYPE = #{searchSubjectTraningType}
+		 	  </if>
+
+		 	  <![CDATA[
+			  and c.DELETE_YN = 'N'
+			  where 1 = 1
+			  and a.DELETE_YN = 'N'
+			  and a.COMPANY_ID = #{companyId}
+			  and a.TRANING_PROCESS_ID = #{traningProcessId}
+			  ]]>
+
+			  <if test="searchYyyy != null and searchYyyy != ''">
+		 		and a.yyyy = #{yyyy}
+		 	  </if>
+		 	  <if test="searchTerm != null and searchTerm != ''">
+		 		and a.TERM = #{term}
+		 	  </if>
+		 	  <if test="searchSubjectCode != null and searchSubjectCode != ''">
+		 		and a.SUBJECT_CODE = #{subjectCode}
+		 	  </if>
+		 	  <if test="searchSubClass != null and searchSubClass != ''">
+		 		and a.CLASS = #{subClass}
+		 	  </if>
+
+			  order by a.INSERT_DATE desc
+</select>
+
+<select id="listNcsEvalPlanMemberRebort" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanMemberRebort ====== */
+			<![CDATA[
+			select les.YYYY,
+                     les.TERM,
+                     les.SUBJECT_CODE,
+                     les.CLASS as subClass,
+                     FN_GETSUBJECT_NAME(les.YYYY, les.TERM, les.SUBJECT_CODE, les.CLASS) as SUBJECT_NAME,
+                     (select SUBJECT_TRANING_TYPE
+                        from lms_subject
+                        where yyyy= les.YYYY
+                        and term = les.TERM
+                        and SUBJECT_CODE = les.SUBJECT_CODE
+                        and CLASS = les.CLASS
+                        and DELETE_YN = 'N'
+                     ) as SUBJECT_TRANING_TYPE,
+                     les.MEM_SEQ,
+                     FN_GETUSERID(les.MEM_SEQ) as mem_id,
+                     FN_GETUSERNAME(les.MEM_SEQ) as mem_name
+              from lms_lesson les
+              inner join lms_traning_process_mapping map
+              on map.YYYY = les.YYYY
+              and map.TERM = les.TERM
+              and map.SUBJECT_CODE = les.SUBJECT_CODE
+              and map.CLASS = les.CLASS
+              and map.COMPANY_ID = #{companyId}
+			  and map.TRANING_PROCESS_ID = #{traningProcessId}
+			  and map.DELETE_YN = 'N'
+			  inner join lms_subj_ccm_mapping b
+              on b.COMPANY_ID = map.COMPANY_ID
+              and b.TRANING_PROCESS_ID = map.TRANING_PROCESS_ID
+              and b.MEM_SEQ = #{sessionMemSeq}
+              and b.DELETE_YN = 'N'
+              where 1 = 1
+              and les.DELETE_YN = 'N'
+			  ]]>
+
+			  <if test="searchSubjectTraningType != null and searchSubjectTraningType != ''">
+		 		and  (select SUBJECT_TRANING_TYPE
+                        from lms_subject
+                        where yyyy= les.YYYY
+                        and term = les.TERM
+                        and SUBJECT_CODE = les.SUBJECT_CODE
+                        and CLASS = les.CLASS
+                        and DELETE_YN = 'N'
+                     )  = #{searchSubjectTraningType}
+		 	  </if>
+
+			  <if test="searchYyyy != null and searchYyyy != ''">
+		 		and les.yyyy = #{yyyy}
+		 	  </if>
+		 	  <if test="searchTerm != null and searchTerm != ''">
+		 		and les.TERM = #{term}
+		 	  </if>
+		 	  <if test="searchSubjectCode != null and searchSubjectCode != ''">
+		 		and les.SUBJECT_CODE = #{subjectCode}
+		 	  </if>
+		 	  <if test="searchSubClass != null and searchSubClass != ''">
+		 		and les.CLASS = #{subClass}
+		 	  </if>
+
+			       order by (select SUBJECT_TRANING_TYPE
+                        from lms_subject
+                        where yyyy= les.YYYY
+                        and term = les.TERM
+                        and SUBJECT_CODE = les.SUBJECT_CODE
+                        and CLASS = les.CLASS
+                        and DELETE_YN = 'N'
+                     ) asc
+</select>
+
+<select id="listNcsEvalPlanInfo" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanInfo ====== */
+			select
+				  plan.YYYY,
+			      plan.TERM,
+			      plan.SUBJECT_CODE,
+			      plan.CLASS as subClass,
+			      plan.EV_DIV_DATE,
+			      (
+				     SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(plan.EV_DIV_DATE), 1)
+				   ) AS DAY_OF_WEEK,
+			      plan.EV_DIV_CD,
+			      plan.EV_DIV_NAME,
+			      DATE_FORMAT (plan.INSERT_DATE, '%Y.%m.%d') as INSERT_DATE,
+			      DATE_FORMAT (plan.UPDATE_DATE, '%Y.%m.%d') as UPDATE_DATE,
+                  (select count(1)
+                    from lms_th_first_ev_std_score sc
+                    where sc.YYYY = plan.YYYY
+                    and sc.TERM = plan.TERM
+                    and sc.SUBJECT_CODE = plan.SUBJECT_CODE
+                    and sc.CLASS = plan.CLASS
+                    and sc.EV_DIV_CD = plan.EV_DIV_CD
+                    and sc.DELETE_YN = 'N'
+                    and sc.INSERT_USER = plan.INSERT_USER
+                   ) as UPDATE_CNT,
+                   (select count(1)
+                    from lms_th_first_ev_std_score sc
+                    where sc.YYYY = plan.YYYY
+                    and sc.TERM = plan.TERM
+                    and sc.SUBJECT_CODE = plan.SUBJECT_CODE
+                    and sc.CLASS = plan.CLASS
+                    and sc.DELETE_YN = 'N'
+                    <if test="sessionMemType eq 'PRT'">
+                	<if test="subjectType != 'HSKILL'">
+                		and sc.INSERT_USER IN
+                		(SELECT TUT.MEM_SEQ
+				         FROM lms_subj_tut_mapping TUT
+				        WHERE TUT.YYYY = plan.YYYY
+				          AND TUT.TERM = plan.TERM
+				          AND TUT.SUBJECT_CODE = plan.SUBJECT_CODE
+				          AND TUT.CLASS = plan.CLASS
+				          AND TUT.DELETE_YN = 'N'
+				       )
+                	</if>
+                	<if test="subjectType eq 'HSKILL'">
+                		and sc.INSERT_USER =
+                		(SELECT LES.MEM_SEQ
+				         FROM lms_lesson LES
+				        WHERE LES.YYYY = plan.YYYY
+				          AND LES.TERM = plan.TERM
+				          AND LES.SUBJECT_CODE = plan.SUBJECT_CODE
+				          AND LES.CLASS = plan.CLASS
+				          and LES.MEM_SEQ = #{memSeq}
+				          AND LES.DELETE_YN = 'N'
+				       )
+                	</if>
+                	</if>
+		 	  		<if test="sessionMemType != 'PRT'">
+		 				and sc.MEM_SEQ = #{sessionMemSeq}
+		 	  		</if>
+                   ) as stdScoreCnt,
+                   plan.APPLY_APPROVAL_YN,
+                   plan.RETUN_REASON,
+                   plan.STATUS,
+				   plan.ATCH_FILE_ID,
+				   (select count(a.atch_file_id) from comtnfiledetail a where a.atch_file_id = plan.ATCH_FILE_ID) as comDetailFileCnt
+			  from lms_th_plan_ev plan
+			  where plan.YYYY = #{yyyy}
+			  and plan.TERM = #{term}
+			  and plan.SUBJECT_CODE = #{subjectCode}
+			  and plan.CLASS = #{subClass}
+			  <if test="evDivCd != null and evDivCd != ''">
+		 		and plan.EV_DIV_CD = #{evDivCd}
+		 	  </if>
+		 	 <choose>
+            	<when test="sessionMemType != null and sessionMemType != ''">
+                	<if test="sessionMemType eq 'PRT'">
+                	<if test="subjectType != 'HSKILL'">
+                		and plan.INSERT_USER IN
+                		(SELECT TUT.MEM_SEQ
+				         FROM lms_subj_tut_mapping TUT
+				        WHERE TUT.YYYY = plan.YYYY
+				          AND TUT.TERM = plan.TERM
+				          AND TUT.SUBJECT_CODE = plan.SUBJECT_CODE
+				          AND TUT.CLASS = plan.CLASS
+				          AND TUT.DELETE_YN = 'N'
+				       )
+                	</if>
+                	<if test="subjectType eq 'HSKILL'">
+                		and plan.INSERT_USER =
+                		(SELECT LES.MEM_SEQ
+				         FROM lms_lesson LES
+				        WHERE LES.YYYY = plan.YYYY
+				          AND LES.TERM = plan.TERM
+				          AND LES.SUBJECT_CODE = plan.SUBJECT_CODE
+				          AND LES.CLASS = plan.CLASS
+				          and LES.MEM_SEQ = #{memSeq}
+				          AND LES.DELETE_YN = 'N'
+				       )
+                	</if>
+                	</if>
+
+                	<if test="sessionMemType != 'PRT'">
+                		and plan.INSERT_USER = #{sessionMemSeq}
+                	</if>
+            	</when>
+        	</choose>
+			  and plan.DELETE_YN = 'N'
+			  order by plan.EV_DIV_CD asc
+</select>
+
+<select id="listNcsEvalPlanElemInfo" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanElemInfo ====== */
+			select
+			  	  elem.YYYY,
+				  elem.TERM,
+			      elem.SUBJECT_CODE,
+			      elem.CLASS as subClass,
+			      elem.EV_DIV_CD,
+			      elem.NCS_ELEM_ID,
+			      elem.NCS_ELEM_NAME,
+			      elem.ELEM_NUM_CD,
+			      elem.ELEM_VW
+			from lms_th_ncs_lctre_elem elem
+			where elem.YYYY = #{yyyy}
+			  and elem.TERM = #{term}
+			  and elem.SUBJECT_CODE = #{subjectCode}
+			  and elem.CLASS = #{subClass}
+			  <if test="evDivCd != null and evDivCd != ''">
+		 		and elem.EV_DIV_CD = #{evDivCd}
+		 	  </if>
+		 	  <choose>
+            	<when test="sessionMemType != null and sessionMemType != ''">
+                	<if test="sessionMemType eq 'PRT'">
+                	<if test="subjectType != 'HSKILL'">
+                		and INSERT_USER IN
+                		(SELECT TUT.MEM_SEQ
+				         FROM lms_subj_tut_mapping TUT
+				        WHERE TUT.YYYY = elem.YYYY
+				          AND TUT.TERM = elem.TERM
+				          AND TUT.SUBJECT_CODE = elem.SUBJECT_CODE
+				          AND TUT.CLASS = elem.CLASS
+				          AND TUT.DELETE_YN = 'N'
+				       )
+                	</if>
+                	<if test="subjectType eq 'HSKILL'">
+                		and INSERT_USER =
+                		(SELECT LES.MEM_SEQ
+				         FROM lms_lesson LES
+				        WHERE LES.YYYY = elem.YYYY
+				          AND LES.TERM = elem.TERM
+				          AND LES.SUBJECT_CODE = elem.SUBJECT_CODE
+				          AND LES.CLASS = elem.CLASS
+				          and LES.MEM_SEQ = #{memSeq}
+				          AND LES.DELETE_YN = 'N'
+				       )
+                	</if>
+                	</if>
+
+                	<if test="sessionMemType != 'PRT'">
+                		and elem.INSERT_USER = #{sessionMemSeq}
+                	</if>
+            	</when>
+        	</choose>
+			  and elem.DELETE_YN = 'N'
+			  order by elem.EV_DIV_CD asc, elem.ELEM_NUM_CD asc
+</select>
+
+<select id="listFistEvalPlanLessonMember" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listFistEvalPlanLessonMember ====== */
+		<![CDATA[
+			select
+			    les.YYYY,
+			    les.TERM,
+			    les.SUBJECT_CODE,
+			    les.CLASS,
+			    les.MEM_SEQ,
+			    FN_GETUSERID(les.MEM_SEQ) as memId,
+			    FN_GETUSERNAME(les.MEM_SEQ) as memName
+			 from lms_lesson les
+			WHERE les.YYYY = #{yyyy}
+			 AND les.TERM = #{term}
+			 AND les.SUBJECT_CODE = #{subjectCode}
+			 AND les.CLASS = #{subClass}
+			 AND les.DELETE_YN = 'N'
+		]]>
+		 <if test="searchKeyword != null and searchKeyword != ''">
+		 	AND FN_GETUSERNAME(les.MEM_SEQ) LIKE CONCAT ('%', #{searchKeyword},'%')
+		 </if>
+		 <if test="memSeq != null and memSeq != ''">
+		 	AND les.MEM_SEQ = #{memSeq}
+		 </if>
+		order by FN_GETUSERNAME(les.MEM_SEQ) asc
+</select>
+
+<select id="listNcsEvalPlanFirstRowNumberPrt" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstRowNumberPrt ====== */
+		SELECT * FROM (
+			SELECT
+			      c.rnum as rn,
+			      c.PLAN_EV_ID,
+			      c.YYYY,
+			      c.TERM,
+			      c.SUBJECT_CODE,
+			      c.CLASS,
+			      c.EV_DIV_CD,
+			      c.NCS_ELEM_ID,
+			      c.NCS_ELEM_NAME,
+			      c.LESSON_CN,
+			      c.INSERT_USER,
+			      b.EVAL_SCORE,
+	              b.LESSON_CN_PASS_AT,
+	              (select count(LESSON_CN_PASS_AT)
+	                 from lms_th_first_ev_std_score
+	                 where 1 = 1
+	                 and NCS_ELEM_ID = c.NCS_ELEM_ID
+	                 and MEM_SEQ = #{memSeq}
+	                 <if test="subjectType != 'HSKILL'">
+			         AND INSERT_USER IN
+			          (SELECT TUT.MEM_SEQ
+			         FROM lms_subj_tut_mapping TUT
+			        WHERE TUT.YYYY = #{yyyy}
+			          AND TUT.TERM = #{term}
+			          AND TUT.SUBJECT_CODE = #{subjectCode}
+			          AND TUT.CLASS = #{subClass}
+			          AND TUT.DELETE_YN = 'N'
+			       )
+			     </if>
+			     <if test="subjectType eq 'HSKILL'">
+			         AND INSERT_USER =
+			        (SELECT LES.MEM_SEQ
+			         FROM lms_lesson LES
+			        WHERE LES.YYYY = #{yyyy}
+			          AND LES.TERM = #{term}
+			          AND LES.SUBJECT_CODE = #{subjectCode}
+			          AND LES.CLASS = #{subClass}
+			          AND LES.MEM_SEQ = #{memSeq}
+			          AND LES.DELETE_YN = 'N'
+			       )
+			    </if>
+	                 and LESSON_CN_PASS_AT = 'F'
+			         and DELETE_YN = 'N'
+	              ) AS FAIL_CNT,
+	              (select count(LESSON_CN_PASS_AT)
+	                 from lms_th_first_ev_std_score
+	                 where 1 = 1
+	                 and NCS_ELEM_ID = c.NCS_ELEM_ID
+	                 and MEM_SEQ = #{memSeq}
+	                 <if test="subjectType != 'HSKILL'">
+			          AND INSERT_USER IN
+			          (SELECT TUT.MEM_SEQ
+			         FROM lms_subj_tut_mapping TUT
+			        WHERE TUT.YYYY = #{yyyy}
+			          AND TUT.TERM = #{term}
+			          AND TUT.SUBJECT_CODE = #{subjectCode}
+			          AND TUT.CLASS = #{subClass}
+			          AND TUT.DELETE_YN = 'N'
+			       )
+			     </if>
+			     <if test="subjectType eq 'HSKILL'">
+			         AND INSERT_USER =
+			        (SELECT LES.MEM_SEQ
+			         FROM lms_lesson LES
+			        WHERE LES.YYYY = #{yyyy}
+			          AND LES.TERM = #{term}
+			          AND LES.SUBJECT_CODE = #{subjectCode}
+			          AND LES.CLASS = #{subClass}
+			          AND LES.MEM_SEQ = #{memSeq}
+			          AND LES.DELETE_YN = 'N'
+			       )
+			    </if>
+	                 and LESSON_CN_PASS_AT = 'P'
+			         and DELETE_YN = 'N'
+	              ) AS PASS_CNT
+			FROM (
+			   SELECT a.*,
+			           (CASE @v_ncs_emel_id WHEN a.NCS_ELEM_ID THEN @rownum:=@rownum+1 ELSE @rownum:=1 END) rnum,
+			           (@v_ncs_emel_id:=a.NCS_ELEM_ID) v_ncs_emel_id
+			   FROM lms_th_ncs_plan_lrn a,
+			         (SELECT @v_ncs_emel_id:='', @rownum:=0 FROM DUAL) d
+			   where 1 = 1
+			    and a.YYYY = #{yyyy}
+				     and a.TERM = #{term}
+				     and a.SUBJECT_CODE = #{subjectCode}
+				     and a.CLASS = #{subClass}
+				     <if test="evDivCd != null and evDivCd != ''">
+			 			AND a.EV_DIV_CD = #{evDivCd}
+					</if>
+				<if test="subjectType != 'HSKILL'">
+			        AND a.INSERT_USER IN
+			          (SELECT TUT.MEM_SEQ
+			         FROM lms_subj_tut_mapping TUT
+			        WHERE TUT.YYYY = #{yyyy}
+			          AND TUT.TERM = #{term}
+			          AND TUT.SUBJECT_CODE = #{subjectCode}
+			          AND TUT.CLASS = #{subClass}
+			          AND TUT.DELETE_YN = 'N'
+			       )
+			     </if>
+			     <if test="subjectType eq 'HSKILL'">
+			         AND a.INSERT_USER =
+			        (SELECT LES.MEM_SEQ
+			         FROM lms_lesson LES
+			        WHERE LES.YYYY = #{yyyy}
+			          AND LES.TERM = #{term}
+			          AND LES.SUBJECT_CODE = #{subjectCode}
+			          AND LES.CLASS = #{subClass}
+			          AND LES.MEM_SEQ = #{memSeq}
+			          AND LES.DELETE_YN = 'N'
+			       )
+			    </if>
+			    and a.DELETE_YN = 'N'
+			   ORDER BY a.NCS_ELEM_ID
+			) c
+	        left outer join lms_th_first_ev_std_score b
+	        on b.PLAN_EV_ID = c.PLAN_EV_ID
+	        AND b.YYYY = c.YYYY
+	        AND b.TERM = c.TERM
+	        AND b.SUBJECT_CODE = c.SUBJECT_CODE
+	        AND b.CLASS = c.CLASS
+	        AND b.NCS_ELEM_ID = c.NCS_ELEM_ID
+	        AND b.DELETE_YN = 'N'
+	        <if test="evDivCd != null and evDivCd != ''">
+			 	AND b.EV_DIV_CD = #{evDivCd}
+			</if>
+			AND b.MEM_SEQ = #{memSeq}
+	        <if test="subjectType != 'HSKILL'">
+	        AND b.INSERT_USER IN
+	          (SELECT TUT.MEM_SEQ
+	         FROM lms_subj_tut_mapping TUT
+	        WHERE TUT.YYYY = #{yyyy}
+	          AND TUT.TERM = #{term}
+	          AND TUT.SUBJECT_CODE = #{subjectCode}
+	          AND TUT.CLASS = #{subClass}
+	          AND TUT.DELETE_YN = 'N'
+	       )
+	       </if>
+	       <if test="subjectType eq 'HSKILL'">
+	         AND b.INSERT_USER =
+	        (SELECT LES.MEM_SEQ
+	         FROM lms_lesson LES
+	        WHERE LES.YYYY = #{yyyy}
+	          AND LES.TERM = #{term}
+	          AND LES.SUBJECT_CODE = #{subjectCode}
+	          AND LES.CLASS = #{subClass}
+	          AND LES.MEM_SEQ = #{memSeq}
+	          AND LES.DELETE_YN = 'N'
+	       )
+	       </if>
+       ) AA ORDER BY AA.NCS_ELEM_ID,TO_NUMBER(AA.RN)
+</select>
+
+<select id="listNcsEvalPlanFirstRowNumber" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstRowNumber ====== */
+		SELECT
+		      c.rnum as rn,
+		      c.PLAN_EV_ID,
+		      c.YYYY,
+		      c.TERM,
+		      c.SUBJECT_CODE,
+		      c.CLASS,
+		      c.EV_DIV_CD,
+		      c.NCS_ELEM_ID,
+		      c.NCS_ELEM_NAME,
+		      c.LESSON_CN,
+		      c.INSERT_USER,
+              b.EVAL_SCORE,
+              b.LESSON_CN_PASS_AT,
+              (select count(LESSON_CN_PASS_AT)
+                 from lms_th_first_ev_std_score
+                 where 1 = 1
+                 and NCS_ELEM_ID = c.NCS_ELEM_ID
+			     and MEM_SEQ = #{memSeq}
+                 and INSERT_USER = #{sessionMemSeq}
+                 and LESSON_CN_PASS_AT = 'F'
+		         and DELETE_YN = 'N'
+              ) AS FAIL_CNT,
+              (select count(LESSON_CN_PASS_AT)
+                 from lms_th_first_ev_std_score
+                 where 1 = 1
+                 and NCS_ELEM_ID = c.NCS_ELEM_ID
+			     and MEM_SEQ = #{memSeq}
+                 and INSERT_USER = #{sessionMemSeq}
+                 and LESSON_CN_PASS_AT = 'P'
+		         and DELETE_YN = 'N'
+              ) AS PASS_CNT
+		FROM (
+		   SELECT a.*,
+		           (CASE @v_ncs_emel_id WHEN a.NCS_ELEM_ID THEN @rownum:=@rownum+1 ELSE @rownum:=1 END) rnum,
+		           (@v_ncs_emel_id:=a.NCS_ELEM_ID) v_ncs_emel_id
+		   FROM lms_th_ncs_plan_lrn a,
+		         (SELECT @v_ncs_emel_id:='', @rownum:=0 FROM DUAL) d
+		   where 1 = 1
+		    and a.YYYY = #{yyyy}
+			     and a.TERM = #{term}
+			     and a.SUBJECT_CODE = #{subjectCode}
+			     and a.CLASS = #{subClass}
+			     and a.EV_DIV_CD = #{evDivCd}
+			and a.INSERT_USER = #{sessionMemSeq}
+		    and a.DELETE_YN = 'N'
+		   ORDER BY a.NCS_ELEM_ID
+		) c
+        left outer join lms_th_first_ev_std_score b
+        on b.PLAN_EV_ID = c.PLAN_EV_ID
+        AND b.YYYY = c.YYYY
+        AND b.TERM = c.TERM
+        AND b.SUBJECT_CODE = c.SUBJECT_CODE
+        AND b.CLASS = c.CLASS
+        AND b.NCS_ELEM_ID = c.NCS_ELEM_ID
+        AND b.DELETE_YN = 'N'
+        and b.MEM_SEQ = #{memSeq}
+        and b.INSERT_USER = #{sessionMemSeq}
+</select>
+
+<select id="listNcsEvalPlanFirstStdScoreRowNumberPrt" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstStdScoreRowNumberPrt ====== */
+		SELECT
+		      c.rnum as rn,
+		      c.PLAN_EV_ID,
+		      c.YYYY,
+		      c.TERM,
+		      c.SUBJECT_CODE,
+		      c.CLASS,
+		      c.EV_DIV_CD,
+		      c.NCS_ELEM_ID,
+		      c.INSERT_USER,
+		      c.MEM_SEQ,
+		      c.EVAL_SCORE,
+		      c.LESSON_CN_PASS_AT,
+		      case when c.EVAL_SCORE is NULL then 'FAIL'
+		           when c.EVAL_SCORE <![CDATA[ <= ]]> 60 then 'FAIL'
+		           when c.EVAL_SCORE <![CDATA[ > ]]> 60 then 'PASS'
+		      end as LESSON_CN_PASS
+		FROM (
+		   SELECT a.*,
+		           (CASE @v_ncs_emel_id WHEN a.NCS_ELEM_ID THEN @rownum:=@rownum+1 ELSE @rownum:=1 END) rnum,
+		           (@v_ncs_emel_id:=a.NCS_ELEM_ID) v_ncs_emel_id
+		   FROM lms_th_first_ev_std_score a,
+		         (SELECT @v_ncs_emel_id:='', @rownum:=0 FROM DUAL) d
+		   where 1 = 1
+		    and a.YYYY = #{yyyy}
+			and a.TERM = #{term}
+			and a.SUBJECT_CODE = #{subjectCode}
+			and a.CLASS = #{subClass}
+			and a.EV_DIV_CD = #{evDivCd}
+	        <if test="subjectType != 'HSKILL'">
+	        and a.INSERT_USER IN
+	          (SELECT TUT.MEM_SEQ
+	         FROM lms_subj_tut_mapping TUT
+	        WHERE TUT.YYYY = #{yyyy}
+	          AND TUT.TERM = #{term}
+	          AND TUT.SUBJECT_CODE = #{subjectCode}
+	          AND TUT.CLASS = #{subClass}
+	          AND TUT.DELETE_YN = 'N'
+	       )
+	       </if>
+	       <if test="subjectType eq 'HSKILL'">
+	         and a.INSERT_USER =
+	        (SELECT LES.MEM_SEQ
+	         FROM lms_lesson LES
+	        WHERE LES.YYYY = #{yyyy}
+	          AND LES.TERM = #{term}
+	          AND LES.SUBJECT_CODE = #{subjectCode}
+	          AND LES.CLASS = #{subClass}
+	          AND LES.MEM_SEQ = #{memSeq}
+	          AND LES.DELETE_YN = 'N'
+	       )
+	       </if>
+		    and a.DELETE_YN = 'N'
+		   ORDER BY a.NCS_ELEM_ID
+		) c
+</select>
+
+<select id="listNcsEvalPlanFirstStdScoreRowNumber" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstStdScoreRowNumber ====== */
+		SELECT
+		      c.rnum as rn,
+		      c.PLAN_EV_ID,
+		      c.YYYY,
+		      c.TERM,
+		      c.SUBJECT_CODE,
+		      c.CLASS,
+		      c.EV_DIV_CD,
+		      c.NCS_ELEM_ID,
+		      c.INSERT_USER,
+		      c.MEM_SEQ,
+		      c.EVAL_SCORE,
+		      c.LESSON_CN_PASS_AT,
+		      case when c.EVAL_SCORE is NULL then 'FAIL'
+		           when c.EVAL_SCORE <![CDATA[ <= ]]> 60 then 'FAIL'
+		           when c.EVAL_SCORE <![CDATA[ > ]]> 60 then 'PASS'
+		      end as LESSON_CN_PASS
+		FROM (
+		   SELECT a.*,
+		           (CASE @v_ncs_emel_id WHEN a.NCS_ELEM_ID THEN @rownum:=@rownum+1 ELSE @rownum:=1 END) rnum,
+		           (@v_ncs_emel_id:=a.NCS_ELEM_ID) v_ncs_emel_id
+		   FROM lms_th_first_ev_std_score a,
+		         (SELECT @v_ncs_emel_id:='', @rownum:=0 FROM DUAL) d
+		   where 1 = 1
+		    and a.YYYY = #{yyyy}
+			and a.TERM = #{term}
+			and a.SUBJECT_CODE = #{subjectCode}
+			and a.CLASS = #{subClass}
+			and a.EV_DIV_CD = #{evDivCd}
+		    and a.INSERT_USER = #{sessionMemSeq}
+		    and a.MEM_SEQ = #{memSeq}
+		    and a.DELETE_YN = 'N'
+		   ORDER BY a.NCS_ELEM_ID
+		) c
+</select>
+
+<select id="listNcsEvalPlanFirstRowspanPrt" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstRowspanPrt ====== */
+			select count(c.NCS_ELEM_ID) as rowspan,
+				   c.NCS_ELEM_ID
+			 from lms_th_ncs_plan_lrn c
+				where 1 = 1
+				and c.YYYY = #{yyyy}
+				and c.TERM = #{term}
+				and c.SUBJECT_CODE = #{subjectCode}
+				and c.CLASS = #{subClass}
+				and c.EV_DIV_CD = #{evDivCd}
+				<if test="subjectType != 'HSKILL'">
+		        and c.INSERT_USER IN
+		          (SELECT TUT.MEM_SEQ
+		         FROM lms_subj_tut_mapping TUT
+		        WHERE TUT.YYYY = #{yyyy}
+		          AND TUT.TERM = #{term}
+		          AND TUT.SUBJECT_CODE = #{subjectCode}
+		          AND TUT.CLASS = #{subClass}
+		          AND TUT.DELETE_YN = 'N'
+		       )
+		       </if>
+		       <if test="subjectType eq 'HSKILL'">
+		         and c.INSERT_USER =
+		        (SELECT LES.MEM_SEQ
+		         FROM lms_lesson LES
+		        WHERE LES.YYYY = #{yyyy}
+		          AND LES.TERM = #{term}
+		          AND LES.SUBJECT_CODE = #{subjectCode}
+		          AND LES.CLASS = #{subClass}
+		          AND LES.MEM_SEQ = #{memSeq}
+		          AND LES.DELETE_YN = 'N'
+		       )
+		       </if>
+				and c.DELETE_YN = 'N'
+				group by c.NCS_ELEM_ID
+</select>
+
+<select id="listNcsEvalPlanFirstRowspan" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstRowspan ====== */
+			select count(c.NCS_ELEM_ID) as rowspan,
+				   c.NCS_ELEM_ID
+			 from lms_th_ncs_plan_lrn c
+				where 1 = 1
+				and c.YYYY = #{yyyy}
+				and c.TERM = #{term}
+				and c.SUBJECT_CODE = #{subjectCode}
+				and c.CLASS = #{subClass}
+				and c.EV_DIV_CD = #{evDivCd}
+				and c.INSERT_USER = #{sessionMemSeq}
+				and c.DELETE_YN = 'N'
+				group by c.NCS_ELEM_ID
+</select>
+
+<select id="listNcsEvalPlanFirstElemIdPrt" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstElemIdPrt ====== */
+			select
+				distinct
+			    a.NCS_ELEM_ID,
+			    a.NCS_ELEM_NAME
+			from lms_th_ncs_plan_lrn a
+			left outer join lms_th_first_ev_std_score b
+			on b.PLAN_EV_ID = a.PLAN_EV_ID
+			where 1 = 1
+			and a.YYYY = #{yyyy}
+			and a.TERM = #{term}
+			and a.SUBJECT_CODE = #{subjectCode}
+			and a.CLASS = #{subClass}
+			and a.EV_DIV_CD = #{evDivCd}
+		    <if test="subjectType != 'HSKILL'">
+	        and a.INSERT_USER IN
+	          (SELECT TUT.MEM_SEQ
+	         FROM lms_subj_tut_mapping TUT
+	        WHERE TUT.YYYY = #{yyyy}
+	          AND TUT.TERM = #{term}
+	          AND TUT.SUBJECT_CODE = #{subjectCode}
+	          AND TUT.CLASS = #{subClass}
+	          AND TUT.DELETE_YN = 'N'
+	       )
+	       </if>
+	       <if test="subjectType eq 'HSKILL'">
+	         and a.INSERT_USER =
+	        (SELECT LES.MEM_SEQ
+	         FROM lms_lesson LES
+	        WHERE LES.YYYY = #{yyyy}
+	          AND LES.TERM = #{term}
+	          AND LES.SUBJECT_CODE = #{subjectCode}
+	          AND LES.CLASS = #{subClass}
+	          AND LES.MEM_SEQ = #{memSeq}
+	          AND LES.DELETE_YN = 'N'
+	       )
+	       </if>
+		    ORDER BY a.NCS_ELEM_ID asc
+</select>
+
+
+<select id="listNcsEvalPlanFirstElemId" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstElemId ====== */
+			select
+				distinct
+			    a.NCS_ELEM_ID,
+			    a.NCS_ELEM_NAME
+			from lms_th_ncs_plan_lrn a
+			left outer join lms_th_first_ev_std_score b
+			on b.PLAN_EV_ID = a.PLAN_EV_ID
+			where 1 = 1
+			and a.YYYY = #{yyyy}
+			and a.TERM = #{term}
+			and a.SUBJECT_CODE = #{subjectCode}
+			and a.CLASS = #{subClass}
+			and a.EV_DIV_CD = #{evDivCd}
+		    and a.INSERT_USER = #{sessionMemSeq}
+		    ORDER BY a.NCS_ELEM_ID asc
+</select>
+
+<select id="listNcsEvalPlanFirstInfoPrt" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstInfoPrt ====== */
+			select
+				a.PLAN_EV_ID,
+				a.YYYY,
+				a.TERM,
+			    a.SUBJECT_CODE,
+			    a.CLASS,
+			    a.EV_DIV_CD,
+			    a.NCS_ELEM_ID,
+			    a.NCS_ELEM_NAME,
+			    a.LESSON_CN,
+			    a.INSERT_USER,
+			    b.MEM_SEQ
+			from lms_th_ncs_plan_lrn a
+			left outer join lms_th_first_ev_std_score b
+			on b.PLAN_EV_ID = a.PLAN_EV_ID
+			where 1 = 1
+			and a.YYYY = #{yyyy}
+			and a.TERM = #{term}
+			and a.SUBJECT_CODE = #{subjectCode}
+			and a.CLASS = #{subClass}
+			and a.EV_DIV_CD = #{evDivCd}
+		    <if test="subjectType != 'HSKILL'">
+	        and a.INSERT_USER IN
+	          (SELECT TUT.MEM_SEQ
+	         FROM lms_subj_tut_mapping TUT
+	        WHERE TUT.YYYY = #{yyyy}
+	          AND TUT.TERM = #{term}
+	          AND TUT.SUBJECT_CODE = #{subjectCode}
+	          AND TUT.CLASS = #{subClass}
+	          AND TUT.DELETE_YN = 'N'
+	       )
+	       </if>
+	       <if test="subjectType eq 'HSKILL'">
+	         and a.INSERT_USER =
+	        (SELECT LES.MEM_SEQ
+	         FROM lms_lesson LES
+	        WHERE LES.YYYY = #{yyyy}
+	          AND LES.TERM = #{term}
+	          AND LES.SUBJECT_CODE = #{subjectCode}
+	          AND LES.CLASS = #{subClass}
+	          AND LES.MEM_SEQ = #{memSeq}
+	          AND LES.DELETE_YN = 'N'
+	       )
+	       </if>
+		    ORDER BY a.NCS_ELEM_ID asc
+</select>
+
+<select id="listNcsEvalPlanFirstInfo" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstInfo ====== */
+			select
+				a.PLAN_EV_ID,
+				a.YYYY,
+				a.TERM,
+			    a.SUBJECT_CODE,
+			    a.CLASS,
+			    a.EV_DIV_CD,
+			    a.NCS_ELEM_ID,
+			    a.NCS_ELEM_NAME,
+			    a.LESSON_CN,
+			    a.INSERT_USER,
+			    b.MEM_SEQ
+			from lms_th_ncs_plan_lrn a
+			left outer join lms_th_first_ev_std_score b
+			on b.PLAN_EV_ID = a.PLAN_EV_ID
+			where 1 = 1
+			and a.YYYY = #{yyyy}
+			and a.TERM = #{term}
+			and a.SUBJECT_CODE = #{subjectCode}
+			and a.CLASS = #{subClass}
+			and a.EV_DIV_CD = #{evDivCd}
+		    and a.INSERT_USER = #{sessionMemSeq}
+		    ORDER BY a.NCS_ELEM_ID asc
+</select>
+
+<select id="listNcsEvalPlanFirstCtrlSetPrt" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstCtrlSetPrt ====== */
+			select
+			      NCS_ELEM_ID,
+			      DTL_CD,
+			      DTL_CD_NAME
+			from lms_th_lctre_ctrl_set
+			where 1 = 1
+			and YYYY = #{yyyy}
+			and TERM = #{term}
+			and SUBJECT_CODE = #{subjectCode}
+			and CLASS = #{subClass}
+			and EV_DIV_CD = #{evDivCd}
+			<if test="subjectType != 'HSKILL'">
+	        and INSERT_USER IN
+	          (SELECT TUT.MEM_SEQ
+	         FROM lms_subj_tut_mapping TUT
+	        WHERE TUT.YYYY = #{yyyy}
+	          AND TUT.TERM = #{term}
+	          AND TUT.SUBJECT_CODE = #{subjectCode}
+	          AND TUT.CLASS = #{subClass}
+	          AND TUT.DELETE_YN = 'N'
+	       )
+	       </if>
+	       <if test="subjectType eq 'HSKILL'">
+	         and INSERT_USER =
+	        (SELECT LES.MEM_SEQ
+	         FROM lms_lesson LES
+	        WHERE LES.YYYY = #{yyyy}
+	          AND LES.TERM = #{term}
+	          AND LES.SUBJECT_CODE = #{subjectCode}
+	          AND LES.CLASS = #{subClass}
+	          AND LES.MEM_SEQ = #{memSeq}
+	          AND LES.DELETE_YN = 'N'
+	       )
+	       </if>
+			and DELETE_YN = 'N'
+</select>
+
+<select id="listNcsEvalPlanFirstCtrlSet" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.listNcsEvalPlanFirstCtrlSet ====== */
+			select
+			      NCS_ELEM_ID,
+			      DTL_CD,
+			      DTL_CD_NAME
+			from lms_th_lctre_ctrl_set
+			where 1 = 1
+			and YYYY = #{yyyy}
+			and TERM = #{term}
+			and SUBJECT_CODE = #{subjectCode}
+			and CLASS = #{subClass}
+			and EV_DIV_CD = #{evDivCd}
+			and INSERT_USER = #{sessionMemSeq}
+			and DELETE_YN = 'N'
+</select>
+
+<select id="getNcsEvalPlanCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+    <![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.getNcsEvalPlanCnt ====== */
+	]]>
+        select count(1) as cnt
+		  from lms_th_plan_ev
+		 where YYYY = #{yyyy}
+		   and TERM = #{term}
+		   and SUBJECT_CODE = #{subjectCode}
+		   and CLASS = #{subClass}
+		   and EV_DIV_CD = #{evDivCd}
+		   and DELETE_YN = 'N'
+		   and INSERT_USER = #{sessionMemSeq}
+</select>
+
+<select id="getNcsEvalPlanStdScoreCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+
+    <![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.getNcsEvalPlanStdScoreCnt ====== */
+	]]>
+        select count(1) as cnt
+		  from lms_th_first_ev_std_score
+		 where YYYY = #{yyyy}
+		   and TERM = #{term}
+		   and SUBJECT_CODE = #{subjectCode}
+		   and CLASS = #{subClass}
+		   and EV_DIV_CD = #{evDivCd}
+		   and DELETE_YN = 'N'
+
+	<if test="planEvId != null and planEvId != ''">
+		 AND PLAN_EV_ID = #{planEvId}
+	</if>
+    <if test="ncsElemId != null and ncsElemId != ''">
+		 AND NCS_ELEM_ID = #{ncsElemId}
+	</if>
+	<!-- <if test="sessionMemSeq != null and sessionMemSeq != ''">
+		 AND INSERT_USER = #{sessionMemSeq}
+	</if> -->
+	<choose>
+           	<when test="sessionMemType != null and sessionMemType != ''">
+               	<if test="sessionMemType eq 'COT'">
+               		AND INSERT_USER = #{sessionMemSeq}
+               		AND MEM_SEQ = #{memSeq}
+               	</if>
+               	<if test="sessionMemType eq 'STD'">
+               		AND INSERT_USER = #{sessionMemSeq}
+               		AND MEM_SEQ = #{memSeq}
+               	</if>
+           	</when>
+     </choose>
+
+</select>
+
+<select id="getEvDivCd" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+
+    <![CDATA[
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.getEvDivCd ====== */
+	]]>
+        select
+       		 plan.EV_DIV_CD,
+       		 plan.EV_DIV_NAME
+		 from lms_th_plan_ev plan
+		 where plan.YYYY = #{yyyy}
+		   and plan.TERM = #{term}
+		   and plan.SUBJECT_CODE = #{subjectCode}
+		   and plan.CLASS = #{subClass}
+		   and plan.DELETE_YN = 'N'
+
+    <if test="evDivCd != null and evDivCd != ''">
+		 and plan.EV_DIV_CD = #{evDivCd}
+	</if>
+
+	<choose>
+         	<when test="sessionMemType != null and sessionMemType != ''">
+             	<if test="sessionMemType eq 'PRT'">
+             	<if test="subjectType != 'HSKILL'">
+             		and plan.INSERT_USER IN
+             		(SELECT TUT.MEM_SEQ
+				         FROM lms_subj_tut_mapping TUT
+				        WHERE TUT.YYYY = plan.YYYY
+				          AND TUT.TERM = plan.TERM
+				          AND TUT.SUBJECT_CODE = plan.SUBJECT_CODE
+				          AND TUT.CLASS = plan.CLASS
+				          AND TUT.DELETE_YN = 'N'
+				       )
+             	</if>
+             	<if test="subjectType eq 'HSKILL'">
+             		and plan.INSERT_USER =
+             		(SELECT LES.MEM_SEQ
+				         FROM lms_lesson LES
+				        WHERE LES.YYYY = plan.YYYY
+				          AND LES.TERM = plan.TERM
+				          AND LES.SUBJECT_CODE = plan.SUBJECT_CODE
+				          AND LES.CLASS = plan.CLASS
+				          AND LES.DELETE_YN = 'N'
+				          AND LES.MEM_SEQ = #{memSeq}
+				       )
+             	</if>
+             	</if>
+
+             	<if test="sessionMemType != 'PRT'">
+             		and INSERT_USER = #{sessionMemSeq}
+             	</if>
+         	</when>
+     </choose>
+
+    order by plan.EV_DIV_CD desc
+	limit 1
+
+</select>
+
+<select id="getLessionMember" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO" resultType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.getLessionMember ====== */
+			select
+			    les.MEM_SEQ,
+			    FN_GETUSERID(les.MEM_SEQ) as memId,
+			    FN_GETUSERNAME(les.MEM_SEQ) as memName
+			 from lms_lesson les
+			WHERE les.YYYY = #{yyyy}
+			 AND les.TERM = #{term}
+			 AND les.SUBJECT_CODE = #{subjectCode}
+			 AND les.CLASS = #{subClass}
+			 AND les.DELETE_YN = 'N'
+			 <if test="memSeq != null and memSeq != ''">
+		 		AND les.MEM_SEQ = #{memSeq}
+		 	 </if>
+			order by FN_GETUSERNAME(les.MEM_SEQ) asc
+			limit 1
+</select>
+
+<insert id="insertNcsEvalPlanStd" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.insertNcsEvalPlanStd ====== */
+			INSERT INTO LMS_TH_PLAN_EV (
+						 YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,EV_DIV_DATE
+						,EV_DIV_CD
+						,EV_DIV_NAME
+						,ETC_NAME
+						,EV_RT
+						,ATCH_FILE_ID
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{evDivDate}
+						,#{evDivCd}
+						,#{evDivName}
+						,#{etcName}
+						,#{evRt}
+						,#{atchFileId}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<insert id="insertNcsEvalPlanLrn" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.insertNcsEvalPlanLrn ====== */
+			INSERT INTO LMS_TH_NCS_PLAN_LRN (
+						 PLAN_EV_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,EV_DIV_CD
+						,NCS_ELEM_ID
+						,NCS_ELEM_NAME
+						,LESSON_CN
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{planEvId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{evDivCd}
+						,#{ncsElemId}
+						,#{ncsElemName}
+						,#{lessonCn}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<insert id="insertNcsEvalPlanLctreElem" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.insertNcsEvalPlanLctreElem ====== */
+			INSERT INTO LMS_TH_NCS_LCTRE_ELEM (
+			             LECTURE_NCS_ELEM_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,EV_DIV_CD
+						,NCS_ELEM_ID
+						,NCS_ELEM_NAME
+						,ELEM_NUM_CD
+						,ELEM_VW
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+					     #{lectureNcsElemId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{evDivCd}
+						,#{ncsElemId}
+						,#{ncsElemName}
+						,#{elemNumCd}
+						,#{elemVw}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<insert id="insertNcsEvalPlanLctreCtrlSet" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.insertNcsEvalPlanLctreCtrlSet ====== */
+			INSERT INTO LMS_TH_LCTRE_CTRL_SET (
+						 MANAGE_ITEM_SET_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,EV_DIV_CD
+						,NCS_ELEM_ID
+						,CD_DIV
+					    ,DTL_CD
+					    ,DTL_CD_NAME
+					    ,ENT_DATA_NAME
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{manageItemSetId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{evDivCd}
+						,#{ncsElemId}
+						,#{cdDiv}
+					    ,#{dtlCd}
+					    ,#{dtlCdName}
+					    ,#{entDataName}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<insert id="insertFirstEvalStdScore" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO">
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.insertFirstEvalStdScore ====== */
+			INSERT INTO LMS_TH_FIRST_EV_STD_SCORE (
+			             STD_SCORE_ID
+						,PLAN_EV_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,NCS_ELEM_ID
+						,EV_DIV_CD
+						,MEM_SEQ
+						,EVAL_SCORE
+						,LESSON_CN_PASS_AT
+						,INSERT_DATE
+						,INSERT_USER
+					)
+					VALUES
+					(
+						 #{stdScoreId}
+						,#{planEvId}
+						,#{yyyy}
+						,#{term}
+						,#{subjectCode}
+						,#{subClass}
+						,#{ncsElemId}
+						,#{evDivCd}
+						<choose>
+		            	<when test="sessionMemType != null and sessionMemType != ''">
+		                	<if test="sessionMemType eq 'STD'">
+		                		,#{sessionMemSeq}
+		                	</if>
+		                	<if test="sessionMemType != 'STD'">
+		                		,#{memSeq}
+		                	</if>
+		            	</when>
+			        	</choose>
+					    ,#{newEvalScore}
+					    ,#{newLessonCnPassAt}
+						,now()
+						,#{sessionMemSeq}
+					)
+
+	</insert>
+
+	<update id="updateFirstEvalStdScore" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.updateFirstEvalStdScore ========= */
+			UPDATE LMS_TH_FIRST_EV_STD_SCORE
+			SET EVAL_SCORE = #{newEvalScore},
+			LESSON_CN_PASS_AT = #{newLessonCnPassAt},
+			UPDATE_DATE = NOW(),
+		    UPDATE_USER = #{sessionMemSeq}
+			WHERE 1=1
+			AND PLAN_EV_ID = #{planEvId}
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+			AND NCS_ELEM_ID = #{ncsElemId}
+			AND EV_DIV_CD = #{evDivCd}
+			<choose>
+            	<when test="sessionMemType != null and sessionMemType != ''">
+                	<if test="sessionMemType eq 'STD'">
+                		and MEM_SEQ = #{sessionMemSeq}
+                	</if>
+                	<if test="sessionMemType != 'STD'">
+                		and MEM_SEQ = #{memSeq}
+                	</if>
+            	</when>
+        	</choose>
+	</update>
+
+	<update id="updateNcsEvalPlanFirstAtchFile" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.updateNcsEvalPlanFirstAppYn ========= */
+			UPDATE LMS_TH_PLAN_EV
+			SET UPDATE_DATE = NOW(),
+		        UPDATE_USER = #{sessionMemSeq},
+		        ATCH_FILE_ID = #{atchFileId}
+			WHERE 1=1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+			AND EV_DIV_CD = #{evDivCd}
+	</update>
+
+	<update id="updateNcsEvalPlanFirstAppYn" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.updateNcsEvalPlanFirstAppYn ========= */
+			UPDATE LMS_TH_PLAN_EV
+			SET UPDATE_DATE = NOW(),
+		        UPDATE_USER = #{sessionMemSeq},
+		        APPLY_APPROVAL_YN = 'Y'
+			WHERE 1=1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+	</update>
+
+	<update id="updateNcsEvalPlanApproval" parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.updateNcsEvalPlanApproval ========= */
+		<if test="retunReason != '01'">
+			UPDATE LMS_TH_PLAN_EV
+			SET UPDATE_DATE = NOW(),
+		        UPDATE_USER = #{sessionMemSeq},
+		        STATUS = #{changeStatus},
+			    RETUN_REASON = #{retunReason}
+			WHERE 1=1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+			AND EV_DIV_CD = #{evDivCd}
+		</if>
+		<if test="retunReason eq '01'">
+			UPDATE LMS_TH_PLAN_EV
+			SET UPDATE_DATE = NOW(),
+		        UPDATE_USER = #{sessionMemSeq},
+		        CHANGE_STATUS = #{changeStatus}
+			WHERE 1=1
+			AND YYYY = #{yyyy}
+			AND TERM = #{term}
+			AND SUBJECT_CODE = #{subjectCode}
+			AND CLASS = #{subClass}
+			AND EV_DIV_CD = #{evDivCd}
+		</if>
+	</update>
+
+	<delete id="deleteNcsEvalPlanStd"  parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.deleteNcsEvalPlanStd ========= */
+		UPDATE LMS_TH_PLAN_EV
+		SET UPDATE_DATE = NOW()
+		  , UPDATE_USER = #{sessionMemSeq}
+		  , DELETE_YN = 'Y'
+		where YYYY = #{yyyy}
+		   and TERM = #{term}
+		   and SUBJECT_CODE = #{subjectCode}
+		   and CLASS = #{subClass}
+		   and EV_DIV_CD = #{evDivCd}
+ 	</delete>
+
+ 	<delete id="deleteNcsEvalPlanLrn"  parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.deleteNcsEvalPlanLrn ========= */
+		UPDATE LMS_TH_NCS_PLAN_LRN
+		SET UPDATE_DATE = NOW()
+		  , UPDATE_USER = #{sessionMemSeq}
+		  , DELETE_YN = 'Y'
+		where YYYY = #{yyyy}
+		   and TERM = #{term}
+		   and SUBJECT_CODE = #{subjectCode}
+		   and CLASS = #{subClass}
+		   and EV_DIV_CD = #{evDivCd}
+ 	</delete>
+
+ 	<delete id="deleteNcsEvalPlanLctreElem"  parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.deleteNcsEvalPlanLctreElem ========= */
+		UPDATE LMS_TH_NCS_LCTRE_ELEM
+		SET UPDATE_DATE = NOW()
+		  , UPDATE_USER = #{sessionMemSeq}
+		  , DELETE_YN = 'Y'
+		where YYYY = #{yyyy}
+		   and TERM = #{term}
+		   and SUBJECT_CODE = #{subjectCode}
+		   and CLASS = #{subClass}
+		   and EV_DIV_CD = #{evDivCd}
+ 	</delete>
+
+ 	<delete id="deleteNcsEvalPlanLctreCtrlSet"  parameterType="kr.co.sitglobal.oklms.lu.planeval.vo.PlanEvalVO"  >
+		/* ====== kr.co.sitglobal.oklms.lu.planeval.service.impl.PlanEvalMapper.deleteNcsEvalPlanLctreCtrlSet ========= */
+		UPDATE LMS_TH_LCTRE_CTRL_SET
+		SET UPDATE_DATE = NOW()
+		  , UPDATE_USER = #{sessionMemSeq}
+		  , DELETE_YN = 'Y'
+		where YYYY = #{yyyy}
+		   and TERM = #{term}
+		   and SUBJECT_CODE = #{subjectCode}
+		   and CLASS = #{subClass}
+		   and EV_DIV_CD = #{evDivCd}
+ 	</delete>
+
+
+</mapper>

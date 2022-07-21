@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2016. 12. 01 오전 11:00         First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper">
+
+	<!-- <resultMap id="member-result" type="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		<result column="MEM_SEQ" 			property="memSeq" />
+		<result column="MEM_ID" 			property="memId" />
+		<result column="MEM_TYPE" 			property="memType" />
+		<result column="MEM_NAME" 			property="memName" />
+		<result column="PWD_QUEST" 			property="pwdQuest" />
+		<result column="SEX" 			property="sex" />
+		<result column="MEM_NAME_ENG" 			property="memNameEng" />
+		<result column="MEM_BIRTH" 			property="memBirth" />
+		<result column="PWD_QUEST_ANS" 			property="pwdQuestAns" />
+		<result column="MEM_PASSWORD" 			property="memPassword" />
+		<result column="EMAIL" 			property="email" />
+		<result column="MEM_REGI_NO" 			property="memRegiNo" />
+		<result column="ZIP_CODE" 			property="zipCode" />
+		<result column="ADDRESS" 			property="address" />
+		<result column="ADDRESS_DTL" 			property="addressDtl" />
+		<result column="TEL_NO1" 			property="telNo1" />
+		<result column="TEL_NO2" 			property="telNo2" />
+		<result column="TEL_NO3" 			property="telNo3" />
+		<result column="HP_NO1" 			property="hpNo1" />
+		<result column="HP_NO2" 			property="hpNo2" />
+		<result column="HP_NO3" 			property="hpNo3" />
+		<result column="NEWSLETTER_YN" 			property="newsletterYn" />
+		<result column="PHOTO_FILE_PATH" 			property="photoFilePath" />
+		<result column="WORKING_PLACE" 			property="workingPlace" />
+		<result column="SCHOLARSHIP" 			property="scholarship" />
+		<result column="SECEDE_REASON" 			property="secedeReason" />
+		<result column="RELATION_FIELD" 			property="relationField" />
+		<result column="CAREER" 			property="career" />
+		<result column="TITLE" 			property="title" />
+		<result column="AUTH_GROUP_ID" 			property="authGroupId" />
+		<result column="BNDL_REG_YN" 			property="bndlRegYn" />
+		<result column="LOGIN_CNT" 			property="loginCnt" />
+		<result column="SCSN_YN" 			property="scsnYn" />
+		<result column="MAJR" 			property="majr" />
+		<result column="RECEIVE_MAIL_YN" 			property="receiveMailYn" />
+		<result column="RECEIVE_SMS_YN" 			property="receiveSmsYn" />
+		<result column="FOREIGN_YN" 			property="foreignYn" />
+		<result column="NAMECHECK_YN" 			property="namecheckYn" />
+		<result column="NATION_CODE" 			property="nationCode" />
+		<result column="COMPANY_ID" 			property="companyId" />
+		<result column="G_PIN_YN" 			property="gPinYn" />
+		<result column="G_PIN_KEY1" 			property="gPinKey1" />
+		<result column="G_PIN_KEY2" 			property="gPinKey2" />
+		<result column="MEM_DIV" 			property="memDiv" />
+		<result column="SCHOOL_SEQ" 			property="schoolSeq" />
+		<result column="TUTOR_CLAUSE_AGREE_YN" 			property="tutorClauseAgreeYn" />
+		<result column="ASP_ID" 			property="aspId" />
+		<result column="AGREE_YN" 			property="agreeYn" />
+		<result column="NONAGE_YN" 			property="nonageYn" />
+		<result column="DELETE_YN" 			property="deleteYn" />
+		<result column="INSERT_DATE" 			property="insertDate" />
+		<result column="INSERT_USER" 			property="insertUser" />
+		<result column="UPDATE_DATE" 			property="updateDate" />
+		<result column="UPDATE_USER" 			property="updateUser" />
+		<result column="CERTI_NO" 			property="certiNo" />
+		<result column="CERTI_CHARACTER" 			property="certiCharacter" />
+		<result column="CERTI_YN" 			property="certiYn" />
+		<result column="CERTI_ATTEMPT_CNT" 			property="certiAttemptCnt" />
+		<result column="COMP_NM" 			property="compNm" />
+		<result column="DEPT_NM" 			property="deptNm" />
+		<result column="DUTY_NM" 			property="dutyNm" />
+		<result column="REMK" 			property="remk" />
+		<result column="WRONG_REGI_NO" 			property="wrongRegiNo" />
+		<result column="ORG_PW_NULL" 			property="orgPwNull" />
+		<result column="ORG_MEM_ID" 			property="orgMemId" />
+		<result column="LAST_LOGIN_YMD" 			property="lastLoginYmd" />
+		<result column="LAST_PW_UPDT_YMD" 			property="lastPwUpdtYmd" />
+		<result column="PW_ERR_NUMBER_TIMES" 			property="pwErrNumberTimes" />
+		<result column="USE_EXPIRE_YMD" 			property="useExpireYmd" />
+		
+	</resultMap>
+	 -->
+	
+	<sql id="listMember-where">
+	     <choose>
+            <when test="searchName != null and searchName != ''">
+                	<if test="searchName eq 'NAME'">
+                		<if test="searchWord != null and searchWord != ''">
+                			AND CM.MEM_NAME LIKE '%' ||  #{searchWord  } || '%'
+                		</if>
+                	</if>
+                	<if test="searchName eq 'ID'">
+                		<if test="searchWord != null and searchWord != ''">
+                			AND CM.MEM_ID LIKE '%' ||  #{searchWord  } || '%'
+                		</if>
+                	</if>
+            </when>
+        </choose>
+        
+		<!-- 조회 조건값 -->
+		        <!--<if test="searchName != null and searchName != ''">AND CM.MEM_NAME LIKE '%' ||  #{searchName} || '%'</if>-->
+				<!-- <if test="memSeq != null and memSeq != ''">	AND CM.MEM_SEQ 	= #{memSeq}		 </if> -->
+				<if test="memId != null and memId != ''">	AND CM.MEM_ID 	= #{memId}		 </if>
+				<!-- <if test="memType != null and memType != ''">	AND CM.MEM_TYPE 	= #{memType}		 </if> -->
+				<!-- <if test="memName != null and memName != ''">	AND CM.MEM_NAME 	= #{memName}		 </if> -->
+				<!-- <if test="pwdQuest != null and pwdQuest != ''">	AND CM.PWD_QUEST 	= #{pwdQuest}		 </if> -->
+				<!-- <if test="sex != null and sex != ''">	AND CM.SEX 	= #{sex}		 </if> -->
+				<!-- <if test="memNameEng != null and memNameEng != ''">	AND CM.MEM_NAME_ENG 	= #{memNameEng}		 </if> -->
+				<!-- <if test="memBirth != null and memBirth != ''">	AND CM.MEM_BIRTH 	= #{memBirth}		 </if> -->
+				<!-- <if test="pwdQuestAns != null and pwdQuestAns != ''">	AND CM.PWD_QUEST_ANS 	= #{pwdQuestAns}		 </if> -->
+				<!-- <if test="memPassword != null and memPassword != ''">	AND CM.MEM_PASSWORD 	= #{memPassword}		 </if> -->
+				<!-- <if test="email != null and email != ''">	AND CM.EMAIL 	= #{email}		 </if> -->
+				<!-- <if test="memRegiNo != null and memRegiNo != ''">	AND CM.MEM_REGI_NO 	= #{memRegiNo}		 </if> -->
+				<!-- <if test="zipCode != null and zipCode != ''">	AND CM.ZIP_CODE 	= #{zipCode}		 </if> -->
+				<!-- <if test="address != null and address != ''">	AND CM.ADDRESS 	= #{address}		 </if> -->
+				<!-- <if test="addressDtl != null and addressDtl != ''">	AND CM.ADDRESS_DTL 	= #{addressDtl}		 </if> -->
+				<!-- <if test="telNo1 != null and telNo1 != ''">	AND CM.TEL_NO1 	= #{telNo1}		 </if> -->
+				<!-- <if test="telNo2 != null and telNo2 != ''">	AND CM.TEL_NO2 	= #{telNo2}		 </if> -->
+				<!-- <if test="telNo3 != null and telNo3 != ''">	AND CM.TEL_NO3 	= #{telNo3}		 </if> -->
+				<!-- <if test="hpNo1 != null and hpNo1 != ''">	AND CM.HP_NO1 	= #{hpNo1}		 </if> -->
+				<!-- <if test="hpNo2 != null and hpNo2 != ''">	AND CM.HP_NO2 	= #{hpNo2}		 </if> -->
+				<!-- <if test="hpNo3 != null and hpNo3 != ''">	AND CM.HP_NO3 	= #{hpNo3}		 </if> -->
+				<!-- <if test="newsletterYn != null and newsletterYn != ''">	AND CM.NEWSLETTER_YN 	= #{newsletterYn}		 </if> -->
+				<!-- <if test="photoFilePath != null and photoFilePath != ''">	AND CM.PHOTO_FILE_PATH 	= #{photoFilePath}		 </if> -->
+				<!-- <if test="workingPlace != null and workingPlace != ''">	AND CM.WORKING_PLACE 	= #{workingPlace}		 </if> -->
+				<!-- <if test="scholarship != null and scholarship != ''">	AND CM.SCHOLARSHIP 	= #{scholarship}		 </if> -->
+				<!-- <if test="secedeReason != null and secedeReason != ''">	AND CM.SECEDE_REASON 	= #{secedeReason}		 </if> -->
+				<!-- <if test="relationField != null and relationField != ''">	AND CM.RELATION_FIELD 	= #{relationField}		 </if> -->
+				<!-- <if test="career != null and career != ''">	AND CM.CAREER 	= #{career}		 </if> -->
+				<!-- <if test="title != null and title != ''">	AND CM.TITLE 	= #{title}		 </if> -->
+				<!-- <if test="authGroupId != null and authGroupId != ''">	AND CM.AUTH_GROUP_ID 	= #{authGroupId}		 </if> -->
+				<if test="bndlRegYn != null and bndlRegYn != ''">	AND CM.BNDL_REG_YN 	= #{bndlRegYn}		 </if>
+				<!-- <if test="loginCnt != null and loginCnt != ''">	AND CM.LOGIN_CNT 	= #{loginCnt}		 </if> -->
+				<!--<if test="scsnYn != null and scsnYn != ''">	AND CM.SCSN_YN 	= #{scsnYn}		 </if>-->
+				<!-- <if test="majr != null and majr != ''">	AND CM.MAJR 	= #{majr}		 </if> -->
+				<!-- <if test="receiveMailYn != null and receiveMailYn != ''">	AND CM.RECEIVE_MAIL_YN 	= #{receiveMailYn}		 </if> -->
+				<!-- <if test="receiveSmsYn != null and receiveSmsYn != ''">	AND CM.RECEIVE_SMS_YN 	= #{receiveSmsYn}		 </if> -->
+				<!-- <if test="foreignYn != null and foreignYn != ''">	AND CM.FOREIGN_YN 	= #{foreignYn}		 </if> -->
+				<!-- <if test="namecheckYn != null and namecheckYn != ''">	AND CM.NAMECHECK_YN 	= #{namecheckYn}		 </if> -->
+				<!-- <if test="nationCode != null and nationCode != ''">	AND CM.NATION_CODE 	= #{nationCode}		 </if> -->
+				<!-- <if test="companyId != null and companyId != ''">	AND CM.COMPANY_ID 	= #{companyId}		 </if> -->
+				<!-- <if test="gPinYn != null and gPinYn != ''">	AND CM.G_PIN_YN 	= #{gPinYn}		 </if> -->
+				<!-- <if test="gPinKey1 != null and gPinKey1 != ''">	AND CM.G_PIN_KEY1 	= #{gPinKey1}		 </if> -->
+				<!-- <if test="gPinKey2 != null and gPinKey2 != ''">	AND CM.G_PIN_KEY2 	= #{gPinKey2}		 </if> -->
+				<!-- <if test="memDiv != null and memDiv != ''">	AND CM.MEM_DIV 	= #{memDiv}		 </if> -->
+				<!-- <if test="schoolSeq != null and schoolSeq != ''">	AND CM.SCHOOL_SEQ 	= #{schoolSeq}		 </if> -->
+				<!-- <if test="tutorClauseAgreeYn != null and tutorClauseAgreeYn != ''">	AND CM.TUTOR_CLAUSE_AGREE_YN 	= #{tutorClauseAgreeYn}		 </if> -->
+				<!-- <if test="aspId != null and aspId != ''">	AND CM.ASP_ID 	= #{aspId}		 </if> -->
+				<!-- <if test="agreeYn != null and agreeYn != ''">	AND CM.AGREE_YN 	= #{agreeYn}		 </if> -->
+				<!-- <if test="nonageYn != null and nonageYn != ''">	AND CM.NONAGE_YN 	= #{nonageYn}		 </if> -->
+				<if test="deleteYn != null and deleteYn != ''">	AND CM.DELETE_YN 	= #{deleteYn}		 </if>
+				AND CM.DELETE_YN = 'N'
+				<!-- <if test="insertDate != null and insertDate != ''">	AND CM.INSERT_DATE 	= #{insertDate}		 </if> -->
+				<!-- <if test="insertUser != null and insertUser != ''">	AND CM.INSERT_USER 	= #{insertUser}		 </if> -->
+				<!-- <if test="updateDate != null and updateDate != ''">	AND CM.UPDATE_DATE 	= #{updateDate}		 </if> -->
+				<!-- <if test="updateUser != null and updateUser != ''">	AND CM.UPDATE_USER 	= #{updateUser}		 </if> -->
+				<!-- <if test="certiNo != null and certiNo != ''">	AND CM.CERTI_NO 	= #{certiNo}		 </if> -->
+				<!-- <if test="certiCharacter != null and certiCharacter != ''">	AND CM.CERTI_CHARACTER 	= #{certiCharacter}		 </if> -->
+				<!-- <if test="certiYn != null and certiYn != ''">	AND CM.CERTI_YN 	= #{certiYn}		 </if> -->
+				<!-- <if test="certiAttemptCnt != null and certiAttemptCnt != ''">	AND CM.CERTI_ATTEMPT_CNT 	= #{certiAttemptCnt}		 </if> -->
+				<!-- <if test="compNm != null and compNm != ''">	AND CM.COMP_NM 	= #{compNm}		 </if> -->
+				<!-- <if test="deptNm != null and deptNm != ''">	AND CM.DEPT_NM 	= #{deptNm}		 </if> -->
+				<!-- <if test="dutyNm != null and dutyNm != ''">	AND CM.DUTY_NM 	= #{dutyNm}		 </if> -->
+				<!-- <if test="remk != null and remk != ''">	AND CM.REMK 	= #{remk}		 </if> -->
+				<!-- <if test="wrongRegiNo != null and wrongRegiNo != ''">	AND CM.WRONG_REGI_NO 	= #{wrongRegiNo}		 </if> -->
+				<!-- <if test="orgPwNull != null and orgPwNull != ''">	AND CM.ORG_PW_NULL 	= #{orgPwNull}		 </if> -->
+				<!-- <if test="orgMemId != null and orgMemId != ''">	AND CM.ORG_MEM_ID 	= #{orgMemId}		 </if> -->
+				<!-- <if test="lastLoginYmd != null and lastLoginYmd != ''">	AND CM.LAST_LOGIN_YMD 	= #{lastLoginYmd}		 </if> -->
+				<!-- <if test="lastPwUpdtYmd != null and lastPwUpdtYmd != ''">	AND CM.LAST_PW_UPDT_YMD 	= #{lastPwUpdtYmd}		 </if> -->
+				<!-- <if test="pwErrNumberTimes != null and pwErrNumberTimes != ''">	AND CM.PW_ERR_NUMBER_TIMES 	= #{pwErrNumberTimes}		 </if> -->
+				<!-- <if test="useExpireYmd != null and useExpireYmd != ''">	AND CM.USE_EXPIRE_YMD 	= #{useExpireYmd}		 </if> -->
+        
+		<!-- 검색 영역에서의 조건값 -->
+				<!-- <if test="searchMemSeq != null and searchMemSeq != ''">	AND CM.MEM_SEQ 	= #{searchMemSeq}		 </if> -->
+				<!-- <if test="searchMemId != null and searchMemId != ''">	AND CM.MEM_ID 	= #{searchMemId}		 </if> -->
+				<!-- <if test="searchMemType != null and searchMemType != ''">	AND CM.MEM_TYPE 	= #{searchMemType}		 </if> -->
+				<if test="searchName != null and searchName != ''">	AND CM.MEM_NAME  LIKE '%' ||  #{searchName} || '%'	 </if>
+				<if test="searchMemName != null and searchMemName != ''">	AND CM.MEM_NAME  LIKE '%' ||  #{searchMemName} || '%'	 </if>
+				<!-- <if test="searchPwdQuest != null and searchPwdQuest != ''">	AND CM.PWD_QUEST 	= #{searchPwdQuest}		 </if> -->
+				<!-- <if test="searchSex != null and searchSex != ''">	AND CM.SEX 	= #{searchSex}		 </if> -->
+				<!-- <if test="searchMemNameEng != null and searchMemNameEng != ''">	AND CM.MEM_NAME_ENG 	= #{searchMemNameEng}		 </if> -->
+				<!-- <if test="searchMemBirth != null and searchMemBirth != ''">	AND CM.MEM_BIRTH 	= #{searchMemBirth}		 </if> -->
+				<!-- <if test="searchPwdQuestAns != null and searchPwdQuestAns != ''">	AND CM.PWD_QUEST_ANS 	= #{searchPwdQuestAns}		 </if> -->
+				<!-- <if test="searchMemPassword != null and searchMemPassword != ''">	AND CM.MEM_PASSWORD 	= #{searchMemPassword}		 </if> -->
+				<!-- <if test="searchEmail != null and searchEmail != ''">	AND CM.EMAIL 	= #{searchEmail}		 </if> -->
+				<!-- <if test="searchMemRegiNo != null and searchMemRegiNo != ''">	AND CM.MEM_REGI_NO 	= #{searchMemRegiNo}		 </if> -->
+				<!-- <if test="searchZipCode != null and searchZipCode != ''">	AND CM.ZIP_CODE 	= #{searchZipCode}		 </if> -->
+				<!-- <if test="searchAddress != null and searchAddress != ''">	AND CM.ADDRESS 	= #{searchAddress}		 </if> -->
+				<!-- <if test="searchAddressDtl != null and searchAddressDtl != ''">	AND CM.ADDRESS_DTL 	= #{searchAddressDtl}		 </if> -->
+				<!-- <if test="searchTelNo1 != null and searchTelNo1 != ''">	AND CM.TEL_NO1 	= #{searchTelNo1}		 </if> -->
+				<!-- <if test="searchTelNo2 != null and searchTelNo2 != ''">	AND CM.TEL_NO2 	= #{searchTelNo2}		 </if> -->
+				<!-- <if test="searchTelNo3 != null and searchTelNo3 != ''">	AND CM.TEL_NO3 	= #{searchTelNo3}		 </if> -->
+				<!-- <if test="searchHpNo1 != null and searchHpNo1 != ''">	AND CM.HP_NO1 	= #{searchHpNo1}		 </if> -->
+				<!-- <if test="searchHpNo2 != null and searchHpNo2 != ''">	AND CM.HP_NO2 	= #{searchHpNo2}		 </if> -->
+				<!-- <if test="searchHpNo3 != null and searchHpNo3 != ''">	AND CM.HP_NO3 	= #{searchHpNo3}		 </if> -->
+				<!-- <if test="searchNewsletterYn != null and searchNewsletterYn != ''">	AND CM.NEWSLETTER_YN 	= #{searchNewsletterYn}		 </if> -->
+				<!-- <if test="searchPhotoFilePath != null and searchPhotoFilePath != ''">	AND CM.PHOTO_FILE_PATH 	= #{searchPhotoFilePath}		 </if> -->
+				<!-- <if test="searchWorkingPlace != null and searchWorkingPlace != ''">	AND CM.WORKING_PLACE 	= #{searchWorkingPlace}		 </if> -->
+				<!-- <if test="searchScholarship != null and searchScholarship != ''">	AND CM.SCHOLARSHIP 	= #{searchScholarship}		 </if> -->
+				<!-- <if test="searchSecedeReason != null and searchSecedeReason != ''">	AND CM.SECEDE_REASON 	= #{searchSecedeReason}		 </if> -->
+				<!-- <if test="searchRelationField != null and searchRelationField != ''">	AND CM.RELATION_FIELD 	= #{searchRelationField}		 </if> -->
+				<!-- <if test="searchCareer != null and searchCareer != ''">	AND CM.CAREER 	= #{searchCareer}		 </if> -->
+				<!-- <if test="searchTitle != null and searchTitle != ''">	AND CM.TITLE 	= #{searchTitle}		 </if> -->
+				<if test="searchAuthGroupId != null and searchAuthGroupId != ''">	AND CM.AUTH_GROUP_ID 	= #{searchAuthGroupId}		 </if>
+				<!-- <if test="searchBndlRegYn != null and searchBndlRegYn != ''">	AND CM.BNDL_REG_YN 	= #{searchBndlRegYn}		 </if> -->
+				<!-- <if test="searchLoginCnt != null and searchLoginCnt != ''">	AND CM.LOGIN_CNT 	= #{searchLoginCnt}		 </if> -->
+				<if test="searchScsnYn != null and searchScsnYn != ''">	AND CM.SCSN_YN 	= #{searchScsnYn}		 </if> 
+				<!-- <if test="searchMajr != null and searchMajr != ''">	AND CM.MAJR 	= #{searchMajr}		 </if> -->
+				<!-- <if test="searchReceiveMailYn != null and searchReceiveMailYn != ''">	AND CM.RECEIVE_MAIL_YN 	= #{searchReceiveMailYn}		 </if> -->
+				<!-- <if test="searchReceiveSmsYn != null and searchReceiveSmsYn != ''">	AND CM.RECEIVE_SMS_YN 	= #{searchReceiveSmsYn}		 </if> -->
+				<!-- <if test="searchForeignYn != null and searchForeignYn != ''">	AND CM.FOREIGN_YN 	= #{searchForeignYn}		 </if> -->
+				<!-- <if test="searchNamecheckYn != null and searchNamecheckYn != ''">	AND CM.NAMECHECK_YN 	= #{searchNamecheckYn}		 </if> -->
+				<!-- <if test="searchNationCode != null and searchNationCode != ''">	AND CM.NATION_CODE 	= #{searchNationCode}		 </if> -->
+				<!-- <if test="searchCompanyId != null and searchCompanyId != ''">	AND CM.COMPANY_ID 	= #{searchCompanyId}		 </if> -->
+				<!-- <if test="searchGPinYn != null and searchGPinYn != ''">	AND CM.G_PIN_YN 	= #{searchGPinYn}		 </if> -->
+				<!-- <if test="searchGPinKey1 != null and searchGPinKey1 != ''">	AND CM.G_PIN_KEY1 	= #{searchGPinKey1}		 </if> -->
+				<!-- <if test="searchGPinKey2 != null and searchGPinKey2 != ''">	AND CM.G_PIN_KEY2 	= #{searchGPinKey2}		 </if> -->
+				<!-- <if test="searchMemDiv != null and searchMemDiv != ''">	AND CM.MEM_DIV 	= #{searchMemDiv}		 </if> -->
+				<!-- <if test="searchSchoolSeq != null and searchSchoolSeq != ''">	AND CM.SCHOOL_SEQ 	= #{searchSchoolSeq}		 </if> -->
+				<!-- <if test="searchTutorClauseAgreeYn != null and searchTutorClauseAgreeYn != ''">	AND CM.TUTOR_CLAUSE_AGREE_YN 	= #{searchTutorClauseAgreeYn}		 </if> -->
+				<!-- <if test="searchAspId != null and searchAspId != ''">	AND CM.ASP_ID 	= #{searchAspId}		 </if> -->
+				<!-- <if test="searchAgreeYn != null and searchAgreeYn != ''">	AND CM.AGREE_YN 	= #{searchAgreeYn}		 </if> -->
+				<!-- <if test="searchNonageYn != null and searchNonageYn != ''">	AND CM.NONAGE_YN 	= #{searchNonageYn}		 </if> -->
+				<!-- <if test="searchDeleteYn != null and searchDeleteYn != ''">	AND CM.DELETE_YN 	= #{searchDeleteYn}		 </if> -->
+				<!-- <if test="searchInsertDate != null and searchInsertDate != ''">	AND CM.INSERT_DATE 	= #{searchInsertDate}		 </if> -->
+				<!-- <if test="searchInsertUser != null and searchInsertUser != ''">	AND CM.INSERT_USER 	= #{searchInsertUser}		 </if> -->
+				<!-- <if test="searchUpdateDate != null and searchUpdateDate != ''">	AND CM.UPDATE_DATE 	= #{searchUpdateDate}		 </if> -->
+				<!-- <if test="searchUpdateUser != null and searchUpdateUser != ''">	AND CM.UPDATE_USER 	= #{searchUpdateUser}		 </if> -->
+				<!-- <if test="searchCertiNo != null and searchCertiNo != ''">	AND CM.CERTI_NO 	= #{searchCertiNo}		 </if> -->
+				<!-- <if test="searchCertiCharacter != null and searchCertiCharacter != ''">	AND CM.CERTI_CHARACTER 	= #{searchCertiCharacter}		 </if> -->
+				<!-- <if test="searchCertiYn != null and searchCertiYn != ''">	AND CM.CERTI_YN 	= #{searchCertiYn}		 </if> -->
+				<!-- <if test="searchCertiAttemptCnt != null and searchCertiAttemptCnt != ''">	AND CM.CERTI_ATTEMPT_CNT 	= #{searchCertiAttemptCnt}		 </if> -->
+				<!-- <if test="searchCompNm != null and searchCompNm != ''">	AND CM.COMP_NM 	= #{searchCompNm}		 </if> -->
+				<!-- <if test="searchDeptNm != null and searchDeptNm != ''">	AND CM.DEPT_NM 	= #{searchDeptNm}		 </if> -->
+				<!-- <if test="searchDutyNm != null and searchDutyNm != ''">	AND CM.DUTY_NM 	= #{searchDutyNm}		 </if> -->
+				<!-- <if test="searchRemk != null and searchRemk != ''">	AND CM.REMK 	= #{searchRemk}		 </if> -->
+				<!-- <if test="searchWrongRegiNo != null and searchWrongRegiNo != ''">	AND CM.WRONG_REGI_NO 	= #{searchWrongRegiNo}		 </if> -->
+				<!-- <if test="searchOrgPwNull != null and searchOrgPwNull != ''">	AND CM.ORG_PW_NULL 	= #{searchOrgPwNull}		 </if> -->
+				<!-- <if test="searchOrgMemId != null and searchOrgMemId != ''">	AND CM.ORG_MEM_ID 	= #{searchOrgMemId}		 </if> -->
+				<!-- <if test="searchLastLoginYmd != null and searchLastLoginYmd != ''">	AND CM.LAST_LOGIN_YMD 	= #{searchLastLoginYmd}		 </if> -->
+				<!-- <if test="searchLastPwUpdtYmd != null and searchLastPwUpdtYmd != ''">	AND CM.LAST_PW_UPDT_YMD 	= #{searchLastPwUpdtYmd}		 </if> -->
+				<!-- <if test="searchPwErrNumberTimes != null and searchPwErrNumberTimes != ''">	AND CM.PW_ERR_NUMBER_TIMES 	= #{searchPwErrNumberTimes}		 </if> -->
+				<!-- <if test="searchUseExpireYmd != null and searchUseExpireYmd != ''">	AND CM.USE_EXPIRE_YMD 	= #{searchUseExpireYmd}		 </if> -->
+				<if test="nowDtInsFlag != null and nowDtInsFlag != ''">	AND DATE_FORMAT(CM.INSERT_DATE, '%Y.%m.%d') = DATE_FORMAT(NOW(), '%Y.%m.%d')		 </if>
+	</sql>
+	
+	<select id="getSearchEmail" parameterType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO" resultType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO">
+		/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.getSearchEmail ====== */
+		<![CDATA[
+	        SELECT
+	                EMAIL
+	          FROM COM_MEMBER 
+	          WHERE 1=1
+	             AND SCSN_YN = 'N'
+	             AND DELETE_YN = 'N'
+	             AND EMAIL = #{email}
+	    ]]>
+	    
+	    <if test="memSeq != null and memSeq != ''">	AND MEM_SEQ <![CDATA[<>]]> #{memSeq}		 </if> 
+	</select>
+	
+	<select id="getSearchHpNo" parameterType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO" resultType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO">
+		/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.getSearchHpNo ====== */
+		<![CDATA[
+	        SELECT
+	                HP_NO1 || HP_NO2 || HP_NO3 AS HP_NO
+	          FROM COM_MEMBER 
+	          WHERE 1=1
+	             AND SCSN_YN = 'N'
+	             AND DELETE_YN = 'N'
+	             AND HP_NO1 = #{hpNo1}
+	             AND HP_NO2 = #{hpNo2}
+	             AND HP_NO3 = #{hpNo3}
+	    ]]>
+	    
+	    <if test="memSeq != null and memSeq != ''">	AND MEM_SEQ <![CDATA[<>]]> #{memSeq}		 </if> 
+	</select>
+	
+	<select id="getMember" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO" resultType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.getMember ====== */
+			   SELECT CM.MEM_SEQ
+					, CM.MEM_ID
+					, CM.MEM_TYPE
+					, CM.MEM_NAME
+					, CM.PWD_QUEST
+					, CM.SEX
+					, CM.MEM_NAME_ENG
+					, CM.MEM_BIRTH
+					, SUBSTR(CM.MEM_BIRTH, 1,4) YEAR
+                    , SUBSTR(CM.MEM_BIRTH, 5,2) MONTH
+                    , SUBSTR(CM.MEM_BIRTH, 7,2) DAY
+					, CM.PWD_QUEST_ANS
+					, CM.MEM_PASSWORD
+					, CM.EMAIL
+					, SUBSTR(CM.EMAIL,(INSTR(CM.EMAIL, '@')+0)) EMAIL3 /* @부터 나머지 이메일 주소 까지 표시 */
+					, CM.MEM_REGI_NO
+					, CM.ZIP_CODE
+					, CM.ADDRESS
+					, CM.ADDRESS_DTL
+					, CM.TEL_NO1
+					, CM.TEL_NO2
+					, CM.TEL_NO3
+					, CM.HP_NO1
+					, CM.HP_NO2
+					, CM.HP_NO3
+					, CM.NEWSLETTER_YN
+					, CM.PHOTO_FILE_PATH
+					, CM.WORKING_PLACE
+					, CM.SCHOLARSHIP
+					, CM.SECEDE_REASON
+					, CM.RELATION_FIELD
+					, CM.CAREER
+					, CM.TITLE
+					, CM.TITLE TITLE_PATH
+					, CM.AUTH_GROUP_ID
+					, CM.BNDL_REG_YN
+					, CM.LOGIN_CNT
+					, CM.SCSN_YN
+					, CM.MAJR
+					, CM.RECEIVE_MAIL_YN
+					, CM.RECEIVE_SMS_YN
+					, CM.FOREIGN_YN
+					, CM.NAMECHECK_YN
+					, CM.NATION_CODE
+					, CM.COMPANY_ID
+					, CM.G_PIN_YN
+					, CM.G_PIN_KEY1
+					, CM.G_PIN_KEY2
+					, CM.MEM_DIV
+					, CM.SCHOOL_SEQ
+					, CM.TUTOR_CLAUSE_AGREE_YN
+					, CM.ASP_ID
+					, CM.AGREE_YN
+					, CM.NONAGE_YN
+					, CM.DELETE_YN
+					, CM.INSERT_DATE
+					, CM.INSERT_USER
+					, CM.UPDATE_DATE
+					, CM.UPDATE_USER
+					, CM.CERTI_NO
+					, CM.CERTI_CHARACTER
+					, CM.CERTI_YN
+					, CM.CERTI_ATTEMPT_CNT
+					, CM.COMP_NM
+					, CM.DEPT_NM
+					, CM.DUTY_NM
+					, CM.REMK
+					, CM.WRONG_REGI_NO
+					, CM.ORG_PW_NULL
+					, CM.ORG_MEM_ID
+					, CM.LAST_LOGIN_YMD
+					, CM.LAST_PW_UPDT_YMD
+					, CM.PW_ERR_NUMBER_TIMES
+					, CM.USE_EXPIRE_YMD
+					, (SELECT AUTH_GROUP_NAME 
+         			   FROM COM_AUTH_GROUP 
+				      WHERE DELETE_YN = 'N' 
+				         AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID
+				       ) AUTH_GROUP_NAME
+				 FROM COM_MEMBER CM
+			 	WHERE CM.MEM_SEQ 	= #{memSeq}
+	</select>
+	
+	<select id="listMemberAllExcelList" parameterType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO" resultType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO">
+		/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.listMemberAllExcelList ====== */
+	        SELECT
+	                CM.MEM_SEQ , 
+			       CM.MEM_ID , 
+			       CM.MEM_TYPE , 
+			       CM.MEM_NAME , 
+			       CM.PWD_QUEST , 
+			       CM.SEX , 
+			       CM.MEM_NAME_ENG , 
+			       CM.MEM_BIRTH , 
+			       CM.PWD_QUEST_ANS , 
+			       CM.MEM_PASSWORD , 
+			       CM.EMAIL , 
+			       CM.MEM_REGI_NO , 
+			       CM.ZIP_CODE , 
+			       CM.ADDRESS , 
+			       CM.ADDRESS_DTL , 
+			       CM.TEL_NO1 , 
+			       CM.TEL_NO2 , 
+			       CM.TEL_NO3 , 
+			       CM.HP_NO1 , 
+			       CM.HP_NO2 , 
+			       CM.HP_NO3 , 
+			       CM.NEWSLETTER_YN , 
+			       CM.PHOTO_FILE_PATH , 
+			       CM.WORKING_PLACE , 
+			       CM.SCHOLARSHIP , 
+			       CM.SECEDE_REASON , 
+			       CM.RELATION_FIELD , 
+			       CM.CAREER , 
+			       CM.TITLE , 
+			       CM.AUTH_GROUP_ID , 
+			       CM.BNDL_REG_YN , 
+			       CM.SCSN_YN , 
+			       CM.MAJR , 
+			       CM.RECEIVE_MAIL_YN , 
+			       CM.RECEIVE_SMS_YN , 
+			       CM.FOREIGN_YN , 
+			       CM.NAMECHECK_YN , 
+			       CM.NATION_CODE , 
+			       CM.COMPANY_ID , 
+			       CM.G_PIN_YN , 
+			       CM.G_PIN_KEY1 , 
+			       CM.G_PIN_KEY2 , 
+			       CM.MEM_DIV , 
+			       CM.SCHOOL_SEQ , 
+			       CM.TUTOR_CLAUSE_AGREE_YN , 
+			       CM.ASP_ID , 
+			       CM.AGREE_YN , 
+			       CM.NONAGE_YN , 
+			       CM.DELETE_YN , 
+			       CM.INSERT_USER , 
+			       CM.UPDATE_DATE , 
+			       CM.UPDATE_USER , 
+			       CM.CERTI_NO , 
+			       CM.CERTI_CHARACTER , 
+			       CM.CERTI_YN , 
+			       CM.CERTI_ATTEMPT_CNT , 
+			       CM.DEPT_NM , 
+			       CM.DUTY_NM , 
+			       CM.REMK , 
+			       CM.WRONG_REGI_NO , 
+			       CM.ORG_PW_NULL , 
+			       CM.ORG_MEM_ID , 
+			       CM.LAST_LOGIN_YMD , 
+			       CM.LAST_PW_UPDT_YMD , 
+			       CM.PW_ERR_NUMBER_TIMES , 
+			       CM.USE_EXPIRE_YMD , 
+			       DATE_FORMAT (CM.INSERT_DATE, '%Y.%m.%d') INSERT_DATE , 
+			       (SELECT COMPANY_NAME 
+			         FROM lms_company 
+			        WHERE COMPANY_ID = CM.COMPANY_ID 
+			              AND DELETE_YN = 'N'
+			       ) COMP_NM , 
+			       (SELECT AUTH_GROUP_NAME 
+			         FROM COM_AUTH_GROUP 
+			        WHERE DELETE_YN = 'N' 
+			              AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID
+			       ) AUTH_GROUP_NAME , 
+			       '' SCHOOL_NAME , 
+			       '' INSTITUTE_NAME , 
+			       '' POSITION , 
+			       '' CERTIFICATION_DIV 
+	          FROM COM_MEMBER CM 
+	          WHERE 1=1
+	             AND CM.DELETE_YN = 'N'
+	             ORDER BY CM.INSERT_DATE DESC, CM.MEM_ID ASC
+	</select>
+	
+	<select id="listMemberMail" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO" resultType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.listMemberMail ====== */
+			SELECT  MEM_SEQ, 
+                        MEM_ID, 
+                        MEM_TYPE, 
+                        MEM_NAME,                
+                        EMAIL,                
+                        CONCAT(HP_NO1,HP_NO2,HP_NO3) TR_PHONE 
+                  FROM  COM_MEMBER M 
+		]]>
+			 WHERE 1 = 1 
+			 AND DELETE_YN = 'N'
+			 AND MEM_SEQ IN
+		<foreach collection="memSeqs" item="memSeqIds" index="index" open="(" close=")" separator=",">
+			 '${memSeqIds}'
+		</foreach>
+	</select>
+
+<!-- 	<select id="listMember" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listMember" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.la.member.vo.MemberVO"> -->
+<!-- 	<select id="listMember" parameterType="hashmap" resultMap="member-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listMember" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO" resultType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.listMember ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+			   SELECT CM.MEM_SEQ
+					, CM.MEM_ID
+					, CM.MEM_TYPE
+					, CM.MEM_NAME
+					, CM.PWD_QUEST
+					, CM.SEX
+					, CM.MEM_NAME_ENG
+					, CM.MEM_BIRTH
+					, CM.PWD_QUEST_ANS
+					, CM.MEM_PASSWORD
+				<if test="memPasswordEncript == null and memPasswordEncript == ''">  '' AS MEM_PASSWORD_ENCRIPTED,		 </if>
+       		    <if test="memPasswordEncript != null and memPasswordEncript != ''"> HEX(AES_ENCRYPT(#{memPasswordEncript},#{memPasswordEncript})) MEM_PASSWORD_ENCRIPTED, </if> /* 비밀번호( 사용자가 화면에서 입력한 암호화 된 비밀번호 ) */
+		        	, CM.EMAIL
+					, CM.MEM_REGI_NO
+					, CM.ZIP_CODE
+					, CM.ADDRESS
+					, CM.ADDRESS_DTL
+					, CM.TEL_NO1
+					, CM.TEL_NO2
+					, CM.TEL_NO3
+					, CM.HP_NO1
+					, CM.HP_NO2
+					, CM.HP_NO3
+					, CM.NEWSLETTER_YN
+					, CM.PHOTO_FILE_PATH
+					, CM.WORKING_PLACE
+					, CM.SCHOLARSHIP
+					, CM.SECEDE_REASON
+					, CM.RELATION_FIELD
+					, CM.CAREER
+					, CM.TITLE
+					, CM.AUTH_GROUP_ID
+					, CM.BNDL_REG_YN
+<!-- 					, CM.LOGIN_CNT -->
+					, CM.SCSN_YN
+					, CM.MAJR
+					, CM.RECEIVE_MAIL_YN
+					, CM.RECEIVE_SMS_YN
+					, CM.FOREIGN_YN
+					, CM.NAMECHECK_YN
+					, CM.NATION_CODE
+					, CM.COMPANY_ID
+					, CM.G_PIN_YN
+					, CM.G_PIN_KEY1
+					, CM.G_PIN_KEY2
+					, CM.MEM_DIV
+					, CM.SCHOOL_SEQ
+					, CM.TUTOR_CLAUSE_AGREE_YN
+					, CM.ASP_ID
+					, CM.AGREE_YN
+					, CM.NONAGE_YN
+					, CM.DELETE_YN
+<!-- 					, CM.INSERT_DATE -->
+					, CM.INSERT_USER
+					, CM.UPDATE_DATE
+					, CM.UPDATE_USER
+					, CM.CERTI_NO
+					, CM.CERTI_CHARACTER
+					, CM.CERTI_YN
+					, CM.CERTI_ATTEMPT_CNT
+					, CM.COMP_NM
+					, CM.DEPT_NM
+					, CM.DUTY_NM
+					, CM.REMK
+					, CM.WRONG_REGI_NO
+					, CM.ORG_PW_NULL
+					, CM.ORG_MEM_ID
+					, CM.LAST_LOGIN_YMD
+					, CM.LAST_PW_UPDT_YMD
+					, CM.PW_ERR_NUMBER_TIMES
+					, CM.USE_EXPIRE_YMD
+					, DATE_FORMAT(CM.INSERT_DATE, '%Y.%m.%d') INSERT_DATE 
+					, (SELECT	 COMPANY_NAME 
+						FROM	 lms_company 
+					  WHERE	 COMPANY_ID = CM.COMPANY_ID AND DELETE_YN = 'N') 
+						COMPANY_NAME
+					, (SELECT COUNT(1) CNT
+						FROM COM_LOGIN_LOG 
+					  WHERE	MEM_SEQ = CM.MEM_SEQ) 
+						LOGIN_CNT 
+					, (SELECT	 AUTH_GROUP_NAME 
+						FROM	 COM_AUTH_GROUP 
+					  WHERE	 DELETE_YN = 'N' AND AUTH_GROUP_ID = CM.AUTH_GROUP_ID) 
+						AUTH_GROUP_NAME 
+					, '' SCHOOL_NAME
+					, '' INSTITUTE_NAME
+					, '' POSITION 
+					, '' CERTIFICATION_DIV 
+				 FROM COM_MEMBER CM
+			 	WHERE 1=1 
+			
+		<include refid="listMember-where"/>
+			ORDER BY CM.AUTH_GROUP_ID ASC, CM.MEM_ID ASC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getMemberCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.getMemberCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_MEMBER CM
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listMember-where"/>
+	</select>
+
+	<insert id="insertMember" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.insertMember ====== */
+		]]>
+			INSERT INTO COM_MEMBER (
+								MEM_SEQ
+								, MEM_ID
+								, MEM_TYPE
+								, MEM_NAME
+								, SEX
+								, MEM_NAME_ENG
+								, MEM_BIRTH
+                                , MEM_PASSWORD 
+                                , PWD_QUEST
+							    , PWD_QUEST_ANS
+								, EMAIL
+								, ZIP_CODE
+								, ADDRESS
+								, ADDRESS_DTL
+								, TEL_NO1
+								, TEL_NO2
+								, TEL_NO3
+								, HP_NO1
+								, HP_NO2
+								, HP_NO3
+								, NEWSLETTER_YN
+								, PHOTO_FILE_PATH
+								, WORKING_PLACE
+								, SCHOLARSHIP
+								, SECEDE_REASON
+								, RELATION_FIELD
+								, CAREER
+								, TITLE
+								, AUTH_GROUP_ID
+								, BNDL_REG_YN
+								, LOGIN_CNT
+								, SCSN_YN
+								, MAJR
+								, RECEIVE_MAIL_YN
+								, RECEIVE_SMS_YN
+								, FOREIGN_YN
+								, NAMECHECK_YN
+								, NATION_CODE
+								, COMPANY_ID
+								, MEM_DIV
+								, SCHOOL_SEQ
+								, TUTOR_CLAUSE_AGREE_YN
+								, AGREE_YN
+								, NONAGE_YN
+								, DELETE_YN
+								, INSERT_DATE
+								, INSERT_USER
+								, UPDATE_DATE
+								, UPDATE_USER
+								, CERTI_NO
+								, CERTI_CHARACTER
+								, CERTI_YN
+								, CERTI_ATTEMPT_CNT
+								, COMP_NM
+								, LAST_PW_UPDT_YMD
+								, USE_EXPIRE_YMD
+									) 
+					VALUES 
+					( 
+								#{memSeq}
+								, #{memId}
+								, #{memType}
+								, #{memName}
+								, #{sex}
+								, #{memNameEng}
+								, #{memBirth}
+								<!-- , rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3)) -->
+								, HEX(AES_ENCRYPT(#{memPasswordEncript},#{memPasswordEncript})) 
+								, #{pwdQuest}
+								, #{memPassword}		
+								, #{email}
+								, #{zipCode}
+								, #{address}
+								, #{addressDtl}
+								, #{telNo1}
+								, #{telNo2}
+								, #{telNo3}
+								, #{hpNo1}
+								, #{hpNo2}
+								, #{hpNo3}
+								, #{newsletterYn}
+								, #{photoFilePath}
+								, #{workingPlace}
+								, #{scholarship}
+								, #{secedeReason}
+								, #{relationField}
+								, #{career}
+								, #{titlePath}
+								, #{authGroupId}
+								, 'N'
+								, 0
+								, 'N'
+								, #{majr}
+								, #{receiveMailYn}
+								, #{receiveSmsYn}
+								, #{foreignYn}
+								, #{namecheckYn}
+								, #{nationCode}
+								, #{companyId}
+								, 'G'
+								, #{schoolSeq}
+								, 'N'
+								, 'Y'
+								, 'N'
+								, 'N'
+								, NOW()
+								, #{sessionMemSeq}
+								, NOW()
+								, #{sessionMemSeq}
+								, #{certiNo}
+								, #{certiCharacter}
+								, 'N'
+								, 0
+								, #{compNm}
+								, NOW()
+								, DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY)
+								)
+	</insert>
+	
+	<insert id="insertExcelMemberTemp" parameterType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.insertExcelMemberTemp ====== */
+		]]>
+			INSERT INTO COM_MEMBER (
+								 MEM_SEQ
+								, MEM_ID
+								, MEM_TYPE
+								, MEM_NAME
+								, SEX
+								, MEM_NAME_ENG
+								, MEM_BIRTH
+                                , MEM_PASSWORD 
+                                , PWD_QUEST
+							    , PWD_QUEST_ANS
+								, EMAIL
+								, ZIP_CODE
+								, ADDRESS
+								, ADDRESS_DTL
+								, TEL_NO1
+								, TEL_NO2
+								, TEL_NO3
+								, HP_NO1
+								, HP_NO2
+								, HP_NO3
+								, NEWSLETTER_YN
+								, PHOTO_FILE_PATH
+								, WORKING_PLACE
+								, SCHOLARSHIP
+								, SECEDE_REASON
+								, RELATION_FIELD
+								, CAREER
+								, TITLE
+								, AUTH_GROUP_ID
+								, BNDL_REG_YN
+								, LOGIN_CNT
+								, SCSN_YN
+								, MAJR
+								, RECEIVE_MAIL_YN
+								, RECEIVE_SMS_YN
+								, FOREIGN_YN
+								, NAMECHECK_YN
+								, NATION_CODE
+								, COMPANY_ID
+								, MEM_DIV
+								, SCHOOL_SEQ
+								, TUTOR_CLAUSE_AGREE_YN
+								, AGREE_YN
+								, NONAGE_YN
+								, DELETE_YN
+								, INSERT_DATE
+								, INSERT_USER
+								, UPDATE_DATE
+								, UPDATE_USER
+								, CERTI_NO
+								, CERTI_CHARACTER
+								, CERTI_YN
+								, CERTI_ATTEMPT_CNT
+								, COMP_NM
+								, LAST_PW_UPDT_YMD
+								, USE_EXPIRE_YMD
+									) 
+					VALUES 
+					( 
+								#{memSeq}
+								, #{memId}
+								, #{memType}
+								, #{memName}
+								, #{sex}
+								, #{memNameEng}
+								, #{memBirth}
+								<!-- , rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPassword})),3)) -->
+								, HEX(AES_ENCRYPT(#{memPassword},#{memPassword})) 
+								, #{insertResult}
+								, #{memPassword}		
+								, #{email}
+								, #{zipCode}
+								, #{address}
+								, #{addressDtl}
+								, #{telNo1}
+								, #{telNo2}
+								, #{telNo3}
+								, #{hpNo1}
+								, #{hpNo2}
+								, #{hpNo3}
+								, #{newsletterYn}
+								, #{photoFilePath}
+								, #{workingPlace}
+								, #{scholarship}
+								, #{secedeReason}
+								, #{relationField}
+								, #{career}
+								, #{titlePath}
+								, #{authGroupId}
+								, #{bndlRegYn} 
+								, 0
+								, 'N'
+								, #{majr}
+								, #{receiveMailYn}
+								, #{receiveSmsYn}
+								, #{foreignYn}
+								, #{namecheckYn}
+								, #{nationCode}
+								, #{companyId}
+								, 'G'
+								, #{schoolSeq}
+								, 'N'
+								, 'Y'
+								, 'N'
+								, 'N'
+								, NOW()
+								, #{sessionMemSeq}
+								, NOW()
+								, #{sessionMemSeq}
+								, #{certiNo}
+								, #{certiCharacter}
+								, 'N'
+								, 0
+								, #{compNm}
+								, NOW()
+								, DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY)
+								)
+	</insert>
+	
+	<insert id="insertExcelMember" parameterType="kr.co.sitglobal.oklms.la.member.vo.ExcelMemberVO">
+	<![CDATA[
+	/* ====== kr.co.wizi.kywa.la.member.service.impl.MemberMapper.insertExcelMember ====== */
+	]]>
+	INSERT INTO COM_MEMBER (
+		    MEM_SEQ,
+			MEM_ID,
+			MEM_TYPE,
+			MEM_NAME,
+			SEX,
+			MEM_BIRTH,
+			MEM_PASSWORD,
+			PWD_QUEST_ANS, 
+			PWD_QUEST,			
+			EMAIL,
+			ZIP_CODE,
+			ADDRESS,
+			ADDRESS_DTL,
+			HP_NO1,
+			HP_NO2,
+			HP_NO3,
+			AUTH_GROUP_ID,
+			COMPANY_ID,
+			COMP_NM,
+			LAST_PW_UPDT_YMD,
+			USE_EXPIRE_YMD,
+			BNDL_REG_YN,
+			FOREIGN_YN,
+			RECEIVE_MAIL_YN,
+			RECEIVE_SMS_YN,
+			INSERT_USER,
+			INSERT_DATE
+		) 
+	VALUES 
+	( 
+		<if test="memSeq != null and memSeq != ''">	#{memSeq},		 </if>
+		<if test="memId != null and memId != ''">	#{memId},		 </if>
+		<if test="memType != null and memType != ''">	#{memType},		 </if>
+		<if test="memName != null and memName != ''">	#{memName},		 </if>
+		<if test="sex != null and sex != ''">	#{sex},		 </if>
+		<if test="memBirth != null and memBirth != ''">	#{memBirth},		 </if>
+		<if test="memPassword != null and memPassword != ''">	HEX(AES_ENCRYPT(#{memPassword},#{memPassword})),		 </if>
+		<if test="memPassword != null and memPassword != ''">	#{memPassword},		 </if>
+		<if test="insertResult != null and insertResult != ''">	#{insertResult},		 </if>
+		<if test="email != null and email != ''">	#{email},		 </if>
+		<if test="zipCode != null and zipCode != ''">	#{zipCode},		 </if>
+		<if test="address != null and address != ''">	#{address},		 </if>
+		<if test="addressDtl != null and addressDtl != ''">	#{addressDtl},		 </if>
+		<if test="hpNo1 != null and hpNo1 != ''">	#{hpNo1},		 </if>
+		<if test="hpNo2 != null and hpNo2 != ''">	#{hpNo2},		 </if>
+		<if test="hpNo3 != null and hpNo3 != ''">	#{hpNo3},		 </if>
+		<if test="authGroupId != null and authGroupId != ''">	#{authGroupId},		 </if>
+		<if test="companyId != null and companyId != ''">	#{companyId},		 </if>
+		<if test="compNm != null and compNm != ''">	#{compNm},		 </if>
+		NOW(),
+		<if test="loginPWMaxUsedDays != null and loginPWMaxUsedDays != ''">	DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY),		 </if>
+		<if test="bndlRegYn != null and bndlRegYn != ''">	#{bndlRegYn},		 </if>
+		<if test="foreignYn != null and foreignYn != ''">	#{foreignYn},		 </if>
+		<if test="receiveMailYn != null and receiveMailYn != ''">	#{receiveMailYn},  </if>
+		<if test="receiveSmsYn != null and receiveSmsYn != ''">	#{receiveSmsYn},	   </if>
+		<if test="sessionMemSeq != null and sessionMemSeq != ''">	#{sessionMemSeq},  </if>
+		NOW()
+		)
+	</insert>
+
+
+	<update id="updateMember" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.updateMember ====== */
+	        UPDATE COM_MEMBER 
+	        SET UPDATE_DATE 	= NOW()
+				<if test="memId != null and memId != ''">	, MEM_ID 	= #{memId}		 </if>
+				<if test="memType != null and memType != ''">	, MEM_TYPE 	= #{memType}		 </if>
+				<if test="memName != null and memName != ''">	, MEM_NAME 	= #{memName}		 </if>
+				<!-- <if test="pwdQuest != null and pwdQuest != ''">	, PWD_QUEST 	= #{pwdQuest}		 </if> -->
+				<if test="sex != null and sex != ''">	, SEX 	= #{sex}		 </if>
+				<if test="memNameEng != null and memNameEng != ''">	, MEM_NAME_ENG 	= #{memNameEng}		 </if>
+				<if test="memBirth != null and memBirth != ''">	, MEM_BIRTH 	= #{memBirth}		 </if>
+				<!-- <if test="pwdQuestAns != null and pwdQuestAns != ''">	, PWD_QUEST_ANS 	= #{pwdQuestAns}		 </if>
+				
+				<if test="memPasswordEncript != null and memPasswordEncript != ''">	, MEM_PASSWORD 	= rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3))		 </if> -->
+				
+				<if test="email != null and email != ''">	, EMAIL 	= #{email}		 </if>
+				<if test="memRegiNo != null and memRegiNo != ''">	, MEM_REGI_NO 	= #{memRegiNo}		 </if>
+				<if test="zipCode != null and zipCode != ''">	, ZIP_CODE 	= #{zipCode}		 </if>
+				<if test="address != null and address != ''">	, ADDRESS 	= #{address}		 </if>
+				<if test="addressDtl != null and addressDtl != ''">	, ADDRESS_DTL 	= #{addressDtl}		 </if>
+				<if test="telNo1 != null and telNo1 != ''">	, TEL_NO1 	= #{telNo1}		 </if>
+				<if test="telNo2 != null and telNo2 != ''">	, TEL_NO2 	= #{telNo2}		 </if>
+				<if test="telNo3 != null and telNo3 != ''">	, TEL_NO3 	= #{telNo3}		 </if>
+				<if test="hpNo1 != null and hpNo1 != ''">	, HP_NO1 	= #{hpNo1}		 </if>
+				<if test="hpNo2 != null and hpNo2 != ''">	, HP_NO2 	= #{hpNo2}		 </if>
+				<if test="hpNo3 != null and hpNo3 != ''">	, HP_NO3 	= #{hpNo3}		 </if>
+				<if test="newsletterYn != null and newsletterYn != ''">	, NEWSLETTER_YN 	= #{newsletterYn}		 </if>
+				<if test="photoFilePath != null and photoFilePath != ''">	, PHOTO_FILE_PATH 	= #{photoFilePath}		 </if>
+				<if test="workingPlace != null and workingPlace != ''">	, WORKING_PLACE 	= #{workingPlace}		 </if>
+				<if test="scholarship != null and scholarship != ''">	, SCHOLARSHIP 	= #{scholarship}		 </if>
+				<if test="secedeReason != null and secedeReason != ''">	, SECEDE_REASON 	= #{secedeReason}		 </if>
+				<if test="relationField != null and relationField != ''">	, RELATION_FIELD 	= #{relationField}		 </if>
+				<if test="career != null and career != ''">	, CAREER 	= #{career}		 </if>
+				<if test="title != null and title != ''">	, TITLE 	= #{title}		 </if>
+				<if test="titlePath != null and titlePath != ''">	, TITLE 	= #{titlePath}		 </if>
+				<if test="authGroupId != null and authGroupId != ''">	, AUTH_GROUP_ID 	= #{authGroupId}		 </if>
+				<if test="bndlRegYn != null and bndlRegYn != ''">	, BNDL_REG_YN 	= #{bndlRegYn}		 </if>
+				<if test="loginCnt != null and loginCnt != ''">	, LOGIN_CNT 	= #{loginCnt}		 </if>
+				<if test="scsnYn != null and scsnYn != ''">	, SCSN_YN 	= #{scsnYn}		 </if>
+				<if test="majr != null and majr != ''">	, MAJR 	= #{majr}		 </if>
+				<if test="receiveMailYn != null and receiveMailYn != ''">	, RECEIVE_MAIL_YN 	= #{receiveMailYn}		 </if>
+				<if test="receiveSmsYn != null and receiveSmsYn != ''">	, RECEIVE_SMS_YN 	= #{receiveSmsYn}		 </if>
+				<if test="foreignYn != null and foreignYn != ''">	, FOREIGN_YN 	= #{foreignYn}		 </if>
+				<if test="namecheckYn != null and namecheckYn != ''">	, NAMECHECK_YN 	= #{namecheckYn}		 </if>
+				<if test="nationCode != null and nationCode != ''">	, NATION_CODE 	= #{nationCode}		 </if>
+				<if test="companyId != null and companyId != ''">	, COMPANY_ID 	= #{companyId}		 </if>
+				<!-- <if test="gPinYn != null and gPinYn != ''">	, G_PIN_YN 	= #{gPinYn}		 </if>
+				<if test="gPinKey1 != null and gPinKey1 != ''">	, G_PIN_KEY1 	= #{gPinKey1}		 </if>
+				<if test="gPinKey2 != null and gPinKey2 != ''">	, G_PIN_KEY2 	= #{gPinKey2}		 </if> -->
+				<if test="memDiv != null and memDiv != ''">	, MEM_DIV 	= #{memDiv}		 </if>
+				<if test="schoolSeq != null and schoolSeq != ''">	, SCHOOL_SEQ 	= #{schoolSeq}		 </if>
+				<if test="tutorClauseAgreeYn != null and tutorClauseAgreeYn != ''">	, TUTOR_CLAUSE_AGREE_YN 	= #{tutorClauseAgreeYn}		 </if>
+				<if test="aspId != null and aspId != ''">	, ASP_ID 	= #{aspId}		 </if>
+				<if test="agreeYn != null and agreeYn != ''">	, AGREE_YN 	= #{agreeYn}		 </if>
+				<!-- <if test="nonageYn != null and nonageYn != ''">	, NONAGE_YN 	= #{nonageYn}		 </if> -->
+				<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+				<if test="sessionMemSeq != null and sessionMemSeq != ''">	, UPDATE_USER 	= #{sessionMemSeq}		 </if>
+				<!-- <if test="certiNo != null and certiNo != ''">	, CERTI_NO 	= #{certiNo}		 </if> -->
+				<!-- <if test="certiCharacter != null and certiCharacter != ''">	, CERTI_CHARACTER 	= #{certiCharacter}		 </if> -->
+				<!-- <if test="certiYn != null and certiYn != ''">	, CERTI_YN 	= #{certiYn}		 </if> -->
+				<!-- <if test="certiAttemptCnt != null and certiAttemptCnt != ''">	, CERTI_ATTEMPT_CNT 	= #{certiAttemptCnt}		 </if> -->
+				<if test="compNm != null and compNm != ''">	, COMP_NM 	= #{compNm}		 </if>
+				<!-- <if test="deptNm != null and deptNm != ''">	, DEPT_NM 	= #{deptNm}		 </if> -->
+				<!-- <if test="dutyNm != null and dutyNm != ''">	, DUTY_NM 	= #{dutyNm}		 </if> -->
+				<!-- <if test="remk != null and remk != ''">	, REMK 	= #{remk}		 </if> -->
+				<!-- <if test="wrongRegiNo != null and wrongRegiNo != ''">	, WRONG_REGI_NO 	= #{wrongRegiNo}		 </if>
+				<if test="orgPwNull != null and orgPwNull != ''">	, ORG_PW_NULL 	= #{orgPwNull}		 </if>
+				<if test="orgMemId != null and orgMemId != ''">	, ORG_MEM_ID 	= #{orgMemId}		 </if> 
+				<if test="lastLoginYmd != null and lastLoginYmd != ''">	, LAST_LOGIN_YMD 	= #{lastLoginYmd}		 </if>
+				<if test="lastPwUpdtYmd != null and lastPwUpdtYmd != ''">	, LAST_PW_UPDT_YMD 	= #{lastPwUpdtYmd}		 </if>
+				<if test="pwErrNumberTimes != null and pwErrNumberTimes != ''">	, PW_ERR_NUMBER_TIMES 	= #{pwErrNumberTimes}		 </if>
+				<if test="useExpireYmd != null and useExpireYmd != ''">	, USE_EXPIRE_YMD 	= #{useExpireYmd}		 </if> -->
+		     WHERE MEM_SEQ 	= #{memSeq}
+	</update>
+	
+	<update id="updateMemberAdm" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.updateMemberAdm ====== */
+			UPDATE COM_MEMBER 
+	        SET UPDATE_DATE 	= NOW(),
+	        MEM_ID 	= #{memId},
+	        MEM_TYPE 	= #{memType},
+			WHERE MEM_SEQ 	= #{memSeq}
+	</update>
+
+
+	<update id="updateMemberExpireYmd"  parameterType="java.util.HashMap"  >
+	/* ====== kr.co.sitglobal.oklms.la.member.service.impl.UserActMapper."updateMemberExpireYmd" ========= */	    
+		UPDATE COM_MEMBER
+		SET 
+			  USE_EXPIRE_YMD = DATE_ADD(now(), INTERVAL #{loginPWMaxUsedDays} DAY)
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+
+	<update id="updateMemberLastLoginDt"  parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO"  >
+	/* ====== kr.co.sitglobal.oklms.la.member.service.impl.UserActMapper.updateMemberLastLoginDt ========= */	    
+		UPDATE COM_MEMBER
+		SET 
+			  LAST_LOGIN_YMD = NOW() 
+			  , PW_ERR_NUMBER_TIMES = 0
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+ 	
+	<update id="updateMemberPwFailCnt"  parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO"  >
+	/* ====== kr.co.sitglobal.oklms.la.member.service.impl.UserActMapper.updateMemberPwFailCnt ========= */	    
+		UPDATE COM_MEMBER
+		SET 
+			  UPDATE_DATE = NOW() 
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001') 
+			  , PW_ERR_NUMBER_TIMES = PW_ERR_NUMBER_TIMES + 1
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+ 	
+	<update id="updateMemberPwInit"  parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO"  >
+	/* ====== kr.co.sitglobal.oklms.la.member.service.impl.UserActMapper.updateMemberPwInit ========= */	    
+		UPDATE COM_MEMBER
+		SET 
+			  UPDATE_DATE = NOW() 
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001')
+			  , PW_ERR_NUMBER_TIMES = 0												/* ====== 비밀번호 초기화시 에러 횟수 제어 ====== */
+			  , MEM_PASSWORD 	= HEX(AES_ENCRYPT('1111','1111'))
+			  , LAST_PW_UPDT_YMD = DATE_ADD(now(), INTERVAL -#{loginPWMaxUsedDays} DAY)	/* ====== 최종 비밀번호 변경 일자  ====== */
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+ 	
+ 	<update id="updateMemberPw"  parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO"  >
+	/* ====== kr.co.sitglobal.oklms.la.member.service.impl.UserActMapper.updateMemberPw ========= */	    
+		UPDATE COM_MEMBER
+		SET 
+			  UPDATE_DATE = NOW() 
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001')
+			  , PW_ERR_NUMBER_TIMES = 0
+<!-- 			  , MEM_PASSWORD 	= rawtohex(DBMS_CRYPTO.Hash(to_clob(to_char(#{memPasswordEncript})),3)) -->
+			  , MEM_PASSWORD 	= HEX(AES_ENCRYPT(#{memPasswordEncript},#{memPasswordEncript}))
+			  , LAST_PW_UPDT_YMD = NOW()						/* ====== 최종 비밀번호 변경 일자  ====== */
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</update>
+ 	
+ 	
+ 	<select id="getMemberSeq" parameterType="String" resultType="String">
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.getMemberSeq ====== */
+	        SELECT
+	               MEM_SEQ
+	          FROM COM_MEMBER 
+	          WHERE MEM_ID = #{memId}
+	</select>
+	
+	<select id="getCompanyName" parameterType="String" resultType="String">
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.getCompanyName ====== */
+	        SELECT
+	               COMPANY_ID
+	          FROM LMS_COMPANY 
+	          WHERE COMPANY_NAME = #{companyName}
+	</select>
+	
+	 <delete id="deleteMember"  parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO"  >
+		/* ====== kr.co.sitglobal.oklms.la.member.service.impl.UserActMapper.deleteMember ========= */	    
+		UPDATE COM_MEMBER
+		SET 
+			  UPDATE_DATE = NOW() 
+			  , UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001')
+			  , DELETE_YN = 'Y'
+			  , SCSN_YN = 'Y'
+		WHERE MEM_SEQ 	= #{memSeq}
+ 	</delete>
+
+	<delete id="deleteMemberList" parameterType="kr.co.sitglobal.oklms.la.member.vo.MemberVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.member.service.impl.MemberMapper.deleteMemberList ====== */
+			UPDATE COM_MEMBER
+			SET  UPDATE_DATE = NOW() 
+				  , UPDATE_USER = IFNULL(#{sessionMemSeq} , '2009USER0000001')
+				  , DELETE_YN = 'Y'
+				  , SCSN_YN = 'Y'
+		]]>
+			 WHERE MEM_SEQ IN
+		<foreach collection="memSeqs" item="delMemSeqIds" index="index" open="(" close=")" separator=",">
+			 '${delMemSeqIds}'
+		</foreach>
+	</delete>
+
+</mapper>

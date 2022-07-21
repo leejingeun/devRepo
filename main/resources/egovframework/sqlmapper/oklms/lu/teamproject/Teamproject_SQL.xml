@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 김현민    2017. 03. 02          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper">
+
+	<select id="listLmsSubjWeek" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO"  resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ======  kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.listLmsSubjWeek ====== */
+		SELECT WEK.WEEK_ID, 
+			       WEK.WEEK_CNT, 
+			       WEK.YYYY, 
+			       WEK.TERM, 
+			       WEK.SUBJECT_CODE, 
+			       WEK.CLASS 
+			  FROM LMS_SUBJ_WEEK WEK  
+			 WHERE WEK.YYYY =  #{yyyy}
+			       AND WEK.TERM = #{term}
+			       AND WEK.SUBJECT_CODE = #{subjectCode}
+			       <if test="subClass != null and subClass != ''">
+			       AND WEK.CLASS =#{subClass}
+			       </if>
+			       AND WEK.DELETE_YN = 'N' 
+			ORDER BY TO_NUMBER(WEK.WEEK_CNT) 
+	</select>
+	<select id="getCurrproc" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO">
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.getCurrproc ====== */
+		SELECT  ls.YYYY,
+				ls.TERM,
+				ls.SUBJECT_CODE,
+				ls.CLASS SUB_CLASS,
+				ls.SUBJECT_TRANING_TYPE,
+				
+				CASE 
+		           WHEN LS.SUBJECT_TRANING_TYPE = 'OJT' 
+		           THEN 'OJT' 
+		           ELSE 'Off-JT' 
+		       END SUBJECT_TRANING_TYPE_NAME, 
+				
+				
+				ls.SUBJECT_NAME,
+				ls.DEPARTMENT_NAME,
+				ls.GRADE,
+				ls.POINT_USE_YN,
+				ls.POINT,
+				ls.SUBJECT_TYPE,
+				
+				 CASE 
+			           WHEN LS.SUBJECT_TYPE = 'NORMAL' 
+			           THEN '일반' 
+			           ELSE '고숙련' 
+			       END SUBJECT_TYPE_NAME, 
+				
+				ls.ONLINE_TYPE,
+				
+				CASE 
+			       		WHEN LS.ONLINE_TYPE IN ('104','105') THEN '플립러닝'
+			       		WHEN LS.ONLINE_TYPE = '101' THEN '순수온라인'
+			            WHEN LS.ONLINE_TYPE = '102' THEN '브렌디드'
+			            WHEN LS.ONLINE_TYPE = '103' THEN '보조활용'
+			         ELSE  '없음'     
+			    END ONLINE_TYPE_NAME,
+			    
+			    LS.FIRST_STUDY_YN, 
+				LS.GRADE_RATIO, 
+				
+			  (SELECT GROUP_CONCAT(FN_GETUSERNAME(INS.MEM_SEQ)) 
+		          FROM LMS_SUBJ_INS_MAPPING INS
+		         WHERE INS.YYYY = LS.YYYY 
+		               AND INS.TERM = LS.TERM 
+		               AND INS.SUBJECT_CODE = LS.SUBJECT_CODE
+		               AND INS.CLASS = LS.CLASS    
+		       ) AS INS_NAMES, 
+		       (SELECT GROUP_CONCAT(FN_GETUSERNAME(CDP.MEM_SEQ)) 
+		          FROM LMS_SUBJ_CDP_MAPPING CDP
+		         WHERE CDP.YYYY = LS.YYYY 
+		               AND CDP.TERM = LS.TERM 
+		               AND CDP.SUBJECT_CODE = LS.SUBJECT_CODE
+		               AND CDP.CLASS = LS.CLASS 
+		       ) AS CDP_NAME,
+				
+				ls.INSERT_DATE,
+				ls.INSERT_USER,
+				ls.UPDATE_DATE,
+				ls.UPDATE_USER,
+				LSIMCM.MEM_NAME INS_NAME,
+				LSIMCM.MEM_SEQ INS_SEQ
+				,(select count(*) from lms_lesson less where less.DELETE_YN = 'N' and less.LEC_STATUS in ('A','R','U') and less.YYYY = ls.YYYY and less.term = ls.term and less.subject_code = ls.subject_code and less.class = ls.class) as count
+				, FN_GET_COUNT_OF_COMPANY_BY_CLASS(ls.yyyy, ls.term, ls.subject_code, ls.class) as comp_count 
+
+		   FROM LMS_SUBJECT LS 
+		   LEFT OUTER JOIN (SELECT CM.MEM_SEQ,CM.MEM_NAME,LSIM.YYYY,LSIM.TERM,LSIM.CLASS,LSIM.SUBJECT_CODE
+		   					FROM LMS_SUBJ_INS_MAPPING LSIM,COM_MEMBER CM
+							WHERE  LSIM.MEM_SEQ=CM.MEM_SEQ
+							AND LSIM.DELETE_YN='N'
+							AND CM.DELETE_YN='N'  					
+		   					) LSIMCM ON ls.SUBJECT_CODE=LSIMCM.SUBJECT_CODE
+										AND ls.YYYY = LSIMCM.YYYY
+										AND ls.TERM = LSIMCM.TERM
+										AND ls.CLASS = LSIMCM.CLASS
+		  WHERE ls.SUBJECT_CODE = #{subjectCode}
+			AND ls.YYYY = #{yyyy}
+			AND ls.TERM = #{term}
+			AND ls.CLASS = #{subClass}
+			AND ls.DELETE_YN='N' 
+			LIMIT 0,1
+			
+			
+			
+			
+     
+	</select>
+	
+	<select id="listStudents" parameterType="kr.co.sitglobal.oklms.lu.currproc.vo.CurrProcVO" resultType="kr.co.sitglobal.oklms.lu.activity.vo.MemberVO">
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.listStudents ====== */
+		select 
+			mem.mem_seq
+		  , mem.mem_id
+		  , mem.mem_name
+		  , mem.company_id
+		  , FN_GETCOMPAYNAME(mem.company_id) company_name
+		  , less.lesson_id  
+		from lms_subject ls, lms_lesson less, com_member mem
+		where 
+			ls.SUBJECT_CODE = #{subjectCode}
+			AND ls.YYYY = #{yyyy}
+			AND ls.TERM = #{term}
+			AND ls.CLASS = #{subClass}
+			AND ls.DELETE_YN='N'
+			
+			and less.DELETE_YN = 'N' 
+			and less.LEC_STATUS in ('A','R','U') 
+			and mem.delete_yn = 'N' 
+			and less.YYYY = ls.YYYY 
+			and less.term = ls.term 
+			and less.subject_code = ls.subject_code 
+			and less.class = ls.class 
+			and less.mem_seq = mem.mem_seq 
+		order by mem.mem_id asc
+	</select>
+	
+	<select id="listTeamproject" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" resultType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO">
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.teamprojectList ====== */
+		SELECT 
+			  TEAM_PROJECT_ID
+			, YYYY
+			, TERM
+			, SUBJECT_CODE
+			, CLASS
+			, WEEK_CNT
+			, PROJECT_NAME
+			, PROJECT_DESC
+			, PROJECT_START_DATE
+			, PROJECT_END_DATE
+			, SUBMIT_TYPE
+			, SUBMIT_LATE_YN
+			, SUBMIT_START_DATE
+			, SUBMIT_END_DATE
+			, EVAL_YN
+			, SCORE
+			, ATCH_FILE_ID
+			, COMPOSITION_TYPE
+			, TEAM_CNT
+			, TEAM_LEADER_AUTO_YN
+			,	(SELECT COUNT(1) FROM LMS_LESSON LL WHERE LL.SUBJECT_CODE = tp.SUBJECT_CODE AND LL.DELETE_YN='N' AND LL.YYYY = tp.YYYY AND LL.TERM = tp.TERM AND LL.CLASS=tp.CLASS ) TOT_CNT
+			,	(SELECT COUNT(1) FROM lms_team_project_submit tps WHERE tps.TEAM_PROJECT_ID = tp.TEAM_PROJECT_ID AND tps.DELETE_YN='N' and tps.atch_file_id is not null ) SUBMIT_CNT
+			,	(SELECT COUNT(1) FROM lms_team_project_submit tps WHERE tps.TEAM_PROJECT_ID = tp.TEAM_PROJECT_ID AND tps.DELETE_YN='N' AND tps.EVAL_SCORE > 0  ) SCORE_CNT
+			,	(SELECT COUNT(1) FROM lms_team_project_submit tps WHERE tps.TEAM_PROJECT_ID = tp.TEAM_PROJECT_ID AND tps.DELETE_YN='N' AND tps.EVAL_SCORE > 0 ) SCORE_ON
+		FROM   lms_team_project tp
+		WHERE 
+			SUBJECT_CODE = #{subjectCode}
+			AND DELETE_YN='N'
+	</select>
+	<select id="listTeamprojectStd" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" resultType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO">
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.teamprojectListStd ====== */
+		SELECT 
+			 TEAM_PROJECT_ID
+			, YYYY
+			, TERM
+			, SUBJECT_CODE
+			, CLASS
+			, WEEK_CNT
+			, PROJECT_NAME
+			, PROJECT_DESC
+			, PROJECT_START_DATE
+			, PROJECT_END_DATE
+			, SUBMIT_TYPE
+			, SUBMIT_LATE_YN
+			, SUBMIT_START_DATE
+			, SUBMIT_END_DATE
+			, EVAL_YN
+			, SCORE
+			, ATCH_FILE_ID
+			, COMPOSITION_TYPE
+			, TEAM_CNT
+			, TEAM_LEADER_AUTO_YN
+			, (select count(*) from lms_team_project_submit tps where tps.delete_yn='N' and tp.team_project_id = tps.team_project_id and tps.atch_file_id is not null and tps.mem_id = #{sessionMemId}  ) submitCnt
+			,
+<![CDATA[
+				CASE 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) BETWEEN tp.SUBMIT_START_DATE AND tp.SUBMIT_END_DATE    THEN '진행' 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) > tp.SUBMIT_END_DATE    THEN '완료' 				
+					WHEN date_format(NOW(),'%Y.%m.%d' ) < tp.SUBMIT_START_DATE    THEN '예정' 
+					ELSE '' 
+				END AS SUBMIT_STATUS				
+]]>
+		FROM lms_team_project tp
+		WHERE tp.SUBJECT_CODE = #{subjectCode}
+		  AND tp.DELETE_YN='N'
+		  
+	</select>	
+	<select id="getTeamproject" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" resultType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO">
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.getTeamproject ====== */
+			SELECT
+			TEAM_PROJECT_ID
+			, YYYY
+			, TERM
+			, SUBJECT_CODE
+			, CLASS
+			, WEEK_CNT
+			, PROJECT_NAME
+			, PROJECT_DESC
+			, PROJECT_START_DATE
+			, PROJECT_END_DATE
+			, SUBMIT_TYPE
+			, SUBMIT_LATE_YN
+			, SUBMIT_START_DATE
+			, SUBMIT_END_DATE
+			, EVAL_YN
+			, SCORE
+			, ATCH_FILE_ID
+			, COMPOSITION_TYPE
+			, TEAM_CNT
+			, TEAM_LEADER_AUTO_YN
+			, (select count(*) from lms_team_project_submit tps where tps.delete_yn='N' and tp.team_project_id = tps.team_project_id and tps.submit_date is not null and tps.mem_id = #{sessionMemId}  ) submitCnt
+			,
+			<![CDATA[
+				CASE 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) BETWEEN tp.SUBMIT_START_DATE AND tp.SUBMIT_END_DATE    THEN '진행' 
+					WHEN date_format(NOW(),'%Y.%m.%d' ) > tp.SUBMIT_END_DATE    THEN '완료' 				
+					WHEN date_format(NOW(),'%Y.%m.%d' ) < tp.SUBMIT_START_DATE    THEN '예정' 
+					ELSE '' 
+				END AS SUBMIT_STATUS				
+]]>
+		FROM lms_team_project tp
+		WHERE tp.TEAM_PROJECT_ID = #{teamprojectId}
+		  AND tp.DELETE_YN='N'
+	</select>
+	<insert id="insertTeamproject" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.insertTeamproject ====== */
+		
+		INSERT INTO lms_team_project (
+			TEAM_PROJECT_ID, 
+			YYYY, 
+			TERM, 
+			SUBJECT_CODE, 
+			CLASS, 
+			WEEK_CNT, 
+			PROJECT_NAME, 
+			PROJECT_DESC, 
+			PROJECT_START_DATE, 
+			PROJECT_END_DATE, 
+			SUBMIT_TYPE, 
+			SUBMIT_LATE_YN, 
+			SUBMIT_START_DATE,
+			SUBMIT_END_DATE,
+			EVAL_YN, 
+			SCORE, 
+			ATCH_FILE_ID, 
+			COMPOSITION_TYPE, 
+			TEAM_CNT, 
+			TEAM_LEADER_AUTO_YN, 
+			DELETE_YN, 
+			INSERT_USER, 
+			INSERT_DATE) 
+		VALUES( 
+			#{teamprojectId},
+			#{yyyy},
+			#{term},
+			#{subjectCode},
+			#{subClass},
+			#{weekCnt},
+			#{projectName},
+			#{projectDesc},
+			#{projectStartDate},
+			#{projectEndDate},
+			#{submitType},
+			#{submitLateYn},
+			#{submitStartDate},
+			#{submitEndDate},
+			#{evalYn},
+			#{score},
+			#{atchFileId},
+			#{compositionType},
+			#{teamCnt},
+			#{teamLeaderAutoYn},
+			'N',
+			#{sessionMemSeq},
+			 now()
+		)
+	</insert>
+	
+	<insert id="insertTeamprojectGroup" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectGroupVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.insertTeamprojectGroup ====== */
+		INSERT INTO lms_team_project_group(
+			TEAM_PROJECT_ID,
+			GROUP_ID, 
+			DELETE_YN, 
+			INSERT_USER, 
+			INSERT_DATE
+		) 
+		VALUES (
+			#{teamprojectId},
+			#{groupId},
+			'N',
+			#{sessionMemSeq},
+			 now()
+		)
+		
+	</insert>
+	
+	<insert id="insertTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.insertTeamprojectSubmit ====== */
+		INSERT INTO lms_team_project_submit(
+			TEAM_PROJECT_ID,
+			GROUP_ID, 
+			TEAM_PROJECT_SUBMIT_ID, 
+			LEADER_YN, 
+			MEM_ID, 
+			TITLE, 
+			CONTENT, 
+			EVAL_SCORE, 
+			ATCH_FILE_ID, 
+			DELETE_YN, INSERT_USER, 
+			INSERT_DATE
+		) 
+		VALUES( 
+			#{teamprojectId},
+			#{groupId},
+			#{teamprojectSubmitId},
+			#{leaderYn},
+			#{memId},
+			#{title},
+			#{content},
+			#{evalScore},
+			#{atchFileId},
+			'N',
+			#{sessionMemSeq},
+			now()
+		)
+	</insert>
+	
+	<update id="deleteTeamprojectGroup" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectGroupVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.deleteTeamprojectGroup ====== */
+		
+		update lms_team_project_group tpg
+		set tpg.delete_yn = 'Y',
+			update_user = #{sessionMemSeq},
+			update_date = now()
+		where 
+			tpg.TEAM_PROJECT_ID = #{teamprojectId}
+			and tpg.GROUP_ID <![CDATA[ > ]]> #{groupId}
+		
+	</update>
+	
+	<update id="restoreTeamprojectGroup" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectGroupVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.restoreTeamprojectGroup ====== */
+		update lms_team_project_group tpg
+		set tpg.delete_yn = 'Y',
+			update_user = #{sessionMemSeq},
+			update_date = now()
+		where 
+			tpg.TEAM_PROJECT_ID = #{teamprojectId}
+			and tpg.GROUP_ID <![CDATA[ <= ]]> #{groupId}
+		
+	</update>
+	
+	<select id="getMaxTeamprojectGroupId" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" resultType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectGroupVO">
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.getMaxTeamprojectGroupId ====== */
+		select max(group_id) group_id
+		from lms_team_project_group
+		where TEAM_PROJECT_ID = #{teamprojectId}
+			<if test="deleteYn != null and deleteYn != ''">
+			and delete_yn=#{deleteYn}
+			</if>
+	</select>
+	
+	
+	
+	
+	<update id="updateTeamproject" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.updateTeamproject ====== */
+		UPDATE lms_team_project 
+		SET
+			PROJECT_NAME=#{projectName},
+			<if test="projectDesc != null and projectDesc != ''">
+			PROJECT_DESC=#{projectDesc},
+			</if>
+			<if test="evalYn != null and evalYn != ''">
+			EVAL_YN=#{evalYn},
+			</if>
+			<if test="score != null and score != ''">
+			SCORE=#{score},
+			</if>
+			<if test="projectStartDate != null and projectStartDate != ''">
+			PROJECT_START_DATE=#{projectStartDate},
+			</if>
+			<if test="projectEndDate != null and projectEndDate != ''">
+			PROJECT_END_DATE=#{projectEndDate},
+			</if>
+			<if test="submitStartDate != null and submitStartDate != ''">
+			SUBMIT_START_DATE=#{submitStartDate},
+			</if>
+			<if test="submitEndDate != null and submitEndDate != ''">
+			SUBMIT_END_DATE=#{submitEndDate},
+			</if>
+			<if test="atchFileId != null and atchFileId != ''">
+			ATCH_FILE_ID=#{atchFileId},
+			</if>
+			<if test="compositionType != null and compositionType != ''">
+			COMPOSITION_TYPE=#{compositionType},
+			</if>
+			<if test="teamCnt != null and teamCnt != ''">
+			TEAM_CNT=#{teamCnt},
+			</if>
+			<if test="teamLeaderAutoYn != null and teamLeaderAutoYn != ''">
+			TEAM_LEADER_AUTO_YN=#{teamLeaderAutoYn},
+			</if>
+			<if test="submitLateYn != null and submitLateYn != ''">
+			SUBMIT_LATE_YN=#{submitLateYn},
+			</if>
+			<if test="submitType != null and submitType != ''">
+			SUBMIT_TYPE=#{submitType},
+			</if>
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE TEAM_PROJECT_ID = #{teamprojectId}
+	</update>
+	<update id="deleteTeamproject" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.deleteTeamproject ====== */
+		UPDATE lms_team_project 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE TEAM_PROJECT_ID = #{teamprojectId}
+	</update>
+
+	<select id="listTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" resultType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO">
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.listTeamprojectSubmit ====== */
+		SELECT 
+			tps.TEAM_PROJECT_SUBMIT_ID
+			,tps.TEAM_PROJECT_ID
+			,tps.GROUP_ID
+			,tps.LEADER_YN
+			,tps.MEM_ID
+			,tps.TITLE
+			,tps.CONTENT
+			,tps.EVAL_SCORE
+			,tps.ATCH_FILE_ID
+			,tps.DELETE_YN
+			,tps.INSERT_USER
+			,tps.INSERT_DATE
+			,tps.UPDATE_USER
+			,tps.UPDATE_DATE
+			,date_format( tps.SUBMIT_DATE,'%Y.%m.%d' ) SUBMIT_DATE
+			
+			,mem.mem_name
+			,mem.company_id
+			,
+			(select GROUP_CONCAT(mem.mem_name) from lms_team_project_submit stps, com_member mem 
+			where 
+				stps.TEAM_PROJECT_ID = tps.TEAM_PROJECT_ID
+				and stps.GROUP_ID = tps.GROUP_ID
+				and stps.DELETE_YN='N'
+				and stps.mem_id = mem.mem_id
+			order by  stps.LEADER_YN desc, mem.mem_name asc
+			) team_members 
+			,(select count(*) from lms_team_project_submit stps where stps.delete_yn='N' and stps.TEAM_PROJECT_ID = tps.TEAM_PROJECT_ID and stps.GROUP_ID = tps.GROUP_ID) team_member_cnt
+		
+		FROM lms_team_project_submit tps, com_member mem
+		WHERE 
+			tps.DELETE_YN='N' 
+			AND tps.TEAM_PROJECT_ID =	#{teamprojectId}
+			and tps.mem_id = mem.mem_id
+			<if test="memId != null and memId != ''">
+			and tps.mem_id = #{memId}
+			</if>			
+			<if test="groupId != null and groupId != ''">
+			and GROUP_ID = #{groupId}
+			</if>
+			
+		<choose>
+			<when test="orderByLeader != null and orderByLeader.equals('Y')">
+			order by tps.GROUP_ID asc, tps.LEADER_YN desc,  tps.MEM_ID asc  
+			</when>
+			<otherwise>
+			order by tps.GROUP_ID asc, tps.MEM_ID asc  
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<select id="getTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" resultType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO">
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.getTeamprojectSubmit ====== */
+		SELECT 
+			TEAM_PROJECT_SUBMIT_ID, 
+			TEAM_PROJECT_ID, 
+			GROUP_ID, 
+			LEADER_YN, 
+			MEM_ID, 
+			TITLE, 
+			CONTENT, 
+			EVAL_SCORE, 
+			ATCH_FILE_ID, 
+			DELETE_YN, 
+			INSERT_USER, 
+			INSERT_DATE, 
+			UPDATE_USER, 
+			UPDATE_DATE,
+			date_format( tps.SUBMIT_DATE,'%Y.%m.%d' ) SUBMIT_DATE, 
+			(select GROUP_CONCAT(mem.mem_name) from lms_team_project_submit stps, com_member mem 
+			where 
+				stps.TEAM_PROJECT_ID = tps.TEAM_PROJECT_ID
+				and stps.GROUP_ID = tps.GROUP_ID
+				and stps.DELETE_YN='N'
+				and stps.mem_id = mem.mem_id
+			order by  stps.LEADER_YN desc, mem.mem_name asc
+			) team_members 
+		FROM lms_team_project_submit tps
+		WHERE  1=1
+			<if test="teamprojectId != null and teamprojectId != ''">
+			and TEAM_PROJECT_ID = #{teamprojectId}
+			</if>
+			<if test="groupId != null and groupId != ''">
+			and GROUP_ID = #{groupId}
+			</if>
+			<if test="memId != null and memId != ''">
+			and MEM_ID = #{memId}
+			</if>
+			<if test="teamprojectSubmitId != null and teamprojectSubmitId != ''">
+			and TEAM_PROJECT_SUBMIT_ID = #{teamprojectSubmitId}
+			</if>
+			AND DELETE_YN='N'
+	</select>
+		
+	<update id="updateTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.updateTeamprojectSubmit ====== */
+		UPDATE lms_team_project_submit 
+		SET
+			UPDATE_USER = #{sessionMemSeq},
+			<if test="leaderYn != null and leaderYn != ''">
+			LEADER_YN=#{leaderYn},
+			</if>
+			<if test="title != null and title != ''">
+			TITLE=#{title},
+			</if>
+			<if test="content != null and content != ''">
+			CONTENT=#{content},
+			</if>
+			<if test="evalScore != null and evalScore != ''">
+			EVAL_SCORE=#{evalScore}, 
+			</if>
+			<if test="atchFileId != null and atchFileId != ''">
+			ATCH_FILE_ID=#{atchFileId},
+			</if>
+			<if test="submitDate != null and submitDate != ''">
+			SUBMIT_DATE=now(),
+			</if>
+			
+			UPDATE_DATE = now()
+		WHERE TEAM_PROJECT_SUBMIT_ID = #{teamprojectSubmitId}
+	</update>
+	<update id="deleteTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.deleteTeamprojectSubmit ====== */
+		UPDATE lms_team_project_submit 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE  TEAM_PROJECT_SUBMIT_ID = #{teamprojectSubmitId}
+	</update>
+	
+	<update id="deleteTeamprojectSubmitAttechFile" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.deleteTeamprojectSubmit ====== */
+		UPDATE lms_team_project_submit 
+		SET
+			ATCH_FILE_ID = null,
+			SUBMIT_DATE= null,
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE  1=1
+			<if test="teamprojectId != null and teamprojectId != ''">
+			and TEAM_PROJECT_ID = #{teamprojectId}
+			</if>
+			<if test="groupId != null and groupId != ''">
+			and GROUP_ID = #{groupId}
+			</if>
+			<if test="memId != null and memId != ''">
+			and MEM_ID = #{memId}
+			</if>
+			<if test="teamprojectSubmitId != null and teamprojectSubmitId != ''">
+			and TEAM_PROJECT_SUBMIT_ID = #{teamprojectSubmitId}
+			</if>
+			AND DELETE_YN='N'
+		
+	</update>
+	
+	<update id="deleteAllTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.deleteAllTeamprojectSubmit ====== */
+		UPDATE lms_team_project_submit 
+		SET
+			DELETE_YN = 'Y',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE TEAM_PROJECT_ID = #{teamprojectId}
+			and delete_yn = 'N'
+	</update>
+	
+	<update id="clearAllTeamprojectSubmitLeader" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.clearAllTeamprojectSubmitLeader ====== */
+		UPDATE lms_team_project_submit 
+		SET
+			LEADER_YN = 'N',
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE TEAM_PROJECT_ID = #{teamprojectId}
+			and delete_yn = 'N'
+	</update>
+	<update id="updateAllTeamprojectSubmit" parameterType="kr.co.sitglobal.oklms.lu.teamproject.vo.TeamprojectSubmitVO" >
+	/* ====== kr.co.sitglobal.oklms.lu.teamproject.service.impl.TeamprojectMapper.updateAllTeamprojectSubmitDate ====== */
+		UPDATE lms_team_project_submit 
+		SET
+			SUBMIT_DATE = now(),
+			ATCH_FILE_ID=#{atchFileId},
+			UPDATE_USER = #{sessionMemSeq},
+			UPDATE_DATE = now()
+		WHERE TEAM_PROJECT_ID = #{teamprojectId}
+			and group_id = #{groupId}
+			and delete_yn = 'N'
+	</update>		
+		
+</mapper>

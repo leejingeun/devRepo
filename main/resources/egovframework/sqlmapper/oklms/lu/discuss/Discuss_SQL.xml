@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 03. 03     First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper">
+	
+	<!-- <sql id="list-discussOpinionWhere">
+		<if test="discussId != null and discussId != ''">
+			AND diso.DISCUSS_ID = #{discussId}
+		</if>	
+		<if test="discussOpinionId != null and discussOpinionId != ''">
+			AND diso.DISCUSS_OPINION_ID = #{discussOpinionId}
+		</if>	    
+	    <if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+			<if test="searchCondition == 'title'">
+			AND diso.TITLE LIKE '%' ||  #{searchKeyword} ||
+			</if>
+		</if>
+		<if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+			<if test="searchCondition == 'content'">
+			AND diso.CONTENT LIKE '%' ||  #{searchKeyword} ||
+			</if>
+		</if>
+		<if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+			<if test="searchCondition == 'insUser'">
+			AND mem.MEM_NAME LIKE CONCAT ('%', #{searchKeyword} ,'%')
+			</if>
+		</if>
+	</sql> -->
+
+	<select id="listDiscussInfo" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.listDiscussInfo ====== */
+			select 
+			        dis.DISCUSS_ID as discussId /* 토론ID */
+			       ,dis.YYYY AS yyyy
+			       ,dis.TERM AS term
+			       ,dis.SUBJECT_CODE AS subjectCode
+			       ,dis.CLASS AS subClass
+			       ,dis.TITLE AS title 	/* 제목 */
+			       ,dis.START_DATE AS startDate 	/* 시작일 */ 
+			       ,dis.END_DATE AS endDate 		/* 종료일 */
+			       ,DATE_FORMAT (dis.START_DATE, '%Y%m%d%H%i') as startDt /* 시작일 숫자표현 */
+			       ,DATE_FORMAT (dis.END_DATE, '%Y%m%d%H%i') as endDt /* 종료일 숫자표현 */
+			       ,DATE_FORMAT (now(), '%Y%m%d%H%i') as currentDt /* 현재시간 */
+			       ,(select count(1) from lms_discuss_opinion where DISCUSS_ID = dis.DISCUSS_ID and DELETE_YN = 'N') as opinionCnt /* 의견수 */
+			       ,dis.EVAL_YN as evalYn 			/* 평가여부 */
+			       ,dis.EVAL_SCORE as evalScore 	/* 배점 */
+			       ,CASE WHEN dis.EVAL_SCORE_RESUTL_YN = 'N' THEN '미채첨'
+                          ELSE '완료'  
+                   END stdMarkResultState 			/* 채점결과 상태 */
+			       ,(select EVAL_SCORE from lms_discuss_std_eval_score where DISCUSS_ID =  dis.DISCUSS_ID and MEM_SEQ = #{sessionMemSeq}) resultEvalScore  				/* 학습자 평가점수 결과 */
+			       ,SCORE_OPEN_YN as scoreOpenYn    /* 본인에게 점수 공개여부 */
+			 from lms_discuss dis
+			where 1 = 1    
+			  and dis.YYYY = #{yyyy}
+			  and dis.TERM = #{term}
+			  and dis.SUBJECT_CODE = #{subjectCode}
+			  and dis.CLASS = #{subClass}
+			  and dis.DELETE_YN = 'N'
+			ORDER BY dis.INSERT_DATE DESC
+	</select>
+	
+	<select id="listDiscussOpinion" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.listDiscussOpinion ====== */
+			select 
+			 	 diso.DISCUSS_OPINION_ID,
+			 	 diso.DISCUSS_ID,
+			     diso.TITLE,
+			     diso.CONTENT,
+			     diso.ATCH_FILE_ID,
+			     diso.HIT_CNT,
+			     diso.GOOD_CNT,
+			     diso.DELETE_YN,
+			     diso.INSERT_USER,
+			     DATE_FORMAT (diso.INSERT_DATE, '%Y.%m.%d %H:%i:%s') INSERT_DATE,
+			     DATE_FORMAT (diso.INSERT_DATE, '%Y.%m.%d') INSERT_DT,
+			     mem.mem_id,
+			     mem.mem_name,
+			     (
+                 	select COUNT(1)
+                     from LMS_DISCUSS_COMMENT  
+                    where 1 = 1
+                    AND DISCUSS_ID =  diso.DISCUSS_ID
+                    AND DISCUSS_OPINION_ID = diso.DISCUSS_OPINION_ID
+                    AND DELETE_YN = 'N'
+                 ) commentCnt /* 댓글수 */
+			  from LMS_DISCUSS_OPINION diso
+			  LEFT OUTER JOIN COM_MEMBER MEM
+			  ON diso.INSERT_USER = MEM.MEM_SEQ
+			  where 1 = 1
+			  AND diso.DELETE_YN = 'N'
+			 <if test="discussId != null and discussId != ''">
+				AND diso.DISCUSS_ID = #{discussId}
+			 </if>	
+			 <if test="discussOpinionId != null and discussOpinionId != ''">
+				AND diso.DISCUSS_OPINION_ID = #{discussOpinionId}
+			 </if>	    
+			 <if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+				<if test="searchCondition == 'searchTitle'">
+				AND diso.TITLE LIKE CONCAT ('%', #{searchKeyword},'%')
+				</if>
+			 </if>
+			 <if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+				<if test="searchCondition == 'searchContent'">
+				AND diso.CONTENT LIKE CONCAT ('%', #{searchKeyword},'%')
+				</if>
+			 </if>
+			 <if test="searchKeyword != null  and searchKeyword != '' and searchCondition != null  and searchCondition != ''">
+				<if test="searchCondition == 'searchInsUserName'">
+				AND mem.MEM_NAME LIKE CONCAT ('%', #{searchKeyword},'%')
+				</if>
+			 </if>
+		    
+			ORDER BY diso.INSERT_DATE DESC
+	</select>
+	
+	<select id="listDiscussComment" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+	/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.listDiscussComment ====== */
+			select 
+			 	 diso.DISCUSS_COMMENT_ID,
+			 	 diso.DISCUSS_ID,
+			     diso.DISCUSS_OPINION_ID,
+			     diso.CONTENT,
+			     diso.DELETE_YN,
+			     DATE_FORMAT (diso.INSERT_DATE, '%Y.%m.%d %H:%i:%s') INSERT_DATE,
+			     mem.MEM_SEQ,
+			     mem.MEM_ID,
+			     mem.MEM_NAME
+			  from lms_discuss_comment diso
+			  left outer join com_member mem
+			  on diso.INSERT_USER = mem.mem_seq
+			  where 1 = 1
+			  and diso.DISCUSS_ID = #{discussId}
+			  and diso.DISCUSS_OPINION_ID = #{discussOpinionId}
+			  and diso.DELETE_YN = 'N'
+	</select>
+	
+	<select id="listDiscussEvalScoreResultStd" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+	/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussEvalScoreResultStdList ====== */
+			SELECT ME.MEM_SEQ
+			       ,ME.MEM_ID
+			       ,ME.MEM_NAME
+			       ,(SELECT COUNT(1)
+			          FROM  lms_discuss_opinion DO
+			          WHERE DO.DISCUSS_ID = DI.DISCUSS_ID
+			            AND DO.INSERT_USER = ME.MEM_SEQ
+			            AND DO.DELETE_YN = 'N'
+			       ) opinionCnt /* 의견수 */
+			       ,(
+			          select count(1)
+			          from lms_discuss_comment CO
+			          where CO.DISCUSS_ID = DI.DISCUSS_ID
+			          AND CO.INSERT_USER = ME.MEM_SEQ
+			          AND CO.DELETE_YN = 'N'
+			       ) commentCnt /* 댓글수 */
+			       ,(
+			          select count(1)
+			          from lms_discuss_good_hist HI
+			          where HI.DISCUSS_ID = DI.DISCUSS_ID
+			          AND HI.INSERT_USER = ME.MEM_SEQ
+			       ) opinionGoodCnt /* 추천수 */
+			       ,SES.EVAL_SCORE /* 평가점수 */
+			  FROM LMS_LESSON LE
+			  INNER JOIN LMS_DISCUSS DI
+			  ON  DI.YYYY = LE.YYYY
+			  AND DI.TERM = LE.TERM
+			  AND DI.SUBJECT_CODE = LE.SUBJECT_CODE
+			  AND DI.CLASS = LE.CLASS
+			  AND DI.DISCUSS_ID = #{discussId}
+			  AND DI.DELETE_YN = 'N'
+			  LEFT OUTER JOIN COM_MEMBER ME
+			  ON ME.MEM_SEQ = LE.MEM_SEQ
+			  LEFT OUTER JOIN LMS_DISCUSS_STD_EVAL_SCORE SES
+			  ON SES.DISCUSS_ID = DI.DISCUSS_ID
+			  AND SES.MEM_SEQ = ME.MEM_SEQ 
+			  WHERE 1 = 1
+			  AND LE.YYYY = #{yyyy}
+			  AND LE.TERM = #{term}
+			  AND LE.SUBJECT_CODE = #{subjectCode}
+			  AND LE.CLASS = #{subClass}
+	</select>
+	
+	<select id="getDiscussInfo" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+	/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussInfo ====== */
+			select 
+				  dis.DISCUSS_ID
+				 ,dis.YYYY
+				 ,dis.TERM
+				 ,dis.SUBJECT_CODE
+				 ,dis.CLASS
+				 ,dis.TITLE
+				 ,dis.CONTENT
+				 ,dis.START_DATE
+				 ,dis.START_HOUR
+				 ,dis.START_MIN
+				 ,dis.END_DATE
+				 ,dis.END_HOUR
+				 ,dis.END_MIN
+				 ,dis.EVAL_YN
+				 ,CASE WHEN dis.EVAL_YN = 'Y' THEN '평가'
+			           WHEN dis.EVAL_YN = 'N' THEN '미평가'
+			      END evalYnName
+				 ,dis.EVAL_SCORE
+				 ,dis.SCORE_OPEN_YN
+				 ,CASE WHEN dis.SCORE_OPEN_YN = 'Y' THEN '공개'
+			           WHEN dis.SCORE_OPEN_YN = 'N' THEN '미공개'
+			      END scoreOpenYnName 
+				 ,dis.ATCH_FILE_ID
+				 ,dis.DELETE_YN
+			from lms_discuss dis
+			where 1 = 1
+			and dis.DISCUSS_ID = #{discussId}
+			and dis.DELETE_YN = 'N'   
+	</select>
+	
+	<select id="getDiscussOpinionList" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+	/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussDiscussOpinionList ====== */
+			select 
+			 	 diso.DISCUSS_OPINION_ID,
+			 	 diso.DISCUSS_ID,
+			     diso.TITLE,
+			     diso.CONTENT,
+			     diso.ATCH_FILE_ID,
+			     diso.HIT_CNT,
+			     diso.GOOD_CNT,
+			     diso.DELETE_YN,
+			     DATE_FORMAT (diso.INSERT_DATE, '%Y.%m.%d %H:%i:%s') INSERT_DATE,
+			     mem.mem_seq,
+			     mem.mem_id,
+			     mem.mem_name,
+			     (
+                 	select count(1)
+                     from lms_discuss_comment  
+                    where DISCUSS_OPINION_ID = diso.DISCUSS_OPINION_ID
+                    and DISCUSS_ID = diso.DISCUSS_ID
+                    and DELETE_YN = 'N'
+                 ) commentCnt /* 댓글수 */
+			  from lms_discuss_opinion diso
+			  left outer join com_member mem
+			  on diso.INSERT_USER = mem.mem_seq
+			  where 1 = 1
+			  and diso.DISCUSS_OPINION_ID = #{discussOpinionId}
+			  and diso.DISCUSS_ID = #{discussId}
+			  and diso.DELETE_YN = 'N'
+	</select>
+	
+	
+	
+	<select id="getDiscussOpinionComment" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+	/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussOpinionComment ====== */
+			select 
+			     CONTENT
+			  from lms_discuss_comment
+			  where DISCUSS_COMMENT_ID = #{discussCommentId}
+	</select>
+	
+	<select id="getDiscussOpinionCnt" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussOpinionCnt ====== */
+	        select 
+				 count(1) as opinionCnt
+			from lms_discuss_opinion
+			where 1 = 1
+			and DISCUSS_ID = #{discussId}
+			and DELETE_YN = 'N'   
+ 		
+	</select>
+	
+	<select id="getDiscussOpinionCommentCnt" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussOpinionCommentCnt ====== */
+	        select 
+				 count(1) as commentCnt
+			from lms_discuss_comment
+			where 1 = 1
+			and DISCUSS_ID = #{discussId}
+			and DISCUSS_OPINION_ID = #{discussOpinionId}
+			and DELETE_YN = 'N'   
+ 		
+	</select>
+	
+	<select id="getDiscussOpinionHistCnt" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussOpinionHistCnt ====== */
+	        select 
+				 count(1) as cnt
+			from lms_discuss_good_hist
+			where 1 = 1
+			and DISCUSS_ID = #{discussId}
+			and DISCUSS_OPINION_ID = #{discussOpinionId}
+			and INSERT_USER = #{sessionMemSeq}
+ 		
+	</select>
+	
+	<select id="getDiscussEvalScoreStdCnt" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO" resultType="java.lang.Integer">
+	    /* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.getDiscussEvalScoreStdCnt ====== */
+	        select 
+				 count(1) as cnt
+			from lms_discuss_std_eval_score
+			where 1 = 1
+			and DISCUSS_ID = #{discussId}
+ 		
+	</select>
+	
+	<insert id="insertDiscussInfo" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.insertDiscussInfo ====== */
+			INSERT INTO LMS_DISCUSS (
+						 DISCUSS_ID
+						,YYYY
+						,TERM
+						,SUBJECT_CODE
+						,CLASS
+						,TITLE
+						,CONTENT
+						,START_DATE
+						,START_HOUR
+						,START_MIN
+						,END_DATE
+						,END_HOUR
+						,END_MIN
+						,EVAL_YN
+						,EVAL_SCORE
+						,SCORE_OPEN_YN
+						,ATCH_FILE_ID
+						,INSERT_DATE
+						,INSERT_USER								
+					) 
+					VALUES 
+					( 
+						 #{discussId}  
+						,#{yyyy}       
+						,#{term}       
+						,#{subjectCode}
+						,#{subClass}      
+						,#{title}      
+						,#{content}    
+						,#{startDate}  
+						,#{startHour}  
+						,#{startMin}   
+						,#{endDate}    
+						,#{endHour}    
+						,#{endMin}     
+						,#{evalYn}     
+						,#{evalScore}  
+						,#{scoreOpenYn}
+						,#{atchFileId} 
+						,now()
+						,#{sessionMemSeq}	
+					)
+
+	</insert>
+	
+	<insert id="insertDiscussOpinion" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.insertDiscussInfo ====== */
+			INSERT INTO LMS_DISCUSS_OPINION (
+						 DISCUSS_OPINION_ID
+						,DISCUSS_ID
+						,TITLE
+						,CONTENT
+						,ATCH_FILE_ID
+						,HIT_CNT
+						,GOOD_CNT
+						,INSERT_DATE
+						,INSERT_USER								
+					) 
+					VALUES 
+					( 
+						 #{discussOpinionId}  
+						,#{discussId}       
+						,#{title}       
+						,#{content}
+						,#{atchFileId}      
+						,0      
+						,0 
+						,now()
+						,#{sessionMemSeq}	
+					)
+
+	</insert>
+	
+	<insert id="insertDiscussGoodHist" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.insertDiscussGoodHist ====== */
+			INSERT INTO LMS_DISCUSS_GOOD_HIST (
+			             HISTORY_ID
+						,DISCUSS_OPINION_ID
+						,DISCUSS_ID
+						,INSERT_DATE
+						,INSERT_USER								
+					) 
+					VALUES 
+					( 
+						 #{historyId}
+						,#{discussOpinionId}  
+						,#{discussId}
+						,now()
+						,#{sessionMemSeq}	
+					)
+
+	</insert>
+	
+	<insert id="insertDiscussComment" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.insertDiscussInfo ====== */
+			INSERT INTO LMS_DISCUSS_COMMENT (
+						 DISCUSS_COMMENT_ID
+						,DISCUSS_ID
+						,DISCUSS_OPINION_ID
+						,CONTENT
+						,INSERT_DATE
+						,INSERT_USER								
+					) 
+					VALUES 
+					( 
+						 #{discussCommentId}
+						,#{discussId}  
+						,#{discussOpinionId}
+						,#{content}       
+						,now()
+						,#{sessionMemSeq}	
+					)
+
+	</insert>
+	
+	<insert id="insertDiscussStdEvalScore" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.insertDiscussInfo ====== */
+			INSERT INTO LMS_DISCUSS_STD_EVAL_SCORE (
+						 DISCUSS_ID
+						,MEM_SEQ
+						<if test="evalScore != null and evalScore !='' ">,EVAL_SCORE</if>
+						,INSERT_DATE
+						,INSERT_USER								
+					) 
+					VALUES 
+					( 
+					
+						 #{discussId}  
+						,#{memSeq}
+						<if test="evalScore != null and evalScore !='' ">,#{evalScore}</if>       
+						,now()
+						,#{sessionMemSeq}	
+					)
+
+	</insert>
+	
+	<update id="updateDiscussInfo" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussInfo ====== */
+	        UPDATE LMS_DISCUSS 
+	        SET UPDATE_DATE = NOW()
+	            ,UPDATE_USER=#{sessionMemSeq}
+				<if test="title != null and title!='' ">,TITLE=#{title}</if>
+				<if test="content != null and content !='' ">,CONTENT=#{content}</if>
+				<if test="startDate != null and startDate !='' ">,START_DATE=#{startDate}</if>
+				<if test="startHour != null and startHour !='' ">,START_HOUR=#{startHour}</if>
+				<if test="startMin != null and startMin !='' ">,START_MIN=#{startMin}</if>
+				<if test="endDate != null and endDate !='' ">,END_DATE=#{endDate}</if>
+				<if test="endHour != null and endHour !='' ">,END_HOUR=#{endHour}</if>
+				<if test="endMin != null and endMin !='' ">,END_MIN=#{endMin}</if>
+				<if test="evalYn != null and evalYn !='' ">,EVAL_YN=#{evalYn}</if>
+				<if test="evalScore != null and evalScore !='' ">,EVAL_SCORE=#{evalScore}</if>
+				<if test="scoreOpenYn != null and scoreOpenYn !='' ">,SCORE_OPEN_YN=#{scoreOpenYn}</if>
+				<if test="atchFileId != null and atchFileId !='' ">,ATCH_FILE_ID=#{atchFileId}</if>
+		     WHERE DISCUSS_ID 	= #{discussId}
+	</update>
+	
+	<update id="updateDiscussOpinion" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussOpinion ====== */
+	        UPDATE LMS_DISCUSS_OPINION 
+	        SET UPDATE_DATE = NOW()
+	            ,UPDATE_USER=#{sessionMemSeq}
+				<if test="content != null and content !='' ">,CONTENT=#{content}</if>
+				<if test="title != null and title !='' ">,TITLE=#{title}</if>
+				<if test="atchFileId != null and atchFileId !='' ">,ATCH_FILE_ID=#{atchFileId}</if>
+		     WHERE 1 =1
+		     AND DISCUSS_OPINION_ID = #{discussOpinionId} 
+		     AND DISCUSS_ID = #{discussId}
+	</update>
+	
+	<update id="updateDiscussComment" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussComment ====== */
+	        UPDATE LMS_DISCUSS_COMMENT 
+	        SET UPDATE_DATE = NOW()
+	            ,UPDATE_USER=#{sessionMemSeq}
+				<if test="content != null and content !='' ">,CONTENT=#{content}</if>
+		     WHERE 1 =1
+		     AND DISCUSS_COMMENT_ID = #{discussCommentId}
+	</update>
+	
+	<update id="updateDiscussOpinionHitCnt" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussOpinionHitCnt ====== */
+	        UPDATE LMS_DISCUSS_OPINION 
+	        SET HIT_CNT=HIT_CNT+1
+	        WHERE 1 =1
+		     AND DISCUSS_OPINION_ID = #{discussOpinionId} 
+	</update>
+	
+	<update id="updateDiscussOpinionGoodCnt" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussOpinionGoodCnt ====== */
+	        UPDATE LMS_DISCUSS_OPINION 
+	        SET GOOD_CNT=GOOD_CNT+1
+	        WHERE 1 =1
+		     AND DISCUSS_OPINION_ID = #{discussOpinionId} 
+	</update>
+	
+	<update id="updateDiscussStdEvalScore" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussStdEvalScore ====== */
+	        UPDATE lms_discuss_std_eval_score 
+	        SET UPDATE_DATE = NOW()
+	            ,UPDATE_USER=#{sessionMemSeq}
+				,EVAL_SCORE=#{evalScore}
+		     WHERE DISCUSS_ID = #{discussId}
+		       AND MEM_SEQ = #{memSeq}
+	</update>
+	
+	<update id="updateDiscussStdEvalScoreYn" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+			/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.updateDiscussStdEvalScoreYn ====== */
+	        UPDATE lms_discuss 
+	        SET UPDATE_DATE = NOW()
+	            ,UPDATE_USER=#{sessionMemSeq}
+				<if test="evalScoreResutlYn != null and evalScoreResutlYn !='' ">,EVAL_SCORE_RESUTL_YN=#{evalScoreResutlYn}</if>
+		     WHERE DISCUSS_ID = #{discussId}
+	</update>
+	
+	<delete id="deleteDiscussInfo" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.deleteDiscussInfo ====== */
+			UPDATE LMS_DISCUSS 
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE DISCUSS_ID = #{discussId} 
+	</delete>
+	
+	<delete id="deleteDiscussOpinion" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.deleteDiscussOpinion ====== */
+			UPDATE LMS_DISCUSS_OPINION 
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE 1=1
+			AND DISCUSS_OPINION_ID = #{discussOpinionId}
+			AND DISCUSS_ID = #{discussId}
+	</delete>
+	
+	<delete id="deleteDiscussComment" parameterType="kr.co.sitglobal.oklms.lu.discuss.vo.DiscussVO">
+		/* ====== kr.co.sitglobal.oklms.lu.discuss.service.impl.DiscussMapper.deleteDiscussComment ====== */
+			UPDATE LMS_DISCUSS_COMMENT 
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,DELETE_YN = 'Y'
+			WHERE 1=1
+			AND DISCUSS_COMMENT_ID = #{discussCommentId}
+	</delete>
+	
+</mapper>

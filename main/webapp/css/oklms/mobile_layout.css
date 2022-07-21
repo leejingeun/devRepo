@@ -1,0 +1,77 @@
+@charset "utf-8";
+
+
+
+#wrapper															{ position:relative; width:100%; min-width:320px; height:100%; }
+#wrapper:after													{ content:""; display:block; clear:both; }
+
+
+
+
+
+#header																{ float:left; width:100%; height:70px; }
+#header.sub-type												{ background:#22449C; }
+#header .header-area											{ position:relative; width:93%; height:70px; margin:0 auto; }
+#header h1															{ float:left; width:125px; height:70px; text-indent:-9999px; background:url("/images/oklms/mobile/main/logo.png") 0 15px no-repeat; }
+#header h2															{ float:left; width:100%; height:53px; font:25px nsM; color:#FFF; line-height:40px; text-align:center; text-shadow:1px 1px 1px #0F1E45; padding-top:17px; }
+#header h2 span													{ font-size:20px; }
+#header .gnb-pre												{ position:absolute; display:block; overflow:hidden; width:28px; height:28px; left:0; top:22px; text-indent:-9999px; background:url("/images/oklms/mobile/inc/gnb_pre.png") no-repeat; }
+#header .gnb-btn-1												{ position:absolute; display:block; overflow:hidden; width:30px; height:24px; right:0; top:24px; text-indent:-9999px; background:url("/images/oklms/mobile/main/gnb_btn.png") no-repeat; }
+#header .gnb-btn-2												{ position:absolute; display:block; overflow:hidden; width:30px; height:24px; right:0; top:24px; text-indent:-9999px; background:url("/images/oklms/mobile/inc/gnb_btn.png") no-repeat; }
+
+#header #gnb														{ position:fixed; overflow-x:hidden; overflow-y:auto; width:240px; height:100%; right:-260px; top:0; transition:All 0.2s ease; -webkit-transition:All 0.2s ease; -moz-transition:All 0.2s ease; -o-transition:All 0.2s ease; box-shadow:0 3px 14px #000; background:url("/images/oklms/mobile/inc/gnb_bg.png") repeat-y #FFF; z-index:1000000; }
+#header #gnb.open												{ display:block; right:0; }
+#header #gnb h3													{ position:relative; float:left; width:240px; height:36px; font:700 20px play; color:#FFF; line-height:30px; text-indent:47px; background:url("/images/oklms/mobile/inc/gnb_title_bullet.png") no-repeat #183072; padding-top:14px; }
+#header #gnb h3 a												{ position:absolute; width:25px; height:25px; left:180px; top:16px; text-indent:-9999px; background:url("/images/oklms/mobile/inc/gnb_btn_close.png") no-repeat; }
+#header #gnb .login-area									{ float:left; width:230px; height:57px; background:url("/images/oklms/mobile/inc/gnb_login_bullet.png") no-repeat #22449C; padding:13px 0 0 80px; }
+#header #gnb .login-area a									{ display:block; overflow:hidden; }
+#header #gnb .login-area a.btn-login					{ font:20px nsM; color:#FFF; line-height:28px; text-shadow:1px 1px 1px #1B367D; }
+#header #gnb .login-area a.btn-find						{ font:11px Dotum; color:#91A2CE;  line-height:15px; padding:4px 0; }
+
+#header #gnb .info-area										{ float:left; width:215px; height:57px; background:url("/images/oklms/mobile/inc/gnb_info_bullet.png") no-repeat #22449C; padding:13px 0 0 25px; }
+#header #gnb .info-area span								{ float:left; display:inline-block; width:90px; font:15px nsM; color:#7A8FC4; line-height:20px; text-shadow:1px 1px 1px #1B367D; padding: 2px 10px 0 0; }
+#header #gnb .info-area span b							{ font-weight:normal; color:#FFF; }
+#header #gnb .info-area a									{ display:inline-block; overflow:hidden; width:22px; font:11px Dotum; color:#7A8FC4; line-height:14px; padding:8px 0 0 53px; }
+
+#header #gnb .menu											{ float:left; width:100%; font:15px nsM; line-height:24px; padding-bottom:30px; }
+#header #gnb .menu a											{ display:block; overflow:hidden; color:#333; text-indent:37px; border-top:1px solid #D9D9D9; background:url("/images/oklms/mobile/inc/gnb_bullet.png") 25px 12px no-repeat; padding:5px 0 3px; }
+#header .page-cover											{ position:fixed; display:none; width:100%; height:100%; left:0; top:0; background-color: rgba(0,0,0,0.7); z-index:2002; }
+#header .page-cover.open									{ display:block; }
+
+
+
+
+
+#container 	 														{ float:left; width:100%; }
+#container:after													{ content:""; display:block; clear:both; }
+#container.main-img											{ background:url("/images/oklms/mobile/main/container_bg.png") center top no-repeat; }
+
+#search-area 	 												{ position:relative; width:100%; border-bottom:1px solid #C8C8C8; background:#EBEBEB; }
+#search-area li 	 												{ position:relative; width:93%; text-align:center; padding:12px 0; margin:0 auto; }
+#search-area li:after											{ content:""; display:block; clear:both; }
+#search-area li input											{ font-size:12px; color:#666; vertical-align:middle; border-color:#707070; -webkit-box-sizing: border-box; -moz-box-sizing:border-box; box-sizing:border-box; padding:3px 0 3px 0; }
+#search-area li select											{ font-size:12px; color:#666; vertical-align:middle; padding:3px 0 3px 0; }
+#search-area li a												{ display:inline-block; overflow:hidden; font:12px nsM; color:#FFF; vertical-align:middle; border:1px solid #F6F6F6; background:url("/images/oklms/mobile/inc/icon_search.png") 6px 6px no-repeat #555; padding:5px 10px 4px 20px; margin-left:5px; }
+#search-area li a.type-2										{ width:100%; text-align:center; background-image:none; padding:5px 0 4px 0; margin-top:3px; margin-left:0; }
+
+#contents-area 	 												{ position:relative; width:93%; margin:0 auto; }
+#contents-area:after											{ content:""; display:block; clear:both; }
+#contents-area h3												{ float:left; width:100%; font:18px nsM; color:#333; line-height:24px; text-indent:24px; background:url("/images/oklms/mobile/inc/title_bullet.png") 0 2px no-repeat; margin:25px 0 3px; }
+#contents-area h4												{ float:left; width:100%; font:13px nsM; color:#8D9197; line-height:20px; text-align:center; border:1px solid #2468C6; -webkit-box-sizing:border-box; box-sizing:border-box; -moz-box-sizing:border-box; -o-box-sizing:border-box; background:#F6F9FD; padding:8px 0 6px; margin:20px 0 5px; }
+#contents-area h4 p											{ position:relative; width:90%; font-size:16px; color:#2F3846; border-bottom:1px solid #D1D4D7; padding-bottom:5px; margin:0 auto 5px; }
+#contents-area h4 span										{ display:block; width:90%; margin:0 auto;}
+
+#contents-area-1	 											{ position:relative; width:93%; margin:0 auto; }
+#contents-area-1:after											{ content:""; display:block; clear:both; }
+
+
+
+
+
+#footer																{ float:left; width:100%; background:#353535; padding:18px 0 25px; margin-top:40px; }
+#footer li															{ position:relative; width:92%; margin:0 auto; }
+#footer .add														{ font:13px nsM; color:#777; line-height:18px; }
+#footer .info														{ font:11px play; color:#999; line-height:18px; padding-top:5px; }
+#footer span														{ color:#DDD; }
+
+

@@ -1,0 +1,397 @@
+@charset "utf-8";
+#wrapper																			{position:relative; width:100%; min-width:1050px; height:100%;}
+/* BB
+#menu-area																		{position:fixed; width:230px; height:100%; left:0; top:0; background:url("/images/oklms/adm/inc/menu_area_bg.png") right repeat-y #2A91D4; z-index:200;}
+*/
+#menu-area																		{position:fixed; width:250px; height:100%; left:0; top:0; background:#333333; z-index:200;margin-top: 60px;}
+#menu-area h1																	{float:left; width:170px; height:40px; padding:26px 30px 0; color:#FFFFFF}
+#menu-area h1 a																{display:block; overflow:hidden; width:170px; height:0px; text-indent:-9999px; background:url("/images/oklms/adm/inc/logo.png") no-repeat;}
+/* BB
+#menu-area dl																	{float:left; width:230px; border-top:1px solid #4AA1DA;}
+*/
+#menu-area dl																	{float:left; width:250px; border-top:1px solid #444444;}
+#menu-area dt																	{float:left; width:195px; font:16px nbgM; line-height:45px; padding:1px 0 0 55px;}
+#menu-area dt a																	{display:block; overflow:hidden; width:175px; color:#FFF;}
+#menu-area dt a:hover														{display:block; overflow:hidden; width:195px; color:#FFF; background:url("/images/oklms/adm/inc/bullet_01_00.png") 140px 16px no-repeat;}
+/* BB
+#menu-area dd																	{float:left; display:none; width:230px; background:#0B4E7B; padding:0;}
+*/
+#menu-area dd																	{float:left; display:none; width:250px; background:#222222; padding:0;}
+#menu-area dd a																{display:block; overflow:hidden; font:13px nbgM; color:#9DB8CA; line-height:22px;}
+#menu-area dd a:hover														{color:#FFF;}
+#menu-area dl dd.on															{display:block;}
+
+/* BB
+#menu-area .menu-1 dt														{background:url("/images/oklms/adm/inc/bullet_01_01.png") 25px 11px no-repeat;}
+#menu-area .menu-1 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_11.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-1 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-2 dt														{background:url("/images/oklms/adm/inc/bullet_01_02.png") 25px 11px no-repeat;}
+#menu-area .menu-2 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_12.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-2 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-3 dt														{background:url("/images/oklms/adm/inc/bullet_01_03.png") 25px 11px no-repeat;}
+#menu-area .menu-3 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_13.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-3 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-4 dt														{background:url("/images/oklms/adm/inc/bullet_01_04.png") 25px 11px no-repeat;}
+#menu-area .menu-4 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_14.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-4 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-5 dt														{background:url("/images/oklms/adm/inc/bullet_01_05.png") 25px 11px no-repeat;}
+#menu-area .menu-5 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_15.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-5 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-6 dt														{background:url("/images/oklms/adm/inc/bullet_01_06.png") 25px 11px no-repeat;}
+#menu-area .menu-6 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_16.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-6 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-7 dt														{background:url("/images/oklms/adm/inc/bullet_01_07.png") 25px 11px no-repeat;}
+#menu-area .menu-7 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_17.png") 25px 11px #0071BA no-repeat;}
+#menu-area .menu-7 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+*/
+
+/* #menu-area .menu-1 dt														{background:url("/images/oklms/adm/inc/bullet_01_01.png") 25px 11px no-repeat;}
+#menu-area .menu-1 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_11.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-1 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-2 dt														{background:url("/images/oklms/adm/inc/bullet_01_02.png") 25px 11px no-repeat;}
+#menu-area .menu-2 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_12.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-2 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-3 dt														{background:url("/images/oklms/adm/inc/bullet_01_03.png") 25px 11px no-repeat;}
+#menu-area .menu-3 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_13.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-3 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-4 dt														{background:url("/images/oklms/adm/inc/bullet_01_04.png") 25px 11px no-repeat;}
+#menu-area .menu-4 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_14.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-4 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-5 dt														{background:url("/images/oklms/adm/inc/bullet_01_05.png") 25px 11px no-repeat;}
+#menu-area .menu-5 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_15.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-5 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-6 dt														{background:url("/images/oklms/adm/inc/bullet_01_06.png") 25px 11px no-repeat;}
+#menu-area .menu-6 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_16.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-6 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-7 dt														{background:url("/images/oklms/adm/inc/bullet_01_07.png") 25px 11px no-repeat;}
+#menu-area .menu-7 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_17.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-7 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;}
+#menu-area .menu-8 dt														{background:url("/images/oklms/adm/inc/bullet_01_08.png") 25px 11px no-repeat;}
+#menu-area .menu-8 dt.on													{background:url("/images/oklms/adm/inc/bullet_01_18.png") 25px 11px #000000 no-repeat;}
+#menu-area .menu-8 dt.on a												{background:url("/images/oklms/adm/inc/bullet_01_on.png") right 9px no-repeat;} */
+
+#menu-area .menu-1 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-1 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-1 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-2 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-2 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-2 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-3 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-3 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-3 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-4 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-4 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-4 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-5 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-5 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-5 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-6 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-6 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-6 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-7 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-7 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-7 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-8 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-8 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-8 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-9 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-9 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-9 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-10 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-10 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-10 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-11 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-11 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-11 dt.on a												{background:url("") right 9px no-repeat;}
+#menu-area .menu-12 dt													{background:url("") 25px 11px no-repeat;}
+#menu-area .menu-12 dt.on												{background:url("") 25px 11px #000000 no-repeat;}
+#menu-area .menu-12 dt.on a												{background:url("") right 9px no-repeat;}
+
+/* BB
+#menu-area dd .depth-2														{float:left; width:230px; border-top:1px solid #4AA1DA;}
+*/
+#menu-area dd .depth-2														{float:left; width:250px; border-top:1px solid #444444;}
+#menu-area dd .depth-2 dt													{float:left; width:250px; background:none; padding:6px 0;}
+/* BB
+#menu-area dd .depth-2 dt a												{display:block; overflow:hidden; width:174px; color:#9DB8CA; background:url("/images/oklms/adm/inc/depth_01_01.png") 39px 7px no-repeat; padding-left:56px;}
+*/
+#menu-area dd .depth-2 dt a												{display:block; overflow:hidden; width:194px; color:#999999; background:url("/images/oklms/adm/inc/depth_01_01.png") 39px 7px no-repeat; padding-left:56px;}
+#menu-area dd .depth-2 dt a:hover										{color:#FFF; background:url("/images/oklms/adm/inc/depth_01_02.png") 39px 7px no-repeat;}
+#menu-area dd .depth-2 dt.on												{background:none;}
+#menu-area dd .depth-2 dt.on a											{display:block; overflow:hidden; width:194px; color:#FFF; background:url("/images/oklms/adm/inc/depth_01_02.png") 39px 7px no-repeat; padding-left:56px;}
+#menu-area dd .depth-2 dt.on a:hover									{background:url("/images/oklms/adm/inc/depth_01_02.png") 39px 7px no-repeat;}
+/* BB
+#menu-area dd .depth-2 dd													{float:left; display:none; width:230px; border-top:1px solid #66889E; background:#0B4E7B; padding:0;}
+*/
+#menu-area dd .depth-2 dd													{float:left; display:none; width:250px; border-top:1px solid #444444; background:#333333; padding:0;}
+#menu-area dd .depth-2 dd a												{display:block; overflow:hidden; font:12px Dotum; color:#FFF; line-height:18px;}
+#menu-area dd .depth-2 dd a:hover										{color:#FFF;}
+#menu-area dd .depth-2 dd.on												{display:block;}
+#menu-area dd .depth-2 dl:first-child									{border-top:none;}
+
+/* BB
+#menu-area dd .depth-3														{float:left; width:230px; border-top:1px solid #66889E;}
+*/
+#menu-area dd .depth-3														{float:left; width:250px; border-top:1px solid #444444;}
+/* BB
+#menu-area dd .depth-3 dt													{float:left; width:230px; background:#0F334B; padding:6px 0 3px;}
+*/
+#menu-area dd .depth-3 dt													{float:left; width:250px; background:#222222; padding:6px 0 3px;}
+/* BB
+#menu-area dd .depth-3 dt a												{display:block; overflow:hidden; width:162px; color:#8799A5; background:url("/images/oklms/adm/inc/depth_02_01.png") 55px 5px no-repeat; padding-left:68px;}
+*/
+#menu-area dd .depth-3 dt a												{display:block; overflow:hidden; width:182px; color:#999999; background:url("/images/oklms/adm/inc/depth_02_01.png") 55px 5px no-repeat; padding-left:68px;}
+#menu-area dd .depth-3 dt a:hover										{background:url("/images/oklms/adm/inc/depth_02_02.png") 55px 5px no-repeat;}
+/* BB
+#menu-area dd .depth-3 dt.on												{background:none; background-color:#0F334B}
+*/
+#menu-area dd .depth-3 dt.on												{background:none; background-color:#000000}
+#menu-area dd .depth-3 dt.on a											{display:block; overflow:hidden; width:182px; color:#FFF; background:url("/images/oklms/adm/inc/depth_02_02.png") 55px 5px no-repeat; padding-left:68px;}
+#menu-area dd .depth-3 dt.on a:hover									{background:url("/images/oklms/adm/inc/depth_02_02.png") 55px 5px no-repeat;}
+
+#menu-area dd .depth-3 dd													{float:left; display:none; width:250px; border-top:1px solid #66889E; background:#171717; padding:10px 0 7px;}
+#menu-area dd .depth-3 dd a												{width:150px; font:12px Dotum; color:#888; line-height:18px; padding:0 12px 0 68px;}
+
+#menu-area dd .depth-3 dd a:before										{content:"-  ";}
+#menu-area dd .depth-3 dd a:hover										{color:#FFF;}
+#menu-area dd .depth-3 dd a.on											{color:#FFF;}
+#menu-area dd .depth-3 dd.on												{display:block;}
+#menu-area dd .depth-3 dl:first-child									{border-top:none;}
+
+#body-area																		{float:left; width:100%;}
+#body-area:after																	{content:""; display:block; clear:both;}
+
+/*
+#top-area																			{position:fixed; float:left; width:100%; height:60px; background:url("/images/oklms/adm/inc/top_line.png") repeat-x; z-index:100;}
+*/
+#top-area																			{position:fixed; float:left; width:100%; height:60px; background:#034593 repeat-x; z-index:100;}
+#top-area dt																		{float:left; height:41px; font:700 22px play; color:#999; line-height:30px; padding-top:9px; margin-left:25.5%;}
+#top-area dt span																{color:#FFF;}
+#top-area dd.info																{position:relative; float:right; height:32px; text-align:right; font:12px Dotum; color:#AAA; line-height:18px; padding:18px 30px 0 0; margin-right:3.5%;}
+#top-area dd.info span														{font-weight:bold; color:#FFF;}
+#top-area dd.info a.logout													{position:absolute; display:block; overflow:hidden; width:20px; height:20px; right:5px; top:15px; text-indent:100%; background:url("/images/oklms/adm/inc/btn_logout.png") no-repeat;}
+#top-area dd.info a.logout:hover											{background:url("/images/oklms/adm/inc/btn_logout.png") 0 bottom no-repeat;}
+#top-area dd.info a.mode-btn												{position:absolute; display:block; overflow:hidden; width:90px; height:20px; right:2px; top:15px; text-indent:100%; background:url("/images/oklms/adm/inc/btn_mode.png") no-repeat;}
+#top-area dd.info a.mode-btn:hover										{background:url("/images/oklms/adm/inc/btn_mode.png") 0 bottom no-repeat;}
+/*
+#top-area dd.bg-1																{float:left; width:100%; height:20px; opacity:0.7; background:#FFF;}
+#top-area dd.bg-2																{float:left; width:100%; height:15px; opacity:0.4; background:#FFF;}
+*/
+#top-area dd.bg-1																{float:left; width:100%; height:20px; background:#FFF;}
+#top-area dd.bg-2																{float:left; width:100%; height:15px; background:#FFF;}
+
+#container																			{float:left; width:71%; padding:0 3.5% 0 25.5%;}
+#container:after																	{content:""; display:block; clear:both;}
+#content-area																		{float:left; width:100%; min-height:650px; margin-top:85px;}
+#content-area:after																{content:""; display:block; clear:both;}
+
+#title																					{float:left; width:100%; height:37px;  border-bottom:1px solid #034593; margin-bottom:20px;}
+#title dt																				{float:left; width:50%; font:20px nbgM; color:#222; line-height:25px;}
+#title dd																				{float:right; font:12px Dotum; color:#777; line-height:18px; text-align:right; background:url("/images/oklms/adm/inc/bullet_home.png") 0 4px no-repeat; padding:4px 2px 0 20px;}
+#title dd b																			{display:inline-block; font-weight:normal; opacity:0.5; margin:0 5px;}
+
+#course-name																	{float:left; width:100%; font:23px nbgM; color:#45484E; line-height:28px; margin:5px 0 15px;}
+
+#footer																				{float:left; width:100%; height:30px; font:11px play; color:#555; line-height:20px; text-align:center; border-top:1px solid #DDD; padding-top:15px; margin-top:60px;}
+
+@media all and (min-width:1050px) and (max-width:1100px) {
+#top-area dt																		{margin-left:25%;}
+#top-area dd.info																{margin-right:3%;}
+#container																			{width:72%; padding:0 3% 0 25%;}
+}
+
+
+@media all and (min-width:1101px) and (max-width:1150px) {
+#top-area dt																		{margin-left:24%;}
+#top-area dd.info																{margin-right:3%;}
+#container																			{width:73%; padding:0 3% 0 24%;}
+}
+
+
+@media all and (min-width:1151px) and (max-width:1200px) {
+#top-area dt																		{margin-left:23%;}
+#top-area dd.info																{margin-right:2.5%;}
+#container																			{width:74.5%; padding:0 2.5% 0 23%;}
+}
+
+
+@media all and (min-width:1201px) and (max-width:1250px) {
+#top-area dt																		{margin-left:21.5%;}
+#top-area dd.info																{margin-right:2.5%;}
+#container																			{width:76%; padding:0 2.5% 0 21.5%;}
+}
+
+
+@media all and (min-width:1251px) and (max-width:1300px) {
+#top-area dt																		{margin-left:21%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:77%; padding:0 2% 0 21%;}
+}
+
+
+@media all and (min-width:1301px) and (max-width:1350px) {
+#top-area dt																		{margin-left:20%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:78%; padding:0 2% 0 20%;}
+}
+
+
+@media all and (min-width:1351px) and (max-width:1400px) {
+#top-area dt																		{margin-left:19.5%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:78.5%; padding:0 2% 0 19.5%;}
+}
+
+
+@media all and (min-width:1401px) and (max-width:1450px) {
+#top-area dt																		{margin-left:18.5%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:79.5%; padding:0 2% 0 18.5%;}
+}
+
+
+@media all and (min-width:1451px) and (max-width:1500px) {
+#top-area dt																		{margin-left:18%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:80%; padding:0 2% 0 18%;}
+}
+
+
+@media all and (min-width:1501px) and (max-width:1550px) {
+#top-area dt																		{margin-left:17.5%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:80.5%; padding:0 2% 0 17.5%;}
+}
+
+
+@media all and (min-width:1551px) and (max-width:1600px) {
+#top-area dt																		{margin-left:17%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:81%; padding:0 2% 0 17%;}
+}
+
+
+@media all and (min-width:1601px) and (max-width:1650px) {
+#top-area dt																		{margin-left:16.5%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:81.5%; padding:0 2% 0 16.5%;}
+}
+
+
+@media all and (min-width:1651px) and (max-width:1700px) {
+#top-area dt																		{margin-left:16%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:82%; padding:0 2% 0 16%;}
+}
+
+
+@media all and (min-width:1701px) and (max-width:1750px) {
+#top-area dt																		{margin-left:15.5%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:82.5%; padding:0 2% 0 15.5%;}
+}
+
+
+@media all and (min-width:1751px) and (max-width:1800px) {
+#top-area dt																		{margin-left:15%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:83%; padding:0 2% 0 15%;}
+}
+
+
+@media all and (min-width:1801px) and (max-width:1900px) {
+#top-area dt																		{margin-left:14.5%;}
+#top-area dd.info																{margin-right:2%;}
+#container																			{width:83.5%; padding:0 2% 0 14.5%;}
+}
+
+
+@media all and (min-width:1901px) and (max-width:2000px) {
+#top-area dt																		{margin-left:14%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:84.5%; padding:0 1.5% 0 14%;}
+}
+
+
+@media all and (min-width:2001px) and (max-width:2100px) {
+#top-area dt																		{margin-left:13.5%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:85%; padding:0 1.5% 0 13.5%;}
+}
+
+
+@media all and (min-width:2101px) and (max-width:2200px) {
+#top-area dt																		{margin-left:13%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:85.5%; padding:0 1.5% 0 13%;}
+}
+
+
+@media all and (min-width:2201px) and (max-width:2300px) {
+#top-area dt																		{margin-left:12.5%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:86%; padding:0 1.5% 0 12.5%;}
+}
+
+
+@media all and (min-width:2301px) and (max-width:2400px) {
+#top-area dt																		{margin-left:12%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:86.5%; padding:0 1.5% 0 12%;}
+}
+
+
+@media all and (min-width:2401px) and (max-width:2500px) {
+#top-area dt																		{margin-left:11.5%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:87%; padding:0 1.5% 0 11.5%;}
+}
+
+
+@media all and (min-width:2501px) and (max-width:2600px) {
+#top-area dt																		{margin-left:11%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:87.5%; padding:0 1.5% 0 11%;}
+}
+
+
+@media all and (min-width:2601px) {
+#top-area dt																		{margin-left:10%;}
+#top-area dd.info																{margin-right:1.5%;}
+#container																			{width:88.5%; padding:0 1.5% 0 10%;}
+}
+
+/* imaged preview */
+.file_input_textbox					{float:left}
+
+.file_input_div{
+	position:relative;
+	width: 100px;
+	height: 23px;
+	overflow: hidden;
+}
+	
+.file_input_button{
+	position:absolute;
+	width: 100px;
+	top:0px;
+	background-color:#33BB00;
+	color:#FFFFFF;
+	border-style: solid;
+}
+	
+.file_input_hidden{
+	font-size: 45px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	opacity:0;
+	filter:alpha(opacity=0);
+	-ms-filter:"alpha(opacity=0)";
+	-khtml-opacity:0;
+	-moz-opacity:0;
+}
+
+
+
+

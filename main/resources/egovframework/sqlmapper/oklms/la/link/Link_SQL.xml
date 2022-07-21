@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 01. 09          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper">
+	
+	<insert id="insertAunuriMember" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberVO">
+		/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriMember ====== */
+			INSERT 
+				  INTO COM_MEMBER 
+				       (
+				         MEM_SEQ,
+				         MEM_ID,
+				         MEM_TYPE,
+				         MEM_NAME,
+				         SEX,
+				         MEM_BIRTH,
+				         MEM_PASSWORD,
+				         EMAIL,
+				         PHOTO_FILE_PATH,
+				         AUTH_GROUP_ID,
+				         TEL_NO,
+				         HP_NO,
+				         DEPT_NO,
+				         DEPT_NM,
+				         INSERT_DATE
+				       ) 
+				       VALUES 
+				       (
+				         #{memSeq},
+				         #{memId},
+				         #{memType},
+				         #{memName},
+				         #{sex},
+				         #{memBirth},
+				         HEX(AES_ENCRYPT(#{memId},#{memId})),
+				         #{email},
+				         #{photoFilePath},
+				         #{authGroupId},
+				         #{telNo},
+				         #{hpNo},
+				         #{deptNo},
+				         #{deptNm},
+				         NOW()
+				       )
+	</insert>
+	
+	<insert id="insertAunuriSubject" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriSubject ====== */
+			INSERT 
+				  INTO LMS_SUBJECT 
+				       ( 
+				         YYYY, 
+				         TERM, 
+				         SUBJECT_CODE, 
+				         CLASS, 
+				         SUBJECT_NAME, 
+				         DEPARTMENT_NO, 
+				         DEPARTMENT_NAME, 
+				         SUBJECT_TYPE, 
+				         POINT_USE_YN, 
+				         POINT, 
+				         TRANING_HOUR, 
+				         SUBJECT_TRANING_TYPE, 
+				         ONLINE_TYPE, 
+				         LCTRUM_CD, 
+				         LCTRUM_NM, 
+				         GRADE_RATIO 
+				       ) 
+				       VALUES 
+				       (  
+				         #{yyyy}, 
+				         #{term}, 
+				         #{subjectCode}, 
+				         #{subjectClass}, 
+				         #{subjectName}, 
+				         #{departmentNo}, 
+				         #{departmentName}, 
+				         #{subjectType}, 
+				         #{pointUseYn}, 
+				         #{point}, 
+				         #{traningHour}, 
+				         #{subjectTraningType}, 
+				         #{onlineType}, 
+				         #{lctrumCd}, 
+				         #{lctrumNm}, 
+				         #{gradeRatio} 
+				       )   
+	</insert>
+	
+	<insert id="insertAunuriSubjectWeek" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriSubjectWeek ====== */
+			INSERT 
+				  INTO LMS_SUBJ_WEEK 
+				       (
+				         WEEK_ID,
+				         YYYY,
+				         TERM,
+				         SUBJECT_CODE,
+				         CLASS,
+				         WEEK_CNT,
+				         LESSON_CN,
+				         LESSON_MTHD,
+				         INSERT_DATE,
+				         INSERT_USER
+				       )  
+				       VALUES
+				       (
+				         #{weekId},
+				         #{yyyy},
+				         #{term},
+				         #{subjectCode},
+				         #{subjectClass},
+				         #{weekCnt},
+				         #{lessonCn},
+				         #{lessonMthd},
+				         NOW(),
+				         #{insertUser}
+				       )  
+	</insert>
+	
+	<insert id="insertAunuriWeekTime" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriWeekTime ====== */
+			INSERT 
+				  INTO LMS_SUBJ_WEEK_TIME 
+				       (
+				         WEEK_ID,
+				         TIME_ID,
+				         YYYY,
+				         TERM,
+				         SUBJECT_CODE,
+				         CLASS,
+				         TRANING_DATE,
+				         TRANING_ST_HOUR,
+				         TRANING_ST_MIN,
+				         TRANING_ED_HOUR,
+				         TRANING_ED_MIN,
+				         INSERT_DATE,
+				         INSERT_USER,
+				         WEEK_CNT
+				       )  
+				       VALUES
+				       (
+				         #{weekId},
+				         #{timeId},
+				         #{yyyy},
+				         #{term},
+				         #{subjectCode},
+				         #{subjectClass},
+				         #{traningDate},
+				         #{traningStHour},
+				         #{traningStMin},
+				         #{traningEdHour},
+				         #{traningEdMin},
+				         NOW(),
+				         #{sessionMemSeq},
+				         #{weekCnt}
+				       )  
+	</insert>
+	
+	<update id="updateAunuriWeekTime" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.updateAunuriWeekTime ====== */
+			UPDATE LMS_SUBJ_WEEK_TIME
+				 
+				   SET TRANING_ST_HOUR = #{traningStHour},
+				         TRANING_ST_MIN = #{traningStMin},
+				         TRANING_ED_HOUR = #{traningEdHour},
+				         TRANING_ED_MIN = #{traningEdMin}
+		WHERE DELETE_YN = 'N'
+		AND WEEK_ID = #{weekId}
+				  
+	</update>
+	
+	
+	<insert id="insertAunuriLesson" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkLessonVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriLesson ====== */
+			INSERT 
+				  INTO LMS_LESSON 
+				       ( 
+				         LESSON_ID, 
+				         YYYY, 
+				         TERM, 
+				         SUBJECT_CODE, 
+				         CLASS, 
+				         MEM_SEQ, 
+				         LEC_STATUS, 
+				         INSERT_DATE, 
+				         INSERT_USER 
+				       ) 
+				       VALUES 
+				       ( 
+				         #{lessonId}, 
+				         #{yyyy}, 
+				         #{term}, 
+				         #{subjectCode}, 
+				         #{subjectClass}, 
+				         #{memSeq}, 
+				         #{lecStatus}, 
+				         NOW(), 
+				         #{insertUser} 
+				       )  
+	</insert>
+	
+	
+	
+	<insert id="insertAunuriIns" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriIns ====== */
+			INSERT 
+				  INTO LMS_SUBJ_INS_MAPPING 
+				       (
+				         SUBJ_INS_MAPPING_ID,
+				         YYYY,
+				         TERM,
+				         SUBJECT_CODE,
+				         CLASS,
+				         MEM_SEQ,
+				         INSERT_USER,
+				         INSERT_DATE
+				       ) 
+				       VALUES 
+				       (
+				         #{subjInsMappingId},
+				         #{yyyy},
+				         #{term},
+				         #{subjectCode},
+				         #{subjectClass},
+				         #{memSeq},
+				         #{insertUser},
+				         NOW()
+				       )
+				        
+	</insert>
+	
+	<select id="listSubjectCdp" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.listSubjectCdp ====== */
+			SELECT MEM.MEM_SEQ, 
+				       MEM.DEPT_NO, 
+				       YYYY AS YYYY, 
+				       TERM AS TERM, 
+				       SUBJECT_CODE AS SUBJECT_CODE, 
+				       CLASS AS SUBJECT_CLASS  
+				  FROM COM_MEMBER MEM 
+				     INNER JOIN LMS_SUBJECT SUB 
+				         ON MEM.DEPT_NO = SUB.DEPARTMENT_NO 
+				       AND SUB.DELETE_YN = 'N' 
+				 WHERE MEM.DELETE_YN = 'N' 
+				       AND MEM.MEM_TYPE = 'CDP'  
+	</select>
+	
+	
+	<insert id="insertAunuriCdp" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriCdp ====== */
+			INSERT 
+				  INTO LMS_SUBJ_CDP_MAPPING 
+				       (
+				         SUBJ_CDP_MAPPING_ID,
+				         YYYY,
+				         TERM,
+				         SUBJECT_CODE,
+				         CLASS,
+				         MEM_SEQ,
+				         INSERT_USER,
+				         INSERT_DATE
+				       ) 
+				       VALUES 
+				       (
+				         #{subjCdpMappingId},
+				         #{yyyy},
+				         #{term},
+				         #{subjectCode},
+				         #{subjectClass},
+				         #{memSeq},
+				         #{insertUser},
+				         NOW()
+				       )  
+	</insert>
+	
+	<insert id="insertAunuriSchedule" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriSchedule ====== */
+			INSERT 
+				  INTO HAK_SCHEDULE 
+				       (
+				         YYYY,
+				         TERM,
+				         START_DATE,
+				         END_DATE
+				       ) 
+				       VALUES 
+				       (
+				         #{yyyy},
+				         #{term},
+				         #{startDate},
+				         #{endDate}
+				       )
+	</insert>
+	
+	<select id="listAunuriWeek" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.listAunuriWeek ====== */
+			SELECT WEEK.WEEK_ID AS WEEK_ID, 
+		       WEEK.YYYY AS YYYY, 
+		       WEEK.TERM AS TERM, 
+		       WEEK.SUBJECT_CODE AS SUBJECT_CODE, 
+		       WEEK.CLASS AS SUBJECT_CLASS, 
+		       WEEK.WEEK_CNT AS WEEK_CNT 
+		  FROM LMS_SUBJ_WEEK WEEK 
+		     INNER JOIN LMS_SUBJECT LSUB 
+		         ON WEEK.YYYY = LSUB.YYYY 
+		       AND WEEK.TERM = LSUB.TERM 
+		       AND WEEK.SUBJECT_CODE = LSUB.SUBJECT_CODE 
+		       AND WEEK.CLASS = LSUB.CLASS 
+		       AND LSUB.DELETE_YN = 'N' 
+		       AND LSUB.SUBJECT_TRANING_TYPE = 'OFF'
+		 WHERE WEEK.YYYY = '2017' 
+		       AND WEEK.TERM = '1' 
+		       AND WEEK.DELETE_YN = 'N'
+		       
+	</select>
+	
+	
+	<insert id="insertAunuriWeekNcsUnit" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriWeekNcsUnit ====== */
+			INSERT 
+			  INTO LMS_SUBJ_NCS_UNIT 
+			       (
+			         NCS_UNIT_ID,
+			         YYYY,
+			         TERM,
+			         SUBJECT_CODE,
+			         CLASS,
+			         WEEK_ID,
+			         NCS_UNIT_NAME,
+			         INSERT_DATE,
+			         INSERT_USER
+			       ) 
+			       VALUES
+			       (
+			         #{ncsUnitId},
+			         #{yyyy},
+			         #{term},
+			         #{subjectCode},
+			         #{subjectClass},
+			         #{weekId},
+			         #{ncsUnitName},
+			         NOW(),
+			         #{insertUser}
+			       )
+			       
+	</insert>
+	
+	
+	<update id="updateAunuriWeekNcsUnit" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.updateAunuriWeekNcsUnit ====== */
+			UPDATE LMS_SUBJ_NCS_UNIT 
+		       SET NCS_UNIT_NAME = #{ncsUnitName}, 
+		       WEEK_ID = #{ncsUnitId}   
+		 WHERE YYYY = #{yyyy} 
+		       AND term = #{term} 
+		       AND subject_code #{subjectCode} 
+		       AND class = #{subjectClass} 
+		       AND week_id = #{weekId}
+	</update>
+	
+	<insert id="insertAunuriWeekNcsElem" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriWeekNcsElem ====== */
+			INSERT 
+			  INTO LMS_SUBJ_NCS_ELEM 
+			       (
+			         NCS_UNIT_ID,
+			         NCS_ELEM_ID,
+			         YYYY,
+			         TERM,
+			         SUBJECT_CODE,
+			         CLASS,
+			         WEEK_ID,
+			         NCS_ELEM_NAME,
+			         INSERT_DATE,
+			         INSERT_USER
+			       ) 
+			       VALUES
+			       (
+			         #{ncsUnitId},
+			         #{ncsElemId},
+			         #{yyyy},
+			         #{term},
+			         #{subjectCode},
+			         #{subjectClass},
+			         #{weekId},
+			         #{ncsElemName},
+			         NOW(),
+			         #{insertUser}
+			       )
+			       
+	</insert>
+	
+	<update id="updateAunuriWeekNcsElem" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.updateAunuriWeekNcsElem ====== */
+			UPDATE LMS_SUBJ_NCS_ELEM 
+		       SET NCS_UNIT_NAME = #{ncsUnitName}, 
+		       WEEK_ID = #{ncsUnitId}   
+		 WHERE YYYY = #{yyyy} 
+		       AND term = #{term} 
+		       AND subject_code #{subjectCode} 
+		       AND class = #{subjectClass} 
+		       AND week_id = #{weekId}
+	</update>
+	
+	
+	<update id="comMemberTest" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectWeekNcsVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.comMemberTest ====== */
+			UPDATE COM_MEMBER SET MEM_NAME = '테스트' WHERE MEM_ID = 'hrd1'
+	</update>
+	
+	
+	<insert id="insertAunuriSubjectTerm" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkSubjectVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.insertAunuriSubjectTerm ====== */
+			INSERT 
+				  INTO LMS_SUBJECT 
+				       ( 
+				         YYYY, 
+				         TERM, 
+				         SUBJECT_CODE, 
+				         CLASS, 
+				         SUBJECT_NAME, 
+				         DEPARTMENT_NO, 
+				         DEPARTMENT_NAME, 
+				         SUBJECT_TYPE, 
+				         POINT_USE_YN, 
+				         POINT, 
+				         TRANING_HOUR, 
+				         SUBJECT_TRANING_TYPE, 
+				         ONLINE_TYPE, 
+				         LCTRUM_CD, 
+				         LCTRUM_NM, 
+				         GRADE_RATIO,
+				         FIRST_STUDY_YN,
+				         HISTORY_ID, 
+				         HISTORY_DATE, 
+				         HISTORY_USER
+				       ) 
+				       VALUES 
+				       (  
+				         #{yyyy}, 
+				         #{term}, 
+				         #{subjectCode}, 
+				         #{subjectClass}, 
+				         #{subjectName}, 
+				         #{departmentNo}, 
+				         #{departmentName}, 
+				         #{subjectType}, 
+				         #{pointUseYn}, 
+				         #{point}, 
+				         #{traningHour}, 
+				         #{subjectTraningType}, 
+				         #{onlineType}, 
+				         #{lctrumCd}, 
+				         #{lctrumNm}, 
+				         #{gradeRatio},
+				         #{firstStudyYn},
+				         #{historyId},
+				         NOW(),
+				         #{sessionMemseq}
+				       )   
+	</insert>
+	
+	
+	<select id="listSubjectCdpTerm" parameterType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO" resultType="kr.co.sitglobal.aunuri.vo.AunuriLinkMemberMappingVO">
+	/* ====== kr.co.sitglobal.oklms.la.link.service.impl.LinkMapper.listSubjectCdpTerm ====== */
+			
+			SELECT * FROM (
+				SELECT MEM.MEM_SEQ, 
+				       MEM.DEPT_NO, 
+				       YYYY AS YYYY, 
+				       TERM AS TERM, 
+				       SUBJECT_CODE AS SUBJECT_CODE, 
+				       CLASS AS SUBJECT_CLASS  
+				  FROM COM_MEMBER MEM 
+				     INNER JOIN LMS_SUBJECT SUB 
+				         ON MEM.DEPT_NO = SUB.DEPARTMENT_NO 
+				       AND SUB.DELETE_YN = 'N' 
+				 WHERE MEM.DELETE_YN = 'N' 
+				       AND MEM.MEM_TYPE = 'CDP'  
+			)    
+			WHERE YYYY = #{yyyy}
+		   AND TERM = #{term}
+		   AND SUBJECT_CODE = #{subjectCode}
+		   AND SUBJECT_CLASS = #{subjectClass}
+			
+				 
+	</select>
+	
+	
+
+</mapper>

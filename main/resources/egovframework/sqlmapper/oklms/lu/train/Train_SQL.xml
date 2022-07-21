@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 01. 09          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.train.service.impl.TrainMapper">
+	
+	<sql id="listMember-where">
+
+	</sql>
+
+	<select id="listTrain" parameterType="kr.co.sitglobal.oklms.lu.train.vo.TrainVO" resultType="kr.co.sitglobal.oklms.lu.train.vo.TrainVO">
+		/* ====== kr.co.sitglobal.oklms.lu.workcert.service.impl.kr.co.sitglobal.oklms.lu.train.service.impl.TrainMapper.listTrain ====== */
+			<include refid="kr.co.sitglobal.include.paging-start"/>
+	        select '온라인교과목_01' subject_name,
+			       'OOO001' subject_code,
+			       '15' week_cnt,
+			       '전자공학' field
+			union all
+			select '온라인교과목_02' subject_name,
+			       'OOO002' subject_code,
+			       '15' week_cnt,
+			       '메카트로닉스' field
+			<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+
+</mapper>

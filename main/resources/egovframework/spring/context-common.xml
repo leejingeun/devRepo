@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+							http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<context:component-scan base-package="egovframework.com">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<!-- exclude-filter -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<context:component-scan base-package="kr.co.sitglobal">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<!-- exclude-filter -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+
+	<!-- 파일다운로드 담당하는 뷰클래스 -->
+	<bean id="zipdownloadView" class="kr.co.sitglobal.oklms.comm.util.ZipDownloadView" />
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:/egovframework/message/message-common</value>
+				<value>classpath:/egovframework/props/globals</value>
+				<value>classpath:/egovframework/rte/fdl/idgnr/messages/idgnr</value>
+				<value>classpath:/egovframework/rte/fdl/property/messages/properties</value>
+			</list>
+		</property>
+		<property name="cacheSeconds">
+			<value>60</value>
+		</property>
+	</bean>
+
+    <bean id="egovMessageSource" class="egovframework.com.cmm.EgovMessageSource">
+        <property name="reloadableResourceBundleMessageSource">
+            <ref bean="messageSource" />
+        </property>
+    </bean>
+    
+    <!-- PropertyUtils Load -->
+<!-- 	<bean id="propertyUtil" class="kr.co.sitglobal.oklms.comm.util.PropertyUtil" > -->
+<!-- 		<property name="locations"> -->
+<!-- 			<list> -->
+<!-- 				<value>framework/props/system.properties</value> -->
+<!-- 				<value>framework/props/uri.properties</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+ 
+	<!-- 실행환경에서 빈 이름 참조(AbstractServiceImpl) : Exception 발생시 후처리용 별도작업을 위해 실행환경의 LeveaTrace를 활용하도록 설정 -->
+	<bean id="leaveaTrace" class="egovframework.rte.fdl.cmmn.trace.LeaveaTrace">
+		<property name="traceHandlerServices">
+			<list>
+				<ref bean="egov.traceHandlerService" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Exception 발생시 후처리용 별도작업을 위해 실행환경의 DefaultTrace Handle Manager 를 활용하도록 설정 -->
+	<bean id="egov.traceHandlerService" class="egovframework.rte.fdl.cmmn.trace.manager.DefaultTraceHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="egov.antPathMater" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="egov.defaultTraceHandler" />
+			</list>
+		</property>
+	</bean>
+	<!-- Exception 발생시 후처리용 별도작업을 위해 실행환경의 AntPathMatcher 를 활용하도록 설정 -->
+	<bean id="egov.antPathMater" class="org.springframework.util.AntPathMatcher" />
+	<!-- Exception 발생시 후처리용 별도작업을 위해 실행환경의 DefaultTraceHandler 를 활용하도록 설정 -->
+	<bean id="egov.defaultTraceHandler" class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
+
+
+
+    <!-- MULTIPART RESOLVERS -->
+    <!-- regular spring resolver 1MB = 1048576 , 50 MB = 52428800 B , 100 MB= 104857600 B -->
+<!--     <bean id="spring.RegularCommonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+    <bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="104857600" />
+        <property name="maxInMemorySize" value="104857600" />
+    </bean>
+
+    <!-- custom multi file resolver -->
+<!--     <bean id="local.MultiCommonsMultipartResolver" class="egovframework.com.cmm.web.EgovMultipartResolver"> -->
+<!--         <property name="maxUploadSize" value="1048576" /> -->
+<!--         <property name="maxInMemorySize" value="1048576" /> -->
+<!--     </bean> -->
+
+    <!-- choose one from above and alias it to the name Spring expects -->
+<!--     <alias name="local.MultiCommonsMultipartResolver" alias="multipartResolver" /> -->
+<!--     <alias name="spring.RegularCommonsMultipartResolver" alias="multipartResolver" /> -->
+    <alias name="filterMultipartResolver" alias="multipartResolver" />
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+</beans>

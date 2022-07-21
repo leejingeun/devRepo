@@ -1,0 +1,1472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 02. 17          First Draft.
+  ~  *
+  ~  ******************************************************************************* 
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.online.service.impl.OnlineTraningMapper">
+	
+	<!-- <sql id="listMember-where">
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND (TPS.TRANING_PROCESS_NAME LIKE '%${searchKeyword}'OR TPS.TRANING_PROCESS_NO LIKE '%${searchKeyword}%')
+	    </if>
+	</sql> -->
+
+	<select id="listOnlineTraningSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningSchedule ====== */
+		SELECT SUB.YYYY, 
+			       SUB.TERM, 
+			       SUB.SUBJECT_CODE, 
+			       SUB.CLASS, 
+			       WEK.WEEK_ID, 
+			       WEK.WEEK_CNT,
+			       TIM.TRANING_DATE,  
+			       SWC.CONTENT_NAME, 
+			      
+			       CASE WHEN  SUB.ONLINE_TYPE IN ('104','105') 
+			       /* 플립러닝 : 출석일(토요일) 기준 사전 2주(전주 월요일)로 학습시작일 세팅*/
+			         THEN DATE_FORMAT(IF(IFNULL(SWC.WEEK_ST_DATE,'') = '', DATE_ADD(TIM.TRANING_DATE, INTERVAL-14 DAY), SWC.WEEK_ST_DATE),'%Y.%m.%d')
+				    WHEN SUB.ONLINE_TYPE = '101' 
+			         /*슨수온라인 : 출석일(토요일) 해당주 월요일로  학습시작일 세팅*/
+			       	  THEN DATE_FORMAT(IF(IFNULL(SWC.WEEK_ST_DATE,'') = '', DATE_ADD(TIM.TRANING_DATE, INTERVAL-5 DAY),  SWC.WEEK_ST_DATE),'%Y.%m.%d')
+					/* 블랜디드(102),보조활욜(103)은 출석기준일로 학습시작일 세팅*/
+			          ELSE  DATE_FORMAT(IF(IFNULL(SWC.WEEK_ST_DATE,'') = '', DATE_ADD(TIM.TRANING_DATE, INTERVAL-5 DAY), SWC.WEEK_ST_DATE),'%Y.%m.%d')     
+				   END WEEK_ST_DATE,  
+			       
+			       CASE WHEN  SUB.ONLINE_TYPE IN ('104','105') 
+			        /* 플립러닝 : 출석일(토요일) 기준 사전 2주(출석일 전날)로 학습종료일 세팅*/
+			         THEN  DATE_FORMAT(IF(IFNULL(SWC.WEEK_ED_DATE,'') = '', DATE_ADD(TIM.TRANING_DATE, INTERVAL-1 DAY), SWC.WEEK_ED_DATE),'%Y.%m.%d')
+				    WHEN SUB.ONLINE_TYPE = '101' 
+			       	  THEN DATE_FORMAT(IF(IFNULL(SWC.WEEK_ED_DATE,'') = '', DATE_ADD(TIM.TRANING_DATE, INTERVAL+8 DAY), SWC.WEEK_ED_DATE),'%Y.%m.%d')
+					/* 블랜디드(102),보조활욜(103)은 출석기준일로 학습종료일 세팅*/
+			          ELSE  DATE_FORMAT(IF(IFNULL(SWC.WEEK_ED_DATE,'') = '', TIM.TRANING_DATE, SWC.WEEK_ED_DATE),'%Y.%m.%d')    
+				   END WEEK_ED_DATE,   
+			       SWC.WEEK_MIN 
+			  FROM LMS_SUBJECT SUB 
+			  
+			     INNER JOIN LMS_SUBJ_WEEK WEK 
+			         ON WEK.YYYY = SUB.YYYY 
+			       AND WEK.TERM = SUB.TERM 
+			       AND WEK.SUBJECT_CODE = SUB.SUBJECT_CODE 
+			       AND WEK.CLASS = SUB.CLASS 
+			       AND WEK.DELETE_YN = 'N' 
+			       
+			     INNER JOIN LMS_SUBJ_WEEK_TIME TIM 
+			         ON TIM.YYYY = WEK.YYYY 
+			       AND TIM.TERM = WEK.TERM 
+			       AND TIM.SUBJECT_CODE = WEK.SUBJECT_CODE 
+			       AND TIM.CLASS = WEK.CLASS 
+			       AND TIM.WEEK_ID = WEK.WEEK_ID 
+			       AND TIM.DELETE_YN = 'N'
+			       
+			     LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT SWC 
+			         ON WEK.WEEK_ID = SWC.WEEK_ID 
+			       AND WEK.WEEK_CNT = SWC.WEEK_CNT 
+			       AND SWC.DELETE_YN = 'N' 
+			       
+			 WHERE SUB.YYYY = #{yyyy} 
+			       AND SUB.TERM = #{term} 
+			       AND SUB.SUBJECT_CODE = #{subjectCode}
+			       AND SUB.CLASS = #{subClass}
+			       AND SUB.DELETE_YN = 'N' 
+			ORDER BY TO_NUMBER(WEK.WEEK_CNT)   
+		
+	</select>
+	
+	<select id="listOnlineTraningCdpSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningCdpSchedule ====== */
+		SELECT SUB.YYYY, 
+			       SUB.TERM, 
+			       SUB.SUBJECT_CODE, 
+			       SUB.CLASS, 
+			       WEK.WEEK_ID, 
+			       WEK.WEEK_CNT,
+			       TIM.TRANING_DATE,  
+			       SWC.CONTENT_NAME, 
+			       SWC.WEEK_ST_DATE,
+				   SWC.WEEK_ED_DATE,   
+			       SWC.WEEK_MIN,
+			       
+			       CASE WHEN DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'%Y.%m.%d') AND  DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 ),'%Y.%m.%d')
+				   THEN 'Y'
+				   ELSE 'N'
+				   END NOW_WEEK_YN
+			        
+			  FROM LMS_SUBJECT SUB 
+			  
+			     INNER JOIN LMS_SUBJ_WEEK WEK 
+			         ON WEK.YYYY = SUB.YYYY 
+			       AND WEK.TERM = SUB.TERM 
+			       AND WEK.SUBJECT_CODE = SUB.SUBJECT_CODE 
+			       AND WEK.CLASS = SUB.CLASS 
+			       AND WEK.DELETE_YN = 'N' 
+			       
+			     INNER JOIN LMS_SUBJ_WEEK_TIME TIM 
+			         ON TIM.YYYY = WEK.YYYY 
+			       AND TIM.TERM = WEK.TERM 
+			       AND TIM.SUBJECT_CODE = WEK.SUBJECT_CODE 
+			       AND TIM.CLASS = WEK.CLASS 
+			       AND TIM.WEEK_ID = WEK.WEEK_ID 
+			       AND TIM.DELETE_YN = 'N'
+			       
+			     LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT SWC 
+			         ON WEK.WEEK_ID = SWC.WEEK_ID 
+			       AND WEK.WEEK_CNT = SWC.WEEK_CNT 
+			       AND SWC.DELETE_YN = 'N' 
+			       
+			 WHERE SUB.YYYY = #{yyyy} 
+			       AND SUB.TERM = #{term} 
+			       AND SUB.SUBJECT_CODE = #{subjectCode}
+			       AND SUB.CLASS = #{subClass}
+			       AND SUB.DELETE_YN = 'N' 
+			ORDER BY TO_NUMBER(WEK.WEEK_CNT)   
+		
+	</select>
+	
+	<select id="listOfflineTraningCdpSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOfflineTraningCdpSchedule ====== */
+		SELECT WEE.WEEK_CNT , 
+				       WEE.WEEK_ID, 
+				       WEE.YYYY, 
+					   WEE.TERM, 
+					   WEE.SUBJECT_CODE, 
+					   WEE.CLASS AS SUBJECT_CLASS, 
+				       TIM.TRANING_DATE,
+				       TIM.TRANING_ST_HOUR, 
+				       TIM.TRANING_ST_MIN, 
+				       TIM.TRANING_ED_HOUR, 
+				       TIM.TRANING_ED_MIN , 
+				       SUB.LCTRUM_CD,
+				       SUB.LCTRUM_NM,
+				       
+				       (SELECT COUNT(*) 
+				         FROM LMS_LESSON LES  
+				        WHERE WEE.YYYY = LES.YYYY 
+				              AND WEE.TERM = LES.TERM 
+				              AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE 
+				              AND WEE.CLASS = LES.CLASS 
+				              AND LES.DELETE_YN = 'N' 
+				              AND LES.LEC_STATUS = 'A' 
+				       ) LESSON_CNT,
+				       
+				       CASE WHEN DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'%Y.%m.%d') AND  DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 ),'%Y.%m.%d')
+					   THEN 'Y'
+					   ELSE 'N'
+					   END NOW_WEEK_YN,
+				       
+				       SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TIM.TRANING_DATE), 1) DAY_WEEK,
+				       CONCAT( TIM.TRANING_ST_HOUR ,':', TIM.TRANING_ST_MIN) as TRANING_ST,
+					   CONCAT( TIM.TRANING_ED_HOUR ,':', TIM.TRANING_ED_MIN) as TRANING_ED,
+					   MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) AS TIME_HOUR,
+					   MOD(TIM.TRANING_ED_MIN, TIM.TRANING_ST_MIN ) AS TIME_MIN,
+				    
+				       (SELECT MAX(REPORT_ID) 
+					    FROM LMS_REPORT REP 
+					   WHERE REP.DELETE_YN = 'N' 
+					         AND REP.YYYY = WEE.YYYY 
+					         AND REP.TERM = WEE.TERM 
+					         AND REP.SUBJECT_CODE = WEE.SUBJECT_CODE 
+					         AND REP.WEEK_CNT = WEE.WEEK_CNT 
+					       <!--   AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN REP.SUBMIT_START_DATE AND REP.SUBMIT_END_DATE  -->
+					  ) AS REPORT_ID,
+					  
+					  (SELECT MAX(TEAM.TEAM_PROJECT_ID) 
+					    FROM LMS_TEAM_PROJECT TEAM 
+					   WHERE TEAM.DELETE_YN = 'N' 
+					         AND TEAM.YYYY = WEE.YYYY 
+					         AND TEAM.TERM = WEE.TERM 
+					         AND TEAM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+					         AND TEAM.WEEK_CNT = WEE.WEEK_CNT 
+					       <!--   AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN REP.SUBMIT_START_DATE AND REP.SUBMIT_END_DATE  -->
+					  ) AS TEAM_PROJECT_ID,
+					  
+					  (SELECT MAX(DISCUSS_ID) 
+					    FROM LMS_DISCUSS DIS 
+					   WHERE DIS.DELETE_YN = 'N' 
+					         AND DIS.YYYY = WEE.YYYY 
+					         AND DIS.TERM = WEE.TERM 
+					         AND DIS.SUBJECT_CODE = WEE.SUBJECT_CODE 
+					         AND DIS.CLASS = WEE.CLASS 
+					       <!--   AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN DIS.START_DATE AND DIS.END_DATE  -->
+					         AND DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DIS.START_DATE AND DIS.END_DATE
+					  ) AS DISCUSS_ID,
+					  
+					  (SELECT COUNT(1)
+				         FROM LMS_TRANING_NOTE_MASTER NOM 
+				        WHERE NOM.DELETE_YN = 'N' 
+				              AND NOM.YYYY = WEE.YYYY 
+				              AND NOM.TERM = WEE.TERM 
+				              AND NOM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND NOM.CLASS = WEE.CLASS 
+				              AND NOM.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS TRA_NOTE_CNT,
+				       
+				       (SELECT COUNT(1)
+				         FROM LMS_ACTIVITY_NOTE ACT 
+				        WHERE ACT.DELETE_YN = 'N' 
+				              AND ACT.YYYY = WEE.YYYY 
+				              AND ACT.TERM = WEE.TERM 
+				              AND ACT.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND ACT.CLASS = WEE.CLASS 
+				              AND ACT.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS ACT_NOTE_CNT,
+				      
+				       (SELECT COUNT(1) 
+				         FROM LMS_SUBJ_WEEK_SCH SCH 
+				        WHERE SCH.DELETE_YN = 'N' 
+				              AND SCH.WEEK_ID = WEE.WEEK_ID 
+				       ) WEEK_MAPPING_CNT , 
+				        <!-- (SELECT GROUP_CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME) -->
+				        <![CDATA[
+				     	(SELECT CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME)
+				         FROM LMS_SUBJ_NCS_UNIT UNIT 
+				          INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+				              ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+				               AND ELEM.WEEK_ID = UNIT.WEEK_ID 
+				              AND ELEM.DELETE_YN = 'N' 
+				        WHERE UNIT.DELETE_YN = 'N' 
+				              AND UNIT.WEEK_ID = WEE.WEEK_ID 
+				              LIMIT 1
+				       ) NCS_NAME 
+				        ]]>	
+				  FROM LMS_SUBJECT SUB 
+				  
+				  INNER JOIN LMS_SUBJ_WEEK WEE 
+			         ON WEE.YYYY = SUB.YYYY 
+			       AND WEE.TERM = SUB.TERM 
+			       AND WEE.SUBJECT_CODE = SUB.SUBJECT_CODE 
+			       AND WEE.CLASS = SUB.CLASS 
+			       AND WEE.DELETE_YN = 'N' 
+			     INNER JOIN LMS_SUBJ_WEEK_TIME TIM 
+			         ON TIM.YYYY = WEE.YYYY 
+			       AND TIM.TERM = WEE.TERM 
+			       AND TIM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			       AND TIM.CLASS = WEE.CLASS 
+			       AND TIM.WEEK_ID = WEE.WEEK_ID 
+			       AND TIM.DELETE_YN = 'N' 
+			     LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT SWC 
+			         ON WEE.WEEK_ID = SWC.WEEK_ID 
+			       AND WEE.WEEK_CNT = SWC.WEEK_CNT 
+			       AND WEE.DELETE_YN = 'N'   
+				       
+				  WHERE SUB.YYYY = #{yyyy} 
+			       AND SUB.TERM = #{term} 
+			       AND SUB.SUBJECT_CODE = #{subjectCode}
+			       AND SUB.CLASS = #{subClass}
+			       AND SUB.DELETE_YN = 'N' 
+			       
+			       ORDER BY TO_NUMBER(WEE.WEEK_CNT)   
+	</select>
+	
+	
+	
+	<select id="listOnlineTraningAllWeekSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningAllWeekSchedule ====== */
+		SELECT SCH.SUBJ_SCH_ID, 
+					SCH.WEEK_ID, 
+			       SCH.WEEK_CNT, 
+			       SCH.SUBJ_STEP, 
+			       SCH.SUBJ_TITLE, 
+			       SCH.START_DATE, 
+			       SCH.END_DATE, 
+			       SCH.STUDY_TIME, 
+			       SCH.LINK_CONTENT_YN, 
+			       SCH.CMS_COURSE_CONTENT_ID, 
+			       SCH.CMS_LESSON_ID,
+			       SCH.CMS_ID,
+			       SCH.CONTENT_TYPE,
+			       SCH.CONTENTS_DIR,
+			       SCH.CONTENTS_IDX_FILE,
+			       SCH.CONTENTS_REAL_FILE,
+			       SCH.URL,
+			       SCH.DEVICE_TYPE_CODE,
+			       SCH.PAGE_COUNT,
+			       CASE 
+				           WHEN SCH.DEVICE_TYPE_CODE = '1' 
+				           THEN 'PC+M' 
+				           WHEN SCH.DEVICE_TYPE_CODE = '2' 
+				           THEN 'PC+M' 
+				           WHEN SCH.DEVICE_TYPE_CODE = '3' 
+				           THEN 'PC+M' 
+				           WHEN SCH.DEVICE_TYPE_CODE = '4' 
+				           THEN 'PC'
+				           WHEN SCH.DEVICE_TYPE_CODE = '5' 
+				           THEN '모바일'
+				           ELSE '기타' 
+				       END DEVICE_TYPE_CODE_NAME 
+			  FROM LMS_SUBJ_WEEK_SCH SCH 
+			 WHERE SCH.YYYY =  #{yyyy}
+			       AND SCH.TERM = #{term}
+			       AND SCH.SUBJECT_CODE = #{subjectCode}
+			       AND SCH.CLASS =#{subClass}
+			       AND SCH.DELETE_YN = 'N' 
+			ORDER BY TO_NUMBER(SCH.WEEK_CNT), 
+			       TO_NUMBER(SCH.SUBJ_STEP)  
+	</select>
+	
+	
+	
+	<insert id="insertOnlineTraningStand" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.insertOnlineTraningStand ====== */
+		INSERT 
+			  INTO LMS_SUBJ_ON_STAND 
+			       ( 
+			         YYYY, 
+			         TERM, 
+			         SUBJECT_CODE, 
+			         CLASS, 
+			         START_DATE, 
+			         END_DATE, 
+			         WEEK_STUDY_TYPE, 
+			         WEEK_STUDY, 
+			         CUT_PROGRESS, 
+			         ATTEND_PROGRESS, 
+			         ATTEND_REFLECT_TYPE, 
+			         ATTEND_NEXT_DAY, 
+			         SCHEDULE_TIME, 
+			         PROGRESS_ATTEND_TYPE_CODE, 
+			         INSERT_DATE, 
+			         INSERT_USER 
+			       ) 
+			       VALUES 
+			       (  
+			         #{yyyy}, 
+			         #{term}, 
+			         #{subjectCode}, 
+			         #{subjectClass}, 
+			         #{startDate}, 
+			         #{endDate}, 
+			         #{weekStudyType}, 
+			         #{weekStudy}, 
+			         #{cutProgress}, 
+			         #{attendProgress}, 
+			         #{attendReflectType}, 
+			         #{attendNextDay}, 
+			         #{scheduleTime}, 
+			         #{progressAttendTypeCode}, 
+			         NOW(), 
+			         #{insertUser} 
+			       )
+	</insert>
+	
+	
+	<update id="updateOnlineTraningStand" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.updateOnlineTraningStand ====== */
+		UPDATE LMS_SUBJ_ON_STAND 
+			       SET UPDATE_DATE = NOW()
+			       <if test="startDate != null and startDate != ''">,START_DATE = #{startDate} </if>
+			       <if test="endDate != null and endDate != ''">, END_DATE = #{endDate} </if>
+			       <if test="weekStudyType != null and weekStudyType != ''">,WEEK_STUDY_TYPE = #{weekStudyType} </if>
+			       <if test="weekStudy != null and weekStudy != ''">,WEEK_STUDY = #{weekStudy}  </if>
+			       <if test="cutProgress != null and cutProgress != ''">,CUT_PROGRESS = #{cutProgress} </if>
+			       <if test="attendProgress != null and attendProgress != ''">,ATTEND_PROGRESS = #{attendProgress} </if>
+			       <if test="attendReflectType != null and attendReflectType != ''">,ATTEND_REFLECT_TYPE = #{attendReflectType} </if>
+			       <if test="attendNextDay != null and attendNextDay != ''">,ATTEND_NEXT_DAY = #{attendNextDay} </if>
+			       <if test="scheduleTime != null and scheduleTime != ''"> ,SCHEDULE_TIME = #{scheduleTime} </if>
+			       <if test="progressAttendTypeCode != null and progressAttendTypeCode != ''">,PROGRESS_ATTEND_TYPE_CODE = #{progressAttendTypeCode} </if>
+			       <if test="updateUser != null and updateUser != ''">,UPDATE_USER = #{updateUser} </if>
+			 WHERE DELETE_YN= 'N' 
+			       AND YYYY = #{yyyy} 
+			       AND TERM = #{term} 
+			       AND SUBJECT_CODE = #{subjectCode} 
+			       AND CLASS = #{subjectClass} 
+			       AND SUBJ_ON_STAND_SEQ = #{subjOnStandSeq}
+	</update>
+	
+	<select id="getOnlineTraningStand" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.getOnlineTraningStand ====== */
+		SELECT STA.SUBJ_ON_STAND_SEQ, 
+			       SUB.YYYY, 
+			       SUB.TERM, 
+			       SUB.SUBJECT_CODE, 
+			       SUB.CLASS,  
+			       STA.WEEK_STUDY_TYPE, 
+			       STA.WEEK_STUDY, 
+			       STA.CUT_PROGRESS, 
+			       STA.ATTEND_PROGRESS, 
+			       STA.ATTEND_REFLECT_TYPE, 
+			       STA.ATTEND_NEXT_DAY, 
+			       STA.SCHEDULE_TIME, 
+			       STA.PROGRESS_ATTEND_TYPE_CODE, 
+			       STA.INSERT_DATE, 
+			       STA.INSERT_USER,
+			       IFNULL((SELECT 1 
+			         FROM LMS_LESSON LES 
+			            INNER JOIN LMS_PROGRESS_ATTEND ATT 
+			                ON LES.LESSON_ID = ATT.LESSON_ID 
+			        WHERE LES.DELETE_YN = 'N' 
+			              AND LES.LEC_STATUS = 'A' 
+			              AND LES.YYYY = SUB.YYYY 
+			              AND LES.TERM = SUB.TERM 
+			              AND LES.SUBJECT_CODE = SUB.SUBJECT_CODE 
+			              AND LES.CLASS = SUB.CLASS 
+			              LIMIT 1
+			       ),0) ATT_CNT,
+			      
+			       CASE WHEN  SUB.ONLINE_TYPE IN ('104','105') 
+			       /* 플립러닝 : 출석일(토요일) 기준 사전 2주(전주 월요일)로 학습시작일 세팅*/
+			         THEN DATE_FORMAT(IF(IFNULL(STA.START_DATE,'') = '', DATE_ADD(TIM.TRANING_START_DATE, INTERVAL-14 DAY), STA.START_DATE),'%Y.%m.%d')
+				    WHEN SUB.ONLINE_TYPE = '101' 
+			         /*슨수온라인 : 출석일(토요일) 해당주 월요일로  학습시작일 세팅*/
+			       	  THEN DATE_FORMAT(IF(IFNULL(STA.START_DATE,'') = '', DATE_ADD(TIM.TRANING_START_DATE, INTERVAL-5 DAY), STA.START_DATE),'%Y.%m.%d')
+					/* 블랜디드(102),보조활욜(103)은 출석기준일로 학습시작일 세팅*/
+			          ELSE  DATE_FORMAT(IF(IFNULL(STA.START_DATE,'') = '', DATE_ADD(TIM.TRANING_START_DATE, INTERVAL-5 DAY), STA.START_DATE),'%Y.%m.%d')     
+				   END START_DATE,  
+			     
+			       CASE WHEN  SUB.ONLINE_TYPE IN ('104','105') 
+			        /* 플립러닝 : 출석일(토요일) 기준 사전 2주(출석일 전날)로 학습종료일 세팅*/
+			         THEN  DATE_FORMAT(IF(IFNULL(STA.END_DATE,'') = '', DATE_ADD(TIM.TRANING_END_DATE, INTERVAL-1 DAY), STA.END_DATE),'%Y.%m.%d')
+				    WHEN SUB.ONLINE_TYPE = '101' 
+			       	  THEN DATE_FORMAT(IF(IFNULL(STA.END_DATE,'') = '', DATE_ADD(TIM.TRANING_END_DATE, INTERVAL+8 DAY), STA.END_DATE),'%Y.%m.%d')
+					/* 블랜디드(102),보조활욜(103)은 출석기준일로 학습종료일 세팅*/
+			          ELSE  DATE_FORMAT(IF(IFNULL(STA.END_DATE,'') = '',TIM.TRANING_END_DATE,STA.END_DATE),'%Y.%m.%d')    
+				   END END_DATE
+			  FROM LMS_SUBJECT SUB 
+			    
+			   LEFT OUTER JOIN LMS_SUBJ_ON_STAND STA 
+			         ON STA.DELETE_YN = 'N' 
+			       AND SUB.YYYY = STA.YYYY 
+			       AND SUB.TERM = STA.TERM 
+			       AND SUB.SUBJECT_CODE = STA.SUBJECT_CODE 
+			       AND SUB.CLASS = STA.CLASS 
+			     
+			     LEFT OUTER JOIN 
+			       (SELECT YYYY,
+			              TERM,
+			              SUBJECT_CODE,
+			              CLASS,
+			              MIN(TRANING_DATE) TRANING_START_DATE, 
+			              MAX(TRANING_DATE) TRANING_END_DATE 
+			         FROM LMS_SUBJ_WEEK_TIME 
+			        WHERE DELETE_YN = 'N' 
+			          GROUP BY YYYY, 
+			              TERM, 
+			              SUBJECT_CODE, 
+			              CLASS 
+			       ) TIM 
+			         ON TIM.YYYY = SUB.YYYY 
+			       AND TIM.TERM = SUB.TERM 
+			       AND TIM.SUBJECT_CODE = SUB.SUBJECT_CODE 
+			       AND TIM.CLASS = SUB.CLASS 
+			       
+			 WHERE SUB.DELETE_YN = 'N' 
+			       AND SUB.YYYY = #{yyyy}
+			       AND SUB.TERM = #{term}
+			       AND SUB.SUBJECT_CODE = #{subjectCode} 
+			       AND SUB.CLASS = #{subjectClass}       
+			       
+	</select>
+	
+	
+	<insert id="insertOnlineTraningWeekContent" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningWeekVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.insertOnlineTraningWeekContent ====== */
+		INSERT 
+			  INTO LMS_SUBJ_WEEK_CONTENT
+			       (
+			         WEEK_ID,
+			         WEEK_CNT, 
+			         CONTENT_NAME,
+			         WEEK_ST_DATE,
+			         WEEK_ED_DATE,
+			         WEEK_MIN,
+			         ATCH_FILE_ID,
+			         INSERT_DATE,
+			         INSERT_USER
+			       ) 
+			       VALUES
+			       (
+			      	 #{weekId},
+			      	 #{weekCnt}, 
+			         #{contentName},
+			         #{weekStDate},
+			         #{weekEdDate},
+			         #{weekMin},
+			         #{atchFileId},
+			         NOW(),
+			         #{insertUser}
+			       	
+			       )
+	</insert>
+	
+	<delete id="deleteOnlineTraningWeekContent" parameterType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.deleteOnlineTraningWeekContent ====== */
+			 DELETE FROM  LMS_SUBJ_WEEK_CONTENT  WHERE WEEK_ID = #{weekId}
+	</delete>
+	
+	
+	<insert id="insertOnlineTraningWeekSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.insertOnlineTraningWeekSchedule ====== */
+		INSERT 
+			  INTO LMS_SUBJ_WEEK_SCH 
+			       ( 
+			         SUBJ_SCH_ID, 
+			         WEEK_ID, 
+			         YYYY, 
+				     TERM, 
+				     SUBJECT_CODE, 
+				     CLASS, 
+			         WEEK_CNT, 
+			         SUBJ_STEP, 
+			         SUBJ_TITLE, 
+			         START_DATE, 
+			         END_DATE, 
+			         STUDY_TIME, 
+			         LINK_CONTENT_YN, 
+			         CMS_COURSE_CONTENT_ID, 
+			         CMS_LESSON_ID, 
+			         CMS_ID, 
+			         CONTENT_TYPE, 
+			         CONTENTS_DIR, 
+			         CONTENTS_IDX_FILE, 
+			         CONTENTS_REAL_FILE, 
+			         URL, 
+			         DEVICE_TYPE_CODE, 
+			         PAGE_COUNT,
+			         ATCH_FILE_ID, 
+			         INSERT_DATE, 
+			         INSERT_USER 
+			       ) 
+			       VALUES 
+			       (  
+			         #{subjSchId}, 
+			         #{weekId}, 
+			         #{yyyy}, 
+			         #{term}, 
+			         #{subjectCode}, 
+			         #{subjectClass}, 
+			         #{weekCnt}, 
+			         #{subjStep}, 
+			         #{subjTitle}, 
+			         #{startDate}, 
+			         #{endDate}, 
+			         #{studyTime}, 
+			         #{linkContentYn}, 
+			         #{cmsCourseContentId}, 
+			         #{cmsLessonId}, 
+			         #{cmsId}, 
+			         #{contentType}, 
+			         #{contentsDir}, 
+			         #{contentsIdxFile}, 
+			         #{contentsRealFile}, 
+			         #{url}, 
+			         #{deviceTypeCode}, 
+			         #{pageCount},
+			         #{atchFileId}, 
+			         now(), 
+			         #{insertUser} 
+			       )
+	</insert>
+	
+	<delete id="deleteOnlineTraningWeekSchedule" parameterType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.deleteOnlineTraningWeekSchedule ====== */
+			  DELETE FROM  LMS_SUBJ_WEEK_SCH WHERE WEEK_ID = #{weekId}
+	</delete>
+	
+	<select id="getAllProgressRateLesson" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.getAllProgressRateLesson ====== */
+			SELECT 
+				FN_ALL_PROGRESS_RATE_LESSON(LES.LESSON_ID) AS onRealRrogressRate, 
+				ATT.ON_REAL_PROGRESS_TIME AS onRealRrogressTime
+				FROM LMS_LESSON LES 
+				
+				LEFT OUTER JOIN (
+					SELECT FLOOR(MOD(SUM(LESSON_TIME),3600)/60) AS ON_REAL_PROGRESS_TIME,
+				       LESSON_ID 
+				  FROM LMS_PROGRESS_ATTEND ATTD 
+				     INNER JOIN LMS_LESSON_TIME_MAX TIME 
+				         ON ATTD.PROGRESS_ATTEND_ID = TIME.PROGRESS_ATTEND_ID 
+				   GROUP BY LESSON_ID
+				) ATT 
+				
+				ON LES.LESSON_ID = ATT.LESSON_ID
+				 WHERE LES.DELETE_YN = 'N' 
+				       AND LES.YYYY = #{yyyy} 
+				       AND LES.TERM = #{term} 
+				       AND LES.SUBJECT_CODE = #{subjectCode} 
+				       AND LES.CLASS = #{subjectClass}  
+				       AND LES.LEC_STATUS = 'A' 
+				       AND LES.MEM_SEQ = #{sessionMemSeq} 
+	</select>
+	
+	<select id="listOnlineTraningStdSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningStdSchedule ====== */
+		SELECT WEE.WEEK_CNT , 
+				       WEE.WEEK_ID, 
+				       WEE.YYYY, 
+					   WEE.TERM, 
+					   WEE.SUBJECT_CODE, 
+					   WEE.CLASS AS SUBJECT_CLASS, 
+				       LES.LESSON_ID, 
+				       TIM.TRANING_DATE,
+				    
+				       TIM.TRANING_ST_HOUR, 
+				       TIM.TRANING_ST_MIN, 
+				       TIM.TRANING_ED_HOUR, 
+				       TIM.TRANING_ED_MIN , 
+				       MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) STUDY_TIME,
+				       CON.CONTENT_NAME,
+				       
+				       SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TIM.TRANING_DATE), 1) DAY_WEEK,
+				       CONCAT( TIM.TRANING_ST_HOUR ,':', TIM.TRANING_ST_MIN) as TRANING_ST,
+					   CONCAT( TIM.TRANING_ED_HOUR ,':', TIM.TRANING_ED_MIN) as TRANING_ED,
+					   MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) AS TIME_HOUR,
+					   MOD(TIM.TRANING_ED_MIN, TIM.TRANING_ST_MIN ) AS TIME_MIN,
+					   
+					   CASE WHEN DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'%Y.%m.%d') AND  DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 ),'%Y.%m.%d')
+					   THEN 'Y'
+					   ELSE 'N'
+					   END NOW_WEEK_YN,
+					   <![CDATA[
+					   CASE WHEN DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN DATE_FORMAT(CON.WEEK_ST_DATE,'%Y.%m.%d') AND DATE_FORMAT(CON.WEEK_ED_DATE,'%Y.%m.%d')
+				       THEN '학습'
+				       WHEN DATE_FORMAT(NOW(),'%Y.%m.%d') > DATE_FORMAT(CON.WEEK_ED_DATE,'%Y.%m.%d')
+				       THEN '복습'
+				       WHEN DATE_FORMAT(NOW(),'%Y.%m.%d') < DATE_FORMAT(CON.WEEK_ED_DATE,'%Y.%m.%d')
+				       THEN '예습'
+				       WHEN IFNULL(CON.WEEK_ED_DATE,'') = ''
+				       THEN '학습'
+				       ELSE '학습'
+				       END BTN_TEXT,
+					    ]]>	
+					   
+					   
+				      (SELECT MAX(REP.REPORT_ID) 
+				         FROM LMS_REPORT REP 
+				        WHERE REP.DELETE_YN = 'N' 
+				              AND REP.YYYY = WEE.YYYY 
+				              AND REP.TERM = WEE.TERM 
+				              AND REP.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND REP.WEEK_CNT = WEE.WEEK_CNT  
+				              AND REP.REPORT_ID NOT IN 
+				              (SELECT SMT.REPORT_ID 
+				                FROM LMS_REPORT_SUBMIT SMT 
+				               WHERE SMT.DELETE_YN = 'N' 
+				                     AND SMT.INSERT_USER = LES.MEM_SEQ 
+				              )  
+				              AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN REP.SUBMIT_START_DATE AND REP.SUBMIT_END_DATE   
+				       ) AS REPORT_ID,
+					  
+					  (SELECT MAX(DISCUSS_ID) 
+					    FROM LMS_DISCUSS DIS 
+					   WHERE DIS.DELETE_YN = 'N' 
+					         AND DIS.YYYY = WEE.YYYY 
+					         AND DIS.TERM = WEE.TERM 
+					         AND DIS.SUBJECT_CODE = WEE.SUBJECT_CODE 
+					         AND DIS.CLASS = WEE.CLASS 
+					       <!--   AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN DIS.START_DATE AND DIS.END_DATE  -->
+					         AND DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DIS.START_DATE AND DIS.END_DATE
+					  ) AS DISCUSS_ID,
+					  
+					  (SELECT COUNT(1)
+				         FROM LMS_TRANING_NOTE_MASTER NOM 
+				        WHERE NOM.DELETE_YN = 'N' 
+				              AND NOM.YYYY = WEE.YYYY 
+				              AND NOM.TERM = WEE.TERM 
+				              AND NOM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND NOM.CLASS = WEE.CLASS 
+				              AND NOM.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS TRA_NOTE_CNT,
+				       
+				       (SELECT COUNT(1)
+				         FROM LMS_ACTIVITY_NOTE ACT 
+				        WHERE ACT.DELETE_YN = 'N' 
+				              AND ACT.YYYY = WEE.YYYY 
+				              AND ACT.TERM = WEE.TERM 
+				              AND ACT.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND ACT.CLASS = WEE.CLASS 
+				              AND ACT.WEEK_CNT = WEE.WEEK_CNT
+				              AND ACT.MEM_ID = #{sessionMemId} 
+				       ) AS ACT_NOTE_CNT,
+				       
+				       
+				       (SELECT COUNT(1) 
+				         FROM LMS_SUBJ_WEEK_SCH SCH 
+				        WHERE SCH.DELETE_YN = 'N' 
+				              AND SCH.WEEK_ID = WEE.WEEK_ID 
+				       ) WEEK_MAPPING_CNT , 
+				        <!-- (SELECT GROUP_CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME) -->
+				        <![CDATA[
+				     	(SELECT CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME)
+				         FROM LMS_SUBJ_NCS_UNIT UNIT 
+				          INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+				              ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+				              AND ELEM.WEEK_ID = UNIT.WEEK_ID 
+				              AND ELEM.DELETE_YN = 'N' 
+				        WHERE UNIT.DELETE_YN = 'N' 
+				              AND UNIT.WEEK_ID = WEE.WEEK_ID 
+				              LIMIT 1
+				       ) NCS_NAME ,
+				        ]]>	
+				        FN_WEEK_PROGRESS_RATE(WEE.YYYY,WEE.TERM,WEE.SUBJECT_CODE,WEE.CLASS,WEE.WEEK_ID,LES.LESSON_ID) AS WEEK_PROGRESS_RATE 
+				  FROM LMS_SUBJ_WEEK WEE 
+				  	INNER JOIN LMS_LESSON LES 
+				       ON WEE.YYYY = LES.YYYY 
+				       AND WEE.TERM = LES.TERM 
+				       AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE 
+				       AND WEE.CLASS = LES.CLASS 
+				       AND LES.DELETE_YN = 'N' 
+				       AND LES.LEC_STATUS = 'A' 
+				       AND LES.MEM_SEQ = #{sessionMemSeq} 
+				   LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME TIM 
+				       ON WEE.WEEK_ID = TIM.WEEK_ID 
+				       AND WEE.YYYY = TIM.YYYY 
+				       AND WEE.TERM = TIM.TERM 
+				       AND WEE.SUBJECT_CODE = TIM.SUBJECT_CODE 
+				       AND WEE.CLASS = TIM.CLASS 
+				       AND TIM.DELETE_YN = 'N' 
+				       
+				   LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT CON 
+				         ON WEE.WEEK_ID = CON.WEEK_ID 
+				       AND CON.DELETE_YN = 'N'      
+				 WHERE WEE.DELETE_YN = 'N' 
+				       AND WEE.YYYY = #{yyyy} 
+				       AND WEE.TERM = #{term} 
+				       AND WEE.SUBJECT_CODE = #{subjectCode} 
+				       AND WEE.CLASS = #{subjectClass}  
+	</select>
+	
+	<select id="listOjtTraningStdSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOjtTraningStdSchedule ====== */
+			SELECT WEE.WEEK_CNT , 
+				       WEE.WEEK_ID, 
+				       WEE.YYYY, 
+					   WEE.TERM, 
+					   WEE.SUBJECT_CODE, 
+					   WEE.CLASS AS SUBJECT_CLASS,
+				       TIM.TRANING_DATE, 
+				       TIM.TIME_ID, 
+				       RCNT.ROWSPAN_CNT, 
+				       SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TIM.TRANING_DATE), 1) DAY_WEEK,
+				       CONCAT( TIM.TRANING_ST_HOUR ,':', TIM.TRANING_ST_MIN) as TRANING_ST,
+					   CONCAT( TIM.TRANING_ED_HOUR ,':', TIM.TRANING_ED_MIN) as TRANING_ED,
+					  <!--  MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) AS TIME_HOUR, -->
+					  
+					  (SELECT IFNULL(MAX(TO_NUMBER(WEEK.WEEK_CNT)),'1') AS WEEK_CNT 
+				         FROM LMS_SUBJ_WEEK WEEK  
+				            LEFT JOIN LMS_SUBJ_WEEK_TIME WEET 
+				                ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE 
+				              AND WEET.DELETE_YN = 'N' 
+				              AND WEEK.WEEK_ID = WEEK.WEEK_ID  
+				        WHERE WEEK.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND WEEK.DELETE_YN ='N' 
+				              AND WEEK.YYYY= WEE.YYYY  
+				              AND WEEK.CLASS = WEE.CLASS   
+				              <![CDATA[
+				              AND WEET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')  
+				              ]]>
+				       ) NOW_WEEK_CNT ,
+					  
+					  (SELECT COUNT(1)
+				         FROM LMS_TRANING_NOTE_MASTER NOM 
+				        WHERE NOM.DELETE_YN = 'N' 
+				              AND NOM.YYYY = WEE.YYYY 
+				              AND NOM.TERM = WEE.TERM 
+				              AND NOM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND NOM.CLASS = WEE.CLASS 
+				              AND NOM.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS TRA_NOTE_CNT,
+				       
+				       (SELECT COUNT(1)
+				         FROM LMS_ACTIVITY_NOTE ACT 
+				        WHERE ACT.DELETE_YN = 'N' 
+				              AND ACT.YYYY = WEE.YYYY 
+				              AND ACT.TERM = WEE.TERM 
+				              AND ACT.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND ACT.CLASS = WEE.CLASS 
+				              AND ACT.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS ACT_NOTE_CNT,
+					   
+					   (SELECT SUM(MOD(TRANING_ED_HOUR,TRANING_ST_HOUR )) 
+				         FROM LMS_SUBJ_WEEK_TIME 
+				        WHERE DELETE_YN = 'N' 
+				              AND WEEK_ID = WEE.WEEK_ID 
+				       ) TIME_HOUR,
+					   
+					   MOD(TIM.TRANING_ED_MIN, TIM.TRANING_ST_MIN ) AS TIME_MIN,
+				       TIM.TRANING_ST_HOUR, 
+				       TIM.TRANING_ST_MIN, 
+				       TIM.TRANING_ED_HOUR, 
+				       TIM.TRANING_ED_MIN , 
+				       
+				       TIM.NCS_UNIT_NAME,
+				   	   TIM.NCS_ELEM_NAME,
+				       
+				       <![CDATA[
+				     	(SELECT CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME)
+				         FROM LMS_SUBJ_NCS_UNIT UNIT 
+				          INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+				              ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+				              AND ELEM.DELETE_YN = 'N' 
+				        WHERE UNIT.DELETE_YN = 'N' 
+				              AND UNIT.WEEK_ID = WEE.WEEK_ID 
+				              LIMIT 1
+				       ) NCS_NAME,
+				        ]]>	 
+				       (
+				         CASE @VWEEKID WHEN WEE.WEEK_ID THEN @ROWNUM:=@ROWNUM+1 ELSE @ROWNUM:=1 END 
+				       ) 
+				       ROW_NUM, 
+				       (@VWEEKID:=WEE.WEEK_ID) VJOB 
+				  FROM LMS_SUBJ_WEEK WEE 
+				  
+				     INNER JOIN LMS_LESSON LES 
+				       ON WEE.YYYY = LES.YYYY 
+				       AND WEE.TERM = LES.TERM 
+				       AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE 
+				       AND WEE.CLASS = LES.CLASS 
+				       AND LES.DELETE_YN = 'N' 
+				       AND LES.LEC_STATUS = 'A' 
+				       AND LES.MEM_SEQ = #{sessionMemSeq} 
+				       
+				     LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME TIM 
+				         ON WEE.WEEK_ID = TIM.WEEK_ID
+					       AND WEE.YYYY = TIM.YYYY 
+					       AND WEE.TERM = TIM.TERM 
+					       AND WEE.SUBJECT_CODE = TIM.SUBJECT_CODE 
+					       AND WEE.CLASS = TIM.CLASS 
+				       AND TIM.DELETE_YN = 'N' 
+				       
+				     LEFT OUTER JOIN 
+				      (SELECT COUNT(*) AS ROWSPAN_CNT, 
+				              WEEK_ID,YYYY,TERM,SUBJECT_CODE,CLASS 
+				         FROM LMS_SUBJ_WEEK_TIME 
+				        WHERE DELETE_YN = 'N' 
+				          GROUP BY WEEK_ID,YYYY,TERM,SUBJECT_CODE,CLASS 
+				       ) RCNT 
+				         ON WEE.WEEK_ID = RCNT.WEEK_ID
+				         AND WEE.YYYY = RCNT.YYYY 
+				         AND WEE.TERM = RCNT.TERM 
+				         AND WEE.SUBJECT_CODE = RCNT.SUBJECT_CODE 
+				         AND WEE.CLASS = RCNT.CLASS
+				         
+				         ,(SELECT @VWEEKID:='', @ROWNUM:=0 FROM DUAL) B 
+				 WHERE WEE.DELETE_YN = 'N' 
+				       AND WEE.YYYY = #{yyyy} 
+				       AND WEE.TERM = #{term} 
+				       AND WEE.SUBJECT_CODE = #{subjectCode} 
+				       AND WEE.CLASS = #{subjectClass}  
+				ORDER BY TO_NUMBER(WEE.WEEK_CNT), TIM.TIME_ID  
+	</select>
+	
+	
+	<select id="getTraningStatus" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.OnlineTraningMapper.service.impl.getTraningStatus  ====== */
+	 		SELECT S.REAL_PROGRESS_RATE FROM (
+				SELECT  CM.MEM_NAME 
+					,LL.LESSON_ID
+					,LL.MEM_SEQ		
+					,CM.MEM_ID	  
+					,LL.YYYY
+					,LL.TERM
+					,LL.CLASS AS CLASS_ID
+					,LL.SUBJECT_CODE
+					,CM.COMPANY_ID
+					,FN_GETCOMPAYNAME(CM.COMPANY_ID) AS COMPANY_NAME				
+	<![CDATA[  
+					,COUNT(WEEK.WEEK_ID) AS TOTAL_TIME	 /* 전체출석일 */
+					,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR ) <= TND.STUDY_TIME , 1, 0)) AS ATTEND   /* 출석*/
+					,SUM(IF (MOD(SWT.TRANING_ED_HOUR,SWT.TRANING_ST_HOUR )-1 = TND.STUDY_TIME , 1, 0)) AS LATENESS  /* 지각*/
+					
+					,MAX(TO_NUMBER(WEEK.WEEK_CNT)) AS ON_TOTAL_TIME	 /* 전체출석일 */
+	]]>					
+	<![CDATA[
+	 				,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.ATTEND_PROGRESS , 1, 0)) AS ON_ATTEND   /* 출석*/
+					,SUM(IF (FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) < LSOS.ATTEND_PROGRESS AND FN_WEEK_PROGRESS_RATE_LESSON(WEEK.WEEK_CNT,LL.LESSON_ID) >= LSOS.CUT_PROGRESS , 1, 0)) AS ON_LATENESS  /* 지각*/
+					,FN_ALL_PROGRESS_RATE_LESSON(LL.LESSON_ID) ON_REAL_PROGRESS_RATE
+	]]>		
+	<![CDATA[
+			        ,
+			        IFNULL(
+					        FLOOR((
+					  				SELECT SUM(TND.STUDY_TIME) AS STUDY_TIME
+					  				FROM LMS_TRANING_NOTE_MASTER TNM,
+					  					 LMS_TRANING_NOTE_DETAIL TND
+					  				WHERE TNM.TRANINING_NOTE_MASTER_ID = TND.TRANINING_NOTE_MASTER_ID
+					  				AND TNM.DELETE_YN='N' 
+					  				AND TND.DELETE_YN='N' 
+					  				AND TNM.SUBJECT_CODE= LL.SUBJECT_CODE
+					  				AND TND.MEM_ID= CM.MEM_ID    
+					  				AND TNM.YYYY=  LL.YYYY   
+					  				AND TNM.CLASS  = LL.CLASS					
+					  				)
+					  				/
+					          		(
+					  				SELECT SUM(MOD(WEET.TRANING_ED_HOUR,WEET.TRANING_ST_HOUR ) )
+					  				FROM  LMS_SUBJ_WEEK_TIME WEET 
+					  				WHERE 
+					  					WEET.SUBJECT_CODE = LL.SUBJECT_CODE 
+					  				AND WEET.YYYY =  LL.YYYY
+					  				AND WEET.TERM =  LL.TERM
+					  				AND WEET.CLASS =  LL.CLASS
+					  				AND WEET.DELETE_YN = 'N'	
+							  		) *100) ,0) AS REAL_PROGRESS_RATE
+	]]>					
+					
+					FROM LMS_LESSON LL
+	 
+					INNER JOIN  LMS_SUBJ_WEEK  WEEK 
+											ON WEEK.DELETE_YN='N'
+											AND LL.YYYY=WEEK.YYYY  
+											AND LL.TERM=WEEK.TERM   
+											AND LL.SUBJECT_CODE=WEEK.SUBJECT_CODE  
+											AND LL.CLASS =WEEK.CLASS
+					INNER JOIN COM_MEMBER CM ON CM.MEM_SEQ=LL.MEM_SEQ AND CM.DELETE_YN='N'
+	<![CDATA[ 
+					INNER JOIN LMS_SUBJ_WEEK_TIME SWT ON SWT.DELETE_YN='N'
+											AND LL.YYYY=SWT.YYYY  
+											AND LL.TERM=SWT.TERM   
+											AND LL.SUBJECT_CODE=SWT.SUBJECT_CODE  
+											AND LL.CLASS =SWT.CLASS
+											AND WEEK.WEEK_ID = SWT.WEEK_ID
+											AND SWT.TRANING_DATE  <= date_format(now(),'%Y.%m.%d')										
+					LEFT OUTER JOIN LMS_TRANING_NOTE_DETAIL TND   
+											ON  TND.SUBJECT_CODE= LL.SUBJECT_CODE
+											AND TND.DELETE_YN='N'  
+											AND TND.MEM_ID=CM.MEM_ID    
+											AND TND.ADDYN = 'N'
+											AND TND.YYYY=  LL.YYYY   
+											AND TND.CLASS  = LL.CLASS	
+											AND TND.TERM  = LL.TERM	
+											AND TND.TIME_ID = SWT.TIME_ID
+			        LEFT OUTER JOIN LMS_SUBJ_ON_STAND LSOS
+											ON LSOS.CLASS = LL.CLASS
+											AND LSOS.YYYY = LL.YYYY
+											AND LSOS.TERM = LL.TERM
+											AND LSOS.SUBJECT_CODE = LL.SUBJECT_CODE
+											AND LSOS.DELETE_YN = 'N'													
+	]]>				 
+					WHERE  LL.DELETE_YN='N'
+						AND LL.LEC_STATUS='A' 
+						AND LL.YYYY= #{yyyy}
+						AND LL.TERM=#{term}
+						AND LL.SUBJECT_CODE= #{subjectCode}	
+						AND LL.MEM_SEQ = #{sessionMemSeq} 
+						AND LL.CLASS = #{subjectClass}
+				 GROUP BY CM.MEM_NAME 
+					,LL.LESSON_ID
+					,LL.MEM_SEQ		
+					,CM.MEM_ID	  
+					,LL.YYYY
+					,LL.TERM
+					,LL.CLASS
+					,LL.SUBJECT_CODE
+					,CM.COMPANY_ID
+				 
+				          ) S 
+	         WHERE 1=1
+	 
+		   
+		</select>
+	
+	<select id="listOnlineTraningInsSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningInsSchedule ====== */
+		SELECT WEE.WEEK_CNT , 
+				       WEE.WEEK_ID, 
+				       WEE.YYYY, 
+					   WEE.TERM, 
+					   WEE.SUBJECT_CODE, 
+					   WEE.CLASS AS SUBJECT_CLASS, 
+				       TIM.TRANING_DATE,
+				       TIM.TRANING_ST_HOUR, 
+				       TIM.TRANING_ST_MIN, 
+				       TIM.TRANING_ED_HOUR, 
+				       TIM.TRANING_ED_MIN , 
+				       CON.CONTENT_NAME,
+				       
+				       CASE WHEN DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'%Y.%m.%d') AND  DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 ),'%Y.%m.%d')
+					   THEN 'Y'
+					   ELSE 'N'
+					   END NOW_WEEK_YN,
+					   
+					   (SELECT COUNT(*) 
+				         FROM LMS_LESSON LES  
+				        WHERE WEE.YYYY = LES.YYYY 
+				              AND WEE.TERM = LES.TERM 
+				              AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE 
+				              AND WEE.CLASS = LES.CLASS 
+				              AND LES.DELETE_YN = 'N' 
+				              AND LES.LEC_STATUS = 'A' 
+				       ) LESSON_CNT,
+				       
+				       SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TIM.TRANING_DATE), 1) DAY_WEEK,
+				       CONCAT( TIM.TRANING_ST_HOUR ,':', TIM.TRANING_ST_MIN) as TRANING_ST,
+					   CONCAT( TIM.TRANING_ED_HOUR ,':', TIM.TRANING_ED_MIN) as TRANING_ED,
+					   MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) AS TIME_HOUR,
+					   MOD(TIM.TRANING_ED_MIN, TIM.TRANING_ST_MIN ) AS TIME_MIN,
+				    
+				       (SELECT MAX(REPORT_ID) 
+					    FROM LMS_REPORT REP 
+					   WHERE REP.DELETE_YN = 'N' 
+					         AND REP.YYYY = WEE.YYYY 
+					         AND REP.TERM = WEE.TERM 
+					         AND REP.SUBJECT_CODE = WEE.SUBJECT_CODE 
+					         AND REP.WEEK_CNT = WEE.WEEK_CNT 
+					       <!--   AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN REP.SUBMIT_START_DATE AND REP.SUBMIT_END_DATE  -->
+					  ) AS REPORT_ID,
+					  
+					  (SELECT MAX(DISCUSS_ID) 
+					    FROM LMS_DISCUSS DIS 
+					   WHERE DIS.DELETE_YN = 'N' 
+					         AND DIS.YYYY = WEE.YYYY 
+					         AND DIS.TERM = WEE.TERM 
+					         AND DIS.SUBJECT_CODE = WEE.SUBJECT_CODE 
+					         AND DIS.CLASS = WEE.CLASS 
+					       <!--   AND DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN DIS.START_DATE AND DIS.END_DATE  -->
+					         AND DATE_FORMAT(TIM.TRANING_DATE,'%Y.%m.%d') BETWEEN DIS.START_DATE AND DIS.END_DATE
+					  ) AS DISCUSS_ID,
+					  
+					  (SELECT COUNT(1)
+				         FROM LMS_TRANING_NOTE_MASTER NOM 
+				        WHERE NOM.DELETE_YN = 'N' 
+				              AND NOM.YYYY = WEE.YYYY 
+				              AND NOM.TERM = WEE.TERM 
+				              AND NOM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND NOM.CLASS = WEE.CLASS 
+				              AND NOM.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS TRA_NOTE_CNT,
+				       
+				       (SELECT COUNT(1)
+				         FROM LMS_ACTIVITY_NOTE ACT 
+				        WHERE ACT.DELETE_YN = 'N' 
+				              AND ACT.YYYY = WEE.YYYY 
+				              AND ACT.TERM = WEE.TERM 
+				              AND ACT.SUBJECT_CODE = WEE.SUBJECT_CODE 
+				              AND ACT.CLASS = WEE.CLASS 
+				              AND ACT.WEEK_CNT = WEE.WEEK_CNT
+				       ) AS ACT_NOTE_CNT,
+				      
+				       (SELECT COUNT(1) 
+				         FROM LMS_SUBJ_WEEK_SCH SCH 
+				        WHERE SCH.DELETE_YN = 'N' 
+				              AND SCH.WEEK_ID = WEE.WEEK_ID 
+				       ) WEEK_MAPPING_CNT , 
+				        <!-- (SELECT GROUP_CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME) -->
+				        <![CDATA[
+				     	(SELECT CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME)
+				         FROM LMS_SUBJ_NCS_UNIT UNIT 
+				          INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+				              ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+				              AND ELEM.DELETE_YN = 'N' 
+				              AND ELEM.WEEK_ID = UNIT.WEEK_ID 
+				        WHERE UNIT.DELETE_YN = 'N' 
+				              AND UNIT.WEEK_ID = WEE.WEEK_ID 
+				              LIMIT 1
+				       ) NCS_NAME 
+				        ]]>	
+				  FROM LMS_SUBJ_WEEK WEE 
+				  
+				  	INNER JOIN LMS_SUBJ_INS_MAPPING INS 
+				       ON WEE.YYYY = INS.YYYY 
+				       AND WEE.TERM = INS.TERM 
+				       AND WEE.SUBJECT_CODE = INS.SUBJECT_CODE 
+				       AND WEE.CLASS = INS.CLASS 
+				       AND INS.DELETE_YN = 'N' 
+				       AND INS.MEM_SEQ = #{sessionMemSeq} 
+				       
+				   LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME TIM 
+				       ON WEE.WEEK_ID = TIM.WEEK_ID 
+				       AND WEE.YYYY = TIM.YYYY 
+				       AND WEE.TERM = TIM.TERM 
+				       AND WEE.SUBJECT_CODE = TIM.SUBJECT_CODE 
+				       AND WEE.CLASS = TIM.CLASS 
+				       AND TIM.DELETE_YN = 'N' 
+				       
+				   LEFT OUTER JOIN LMS_SUBJ_WEEK_CONTENT CON 
+				         ON WEE.WEEK_ID = CON.WEEK_ID 
+				       AND CON.DELETE_YN = 'N'      
+				       
+				 WHERE WEE.DELETE_YN = 'N' 
+				       AND WEE.YYYY = #{yyyy} 
+				       AND WEE.TERM = #{term} 
+				       AND WEE.SUBJECT_CODE = #{subjectCode} 
+				       AND WEE.CLASS = #{subjectClass}  
+	</select>
+	
+	<select id="listOjtTraningInsSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOjtTraningInsSchedule ====== */
+		
+		SELECT WEE.WEEK_CNT , 
+			       WEE.WEEK_ID, 
+			       TIM.TRANING_DATE, 
+			       TIM.TIME_ID, 
+			       RCNT.ROWSPAN_CNT, 
+			       SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TIM.TRANING_DATE), 1) DAY_WEEK,
+			       CONCAT( TIM.TRANING_ST_HOUR ,':', TIM.TRANING_ST_MIN) as TRANING_ST,
+				   CONCAT( TIM.TRANING_ED_HOUR ,':', TIM.TRANING_ED_MIN) as TRANING_ED,
+				  <!--  MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) AS TIME_HOUR, -->
+				  
+				  (SELECT COUNT(*) 
+			         FROM LMS_LESSON LES  
+			        WHERE WEE.YYYY = LES.YYYY 
+			              AND WEE.TERM = LES.TERM 
+			              AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE
+			              AND WEE.CLASS = LES.CLASS 
+			              AND LES.DELETE_YN = 'N' 
+			              AND LES.LEC_STATUS = 'A' 
+			       ) LESSON_CNT,
+				  
+				  (SELECT IFNULL(MAX(TO_NUMBER(WEEK.WEEK_CNT)),'1') AS WEEK_CNT 
+			         FROM LMS_SUBJ_WEEK WEEK  
+			            LEFT JOIN LMS_SUBJ_WEEK_TIME WEET 
+			                ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE 
+			              AND WEET.DELETE_YN = 'N' 
+			              AND WEEK.WEEK_ID = WEEK.WEEK_ID  
+			        WHERE WEEK.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND WEEK.DELETE_YN ='N' 
+			              AND WEEK.YYYY= WEE.YYYY  
+			              AND WEEK.CLASS = WEE.CLASS   
+			             <![CDATA[
+			              AND WEET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')  
+			              ]]>
+			       ) NOW_WEEK_CNT ,
+				  
+				  (SELECT COUNT(1)
+			         FROM LMS_TRANING_NOTE_MASTER NOM 
+			        WHERE NOM.DELETE_YN = 'N' 
+			              AND NOM.YYYY = WEE.YYYY 
+			              AND NOM.TERM = WEE.TERM 
+			              AND NOM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND NOM.CLASS = WEE.CLASS
+			              AND NOM.WEEK_CNT = WEE.WEEK_CNT
+			       ) AS TRA_NOTE_CNT,
+			       
+			       (SELECT COUNT(1)
+			         FROM LMS_ACTIVITY_NOTE ACT 
+			        WHERE ACT.DELETE_YN = 'N' 
+			              AND ACT.YYYY = WEE.YYYY 
+			              AND ACT.TERM = WEE.TERM 
+			              AND ACT.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND ACT.CLASS = WEE.CLASS
+			              AND ACT.WEEK_CNT = WEE.WEEK_CNT
+			       ) AS ACT_NOTE_CNT,
+				   
+				   (SELECT SUM(MOD(TRANING_ED_HOUR,TRANING_ST_HOUR )) 
+			         FROM LMS_SUBJ_WEEK_TIME 
+			        WHERE DELETE_YN = 'N' 
+			              AND WEEK_ID = WEE.WEEK_ID 
+			       ) TIME_HOUR,
+				   
+				   MOD(TIM.TRANING_ED_MIN, TIM.TRANING_ST_MIN ) AS TIME_MIN,
+			       TIM.TRANING_ST_HOUR, 
+			       TIM.TRANING_ST_MIN, 
+			       TIM.TRANING_ED_HOUR, 
+			       TIM.TRANING_ED_MIN , 
+			       TIM.NCS_UNIT_NAME,
+				   TIM.NCS_ELEM_NAME,
+			       <!-- <![CDATA[
+			     	(SELECT CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME)
+			         FROM LMS_SUBJ_NCS_UNIT UNIT 
+			          INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+			              ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+			              AND ELEM.WEEK_ID = UNIT.WEEK_ID 
+			              AND ELEM.DELETE_YN = 'N' 
+			        WHERE UNIT.DELETE_YN = 'N' 
+			              AND UNIT.WEEK_ID = WEE.WEEK_ID 
+			              LIMIT 1
+			       ) NCS_NAME, 
+			        ]]>-->	 
+			       (
+			         CASE @VWEEKID WHEN WEE.WEEK_ID THEN @ROWNUM:=@ROWNUM+1 ELSE @ROWNUM:=1 END 
+			       ) 
+			       ROW_NUM, 
+			       (@VWEEKID:=WEE.WEEK_ID) VJOB 
+			  FROM LMS_SUBJ_WEEK WEE 
+			  
+			     INNER JOIN LMS_SUBJ_INS_MAPPING INS 
+			         ON WEE.YYYY = INS.YYYY 
+			       AND WEE.TERM = INS.TERM 
+			       AND WEE.SUBJECT_CODE = INS.SUBJECT_CODE 
+			       AND WEE.CLASS = INS.CLASS 
+			       AND INS.DELETE_YN = 'N' 
+			       AND INS.MEM_SEQ = #{sessionMemSeq} 
+			       
+			     LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME TIM 
+			         ON WEE.WEEK_ID = TIM.WEEK_ID
+				       AND WEE.YYYY = TIM.YYYY 
+				       AND WEE.TERM = TIM.TERM 
+				       AND WEE.SUBJECT_CODE = TIM.SUBJECT_CODE 
+				       AND WEE.CLASS = TIM.CLASS 
+			       AND TIM.DELETE_YN = 'N' 
+			       
+			     LEFT OUTER JOIN 
+			      (SELECT COUNT(*) AS ROWSPAN_CNT, 
+			              WEEK_ID,YYYY,TERM,SUBJECT_CODE,CLASS 
+			         FROM LMS_SUBJ_WEEK_TIME 
+			        WHERE DELETE_YN = 'N' 
+			          GROUP BY WEEK_ID,YYYY,TERM,SUBJECT_CODE,CLASS 
+			       ) RCNT 
+			         ON WEE.WEEK_ID = RCNT.WEEK_ID
+			         AND WEE.YYYY = RCNT.YYYY 
+			         AND WEE.TERM = RCNT.TERM 
+			         AND WEE.SUBJECT_CODE = RCNT.SUBJECT_CODE 
+			         AND WEE.CLASS = RCNT.CLASS
+			         
+			         ,(SELECT @VWEEKID:='', @ROWNUM:=0 FROM DUAL) B 
+			 WHERE WEE.DELETE_YN = 'N' 
+			       AND WEE.YYYY = #{yyyy} 
+			       AND WEE.TERM = #{term} 
+			       AND WEE.SUBJECT_CODE = #{subjectCode} 
+			       AND WEE.CLASS = #{subjectClass}  
+			ORDER BY TO_NUMBER(WEE.WEEK_CNT), TIM.TIME_ID
+	</select>
+	
+	
+	<select id="listOjtTraningCotSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOjtTraningCotSchedule ====== */
+		
+		SELECT WEE.WEEK_CNT , 
+			       WEE.WEEK_ID, 
+			       TIM.TRANING_DATE, 
+			       TIM.TIME_ID, 
+			       RCNT.ROWSPAN_CNT, 
+			       SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TIM.TRANING_DATE), 1) DAY_WEEK,
+			       CONCAT( TIM.TRANING_ST_HOUR ,':', TIM.TRANING_ST_MIN) as TRANING_ST,
+				   CONCAT( TIM.TRANING_ED_HOUR ,':', TIM.TRANING_ED_MIN) as TRANING_ED,
+				  <!--  MOD(TIM.TRANING_ED_HOUR,TIM.TRANING_ST_HOUR ) AS TIME_HOUR, -->
+				  
+				  (SELECT COUNT(*) 
+			         FROM LMS_LESSON LES  
+			        WHERE WEE.YYYY = LES.YYYY 
+			              AND WEE.TERM = LES.TERM 
+			              AND WEE.SUBJECT_CODE = LES.SUBJECT_CODE 
+			              AND WEE.CLASS = LES.CLASS 
+			              AND LES.DELETE_YN = 'N' 
+			              AND LES.LEC_STATUS = 'A' 
+			       ) LESSON_CNT,
+				  
+				  (SELECT IFNULL(MAX(TO_NUMBER(WEEK.WEEK_CNT)),'1') AS WEEK_CNT 
+			         FROM LMS_SUBJ_WEEK WEEK  
+			            LEFT JOIN LMS_SUBJ_WEEK_TIME WEET 
+			                ON WEEK.SUBJECT_CODE = WEET.SUBJECT_CODE 
+			              AND WEET.DELETE_YN = 'N' 
+			              AND WEEK.WEEK_ID = WEEK.WEEK_ID  
+			        WHERE WEEK.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND WEEK.DELETE_YN ='N' 
+			              AND WEEK.YYYY= WEE.YYYY  
+			              AND WEEK.CLASS = WEE.CLASS   
+			              <![CDATA[
+			              AND WEET.TRANING_DATE <= date_format(now(),'%Y.%m.%d')  
+			              ]]>
+			       ) NOW_WEEK_CNT ,
+				  
+				  (SELECT COUNT(1)
+			         FROM LMS_TRANING_NOTE_MASTER NOM 
+			        WHERE NOM.DELETE_YN = 'N' 
+			              AND NOM.YYYY = WEE.YYYY 
+			              AND NOM.TERM = WEE.TERM 
+			              AND NOM.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND NOM.CLASS = WEE.CLASS 
+			              AND NOM.WEEK_CNT = WEE.WEEK_CNT
+			       ) AS TRA_NOTE_CNT,
+			       
+			       (SELECT COUNT(1)
+			         FROM LMS_ACTIVITY_NOTE ACT 
+			        WHERE ACT.DELETE_YN = 'N' 
+			              AND ACT.YYYY = WEE.YYYY 
+			              AND ACT.TERM = WEE.TERM 
+			              AND ACT.SUBJECT_CODE = WEE.SUBJECT_CODE 
+			              AND ACT.CLASS = WEE.CLASS 
+			              AND ACT.WEEK_CNT = WEE.WEEK_CNT
+			       ) AS ACT_NOTE_CNT,
+				   
+				   (SELECT SUM(MOD(TRANING_ED_HOUR,TRANING_ST_HOUR )) 
+			         FROM LMS_SUBJ_WEEK_TIME 
+			        WHERE DELETE_YN = 'N' 
+			              AND WEEK_ID = WEE.WEEK_ID 
+			       ) TIME_HOUR,
+				   
+				   MOD(TIM.TRANING_ED_MIN, TIM.TRANING_ST_MIN ) AS TIME_MIN,
+			       TIM.TRANING_ST_HOUR, 
+			       TIM.TRANING_ST_MIN, 
+			       TIM.TRANING_ED_HOUR, 
+			       TIM.TRANING_ED_MIN , 
+			       TIM.NCS_UNIT_NAME,
+				   TIM.NCS_ELEM_NAME,
+			       <!-- <![CDATA[
+			     	(SELECT CONCAT(UNIT.NCS_UNIT_NAME,'<BR>',ELEM.NCS_ELEM_NAME)
+			         FROM LMS_SUBJ_NCS_UNIT UNIT 
+			          INNER JOIN LMS_SUBJ_NCS_ELEM ELEM 
+			              ON ELEM.NCS_UNIT_ID = UNIT.NCS_UNIT_ID 
+			              AND ELEM.WEEK_ID = UNIT.WEEK_ID 
+			              AND ELEM.DELETE_YN = 'N' 
+			        WHERE UNIT.DELETE_YN = 'N' 
+			              AND UNIT.WEEK_ID = WEE.WEEK_ID 
+			              LIMIT 1
+			       ) NCS_NAME, 
+			        ]]>	--> 
+			       (
+			         CASE @VWEEKID WHEN WEE.WEEK_ID THEN @ROWNUM:=@ROWNUM+1 ELSE @ROWNUM:=1 END 
+			       ) 
+			       ROW_NUM, 
+			       (@VWEEKID:=WEE.WEEK_ID) VJOB 
+			  FROM LMS_SUBJ_WEEK WEE 
+			  
+			     INNER JOIN LMS_SUBJ_TUT_MAPPING TUT 
+			         ON WEE.YYYY = TUT.YYYY 
+			       AND WEE.TERM = TUT.TERM 
+			       AND WEE.SUBJECT_CODE = TUT.SUBJECT_CODE 
+			       AND WEE.CLASS = TUT.CLASS 
+			       AND TUT.DELETE_YN = 'N' 
+			       AND TUT.MEM_SEQ = #{sessionMemSeq} 
+			       
+			     LEFT OUTER JOIN LMS_SUBJ_WEEK_TIME TIM 
+			         ON WEE.WEEK_ID = TIM.WEEK_ID
+				       AND WEE.YYYY = TIM.YYYY 
+				       AND WEE.TERM = TIM.TERM 
+				       AND WEE.SUBJECT_CODE = TIM.SUBJECT_CODE 
+				       AND WEE.CLASS = TIM.CLASS 
+			       AND TIM.DELETE_YN = 'N' 
+			       
+			     LEFT OUTER JOIN 
+			      (SELECT COUNT(*) AS ROWSPAN_CNT, 
+			              WEEK_ID,YYYY,TERM,SUBJECT_CODE,CLASS 
+			         FROM LMS_SUBJ_WEEK_TIME 
+			        WHERE DELETE_YN = 'N' 
+			          GROUP BY WEEK_ID,YYYY,TERM,SUBJECT_CODE,CLASS 
+			       ) RCNT 
+			         ON WEE.WEEK_ID = RCNT.WEEK_ID
+			         AND WEE.YYYY = RCNT.YYYY 
+			         AND WEE.TERM = RCNT.TERM 
+			         AND WEE.SUBJECT_CODE = RCNT.SUBJECT_CODE 
+			         AND WEE.CLASS = RCNT.CLASS
+			         
+			         ,(SELECT @VWEEKID:='', @ROWNUM:=0 FROM DUAL) B 
+			 WHERE WEE.DELETE_YN = 'N' 
+			       AND WEE.YYYY = #{yyyy} 
+			       AND WEE.TERM = #{term} 
+			       AND WEE.SUBJECT_CODE = #{subjectCode} 
+			       AND WEE.CLASS = #{subjectClass}  
+			ORDER BY TO_NUMBER(WEE.WEEK_CNT), TIM.TIME_ID
+	</select>
+	
+	
+	<select id="listOnlineTraningWeekSchedule" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningWeekSchedule ====== */
+			SELECT SUBJ_SCH_ID,
+				       WEEK_ID,
+				       YYYY,
+				       TERM,
+				       SUBJECT_CODE,
+				       CLASS,
+				       WEEK_CNT,
+				       SUBJ_STEP,
+				       SUBJ_TITLE, 
+				       START_DATE,
+				       END_DATE,
+				       STUDY_TIME,
+				       LINK_CONTENT_YN,
+				       CMS_COURSE_CONTENT_ID,
+				       CMS_LESSON_ID,
+				       CMS_ID,
+				       CONTENT_TYPE,
+				       CONTENTS_DIR,
+				       CONTENTS_IDX_FILE,
+				       CONTENTS_REAL_FILE,
+				       URL, 
+				       DEVICE_TYPE_CODE,
+				       ATCH_FILE_ID,
+				       CASE 
+				           WHEN DEVICE_TYPE_CODE = '1' 
+				           THEN 'PC+M' 
+				           WHEN DEVICE_TYPE_CODE = '2' 
+				           THEN 'PC+M' 
+				           WHEN DEVICE_TYPE_CODE = '3' 
+				           THEN 'PC+M' 
+				           WHEN DEVICE_TYPE_CODE = '4' 
+				           THEN 'PC'
+				           WHEN DEVICE_TYPE_CODE = '5' 
+				           THEN '모바일'
+				           ELSE '기타' 
+				       END DEVICE_TYPE_CODE_NAME 
+				  FROM LMS_SUBJ_WEEK_SCH 
+				 WHERE DELETE_YN = 'N' 
+				       AND WEEK_ID = #{weekId}  
+				       ORDER BY SUBJ_SCH_ID 
+	</select>
+	
+	<select id="getOnlineTraningWeekProgressYn" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.getOnlineTraningWeekProgressYn ====== */
+			 SELECT 
+			 <![CDATA[
+					   CASE WHEN DATE_FORMAT(NOW(),'%Y.%m.%d') BETWEEN DATE_FORMAT(CON.WEEK_ST_DATE,'%Y.%m.%d') AND DATE_FORMAT(CON.WEEK_ED_DATE,'%Y.%m.%d')
+				       THEN 'Y'
+				       WHEN DATE_FORMAT(NOW(),'%Y.%m.%d') > DATE_FORMAT(CON.WEEK_ED_DATE,'%Y.%m.%d')
+				       THEN 'N'
+				       WHEN DATE_FORMAT(NOW(),'%Y.%m.%d') < DATE_FORMAT(CON.WEEK_ED_DATE,'%Y.%m.%d')
+				       THEN 'N'
+				       WHEN IFNULL(CON.WEEK_ED_DATE,'') = ''
+				       THEN 'Y'
+				       ELSE 'Y'
+				       END WEEK_PROGRESS_YN
+					    ]]>	
+			 FROM LMS_SUBJ_WEEK_CONTENT CON
+			 WHERE CON.WEEK_ID = #{weekId}
+			 AND CON.DELETE_YN = 'N'		    
+	</select>
+	
+	
+	<select id="listOnlineTraningWeekScheduleElem" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchVO" resultType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchElemVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.listOnlineTraningWeekScheduleElem ====== */
+			SELECT ELEM_ID, 
+				       WEEK_ID, 
+				       SUBJ_SCH_ID, 
+				       LESSSON_ID lessonId, 
+				       LESSON_ITEM_ID lessonItemId, 
+				       LESSON_SUB_ITEM_ID lessonSubItemId, 
+				       REQUIRED_LEARNING_TIME_IN_SECONDS requiredLearningTimeInSeconds
+				  FROM LMS_SUBJ_WEEK_SCH_ELEM 
+				 WHERE DELETE_YN = 'N' 
+				       AND WEEK_ID = #{weekId}
+				       AND SUBJ_SCH_ID = #{subjSchId}
+				ORDER BY ELEM_ID  
+	</select>
+	
+	<delete id="deleteOnlineTraningWeekScheduleElem" parameterType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.deleteOnlineTraningWeekScheduleElem ====== */
+			  DELETE FROM  LMS_SUBJ_WEEK_SCH_ELEM WHERE WEEK_ID = #{weekId}
+	</delete>
+	
+	<insert id="insertOnlineTraningWeekScheduleElem" parameterType="kr.co.sitglobal.oklms.lu.online.vo.OnlineTraningSchElemVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traning.service.impl.OnlineTraningMapper.insertOnlineTraningWeekScheduleElem ====== */
+			  INSERT 
+				  INTO LMS_SUBJ_WEEK_SCH_ELEM 
+				       ( 
+				       	 ELEM_ID,
+				       	 WEEK_ID, 
+				         SUBJ_SCH_ID, 
+					     WEEK_CNT, 
+					     SUBJ_STEP, 
+					     LESSSON_ID, 
+				         LESSON_ITEM_ID, 
+				         LESSON_SUB_ITEM_ID, 
+				         REQUIRED_LEARNING_TIME_IN_SECONDS,
+				         INSERT_DATE,
+				         INSERT_USER
+				       ) 
+				       VALUES 
+				       (  
+				         #{elemId}, 
+				         #{weekId}, 
+				         #{subjSchId}, 
+				         #{weekCnt}, 
+				         #{subjStep}, 
+				         #{lesson_id}, 
+				         #{lesson_item_id}, 
+				         #{lesson_sub_item_id}, 
+				         #{required_learning_time_in_seconds}, 
+				         now(), 
+				         #{insertUser} 
+				       )
+	</insert>
+
+</mapper>

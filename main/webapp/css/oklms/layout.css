@@ -1,0 +1,174 @@
+@charset "utf-8";
+
+
+
+#wrapper																							{ position:relative; display:table; table-layout:fixed; width:100%; min-width:1024px; height:100%; overflow:auto; background:url("/images/oklms/std/inc/wrapper_line.png") 250px 0 repeat-y; }
+#wrapper:after																					{ content:""; display:block; clear:both; }
+
+
+
+
+
+#header 	 																						{ position:absolute; float:left; width:100%; min-width:1024px; height:60px; left:0; top:0; background:#183172; z-index:10; }
+#header li.logo-area																			{ float:left; width:250px; height:60px; border-right:1px solid #2F4C99; }
+#header li.logo-area a																			{ display:block; overflow:hidden; width:250px; height:60px; text-indent:-9999px; background:url("/images/oklms/std/inc/logo.png") 30px 5px no-repeat; }
+#header li.gnb-area																			{ float:right; height:60px; text-align:right; line-height:0; padding-right:2%; margin:0; }
+#header li.gnb-area a																			{ position:relative; display:inline-block; overflow:hidden; width:50px; height:60px; font-size:0; line-height:0; margin-top:0; }
+#header li.gnb-area a span																	{ position:absolute; width:28px; height:14px; right:0; top:12px; font:700 12px play; color:#FFF; line-height:12px; text-align:center; text-indent:0; border-radius:7px; background:#FE7A22; }
+#header li.gnb-area a.type-1																{ background:url("/images/oklms/std/inc/gnb_img.png") no-repeat; }
+#header li.gnb-area a.type-1-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") no-repeat; }
+#header li.gnb-area a.type-2																{ background:url("/images/oklms/std/inc/gnb_img.png") -50px 0 no-repeat; }
+#header li.gnb-area a.type-2-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -50px 0 no-repeat; }
+#header li.gnb-area a.type-3																{ background:url("/images/oklms/std/inc/gnb_img.png") -100px 0 no-repeat; }
+#header li.gnb-area a.type-3-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -100px 0 no-repeat; }
+#header li.gnb-area a.type-4																{ background:url("/images/oklms/std/inc/gnb_img.png") -150px 0 no-repeat; }
+#header li.gnb-area a.type-4-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -150px 0 no-repeat; }
+#header li.gnb-area a.type-5																{ background:url("/images/oklms/std/inc/gnb_img.png") -200px 0 no-repeat; }
+#header li.gnb-area a.type-5-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -200px 0 no-repeat; }
+#header li.gnb-area a.type-6																{ background:url("/images/oklms/std/inc/gnb_img.png") -250px 0 no-repeat; }
+#header li.gnb-area a.type-6-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -250px 0 no-repeat; }
+#header li.gnb-area a.type-7																{ background:url("/images/oklms/std/inc/gnb_img.png") -300px 0 no-repeat; }
+#header li.gnb-area a.type-7-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -300px 0 no-repeat; }
+#header li.gnb-area a.type-8																{ background:url("/images/oklms/std/inc/gnb_img.png") -350px 0 no-repeat; }
+#header li.gnb-area a.type-8-on															{ background:url("/images/oklms/std/inc/gnb_img_on.png") -350px 0 no-repeat; }
+
+
+
+
+
+
+#content-box 	 																					{ display:table-cell; float:left; width:98%; height:100%; padding-right:2%; }
+#container 	 																						{ float:left; display:table; table-layout:fixed; overflow:auto; width:100%; height:100%; }
+#lnb-area 	 																						{ position:relative; display:table-cell; width:250px; height:100%; vertical-align:top; background:#FFF; }
+#lnb-area li 																						{ float:left; }
+#content-area 	 																				{ position:relative; display:table-cell; overflow:visible; padding-bottom:60px; padding-left:3%; z-index:1; }
+#content-area h2 																				{ float:left; width:100%; font:18px nbgM; color:#333; line-height:28px; text-indent:25px; background:url("/images/oklms/std/inc/sub_title.png") 0 3px no-repeat; margin-bottom:5px; }
+#content-area h2:first-child																	{ margin-top:80px; }
+#content-area h4 																				{ float:left; width:100%; font:13px nbgM; color:#61656C; line-height:28px; text-align:center; border:1px solid #2468C6; background:#F6F9FD; padding:10px 0 8px; }
+#content-area h4 span																		{ font:18px nbgM; color:#2F3846; }
+#content-area .group-area																	{ position:relative; float:left; width:100%; }
+#content-area h5 																				{ float:left; width:100%; font:15px nbgM; color:#333; line-height:28px; text-indent:18px; background:url("/images/oklms/std/inc/sub_title_small.png") 5px 9px no-repeat; margin-bottom:5px; }
+
+
+
+
+
+#info-area 	 																						{ width:230px; border-bottom:1px solid #DEDEDE; padding:10px; margin-top:60px; }
+#info-area:after																					{ content:""; display:block; clear:both; }
+#info-area dt 																						{ display:none; }
+#info-area dt 																						{ display:none; }
+#info-area dd.info-photo																		{ float:left; width:75px; height:55px; }
+#info-area dd.info-photo img																{ border-radius:4px; }
+#info-area dd.info-text																			{ float:left; width:155px; height:48px; font:13px nbgM; color:#666; line-height:20px; padding-top:7px; }
+#info-area dd.info-text b																		{ display:block; overflow:hidden; width:90%; font-weight:normal; color:#183172; white-space:nowrap; text-overflow:ellipsis; -o-text-overow: ellipsis; -moz-binding:url(js/ellipsis.xml#ellipsis)undefinedundefinedundefined;}
+#info-area dd.info-btn																			{ float:left; width:100%; font:13px nbgM; line-height:22px; padding-top:10px; }
+#info-area dd.info-btn a																		{ display:block; overflow:hidden; width:39.5%; height:26px; color:#FFF; text-align:center; border-radius:4px; padding:4px 0 0 9%; }
+#info-area dd.info-btn a.btn-mypage														{ float:left; background:url("/images/oklms/std/inc/icon_mypage.png") 17% 5px no-repeat #A7A7A7; }
+#info-area dd.info-btn a.btn-logout														{ float:right; background:url("/images/oklms/std/inc/icon_logout.png") 20% 6px no-repeat #F78B00; }
+
+
+
+
+
+#lnb 	 																								{ width:250px; }
+#lnb:after																							{ content:""; display:block; clear:both; }
+
+#lnb dl																								{ float:left; width:250px; border-bottom:1px solid #DEDEDE; }
+#lnb dt																								{ float:left; width:250px; font:13px nbgM; line-height:35px; }
+#lnb dt a																							{ display:block; overflow:hidden; width:230px; color:#555; background:url("/images/oklms/std/inc/depth_left.png") 220px 10px no-repeat #F2F2F2; padding:1px 0 0 20px; }
+#lnb dt a:hover																					{ text-decoration:underline; }
+#lnb dt a.course-title																			{ display:block; overflow:hidden; width:250px; font:16px nsM; color:#FFF; line-height:20px; text-indent:20px; background:url("/images/oklms/std/inc/edu_lnb_on.png") 217px 17px no-repeat #1B489D; padding:10px 0 11px; }
+#lnb dt a.course-title:hover																	{ text-decoration:none; }
+#lnb dt a.today																					{ display:block; overflow:hidden; width:250px; font:16px nsM; color:#FFF; line-height:20px; text-indent:20px; background:url("/images/oklms/std/inc/edu_lnb.png") 219px 14px no-repeat #333; padding:10px 0 11px; }
+#lnb dt a.today:hover																			{ text-decoration:none; }
+
+#lnb dd																								{ float:left; display:none; width:250px; }
+#lnb dd a																							{ display:block; overflow:hidden; width:220px; font-size:12px; color:#333; line-height:22px; border-top:1px solid #DEDEDE; background:url("/images/oklms/std/inc/bullet_01.png") 22px 16px no-repeat; padding:6px 0 6px 30px; }
+#lnb dd.on																							{ display:block; }
+#lnb dd.edu_list																					{ height:140px; overflow-x:hidden; overflow-y:scroll; }
+
+#lnb dd .depth-2																					{ float:left; width:250px; border-bottom:none; }
+#lnb dd .depth-2 dt																				{ float:left; width:250px; background:none; }
+#lnb dd .depth-2 dt a																			{ display:block; overflow:hidden; width:220px; font-size:12px; color:#333; background:url("/images/oklms/std/inc/bullet_01.png") 22px 16px no-repeat; }
+#lnb dd .depth-2 dt.current a																{ font-weight:bold; color:#7E5A20; background:url("/images/oklms/std/inc/icon_check1.png") 12px 10px no-repeat #FDF2C7; }
+#lnb dd .depth-2 dd																				{ float:left; display:none; width:250px; border-top:1px solid #DEDEDE; background:#F6F9FD; }
+#lnb dd .depth-2 dd a																			{ display:block; overflow:hidden; width:220px; font:12px Dotum; color:#555; line-height:18px; border-top:1px solid #DEDEDE; background:none; padding:6px 0 3px 30px; }
+#lnb dd .depth-2 dd a:before																{ content:"- "; }
+#lnb dd .depth-2 dd a:first-child															{ border-top:none; }
+#lnb dd .depth-2 dd.on																		{ display:block; }
+
+#lnb dd .depth-3																					{ float:left; width:250px; border-bottom:none; color:#1b489d;font-weight:700; }
+
+#lnb dt .company																				{ width:235px; background:#F2F2F2; padding:10px 0 10px 15px;}
+#lnb dt .company input																			{ width:140px; font:13px nbgM; color:#d0d0d0; vertical-align:middle; border:1px solid #CCC; padding:4px 5px; margin-left:5px; }
+#lnb dt .company a																				{ width:22px;  display:inline-block; overflow:hidden; font:12px nbgM; color:#FFF; vertical-align:middle; border:1px solid #F6F6F6; background:url("/images/oklms/std/inc/icon_search.png") 6px 6px no-repeat #555; padding:5px 10px 4px 20px; margin-left:5px; }
+
+
+
+
+#lnb .course-list																					{ position:relative; float:left; width:250px; height:210px; border-bottom:1px solid #DEDEDE; }
+#lnb .course-list li.course-tab-1															{ position:absolute; width:125px; left:0; top:0; font:15px nbgM; color:#333; line-height:20px; text-align:center; }
+#lnb .course-list li.course-tab-2															{ position:absolute; width:125px; left:126px; top:0; font:15px nbgM; color:#333; line-height:20px; text-align:center; }
+#lnb .course-list li a																			{ display:block; width:125px; color:#444; background:#DDD; padding:8px 0 7px; }
+#lnb .course-list li.on a																		{ color:#FFF; background:#2A91D4; }
+#lnb .course-list li.course-menu-1														{ display:none; float:left; overflow-x:hidden; overflow-y:scroll; width:100%; height:175px; padding-top:0; margin-top:35px; }
+#lnb .course-list li.course-menu-1 a														{ width:100%; font-size:12px; color:#333; line-height:22px; text-indent:30px; border-top:1px solid #DEDEDE; background:url("/images/oklms/std/inc/bullet_01.png") 22px 16px no-repeat #FFF; padding:7px 0 5px; }
+#lnb .course-list li.course-menu-1 a.current											{ font-size:13px; color:#2657AF; background:url("/images/oklms/std/inc/icon_check1.png") 12px 10px no-repeat #EAF2FD; }
+#lnb .course-list li.course-menu-1 a:hover											{ text-decoration:underline; }
+#lnb .course-list li.course-menu-1 a:first-child										{ border-top:1px solid #FFF; }
+#lnb .course-list li.course-menu-2														{ display:none; float:left; overflow-x:hidden; overflow-y:scroll; width:100%; height:175px; padding-top:0; margin-top:35px; }
+#lnb .course-list li.course-menu-2 a														{ width:100%; font-size:12px; color:#333; line-height:22px; text-indent:30px; border-top:1px solid #DEDEDE; background:url("/images/oklms/std/inc/bullet_01.png") 22px 16px no-repeat #FFF; padding:7px 0 5px; }
+#lnb .course-list li.course-menu-2 a.current											{ font-size:13px; color:#2657AF; background:url("/images/oklms/std/inc/icon_check1.png") 12px 10px no-repeat #EAF2FD; }
+#lnb .course-list li.course-menu-2 a:hover											{ text-decoration:underline; }
+#lnb .course-list li.course-menu-2 a:first-child										{ border-top:1px solid #FFF; }
+#lnb .course-list li.course-menu-3														{ float:left; overflow-x:hidden; overflow-y:scroll; width:100%; height:210px; padding-top:0; margin-top:0; }
+#lnb .course-list li.course-menu-3 a														{ width:100%; font-size:12px; color:#333; line-height:22px; text-indent:30px; border-top:1px solid #DEDEDE; background:url("/images/oklms/std/inc/bullet_01.png") 22px 16px no-repeat #FFF; padding:7px 0 5px; }
+#lnb .course-list li.course-menu-3 a.current											{ font-size:13px; color:#2657AF; background:url("/images/oklms/std/inc/icon_check1.png") 12px 10px no-repeat #EAF2FD; }
+#lnb .course-list li.course-menu-3 a:hover											{ text-decoration:underline; }
+#lnb .course-list li.course-menu-3 a:first-child										{ border-top:1px solid #FFF; }
+
+
+
+
+#customer 	 																						{ width:220px; color:#555; line-height:20px; border-bottom:1px solid #DEDEDE; background:url("/images/oklms/std/inc/help_desk.png") 185px 15px no-repeat; padding:15px; }
+#customer p																						{ font:700 29px play; color:#F76000; line-height:35px; letter-spacing:-0.05em; padding-bottom:5px; }
+#customer a																						{ color:#555; }
+#customer span																					{ letter-spacing:0.45em; }
+
+
+
+
+
+#site-info 	 																						{ position:relative; width:220px; font-size:11px; color:#888; line-height:20px; padding:15px; margin-bottom:30px; }
+#site-info .dropdown																			{ position:relative; float:left; width:220px; margin:5px 0 10px; }
+#site-info .dropdown-toggle																	{ display:block; overflow:hidden; width:210px; height:20px; font:12px Dotum; color:#777; line-height:18px; border:1px solid #DDD; background:url("/images/oklms/std/inc/family_bullet_01.png") 200px 8px no-repeat; padding:5px 0 0 10px; }
+#site-info .dropdown-site																		{ position:absolute; display:none; width:185px; left:0; top:auto; bottom:100%; border:1px solid #DDD; background:#FFF; padding:15px 25px 10px 10px; margin-bottom:2px; z-index:1000; }
+#site-info .dropdown-site a																	{ display:block; overflow:hidden; width:188px; font:12px Dotum; color:#777; line-height:20px; }
+#site-info .dropdown-site a:hover															{ color:#F76000; }
+#site-info .dropdown-site a:before														{ content:"- "; color:#CCC; }
+
+
+
+
+
+
+
+
+/* 접속오류 속성 */
+
+#wrap-error																						{ position:relative; float:left; width:100%; height:100%; background:url("/images/oklms/std/inc/error_bg_01.png") top #F2F2F2 repeat-x; }
+#wrap-error ul																					{ position:relative; width:270px; height:210px; background:url("/images/oklms/std/inc/error_bg_02.png") right no-repeat; padding-right:250px; margin:210px auto 0; }
+#wrap-error li																						{ float:left; display:block; width:270px; text-align:right; }
+#wrap-error .logo																				{ height:55px; text-indent:-9999px; background:url("/images/oklms/std/inc/error_bg_03.png") right 0 no-repeat; }
+#wrap-error .text																					{ height:120px; font:14px nbgM; color:#FFF; line-height:20px; }
+#wrap-error .number																			{ font:13px play; color:#333; line-height:18px; padding-top:7px; }
+#wrap-error .number span																	{ color:#999; background:url("/images/oklms/std/inc/error_bg_04.png") right no-repeat; padding-right:10px; margin-right:10px; }
+
+#wrap-error .type-11																			{ font-size:30px; line-height:40px; text-align:right; text-shadow:1px 1px 1px #004B7C; padding-top:18px; }
+#wrap-error .type-12																			{ text-align:right; opacity:0.5; }
+
+#wrap-error .type-21																			{ float:right; font-size:23px; line-height:30px; text-align:right; text-shadow:1px 1px 1px #004B7C; padding-top:22px; }
+#wrap-error .type-22																			{ float:left; display:inline-block; height:40px; text-align:right; opacity:0.5; padding-top:7px; }
+#wrap-error .type-23																			{ float:right; display:inline-block; width:90px; height:40px; padding-top:9px; }
+#wrap-error .type-23 a																			{ display:block; overflow:hidden; width:90px; height:26px; font-size:16px; color:#FFF; text-align:center; border-radius:4px; background:#FF7F00; box-shadow:1px 1px 1px #152A61; padding-top:9px; }
+

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper">
+
+	<resultMap id="comcode-result" type="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		<result column="CODE_ID" 			property="codeId" />
+		<result column="CODE_GROUP" 			property="codeGroup" />
+		<result column="GROUP_DESC" 			property="groupDesc" />
+		<result column="CODE_CODE" 			property="codeCode" />
+		<result column="CODE_NAME" 			property="codeName" />
+		<result column="CODE_NAME_ENG" 			property="codeNameEng" />
+		<result column="CODE_ORDER" 			property="codeOrder" />
+		<result column="BIGO1" 			property="bigo1" />
+		<result column="BIGO2" 			property="bigo2" />
+		<result column="DELETE_YN" 			property="deleteYn" />
+		<result column="INSERT_DATE" 			property="insertDate" />
+		<result column="INSERT_USER" 			property="insertUser" />
+		<result column="UPDATE_DATE" 			property="updateDate" />
+		<result column="UPDATE_USER" 			property="updateUser" />
+		<result column="USE_YN" 			property="useYn" />
+		<result column="BIGO3" 			property="bigo3" />
+		</resultMap>
+	
+	<sql id="listComcode-where">
+	
+		<!-- 조회 조건값 ( CC.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="codeId != null and codeId != ''">	AND CC.CODE_ID 	= #{codeId}		 </if> -->
+				<!-- <if test="codeGroup != null and codeGroup != ''">	AND CC.CODE_GROUP 	= #{codeGroup}		 </if> -->
+				<!-- <if test="groupDesc != null and groupDesc != ''">	AND CC.GROUP_DESC 	= #{groupDesc}		 </if> -->
+				<!-- <if test="codeCode != null and codeCode != ''">	AND CC.CODE_CODE 	= #{codeCode}		 </if> -->
+				<!-- <if test="codeName != null and codeName != ''">	AND CC.CODE_NAME 	= #{codeName}		 </if> -->
+				<!-- <if test="codeNameEng != null and codeNameEng != ''">	AND CC.CODE_NAME_ENG 	= #{codeNameEng}		 </if> -->
+				<!-- <if test="codeOrder != null and codeOrder != ''">	AND CC.CODE_ORDER 	= #{codeOrder}		 </if> -->
+				<!-- <if test="bigo1 != null and bigo1 != ''">	AND CC.BIGO1 	= #{bigo1}		 </if> -->
+				<!-- <if test="bigo2 != null and bigo2 != ''">	AND CC.BIGO2 	= #{bigo2}		 </if> -->
+				<!-- <if test="deleteYn != null and deleteYn != ''">	AND CC.DELETE_YN 	= #{deleteYn}		 </if> -->
+				<!-- <if test="insertDate != null and insertDate != ''">	AND CC.INSERT_DATE 	= #{insertDate}		 </if> -->
+				<!-- <if test="insertUser != null and insertUser != ''">	AND CC.INSERT_USER 	= #{insertUser}		 </if> -->
+				<!-- <if test="updateDate != null and updateDate != ''">	AND CC.UPDATE_DATE 	= #{updateDate}		 </if> -->
+				<!-- <if test="updateUser != null and updateUser != ''">	AND CC.UPDATE_USER 	= #{updateUser}		 </if> -->
+				<!-- <if test="useYn != null and useYn != ''">	AND CC.USE_YN 	= #{useYn}		 </if> -->
+				<!-- <if test="bigo3 != null and bigo3 != ''">	AND CC.BIGO3 	= #{bigo3}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CC.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<!-- <if test="searchCodeId != null and searchCodeId != ''">	AND CC.CODE_ID 	= #{searchCodeId}		 </if> -->
+				<if test="searchCodeGroup != null and searchCodeGroup != ''">	AND CC.CODE_GROUP 	= #{searchCodeGroup}		 </if>
+				<if test="searchGroupDesc != null and searchGroupDesc != ''">	AND CC.GROUP_DESC LIKE '%' ||  #{searchGroupDesc} || '%' 		 </if>
+				<!-- <if test="searchCodeCode != null and searchCodeCode != ''">	AND CC.CODE_CODE 	= #{searchCodeCode}		 </if> -->
+				<if test="searchCodeName != null and searchCodeName != ''">	AND CC.CODE_NAME 	LIKE '%' ||  #{searchCodeName} || '%'  		 </if>
+				<!-- <if test="searchCodeNameEng != null and searchCodeNameEng != ''">	AND CC.CODE_NAME_ENG 	= #{searchCodeNameEng}		 </if> -->
+				<!-- <if test="searchCodeOrder != null and searchCodeOrder != ''">	AND CC.CODE_ORDER 	= #{searchCodeOrder}		 </if> -->
+				<!-- <if test="searchBigo1 != null and searchBigo1 != ''">	AND CC.BIGO1 	= #{searchBigo1}		 </if> -->
+				<!-- <if test="searchBigo2 != null and searchBigo2 != ''">	AND CC.BIGO2 	= #{searchBigo2}		 </if> -->
+				<!-- <if test="searchDeleteYn != null and searchDeleteYn != ''">	AND CC.DELETE_YN 	= #{searchDeleteYn}		 </if> -->
+				<!-- <if test="searchInsertDate != null and searchInsertDate != ''">	AND CC.INSERT_DATE 	= #{searchInsertDate}		 </if> -->
+				<!-- <if test="searchInsertUser != null and searchInsertUser != ''">	AND CC.INSERT_USER 	= #{searchInsertUser}		 </if> -->
+				<!-- <if test="searchUpdateDate != null and searchUpdateDate != ''">	AND CC.UPDATE_DATE 	= #{searchUpdateDate}		 </if> -->
+				<!-- <if test="searchUpdateUser != null and searchUpdateUser != ''">	AND CC.UPDATE_USER 	= #{searchUpdateUser}		 </if> -->
+				<!-- <if test="searchUseYn != null and searchUseYn != ''">	AND CC.USE_YN 	= #{searchUseYn}		 </if> -->
+				<!-- <if test="searchBigo3 != null and searchBigo3 != ''">	AND CC.BIGO3 	= #{searchBigo3}		 </if> -->
+			</sql>
+	
+	<select id="getComcode" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO" resultType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.getComcode ====== */
+			SELECT 
+					CC.CODE_ID
+				 , CC.CODE_GROUP
+				 , CC.GROUP_DESC
+				 , CC.CODE_CODE
+				 , CC.CODE_NAME
+				 , CC.CODE_NAME_ENG
+				 , CC.CODE_ORDER
+				 , CC.BIGO1
+				 , CC.BIGO2
+				 , CC.DELETE_YN
+				 , DATE_FORMAT( CC.INSERT_DATE ,'%Y-%m-%d %H:%i:%s') AS INSERT_DATE
+				 , CC.INSERT_USER
+				 , DATE_FORMAT( CC.UPDATE_DATE ,'%Y-%m-%d %H:%i:%s') AS UPDATE_DATE
+				 , CC.UPDATE_USER
+				 , CC.USE_YN
+				 , CC.BIGO3
+			  FROM COM_COMCODE CC
+			 WHERE CC.CODE_ID 	= #{codeId} 
+	</select>
+	
+<!-- 	<select id="listComcode" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listComcode" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO"> -->
+<!-- 	<select id="listComcode" parameterType="hashmap" resultMap="comcode-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listComcode" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO" resultType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.listComcode ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+			SELECT 
+				   CC.CODE_ID
+				 , CC.CODE_GROUP
+				 , CC.GROUP_DESC
+				 , CC.CODE_CODE
+				 , CC.CODE_NAME
+				 , CC.CODE_NAME_ENG
+				 , CC.CODE_ORDER
+				 , CC.BIGO1
+				 , CC.BIGO2
+				 , CC.DELETE_YN
+				 , DATE_FORMAT( CC.INSERT_DATE ,'%Y-%m-%d %H:%i:%s') AS INSERT_DATE
+				 , CC.INSERT_USER
+				 , DATE_FORMAT( CC.UPDATE_DATE ,'%Y-%m-%d %H:%i:%s') AS UPDATE_DATE
+				 , CC.UPDATE_USER
+				 , CC.USE_YN
+				 , CC.BIGO3
+			  FROM COM_COMCODE CC
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listComcode-where"/>
+			ORDER BY CC.CODE_GROUP ASC , CC.CODE_ORDER ASC , CC.CODE_CODE ASC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getComcodeCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.getComcodeCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_COMCODE CC
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listComcode-where"/>
+	</select>
+
+	
+	<sql id="saveComcodeSQL">
+	
+	INSERT INTO COM_COMCODE
+	 (
+	 CODE_ID
+	 , CODE_GROUP
+	 , GROUP_DESC
+	 , CODE_CODE
+	 , CODE_NAME
+	 , CODE_NAME_ENG
+	 , CODE_ORDER
+	 , BIGO1
+	 , BIGO2
+	 , DELETE_YN
+	 , INSERT_DATE
+	 , INSERT_USER
+	 , UPDATE_DATE
+	 , UPDATE_USER
+	 , USE_YN
+	 , BIGO3
+	) 
+	VALUES 
+    ( 
+	 #{codeId}
+	 , #{codeGroup}
+	 , #{groupDesc}
+	 , #{codeCode}
+	 , #{codeName}
+	 , #{codeNameEng}
+	 , #{codeOrder}
+	 , #{bigo1}
+	 , #{bigo2}
+	 , #{deleteYn}
+	 , NOW()
+	 , #{sessionMemSeq}
+	 , NOW()
+	 , #{sessionMemSeq}
+	 , #{useYn}
+	 , #{bigo3}
+	)  
+ 	ON DUPLICATE KEY
+	UPDATE 
+	CODE_ID 	= #{codeId}
+	, UPDATE_DATE = NOW()
+	, UPDATE_USER 	= #{sessionMemSeq}
+	<if test="codeGroup != null and codeGroup != ''">	, CODE_GROUP 	= #{codeGroup}		 </if>
+	<if test="groupDesc != null and groupDesc != ''">	, GROUP_DESC 	= #{groupDesc}		 </if>
+	<if test="codeCode != null and codeCode != ''">	, CODE_CODE 	= #{codeCode}		 </if>
+	<if test="codeName != null and codeName != ''">	, CODE_NAME 	= #{codeName}		 </if>
+	<if test="codeNameEng != null and codeNameEng != ''">	, CODE_NAME_ENG 	= #{codeNameEng}		 </if>
+	<if test="codeOrder != null and codeOrder != ''">	, CODE_ORDER 	= #{codeOrder}		 </if>
+	<if test="bigo1 != null and bigo1 != ''">	, BIGO1 	= #{bigo1}		 </if>
+	<if test="bigo2 != null and bigo2 != ''">	, BIGO2 	= #{bigo2}		 </if>
+	<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+	<if test="useYn != null and useYn != ''">	, USE_YN 	= #{useYn}		 </if>
+	<if test="bigo3 != null and bigo3 != ''">	, BIGO3 	= #{bigo3}		 </if>
+<!-- 
+    	MERGE INTO COM_COMCODE 
+    	USING DUAL
+    		ON (
+    		
+    			CODE_ID 	= #{codeId} 
+    		)
+		WHEN MATCHED THEN
+			UPDATE SET UPDATE_DATE = NOW()
+						, UPDATE_USER 	= #{sessionMemSeq}
+								<if test="codeGroup != null and codeGroup != ''">	, CODE_GROUP 	= #{codeGroup}		 </if>
+								<if test="groupDesc != null and groupDesc != ''">	, GROUP_DESC 	= #{groupDesc}		 </if>
+								<if test="codeCode != null and codeCode != ''">	, CODE_CODE 	= #{codeCode}		 </if>
+								<if test="codeName != null and codeName != ''">	, CODE_NAME 	= #{codeName}		 </if>
+								<if test="codeNameEng != null and codeNameEng != ''">	, CODE_NAME_ENG 	= #{codeNameEng}		 </if>
+								<if test="codeOrder != null and codeOrder != ''">	, CODE_ORDER 	= #{codeOrder}		 </if>
+								<if test="bigo1 != null and bigo1 != ''">	, BIGO1 	= #{bigo1}		 </if>
+								<if test="bigo2 != null and bigo2 != ''">	, BIGO2 	= #{bigo2}		 </if>
+								<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+								<if test="useYn != null and useYn != ''">	, USE_YN 	= #{useYn}		 </if>
+								<if test="bigo3 != null and bigo3 != ''">	, BIGO3 	= #{bigo3}		 </if>
+						WHEN NOT MATCHED THEN
+			INSERT (
+								 CODE_ID
+								 , CODE_GROUP
+								 , GROUP_DESC
+								 , CODE_CODE
+								 , CODE_NAME
+								 , CODE_NAME_ENG
+								 , CODE_ORDER
+								 , BIGO1
+								 , BIGO2
+								 , DELETE_YN
+								 , INSERT_DATE
+								 , INSERT_USER
+								 , UPDATE_DATE
+								 , UPDATE_USER
+								 , USE_YN
+								 , BIGO3
+									) 
+					VALUES 
+					( 
+								 #{codeId}
+								 , #{codeGroup}
+								 , #{groupDesc}
+								 , #{codeCode}
+								 , #{codeName}
+								 , #{codeNameEng}
+								 , #{codeOrder}
+								 , #{bigo1}
+								 , #{bigo2}
+								 , #{deleteYn}
+								 , NOW()
+								 , #{sessionMemSeq}
+								 , NOW()
+								 , #{sessionMemSeq}
+								 , #{useYn}
+								 , #{bigo3}
+								) 
+-->
+	</sql>	
+	<insert id="saveComcodeMap" parameterType="java.util.HashMap">
+		/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.saveComcodeMap ====== */
+		<include refid="saveComcodeSQL"/>
+	</insert>
+	<insert id="saveComcode" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.saveComcode ====== */
+		<include refid="saveComcodeSQL"/>
+	</insert>
+	
+
+	<insert id="insertComcode" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.insertComcode ====== */
+			INSERT INTO COM_COMCODE ( 
+									 CODE_ID
+									 , CODE_GROUP
+									 , GROUP_DESC
+									 , CODE_CODE
+									 , CODE_NAME
+									 , CODE_NAME_ENG
+									 , CODE_ORDER
+									 , BIGO1
+									 , BIGO2
+									 , DELETE_YN
+									 , INSERT_DATE
+									 , INSERT_USER
+									 , UPDATE_DATE
+									 , UPDATE_USER
+									 , USE_YN
+									 , BIGO3
+									) 
+					VALUES 
+					( 
+								  #{codeId}
+				    								 , #{codeGroup}
+				    								 , #{groupDesc}
+				    								 , #{codeCode}
+				    								 , #{codeName}
+				    								 , #{codeNameEng}
+				    								 , #{codeOrder}
+				    								 , #{bigo1}
+				    								 , #{bigo2}
+				    								 , #{deleteYn}
+				    								 , NOW()
+				    								 , #{sessionMemSeq}
+				    								 , NOW()
+				    								 , #{sessionMemSeq}
+				    								 , #{useYn}
+				    								 , #{bigo3}
+				    								)
+		]]>
+	</insert>
+
+
+	<update id="updateComcode" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+			/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.updateComcode ====== */
+	        UPDATE COM_COMCODE 
+	        SET UPDATE_DATE 	= NOW()
+	        	, UPDATE_USER 	= #{sessionMemSeq}
+				    									 <if test="codeGroup != null and codeGroup != ''">		, CODE_GROUP 	= #{codeGroup}		 </if>
+				    									 <if test="groupDesc != null and groupDesc != ''">		, GROUP_DESC 	= #{groupDesc}		 </if>
+				    									 <if test="codeCode != null and codeCode != ''">		, CODE_CODE 	= #{codeCode}		 </if>
+				    									 <if test="codeName != null and codeName != ''">		, CODE_NAME 	= #{codeName}		 </if>
+				    									 <if test="codeNameEng != null and codeNameEng != ''">		, CODE_NAME_ENG 	= #{codeNameEng}		 </if>
+				    									 <if test="codeOrder != null and codeOrder != ''">		, CODE_ORDER 	= #{codeOrder}		 </if>
+				    									 <if test="bigo1 != null and bigo1 != ''">		, BIGO1 	= #{bigo1}		 </if>
+				    									 <if test="bigo2 != null and bigo2 != ''">		, BIGO2 	= #{bigo2}		 </if>
+				    									 <if test="deleteYn != null and deleteYn != ''">		, DELETE_YN 	= #{deleteYn}		 </if>
+				    									 <if test="useYn != null and useYn != ''">		, USE_YN 	= #{useYn}		 </if>
+				    									 <if test="bigo3 != null and bigo3 != ''">		, BIGO3 	= #{bigo3}		 </if>
+				    						     WHERE CODE_ID 	= #{codeId}
+	</update>
+
+
+	<delete id="deleteComcode" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.deleteComcode ====== */
+			DELETE FROM COM_COMCODE 
+		]]>
+			 WHERE CODE_ID IN
+		<foreach collection="delCodeIdList" item="delCodeIds" index="index" open="(" close=")" separator=",">
+			 '${delCodeIds}'
+		</foreach>
+	</delete>
+
+
+
+	
+	<select id="listComcodeGroup" parameterType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO" resultType="kr.co.sitglobal.oklms.la.comcode.vo.ComcodeVO">
+		/* ====== kr.co.sitglobal.oklms.la.comcode.service.impl.ComcodeMapper.listComcodeGroup ====== */
+			SELECT 
+				 CODE_GROUP
+				 , MAX(GROUP_DESC) AS GROUP_DESC
+			  FROM COM_COMCODE 
+        GROUP BY CODE_GROUP
+        ORDER BY CODE_GROUP ASC  
+	</select>
+</mapper>

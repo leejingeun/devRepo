@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper">
+
+	<resultMap id="authGroup-result" type="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		<result column="AUTH_GROUP_ID" 			property="authGroupId" /> <!-- 권한그룹아이디 -->
+		<result column="AUTH_GROUP_NAME" 			property="authGroupName" /> <!-- 권한그룹명 -->
+		<result column="AUTH_GROUP_DESC" 			property="authGroupDesc" /> <!-- 권한그룹설명 -->
+		<result column="DELETE_YN" 			property="deleteYn" /> <!-- 삭제여부 -->
+		<result column="INSERT_USER" 			property="insertUser" /> <!-- 등록자 -->
+		<result column="INSERT_DATE" 			property="insertDate" /> <!-- 등록일 -->
+		<result column="UPDATE_USER" 			property="updateUser" /> <!-- 수정자 -->
+		<result column="UPDATE_DATE" 			property="updateDate" /> <!-- 수정일 -->
+		</resultMap>
+	
+	<sql id="listAuthGroup-where">
+	
+		<!-- 조회 조건값 ( CAG.컬럼명 == null  형태는 사용하지 말것!! ) -->
+				<!-- <if test="authGroupId != null and authGroupId != ''">	AND CAG.AUTH_GROUP_ID 	= #{authGroupId}		 </if> -->
+				<!-- <if test="authGroupName != null and authGroupName != ''">	AND CAG.AUTH_GROUP_NAME 	= #{authGroupName}		 </if> -->
+				<!-- <if test="authGroupDesc != null and authGroupDesc != ''">	AND CAG.AUTH_GROUP_DESC 	= #{authGroupDesc}		 </if> -->
+				<!-- <if test="deleteYn != null and deleteYn != ''">	AND CAG.DELETE_YN 	= #{deleteYn}		 </if> -->
+				<!-- <if test="insertUser != null and insertUser != ''">	AND CAG.INSERT_USER 	= #{insertUser}		 </if> -->
+				<!-- <if test="insertDate != null and insertDate != ''">	AND CAG.INSERT_DATE 	= #{insertDate}		 </if> -->
+				<!-- <if test="updateUser != null and updateUser != ''">	AND CAG.UPDATE_USER 	= #{updateUser}		 </if> -->
+				<!-- <if test="updateDate != null and updateDate != ''">	AND CAG.UPDATE_DATE 	= #{updateDate}		 </if> -->
+			
+		<!-- 검색 영역에서의 조건값 --> 	<!-- <if test="searchPrototypeTitle != null and searchPrototypeTitle != ''"> AND CAG.PROTOTYPE_TITLE LIKE '%' ||  #{searchPrototypeTitle  } || '%' </if> -->
+				<!-- <if test="searchAuthGroupId != null and searchAuthGroupId != ''">	AND CAG.AUTH_GROUP_ID 	= #{searchAuthGroupId}		 </if> -->
+				<if test="searchAuthGroupName != null and searchAuthGroupName != ''">	AND CAG.AUTH_GROUP_NAME LIKE '%' #{searchAuthGroupName  } '%'  		 </if>
+				
+				
+				<!-- <if test="searchAuthGroupDesc != null and searchAuthGroupDesc != ''">	AND CAG.AUTH_GROUP_DESC 	 LIKE '%' ||  #{searchAuthGroupDesc} || '%'		 </if> -->
+				<!-- <if test="searchDeleteYn != null and searchDeleteYn != ''">	AND CAG.DELETE_YN 	= #{searchDeleteYn}		 </if> -->
+				<!-- <if test="searchInsertUser != null and searchInsertUser != ''">	AND CAG.INSERT_USER 	= #{searchInsertUser}		 </if> -->
+				<!-- <if test="searchInsertDate != null and searchInsertDate != ''">	AND CAG.INSERT_DATE 	= #{searchInsertDate}		 </if> -->
+				<!-- <if test="searchUpdateUser != null and searchUpdateUser != ''">	AND CAG.UPDATE_USER 	= #{searchUpdateUser}		 </if> -->
+				<!-- <if test="searchUpdateDate != null and searchUpdateDate != ''">	AND CAG.UPDATE_DATE 	= #{searchUpdateDate}		 </if> -->
+			</sql>
+	
+	<select id="getAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.getAuthGroup ====== */
+			SELECT 
+								  CAG.AUTH_GROUP_ID /* 권한그룹아이디 */
+				    								 ,  CAG.AUTH_GROUP_NAME /* 권한그룹명 */
+				    								 ,  CAG.AUTH_GROUP_DESC /* 권한그룹설명 */
+				    								 ,  CAG.DELETE_YN /* 삭제여부 */
+				    								 ,  CAG.INSERT_USER /* 등록자 */
+				    								 ,  DATE_FORMAT( CAG.INSERT_DATE ,'%Y-%m-%d %H:%i:%s') AS INSERT_DATE /* 등록일 */
+				    								 ,  CAG.UPDATE_USER /* 수정자 */
+				    								 ,  DATE_FORMAT( CAG.UPDATE_DATE ,'%Y-%m-%d %H:%i:%s') AS UPDATE_DATE /* 수정일 */
+				    							  FROM COM_AUTH_GROUP CAG
+			 WHERE CAG.AUTH_GROUP_ID 	= #{authGroupId} 
+	</select>
+	
+	<select id="listDistAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.listDistAuthGroup ====== */
+				SELECT DISTINCT
+								  CAG.AUTH_GROUP_ID  /* 권한그룹아이디 */
+				    								 ,  CAG.AUTH_GROUP_NAME  /* 권한그룹명 */
+				    								 ,  CAG.AUTH_GROUP_DESC  /* 권한그룹설명 */
+				    								 ,  CAG.DELETE_YN  /* 삭제여부 */
+				    							  FROM COM_AUTH_GROUP CAG
+                                                  WHERE delete_yn ='N'
+                                                  ORDER BY AUTH_GROUP_ID ASC
+			 
+	</select>
+	
+	
+<!-- 	<select id="listAuthGroup" parameterType="hashmap" resultType="egovframework.rte.psl.dataaccess.util.EgovMap"> -->
+<!-- 	<select id="listAuthGroup" parameterType="hashmap" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO"> -->
+<!-- 	<select id="listAuthGroup" parameterType="hashmap" resultMap="authGroup-result"> typeHandler 를 적용해야하는 경우. -->
+	<select id="listAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO" resultType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.listAuthGroup ====== */
+		<include refid="kr.co.sitglobal.include.paging-start"/>
+	    <![CDATA[
+			SELECT 
+								  CAG.AUTH_GROUP_ID  /* 권한그룹아이디 */
+				    								 ,  CAG.AUTH_GROUP_NAME  /* 권한그룹명 */
+				    								 ,  CAG.AUTH_GROUP_DESC  /* 권한그룹설명 */
+				    								 ,  CAG.DELETE_YN  /* 삭제여부 */
+				    								 ,  CAG.INSERT_USER  /* 등록자 */
+				    								 ,  DATE_FORMAT( CAG.INSERT_DATE ,'%Y-%m-%d %H:%i:%s') AS INSERT_DATE  /* 등록일 */
+				    								 ,  CAG.UPDATE_USER  /* 수정자 */
+				    								 ,  DATE_FORMAT( CAG.UPDATE_DATE ,'%Y-%m-%d %H:%i:%s') AS UPDATE_DATE  /* 수정일 */
+				    							  FROM COM_AUTH_GROUP CAG
+			 WHERE 1=1 
+	    ]]>
+
+		<include refid="listAuthGroup-where"/>
+			ORDER BY CAG.UPDATE_DATE DESC
+		<include refid="kr.co.sitglobal.include.paging-end"/>
+	</select>
+	
+	<select id="getAuthGroupCnt" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	
+	    <![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.getAuthGroupCnt ====== */
+	        SELECT
+	               COUNT(*) CNT
+	          FROM COM_AUTH_GROUP CAG
+	          WHERE 1=1
+	    ]]>
+
+		<include refid="listAuthGroup-where"/>
+	</select>
+
+	
+	<sql id="saveAuthGroupSQL">
+    	INSERT INTO COM_AUTH_GROUP 
+  		(
+		 AUTH_GROUP_ID
+		 , AUTH_GROUP_NAME
+		 , AUTH_GROUP_DESC
+		 , DELETE_YN
+		 , INSERT_USER
+		 , INSERT_DATE
+		 , UPDATE_USER
+		 , UPDATE_DATE
+			) 
+		VALUES 
+		( 
+		 #{authGroupId}
+		 , #{authGroupName}
+		 , #{authGroupDesc}
+		 , #{deleteYn}
+		 , #{sessionMemSeq}
+		 , NOW()
+		 , #{sessionMemSeq}
+		 , NOW()
+		)
+    	ON DUPLICATE KEY
+    	UPDATE 
+ 		AUTH_GROUP_ID 	= #{authGroupId}
+		, UPDATE_DATE 	= NOW()
+    	, UPDATE_USER 	= #{sessionMemSeq}
+		<if test="authGroupName != null and authGroupName != ''">	, AUTH_GROUP_NAME 	= #{authGroupName}		 </if>
+		<if test="authGroupDesc != null and authGroupDesc != ''">	, AUTH_GROUP_DESC 	= #{authGroupDesc}		 </if>
+		<if test="deleteYn != null and deleteYn != ''">	, DELETE_YN 	= #{deleteYn}		 </if>
+	</sql>	
+	<insert id="saveAuthGroupMap" parameterType="java.util.HashMap">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.saveAuthGroupMap ====== */
+		<include refid="saveAuthGroupSQL"/>
+	</insert>
+	<insert id="saveAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.saveAuthGroup ====== */
+		<include refid="saveAuthGroupSQL"/>
+	</insert>
+	
+
+	<insert id="insertAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.insertAuthGroup ====== */
+			INSERT INTO COM_AUTH_GROUP ( 
+									 AUTH_GROUP_ID
+									 , AUTH_GROUP_NAME
+									 , AUTH_GROUP_DESC
+									 , DELETE_YN
+									 , INSERT_USER
+									 , INSERT_DATE
+									 , UPDATE_USER
+									 , UPDATE_DATE
+									) 
+					VALUES 
+					( 
+								  #{authGroupId}
+				    								 ,  #{authGroupName}
+				    								 ,  #{authGroupDesc}
+				    								 ,  #{deleteYn}
+				    								 ,  #{sessionMemSeq}
+				    								 ,  NOW()
+				    								 ,  #{sessionMemSeq}
+				    								 ,  NOW()
+				    								)
+		]]>
+	</insert>
+
+
+	<update id="updateAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.updateAuthGroup ====== */
+	        UPDATE COM_AUTH_GROUP 
+	        SET UPDATE_DATE 	= NOW()
+	        	, UPDATE_USER 	= #{sessionMemSeq}
+				    									 <if test="authGroupName != null and authGroupName != ''">		, AUTH_GROUP_NAME 	= #{authGroupName}		 </if>
+				    									 <if test="authGroupDesc != null and authGroupDesc != ''">		, AUTH_GROUP_DESC 	= #{authGroupDesc}		 </if>
+				    									 <if test="deleteYn != null and deleteYn != ''">		, DELETE_YN 	= #{deleteYn}		 </if>
+				    						     WHERE AUTH_GROUP_ID = #{authGroupId}
+	</update>
+
+
+	<delete id="deleteAuthGroup" parameterType="kr.co.sitglobal.oklms.la.authority.vo.AuthGroupVO">
+		<![CDATA[
+			/* ====== kr.co.sitglobal.oklms.la.authority.service.impl.AuthGroupMapper.deleteAuthGroup ====== */
+			DELETE FROM COM_AUTH_GROUP 
+		]]>
+			 WHERE AUTH_GROUP_ID IN
+		<foreach collection="delAuthGroupIdList" item="delAuthGroupIds" index="index" open="(" close=")" separator=",">
+			 '${delAuthGroupIds}'
+		</foreach>
+	</delete>
+
+</mapper>

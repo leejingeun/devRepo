@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            DescriptionlistTraningChangeScheduleDisapproved
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 03. 27     First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.traningchange.service.impl.TraningChangeMapper">
+
+	<sql id="list-where">
+		<if test="sessionMemSeq != null and sessionMemSeq != ''">
+			AND A.UPDATE_USER = #{sessionMemSeq} /* HRD담당자, 기업현장교사 일떼만 */
+	    </if>
+	</sql>
+
+	<sql id="listAliasNo-where">
+		<if test="sessionMemSeq != null and sessionMemSeq != ''">
+			AND UPDATE_USER = #{sessionMemSeq} /* 기업현장교사 일떼만 */
+	    </if>
+	</sql>
+
+	<sql id="listCot-where">
+		<if test="sessionMemSeq != null and sessionMemSeq != ''">
+			AND A.UPDATE_USER = #{sessionMemSeq} /* HRD담당자, 기업현장교사 일떼만 */
+	    </if>
+	</sql>
+
+	<sql id="listCcn-where">
+		<if test="searchCompanyName != null and searchCompanyName != ''">
+			AND A.yyyy = #{sessionYyyy}
+	    </if>
+	    <if test="searchTraningProcessName != null and searchTraningProcessName != ''">
+			AND A.term = #{sessionTerm}
+	    </if>
+	    <if test="searchSubjectName != null and searchSubjectName != ''">
+			AND A.subject_code = #{sessionSubjectCode}
+	    </if>
+	    <if test="searchStartUpdateDate != null and searchStartUpdateDate != ''">
+			AND A.class = #{sessionSubClass}
+	    </if>
+	</sql>
+
+	<!-- 승인된 변경신청 내역 목록 엑셀다운로드 -->
+	<select id="listTraningChangeScheduleApprovedExcelDownload" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.listTraningChangeScheduleApprovedExcelDownload ====== */
+			select a.COMPANY_ID,
+			       a.TRANING_PROCESS_ID,
+			       FN_GETCOMPAYNAME(a.COMPANY_ID) company_name,
+			       FN_GETTRANING_PROCESS_NAME(a.TRANING_PROCESS_ID) HRD_TRANING_NAME,
+			       a.YYYY,
+			       a.TERM,
+			       a.SUBJECT_CODE,
+			       a.CLASS as subClass,
+			       c.SUBJECT_NAME,
+			       e.mem_seq,
+			       e.mem_id,
+			       e.mem_name,
+			       e.mem_type
+			  from lms_traning_process_mapping a
+			  inner join lms_subject c
+			  on c.YYYY = a.YYYY
+			  and c.TERM = a.TERM
+			  and c.SUBJECT_CODE = a.SUBJECT_CODE
+			  and c.CLASS = a.CLASS
+			  and c.SUBJECT_TRANING_TYPE = 'OJT'
+			  and c.DELETE_YN = 'N'
+			  left outer join lms_subj_tut_mapping d
+			  on d.YYYY = c.YYYY
+			  and d.TERM = c.TERM
+			  and d.SUBJECT_CODE = c.SUBJECT_CODE
+			  and d.CLASS = c.CLASS
+			  and d.DELETE_YN = 'N'
+			  left outer join com_member e
+			  on e.mem_seq = d.mem_seq
+			  where 1 = 1
+			  and a.DELETE_YN = 'N'
+			  and a.COMPANY_ID = #{companyId}
+			  and a.TRANING_PROCESS_ID = #{traningProcessId}
+			  and a.yyyy = #{yyyy}
+			  and a.TERM = #{term}
+			  and a.SUBJECT_CODE = #{subjectCode}
+			  and a.CLASS = #{subClass}
+	</select>
+
+	<!-- 미승인 변경신청 목록 -->
+	<select id="listTraningChangeScheduleDisapproved" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.listTraningChangeScheduleDisapproved ====== */
+			SELECT DISTINCT A.WEEK_ID, A.YYYY,
+			       A.TERM,
+			       A.SUBJECT_CODE,
+			       A.CLASS as subClass,
+			       A.CHANGE_REASON,
+			       DATE_FORMAT (A.UPDATE_DATE, '%Y.%m.%d') as UPDATE_DATE,
+			       FN_GETSUBJECT_NAME(A.YYYY, A.TERM, A.SUBJECT_CODE, A.CLASS) AS SUBJECT_NAME,
+			       FN_GETUSERNAME(A.UPDATE_USER) AS MEM_NAME,
+			       '승인대기' as CHANGE_STATUS_NAME,
+			        A.CHANGE_STATUS,
+			        (SELECT B.COMPANY_ID
+			          FROM lms_traning_process_mapping B
+			          WHERE 1 = 1
+			          AND B.YYYY = A.YYYY
+			          AND B.TERM = A.TERM
+			       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+			          AND B.CLASS = A.CLASS
+			          AND B.DELETE_YN = 'N'
+			          LIMIT 1
+			        ) AS COMPANY_ID,
+			        (SELECT FN_GETCOMPAYNAME(B.COMPANY_ID)
+			          FROM lms_traning_process_mapping B
+			          WHERE 1 = 1
+			          AND B.YYYY = A.YYYY
+			          AND B.TERM = A.TERM
+			       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+			          AND B.CLASS = A.CLASS
+			          AND B.DELETE_YN = 'N'
+			          LIMIT 1
+			        ) AS COMPANY_NAME,
+			        (SELECT B.TRANING_PROCESS_ID
+			          FROM lms_traning_process_mapping B
+			          WHERE 1 = 1
+			          AND B.YYYY = A.YYYY
+			          AND B.TERM = A.TERM
+			       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+			          AND B.CLASS = A.CLASS
+			          AND B.DELETE_YN = 'N'
+			          LIMIT 1
+			        ) AS TRANING_PROCESS_ID,
+			        (SELECT FN_GETTRANING_PROCESS_NAME(B.TRANING_PROCESS_ID)
+			          FROM lms_traning_process_mapping B
+			          WHERE 1 = 1
+			          AND B.YYYY = A.YYYY
+			          AND B.TERM = A.TERM
+			       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+			          AND B.CLASS = A.CLASS
+			          AND B.DELETE_YN = 'N'
+			          LIMIT 1
+			        ) AS HRD_TRANING_NAME
+			  FROM lms_traning_subj_week_sch A
+			 WHERE 1 = 1
+			       AND A.DELETE_YN = 'N'
+			       AND A.CHANGE_STATUS = '1'
+			       AND A.CHANGE_REASON IS NOT NULL
+			<!-- 기업현장교사 일떼만 세션에서 교과정보 메핑 -->
+			<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+				<if test="sessionAuthGroupId == '2016AUTH0000008'">
+					<include refid="listCot-where"/>
+				</if>
+			</if>
+			ORDER BY A.WEEK_ID DESC
+	</select>
+
+	<!-- 승인된 변경이력 목록 -->
+	<select id="listTraningChangeScheduleApproved" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.listTraningChangeScheduleApproved ====== */
+			SELECT DISTINCT A.WEEK_ID, A.YYYY,
+		       A.TERM,
+		       A.SUBJECT_CODE,
+		       A.CLASS as subClass,
+		       A.CHANGE_REASON,
+		       DATE_FORMAT (A.UPDATE_DATE, '%Y.%m.%d') as UPDATE_DATE,
+		       FN_GETSUBJECT_NAME(A.YYYY, A.TERM, A.SUBJECT_CODE, A.CLASS) AS SUBJECT_NAME,
+		       FN_GETUSERNAME(A.UPDATE_USER) AS MEM_NAME,
+		       if(A.CHANGE_STATUS = '2', '승인', '반려') as CHANGE_STATUS_NAME,
+		        A.CHANGE_STATUS,
+		        (SELECT MAX(B.COMPANY_ID)
+		          FROM lms_traning_process_mapping B
+		          WHERE 1 = 1
+		          AND B.YYYY = A.YYYY
+		          AND B.TERM = A.TERM
+		       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+		          AND B.CLASS = A.CLASS
+		          AND B.DELETE_YN = 'N'
+		        ) AS COMPANY_ID,
+		        (SELECT FN_GETCOMPAYNAME(MAX(B.COMPANY_ID))
+		          FROM lms_traning_process_mapping B
+		          WHERE 1 = 1
+		          AND B.YYYY = A.YYYY
+		          AND B.TERM = A.TERM
+		       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+		          AND B.CLASS = A.CLASS
+		          AND B.DELETE_YN = 'N'
+		        ) AS COMPANY_NAME,
+		        (SELECT MAX(B.TRANING_PROCESS_ID)
+		          FROM lms_traning_process_mapping B
+		          WHERE 1 = 1
+		          AND B.YYYY = A.YYYY
+		          AND B.TERM = A.TERM
+		       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+		          AND B.CLASS = A.CLASS
+		          AND B.DELETE_YN = 'N'
+		        ) AS TRANING_PROCESS_ID,
+		        (SELECT FN_GETTRANING_PROCESS_NAME(MAX(B.TRANING_PROCESS_ID))
+		          FROM lms_traning_process_mapping B
+		          WHERE 1 = 1
+		          AND B.YYYY = A.YYYY
+		          AND B.TERM = A.TERM
+		       	  AND B.SUBJECT_CODE = A.SUBJECT_CODE
+		          AND B.CLASS = A.CLASS
+		          AND B.DELETE_YN = 'N'
+		        ) AS HRD_TRANING_NAME
+		  FROM lms_traning_subj_week_sch A
+		 WHERE 1 = 1
+		       AND A.DELETE_YN = 'N'
+		       AND A.CHANGE_STATUS IN ('2','3')
+		       AND A.CHANGE_REASON IS NOT NULL
+
+			<if test="sessionAuthGroupId != null  and sessionAuthGroupId != '' ">
+				<!-- 기업현장교사 일떼 -->
+				<if test="sessionAuthGroupId == '2016AUTH0000008'">
+					<include refid="listCot-where"/>
+				</if>
+				<!-- 센터전담자 혹은 HRD전담자 일떼 -->
+				<if test="sessionAuthGroupId == '2016AUTH0000004' or sessionAuthGroupId == '2016AUTH0000005'">
+					<include refid="listCcn-where"/>
+				</if>
+			</if>
+
+			ORDER BY A.WEEK_ID DESC
+	</select>
+
+	<!-- 훈련시간표 변경신청 상세 목록 -->
+	<select id="listTraningChangeScheduleDisapprovedDetail" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO" resultType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+	/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.listTraningChangeScheduleDisapprovedDetail ====== */
+			select
+			      (
+			        SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(TRANING_DATE), 1)
+			      ) AS DAY_OF_WEEK,
+			      (
+			        SELECT SUBSTR(_UTF8'일월화수목금토', DAYOFWEEK(CHANGE_TRANING_DATE), 1)
+			      ) AS DAY_OF_WEEK_CHANGE,
+			      a.WEEK_ID,
+			      a.TIME_ID,
+			      b.WEEK_CNT,
+			      a.YYYY,
+			      a.TERM,
+			      a.SUBJECT_CODE,
+			      a.CLASS,
+			      a.TRANING_DATE,
+			      a.TRANING_ST_HOUR,
+			      a.TRANING_ST_MIN,
+			      a.TRANING_ED_HOUR,
+			      a.TRANING_ED_MIN,
+			      a.CHANGE_TRANING_DATE,
+			      a.CHANGE_TRANING_ST_HOUR,
+			      a.CHANGE_TRANING_ST_MIN,
+			      a.CHANGE_TRANING_ED_HOUR,
+			      a.CHANGE_TRANING_ED_MIN,
+			      a.LEAD_TIME,
+			      a.CHANGE_LEAD_TIME,
+			      a.INSERT_DATE,
+			      a.INSERT_USER,
+			      a.UPDATE_DATE,
+			      a.UPDATE_USER
+			from lms_traning_subj_week_time_sch a
+			inner join lms_traning_subj_week_sch b
+			on b.WEEK_ID = a.WEEK_ID
+			and b.YYYY = a.YYYY
+			and b.TERM = a.TERM
+			and b.SUBJECT_CODE = a.SUBJECT_CODE
+			and b.CLASS = a.CLASS
+			where 1 = 1
+			and a.DELETE_YN = 'N'
+			and a.yyyy = #{searchYyyy}
+			and a.TERM = #{searchTerm}
+			and a.SUBJECT_CODE = #{searchSubjectCode}
+			and a.CLASS = #{searchSubClass}
+			order by b.WEEK_ID asc, a.TRANING_DATE asc
+
+	</select>
+
+	<!-- 훈련과정시간표 변경신청건 변경사유 수정 처리시 -->
+	<update id="updateTraningChangeSchedule" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.updateTraningChangeSchedule ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,CHANGE_REASON = #{changeReason}
+			WHERE 1=1
+			and yyyy = #{searchYyyy}
+			and TERM = #{searchTerm}
+			and SUBJECT_CODE = #{searchSubjectCode}
+			and CLASS = #{searchSubClass}
+			<!-- 기업현장교사 일떼만 아래 검색조건 추가 -->
+<!-- 			<if test="sessionAuthGroupId != null and sessionAuthGroupId != '' ">
+				<if test="sessionAuthGroupId == '2016AUTH0000008'">
+					<include refid="listAliasNo-where"/>
+				</if>
+			</if> -->
+	</update>
+
+	<!-- 훈련과정시간표 변경신청건 훈련일자 수정 처리시 -->
+	<update id="updateTraningChangeScheduleTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.updateTraningChangeScheduleTime ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_TIME_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,CHANGE_TRANING_DATE = #{changeTraningDate}
+			   ,CHANGE_TRANING_ST_HOUR = #{changeTraningStHour}
+			   ,CHANGE_TRANING_ST_MIN = '00'
+			   ,CHANGE_TRANING_ED_HOUR = #{changeTraningEdHour}
+			   ,CHANGE_TRANING_ED_MIN = '00'
+			   ,CHANGE_LEAD_TIME = #{changeLeadTime}
+			WHERE 1=1
+			AND TIME_ID = #{timeId}
+			and yyyy = #{searchYyyy}
+			and TERM = #{searchTerm}
+			and SUBJECT_CODE = #{searchSubjectCode}
+			and CLASS = #{searchSubClass}
+			<!-- 기업현장교사 일떼만 아래 검색조건 추가 -->
+<!-- 			<if test="sessionAuthGroupId != null and sessionAuthGroupId != '' ">
+				<if test="sessionAuthGroupId == '2016AUTH0000008'">
+					<include refid="listAliasNo-where"/>
+				</if>
+			</if> -->
+	</update>
+
+	<!-- 센터담당자가 승인 혹은 반려처리시 실제사용하는 주차별시간 테이블에 훈련일자를 변경일자로 업데이트 -->
+	<update id="updateSubjWeekTime" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.updateSubjWeekTime ====== */
+			UPDATE LMS_SUBJ_WEEK_TIME
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,TRANING_DATE = #{changeTraningDate}
+			   ,TRANING_ST_HOUR = #{changeTraningStHour}
+			   ,TRANING_ST_MIN = #{changeTraningStMin}
+			   ,TRANING_ED_HOUR = #{changeTraningEdHour}
+			   ,TRANING_ED_MIN = #{changeTraningEdMin}
+			   ,LEAD_TIME = #{changeLeadTime}
+			WHERE 1=1
+			and yyyy = #{searchYyyy}
+			and TERM = #{searchTerm}
+			and SUBJECT_CODE = #{searchSubjectCode}
+			and CLASS = #{searchSubClass}
+			and TRANING_DATE = #{traningDate}
+			and TRANING_ST_HOUR = #{traningStHour}
+			and TRANING_ST_MIN = #{traningStMin}
+			and TRANING_ED_HOUR = #{traningEdHour}
+			and TRANING_ED_MIN = #{traningEdMin}
+			and LEAD_TIME = #{leadTime}
+	</update>
+
+	<!-- 센터담당자가 승인 처리시 -->
+	<update id="updateTraningChangeScheduleStatus" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.updateTraningChangeScheduleStatus ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,CHANGE_STATUS = #{changeStatus}
+			WHERE 1=1
+			and yyyy = #{yyyy}
+			and TERM = #{term}
+			and SUBJECT_CODE = #{subjectCode}
+			and CLASS = #{subClass}
+	</update>
+
+	<!-- 센터담당자가 승인 반려처리시 -->
+	<update id="updateTraningChangeScheduleStatusApprovalNot" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.updateTraningChangeScheduleStatusApprovalNot ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,CHANGE_STATUS = #{changeStatus}
+			   ,RETUN_REASON = #{retunReason}
+			WHERE 1=1
+			and yyyy = #{yyyy}
+			and TERM = #{term}
+			and SUBJECT_CODE = #{subjectCode}
+			and CLASS = #{subClass}
+	</update>
+
+	<!-- HRD담당자, 기입현장교사가 삭제처리시 -->
+	<update id="deleteTraningChangeScheduleDisapproved" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.updateTraningChangeScheduleStatusApprovalNot ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,CHANGE_REASON = NULL
+			WHERE 1=1
+			and yyyy = #{yyyy}
+			and TERM = #{term}
+			and SUBJECT_CODE = #{subjectCode}
+			and CLASS = #{subClass}
+	</update>
+
+	<!-- HRD담당자, 기입현장교사가 삭제처리시 -->
+	<delete id="deleteTraningChangeScheduleTimeDisapproved" parameterType="kr.co.sitglobal.oklms.lu.traning.vo.TraningScheduleVO">
+		/* ====== kr.co.sitglobal.oklms.lu.traningchange.service.impl.deleteTraningChangeScheduleDisapproved ====== */
+			UPDATE LMS_TRANING_SUBJ_WEEK_TIME_SCH
+			SET UPDATE_DATE = now()
+			   ,UPDATE_USER = #{sessionMemSeq}
+			   ,CHANGE_TRANING_DATE = NULL
+			   ,CHANGE_TRANING_ST_HOUR = NULL
+			   ,CHANGE_TRANING_ST_MIN = NULL
+			   ,CHANGE_TRANING_ED_HOUR = NULL
+			   ,CHANGE_TRANING_ED_MIN = NULL
+			   ,CHANGE_LEAD_TIME = NULL
+			WHERE 1=1
+			and yyyy = #{yyyy}
+			and TERM = #{term}
+			and SUBJECT_CODE = #{subjectCode}
+			and CLASS = #{subClass}
+	</delete>
+
+</mapper>

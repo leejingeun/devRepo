@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+  ~ *******************************************************************************
+  ~  * COPYRIGHT(C) 2016 SMART INFORMATION TECHNOLOGY. ALL RIGHTS RESERVED.
+  ~  * This software is the proprietary information of SMART INFORMATION TECHNOLOGY..
+  ~  *
+  ~  * Revision History
+  ~  * Author   Date            Description
+  ~  * ======   =========      ====================================
+  ~  * 이진근    2017. 01. 23          First Draft.
+  ~  *
+  ~  *******************************************************************************
+  -->
+
+<mapper namespace="kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper">
+
+	
+	
+	<select id="listGradeSendStatusList" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" resultType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.listGradeSendStatusList ====== */
+		SELECT LES.YYYY, 
+			       LES.TERM,
+			       CASE 
+			       WHEN LES.TERM = '1' THEN '101'
+			       WHEN LES.TERM = '2' THEN '102'
+			       WHEN LES.TERM = '3' THEN '103'
+			       ELSE '4'
+			       END SEMSTR_CD,
+			       MEM.DEPT_NO,
+			       MEM.COMPANY_ID,
+			       COUNT(DISTINCT MEM.MEM_SEQ) AS STU_CNT, 
+			       FN_GETCOMPAYNAME(MEM.COMPANY_ID) AS COMPANY_NAME, 
+			       GROUP_CONCAT(DISTINCT FN_GETUSERID(MEM.MEM_SEQ)) AS GROUP_MEM_IDS, 
+			       (SELECT IF(COUNT(*) > 0,'Y','N') 
+			         FROM LMS_GRADE_SUBMIT GRD 
+			        WHERE GRD.DELETE_YN = 'N' 
+			              AND GRD.YYYY = LES.YYYY 
+			              AND GRD.TERM = LES.TERM 
+			              AND GRD.DEPT_NO = MEM.DEPT_NO 
+			              AND GRD.COMPANY_ID = MEM.COMPANY_ID 
+			       ) AS SEND_YN 
+			  FROM LMS_LESSON LES 
+			     INNER JOIN COM_MEMBER MEM 
+			         ON LES.MEM_SEQ = MEM.MEM_SEQ 
+			       AND MEM.DELETE_YN = 'N' 
+			       AND MEM.MEM_TYPE = 'STD' 
+			       AND IFNULL(MEM.COMPANY_ID,'') != '' 
+			       AND MEM.DEPT_NO = #{sessionDeptNo} 
+			 WHERE LES.DELETE_YN = 'N' 
+			       AND LES.YYYY = #{yyyy}  
+			       AND LES.TERM = #{term} 
+			       AND LES.LEC_STATUS = 'A' 
+			   GROUP BY MEM.COMPANY_ID	       
+	</select>
+	
+	
+	<select id="listGradeSendList" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" resultType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.listGradeSendList ====== */
+		SELECT DATE_FORMAT(GRD.INSERT_DATE,'%Y.%m.%d') AS INSERT_DATE,
+				   COM.COMPANY_NAME, 
+			       COM.COMPANY_NO, 
+			       GRD.IP, 
+			       (SELECT DISTINCT GROUP_CONCAT(FN_GETUSERNAME(CCM.MEM_SEQ)) 
+			         FROM LMS_SUBJ_CCM_MAPPING CCM 
+			        WHERE CCM.DELETE_YN = 'N' 
+			              AND CCM.COMPANY_ID = GRD.COMPANY_ID 
+			       ) CCM_NAME 
+			  FROM LMS_GRADE_SUBMIT GRD 
+			     INNER JOIN LMS_COMPANY COM 
+			         ON GRD.COMPANY_ID = COM.COMPANY_ID 
+			       AND COM.DELETE_YN = 'N' 
+			 WHERE GRD.DELETE_YN = 'N' 
+			       AND GRD.YYYY = #{yyyy} 
+			       AND GRD.TERM = #{term}
+			       AND GRD.DEPT_NO = #{sessionDeptNo}
+	</select>
+	
+	
+	<insert id="insertGradeCdpSend" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" >
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.insertGradeCdpSend ====== */
+		INSERT INTO LMS_GRADE_SUBMIT
+			       (
+			         SUBMIT_ID
+			         ,COMPANY_ID
+			         ,YYYY
+			         ,TERM
+			         ,DEPT_NO
+			         ,IP
+			         ,INSERT_USER
+			         ,INSERT_DATE
+			       ) 
+			       VALUES
+			       ( 
+			         #{submitId}
+			         ,#{companyId}
+			         ,#{yyyy}
+			         ,#{term}
+			         ,#{deptNo}
+			         ,#{sessionIp}
+			         ,#{sessionMemSeq}
+			         ,NOW()  
+			       )
+	</insert>
+	
+	
+	<select id="getGradeGroupMemIds" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" resultType="String">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.getGradeGroupMemIds ====== */
+		SELECT GROUP_CONCAT(DISTINCT MEM.MEM_ID)  
+			  FROM LMS_GRADE_SUBMIT GRD 
+			     INNER JOIN LMS_LESSON LES 
+			         ON GRD.YYYY = LES.YYYY 
+			       AND GRD.TERM = LES.TERM 
+			       AND LES.DELETE_YN = 'N' 
+			       AND LES.LEC_STATUS = 'A' 
+			     INNER JOIN COM_MEMBER MEM 
+			         ON GRD.DEPT_NO = MEM.DEPT_NO 
+			       AND GRD.COMPANY_ID = MEM.COMPANY_ID 
+			       AND LES.MEM_SEQ = MEM.MEM_SEQ 
+			       AND MEM.DELETE_YN = 'N' 
+			 WHERE GRD.DELETE_YN = 'N' 
+			       AND GRD.DEPT_NO = #{deptNo} 
+			       AND GRD.COMPANY_ID = #{sessionCompanyId}  
+			       AND GRD.YYYY = #{yyyy} 
+			       AND GRD.TERM = #{term} 
+			  <!--  GROUP BY MEM.MEM_ID -->	       
+	</select>
+	
+	
+	<select id="getGradeCcmConfirmInfo" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" resultType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.getGradeCcmConfirmInfo ====== */
+		SELECT SUBMIT_ID
+			   ,CONFIRM_YN 
+			   ,DATE_FORMAT(GRD.INSERT_DATE,'%Y.%m.%d') AS INSERT_DATE 
+		       ,FN_GETCODENAME('DEPT_CD',DEPT_NO) AS DEPT_NM 
+		       ,FN_GETUSERNAME(GRD.INSERT_USER) AS INSERT_USER_NAME 
+		       ,DATE_FORMAT(GRD.CONFIRM_DATE,'%Y.%m.%d') AS CONFIRM_DATE 
+		       ,GRD.CONFIRM_YN 
+		       ,GRD.IP 
+			FROM LMS_GRADE_SUBMIT GRD 
+		 WHERE GRD.DELETE_YN = 'N' 
+		       AND GRD.DEPT_NO = #{deptNo} 
+		       AND GRD.COMPANY_ID = #{sessionCompanyId}  
+		       AND GRD.YYYY = #{yyyy} 
+		       AND GRD.TERM = #{term} 
+	</select>
+	
+	<select id="getGradeCcmSubmitInfo" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" resultType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.getGradeCcmSubmitInfo ====== */
+		SELECT SUBMIT_ID
+			   ,CONFIRM_YN 
+			   ,DATE_FORMAT(GRD.INSERT_DATE,'%Y.%m.%d') AS INSERT_DATE 
+		       ,FN_GETCODENAME('DEPT_CD',DEPT_NO) AS DEPT_NM 
+		       ,FN_GETUSERNAME(GRD.INSERT_USER) AS INSERT_USER_NAME 
+		       ,DATE_FORMAT(GRD.CONFIRM_DATE,'%Y.%m.%d') AS CONFIRM_DATE 
+		       ,GRD.CONFIRM_YN 
+		       ,GRD.IP 
+			FROM LMS_GRADE_SUBMIT GRD 
+		 WHERE GRD.DELETE_YN = 'N' 
+		       AND GRD.SUBMIT_ID = #{submitId} 
+		       AND GRD.COMPANY_ID = #{sessionCompanyId}  
+	</select>
+	
+	<select id="listGradeConfirmList" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO" resultType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.listGradeConfirmList ====== */
+		SELECT SUBMIT_ID
+		       ,DATE_FORMAT(GRD.INSERT_DATE,'%Y.%m.%d') AS INSERT_DATE 
+		       ,FN_GETCODENAME('DEPT_CD',DEPT_NO) AS DEPT_NM 
+		       ,FN_GETUSERNAME(GRD.INSERT_USER) AS INSERT_USER_NAME 
+		       ,DATE_FORMAT(GRD.CONFIRM_DATE,'%Y.%m.%d') AS CONFIRM_DATE 
+		       ,CONFIRM_YN 
+		       ,IP 
+		  FROM LMS_GRADE_SUBMIT GRD 
+		 WHERE GRD.DELETE_YN = 'N' 
+		       AND GRD.YYYY = #{yyyy} 
+			   AND GRD.TERM = #{term} 
+		       AND GRD.COMPANY_ID = #{sessionCompanyId}
+		      ORDER BY GRD.INSERT_DATE DESC 	       
+	</select>
+	
+	
+	<update id="updateGradeCcmConfirmY" parameterType="kr.co.sitglobal.oklms.lu.grade.vo.GradeVO">
+		/* ====== kr.co.sitglobal.oklms.lu.grade.service.impl.GradeMapper.updateGradeCcmConfirmY ====== */
+		UPDATE LMS_GRADE_SUBMIT 
+		       SET CONFIRM_YN = 'Y'
+		       ,CONFIRM_USER = #{sessionMemSeq} 
+		       ,CONFIRM_DATE = NOW() 
+		 WHERE SUBMIT_ID = #{submitId} 	       
+	</update>
+	
+	
+	
+
+</mapper>

@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+
+
+/* �⺻���� */
+* {margin:0; padding:0;}
+html,body												{height:100%; margin:0; padding:0; font:12px nbgM, Dotum, play, sans-serif; color:#333; line-height:18px;}
+body														{background:url("") no-repeat;}
+div, table												{margin:0; padding:0;}
+input, select											{padding:0}
+img, fieldset											{border:0;}
+img														{vertical-align:top;}
+ul, ol														{list-style:none;}
+a:link, a:visited, a:active, a:hover				{text-decoration:none;}
+hr															{display:none;}
+
+.button													{border:none;}
+.button:hover											{cursor:pointer;}
+.hidden, legend, caption							{position:absolute; overflow:hidden; visibility:hidden; width:0; height:0; left:0; top:0; font-size:0; line-height:0; padding:0; margin:0;}
+
+
+
+
+
+
+#wrapper												{position:relative; width:100%; height:100%; background:url("/images/oklms/adm/login/bg_01.png") 0 285px repeat-x;}
+#wrapper:after										{content:""; display:block; clear:both;}
+
+#wrapper dl											{position:relative; width:400px; height:410px; background:url("/images/oklms/adm/login/bg_02.png") 0 285px no-repeat; padding:180px 240px 0; margin:0 auto;}
+#wrapper dt											{float:left; width:400px; height:130px; text-align:center;  background:url("/images/oklms/adm/login/lms_logo.gif") center top no-repeat;}
+#wrapper .type-01									{float:left; width:400px; height:35px; text-indent:-9999px;}
+#wrapper .type-02									{float:left; width:400px; font:700 40px play; line-height:45px; color:#005287; text-align:center;}
+#wrapper .footer										{font:14px play; color:#AAA; line-height:18px; text-align:center;}
+
+#wrapper dd											{float:left; width:400px;}
+#wrapper .log-area-1								{height:245px;}
+#wrapper .log-area-2								{height:245px;}
+#wrapper .log-area-2 span.text				{display:block; width:400px; height:80px; font:18px nbgM; color:#333; line-height:25px; text-align:center; padding-top:45px;}
+#wrapper .log-area-2 span.btn					{display:block; width:400px; height:60px;}
+#wrapper .log-area-2 span.btn input			{width:400px; height:60px; cursor:pointer; font:700 27px play; color:#FFF; border:0; background:url("/images/oklms/adm/login/log_area_02.png") repeat; margin:0;}
+
+
+
+#login													{float:left; width:400px; height:245px; background:url("/images/oklms/adm/login/log_area_01.png") no-repeat;}
+#login ul												{float:left; width:400px; padding-bottom:15px;}
+#login ul li.item										{float:left; position:relative; display:inline; width:394px; height:44px; padding:3px; margin-bottom:5px;}
+#login ul li .iLabel									{width:374px; height:30px; font:18px nbgM; color:#AAA; line-height:18px; padding:14px 10px 0;}
+#login ul li .iText										{width:374px; height:39px; font:18px nbgM; color:#333; line-height:18px; border:0; padding:5px 10px 0;}
+#login span.btn										{float:left; width:400px; height:60px;}
+#login span.btn input								{width:400px; height:60px; cursor:pointer; font:700 27px play; color:#FFF; border:0; background:transparent; margin:0;}
